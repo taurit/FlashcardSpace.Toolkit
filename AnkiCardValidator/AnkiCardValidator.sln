@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnkiCardValidator", "AnkiCardValidator\AnkiCardValidator.csproj", "{55013C4B-9A06-4D59-80AD-FBB144524C14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnkiCardValidator.Tests", "AnkiCardValidator.Tests\AnkiCardValidator.Tests.csproj", "{45E2FAC6-0D7E-4C95-B6EC-63BA799765FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{55013C4B-9A06-4D59-80AD-FBB144524C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55013C4B-9A06-4D59-80AD-FBB144524C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55013C4B-9A06-4D59-80AD-FBB144524C14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45E2FAC6-0D7E-4C95-B6EC-63BA799765FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45E2FAC6-0D7E-4C95-B6EC-63BA799765FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45E2FAC6-0D7E-4C95-B6EC-63BA799765FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45E2FAC6-0D7E-4C95-B6EC-63BA799765FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
