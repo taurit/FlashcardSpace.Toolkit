@@ -5,9 +5,48 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:AnkiCardValidator"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:AnkiCardValidator.ViewModels"
     Title="Anki Card Validator"
     Width="1200"
     Height="660"
     mc:Ignorable="d">
-    <Grid />
+    <DockPanel LastChildFill="True">
+        <ToolBar DockPanel.Dock="Top">
+            <Button Padding="5">Load flashcards</Button>
+            <Button Padding="5">Validate</Button>
+        </ToolBar>
+        <DataGrid
+            d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
+            AutoGenerateColumns="False"
+            Background="White"
+            CanUserSortColumns="True"
+            HorizontalGridLinesBrush="LightGray"
+            IsReadOnly="True"
+            ItemsSource="{Binding Flashcards}"
+            VerticalGridLinesBrush="LightGray">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding FrontSide, Mode=OneTime}"
+                    Header="Front side" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding BackSide, Mode=OneTime}"
+                    Header="Back side" />
+
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding CefrClassification, Mode=OneTime}"
+                    Header="CEFR classification" />
+
+                <DataGridTextColumn
+                    Width="Auto"
+                    MinWidth="100"
+                    Binding="{Binding QualityPenalty, Mode=OneTime}"
+                    Header="Quality penalty" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </DockPanel>
+
 </Window>
