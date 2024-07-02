@@ -2,6 +2,7 @@
     x:Class="AnkiCardValidator.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:AnkiCardValidator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:AnkiCardValidator"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,42 +11,101 @@
     Width="1200"
     Height="660"
     mc:Ignorable="d">
+    <Window.Resources>
+        <converters:PenaltyToColorConverter x:Key="PenaltyToColorConverter" />
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <ToolBar DockPanel.Dock="Top">
-            <Button Padding="5">Load flashcards</Button>
+            <Button Padding="5" Click="LoadFlashcards_OnClick">Load flashcards</Button>
             <Button Padding="5">Validate</Button>
         </ToolBar>
-        <DataGrid
-            d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
-            AutoGenerateColumns="False"
-            Background="White"
-            CanUserSortColumns="True"
-            HorizontalGridLinesBrush="LightGray"
-            IsReadOnly="True"
-            ItemsSource="{Binding Flashcards}"
-            VerticalGridLinesBrush="LightGray">
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="*"
-                    Binding="{Binding FrontSide, Mode=OneTime}"
-                    Header="Front side" />
-                <DataGridTextColumn
-                    Width="*"
-                    Binding="{Binding BackSide, Mode=OneTime}"
-                    Header="Back side" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <DataGrid
+                d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
+                AutoGenerateColumns="False"
+                CanUserSortColumns="True"
+                HorizontalGridLinesBrush="LightGray"
+                IsReadOnly="True"
+                ItemsSource="{Binding Flashcards}"
+                SelectedItem="{Binding SelectedFlashcard}"
+                SelectionMode="Single"
+                VerticalGridLinesBrush="LightGray">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="{Binding QualityPenalty, Converter={StaticResource PenaltyToColorConverter}}" />
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding FrontSide, Mode=OneTime}"
+                        Header="Front side" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding BackSide, Mode=OneTime}"
+                        Header="Back side" />
 
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding CefrClassification, Mode=OneTime}"
-                    Header="CEFR classification" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding CefrClassification, Mode=OneTime}"
+                        Header="CEFR classification" />
 
-                <DataGridTextColumn
-                    Width="Auto"
-                    MinWidth="100"
-                    Binding="{Binding QualityPenalty, Mode=OneTime}"
-                    Header="Quality penalty" />
-            </DataGrid.Columns>
-        </DataGrid>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        MinWidth="100"
+                        Binding="{Binding QualityPenalty, Mode=OneTime}"
+                        Header="Quality penalty" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <GridSplitter
+                Grid.Row="1"
+                Height="10"
+                HorizontalAlignment="Stretch"
+                ResizeBehavior="PreviousAndNext" />
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DataGrid
+                    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
+                    AutoGenerateColumns="False"
+                    CanUserSortColumns="True"
+                    HorizontalGridLinesBrush="LightGray"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding SelectedFlashcard.Warnings, Mode=OneWay}"
+                    VerticalGridLinesBrush="LightGray">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Message, Mode=OneTime}"
+                            Header="Warning" />
+
+                        <DataGridTextColumn
+                            Width="Auto"
+                            MinWidth="100"
+                            Binding="{Binding Penalty, Mode=OneTime}"
+                            Header="Penalty" />
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
+                <GridSplitter
+                    Grid.Column="1"
+                    Width="10"
+                    ResizeBehavior="PreviousAndNext" />
+                <TextBlock Grid.Column="2" />
+            </Grid>
+        </Grid>
+
 
     </DockPanel>
 
