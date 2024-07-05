@@ -17,20 +17,18 @@ public partial class MainWindow : Window
 
     private void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
     {
-        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 30);
+        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 6);
 
         ViewModel.Flashcards.Clear();
         foreach (var flashcard in notes)
         {
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, CefrClassification.Unknown, "", "",
-                [], null, "", "");
+            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, CefrClassification.Unknown, null, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
-
     }
 
-    private async void EvaluateCards_OnClick(object sender, RoutedEventArgs e)
+    private async void ValidateCards_OnClick(object sender, RoutedEventArgs e)
     {
         foreach (var flashcard in ViewModel.Flashcards)
         {
@@ -39,11 +37,9 @@ public partial class MainWindow : Window
             // for easier debugging
             flashcard.RawResponseFromChatGptApi = rawChatGptResponse;
 
-            flashcard.CefrClassification = evaluationResult.CEFRClassification;
-            flashcard.QualityIssues = String.IsNullOrWhiteSpace(evaluationResult.QualityIssues) ? "\u2705" : evaluationResult.QualityIssues;
-            flashcard.Dialect = String.IsNullOrWhiteSpace(evaluationResult.Dialect) ? "\u2705" : evaluationResult.Dialect;
-            flashcard.IsFlashcardWorthIncludingForA2LevelStudents = evaluationResult.IsFlashcardWorthIncludingForA2LevelStudents;
-            flashcard.IsFlashcardWorthIncludingJustification = String.IsNullOrWhiteSpace(evaluationResult.IsFlashcardWorthIncludingJustification) ? "\u2705" : evaluationResult.IsFlashcardWorthIncludingJustification;
+            flashcard.CefrLevel = evaluationResult.CEFRClassification;
+            flashcard.QualityIssues = evaluationResult.QualityIssues;
+            flashcard.Dialect = evaluationResult.Dialect;
 
             flashcard.Meanings.Clear();
             foreach (var meaning in evaluationResult.Meanings)

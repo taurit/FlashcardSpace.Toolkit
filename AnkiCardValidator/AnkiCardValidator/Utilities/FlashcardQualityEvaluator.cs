@@ -1,6 +1,7 @@
 ﻿using AnkiCardValidator.Models;
 using Scriban;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,12 +13,13 @@ namespace AnkiCardValidator.Utilities;
 /// </remarks>
 internal record FlashcardQualityEvaluationInput(string FlashcardModelSerialized);
 
-public record Meaning(string EnglishEquivalent, string Definition);
-internal record FlashcardQualityEvaluation(CefrClassification CEFRClassification, string Dialect, string QualityIssues, List<Meaning> Meanings, bool IsFlashcardWorthIncludingForA2LevelStudents, string IsFlashcardWorthIncludingJustification);
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
+public record Meaning(string EnglishEquivalent, string PolishEquivalent, string Definition);
+
+internal record FlashcardQualityEvaluation(CefrClassification CEFRClassification, string Dialect, string QualityIssues, List<Meaning> Meanings);
 
 internal static class FlashcardQualityEvaluator
 {
-
     internal static async Task<(FlashcardQualityEvaluation? evaluation, string chatGptResponse)> EvaluateFlashcardQuality(AnkiNote note)
     {
         // generate prompt

@@ -13,12 +13,13 @@
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
     <Window.Resources>
-        <converters:PenaltyToColorConverter x:Key="PenaltyToColorConverter" />
+        <converters:DecisionToColorConverter x:Key="DecisionToColorConverter" />
+        <converters:EmptyStringToCheckboxConverter x:Key="EmptyStringToCheckboxConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <ToolBar DockPanel.Dock="Top">
             <Button Padding="5" Click="LoadFlashcards_OnClick">Load flashcards</Button>
-            <Button Padding="5" Click="EvaluateCards_OnClick">Validate</Button>
+            <Button Padding="5" Click="ValidateCards_OnClick">Validate</Button>
         </ToolBar>
         <Grid>
             <Grid.RowDefinitions>
@@ -38,7 +39,7 @@
                 VerticalGridLinesBrush="LightGray">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="Background" Value="{Binding NumberOfMeanings, Converter={StaticResource PenaltyToColorConverter}}" />
+                        <Setter Property="Background" Value="{Binding IsFlashcardWorthIncludingInMySet, Converter={StaticResource DecisionToColorConverter}}" />
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
@@ -53,28 +54,17 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding CefrClassification, Mode=OneWay}"
+                        Binding="{Binding CefrLevel, Mode=OneWay}"
                         Header="CEFR classification" />
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding Dialect, Mode=OneWay}"
+                        Binding="{Binding Dialect, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
                         Header="Dialect" />
 
                     <DataGridTextColumn
-                        Width="Auto"
-                        Binding="{Binding IsFlashcardWorthIncludingForA2LevelStudents, Mode=OneWay}"
-                        Header="Include?" />
-
-                    <DataGridTextColumn
                         Width="2*"
-                        Binding="{Binding IsFlashcardWorthIncludingJustification, Mode=OneWay}"
-                        Header="Include? Why" />
-
-
-                    <DataGridTextColumn
-                        Width="2*"
-                        Binding="{Binding QualityIssues, Mode=OneWay}"
+                        Binding="{Binding QualityIssues, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
                         Header="Quality issues" />
 
                     <DataGridTextColumn
@@ -83,7 +73,10 @@
                         Binding="{Binding Meanings.Count, Mode=OneWay}"
                         Header="Num. meanings" />
 
-
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding IsFlashcardWorthIncludingInMySet, Mode=OneWay}"
+                        Header="Include?" />
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter
@@ -111,7 +104,13 @@
                             Width="Auto"
                             MinWidth="100"
                             Binding="{Binding EnglishEquivalent, Mode=OneTime}"
-                            Header="Meaning" />
+                            Header="Meaning (en)" />
+
+                        <DataGridTextColumn
+                            Width="Auto"
+                            MinWidth="100"
+                            Binding="{Binding PolishEquivalent, Mode=OneTime}"
+                            Header="Meaning (pl)" />
 
                         <DataGridTextColumn
                             Width="*"
