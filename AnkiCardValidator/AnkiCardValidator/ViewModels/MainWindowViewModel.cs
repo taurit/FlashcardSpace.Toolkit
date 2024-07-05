@@ -20,18 +20,19 @@ public class MainWindowViewModel
 }
 
 [AddINotifyPropertyChangedInterface]
-public sealed class FlashcardViewModel(AnkiNote note, string frontSide, string backSide, CefrClassification cefrClassification, List<Warning> warnings, string comments)
+public record MeaningViewModel(string EnglishEquivalent, string Definition);
+
+[AddINotifyPropertyChangedInterface]
+public sealed class FlashcardViewModel(AnkiNote note, string frontSide, string backSide, CefrClassification cefrClassification, string qualityIssues, string dialect, ObservableCollection<Meaning> meanings, bool? isFlashcardWorthIncludingForA2LevelStudents, string isFlashcardWorthIncludingJustification)
 {
     public AnkiNote Note { get; } = note;
     public string FrontSide { get; } = frontSide;
     public string BackSide { get; } = backSide;
 
     public CefrClassification CefrClassification { get; set; } = cefrClassification;
-    public string Comments { get; set; } = comments;
-    public List<Warning> Warnings { get; } = warnings;
-
-    public int? QualityPenalty => Warnings.Any() ? Warnings.Sum(x => x.Penalty) : null;
+    public string Dialect { get; set; } = dialect;
+    public ObservableCollection<Meaning> Meanings { get; set; } = meanings;
+    public bool? IsFlashcardWorthIncludingForA2LevelStudents { get; set; } = isFlashcardWorthIncludingForA2LevelStudents;
+    public string IsFlashcardWorthIncludingJustification { get; set; } = isFlashcardWorthIncludingJustification;
+    public string QualityIssues { get; set; } = qualityIssues;
 }
-
-[AddINotifyPropertyChangedInterface]
-public sealed record Warning(string Message, int Penalty);

@@ -15,9 +15,13 @@ public class PenaltyToColorConverter : IValueConverter
             // For example, you can set different colors based on the penalty range
             if (penalty == 0)
             {
+                return Brushes.Transparent; // currently "0 meanings of a word" means we just haven't evaluated it yet; penalty needs to be redefined
+            }
+            if (penalty == 1)
+            {
                 return Brushes.DarkSeaGreen; // Return a green color for penalties between 0 and 5
             }
-            else if (penalty < 2)
+            else if (penalty < 3)
             {
                 return Brushes.LightGoldenrodYellow; // Return a yellow color for penalties between 5 and 10
             }

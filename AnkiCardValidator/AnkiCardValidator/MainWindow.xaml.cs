@@ -23,7 +23,8 @@ public partial class MainWindow : Window
         ViewModel.Flashcards.Clear();
         foreach (var flashcard in notes)
         {
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, CefrClassification.Unknown, new List<Warning>(), "");
+            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, CefrClassification.Unknown, "", "",
+                [], null, "");
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -33,8 +34,16 @@ public partial class MainWindow : Window
     private async void EvaluateCards_OnClick(object sender, RoutedEventArgs e)
     {
         var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardQuality(ViewModel.SelectedFlashcard.Note);
-        ViewModel.SelectedFlashcard.CefrClassification = evaluationResult.FrontSideCEFRClassification;
-        ViewModel.SelectedFlashcard.Comments = String.IsNullOrWhiteSpace(evaluationResult.Comments) ? "None" : evaluationResult.Comments;
+        ViewModel.SelectedFlashcard.CefrClassification = evaluationResult.CEFRClassification;
+        ViewModel.SelectedFlashcard.QualityIssues = String.IsNullOrWhiteSpace(evaluationResult.QualityIssues) ? "None" : evaluationResult.QualityIssues;
+        ViewModel.SelectedFlashcard.Dialect = String.IsNullOrWhiteSpace(evaluationResult.Dialect) ? "None" : evaluationResult.Dialect;
+        ViewModel.SelectedFlashcard.IsFlashcardWorthIncludingForA2LevelStudents = evaluationResult.IsFlashcardWorthIncludingForA2LevelStudents;
+        ViewModel.SelectedFlashcard.IsFlashcardWorthIncludingJustification = String.IsNullOrWhiteSpace(evaluationResult.IsFlashcardWorthIncludingJustification) ? "None" : evaluationResult.IsFlashcardWorthIncludingJustification;
+        ViewModel.SelectedFlashcard.Meanings.Clear();
+        foreach (var meaning in evaluationResult.Meanings)
+        {
+            ViewModel.SelectedFlashcard.Meanings.Add(meaning);
+        }
 
         Debug.WriteLine(evaluationResult);
     }

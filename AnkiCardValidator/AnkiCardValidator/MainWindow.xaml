@@ -38,7 +38,7 @@
                 VerticalGridLinesBrush="LightGray">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="Background" Value="{Binding QualityPenalty, Converter={StaticResource PenaltyToColorConverter}}" />
+                        <Setter Property="Background" Value="{Binding NumberOfMeanings, Converter={StaticResource PenaltyToColorConverter}}" />
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
@@ -57,15 +57,33 @@
                         Header="CEFR classification" />
 
                     <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Dialect, Mode=OneWay}"
+                        Header="Dialect" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding IsFlashcardWorthIncludingForA2LevelStudents, Mode=OneWay}"
+                        Header="Include?" />
+
+                    <DataGridTextColumn
                         Width="2*"
-                        Binding="{Binding Comments, Mode=OneWay}"
-                        Header="Comments" />
+                        Binding="{Binding IsFlashcardWorthIncludingJustification, Mode=OneWay}"
+                        Header="Include? Why" />
+
+
+                    <DataGridTextColumn
+                        Width="2*"
+                        Binding="{Binding QualityIssues, Mode=OneWay}"
+                        Header="Quality issues" />
 
                     <DataGridTextColumn
                         Width="Auto"
                         MinWidth="100"
-                        Binding="{Binding QualityPenalty, Mode=OneWay}"
-                        Header="Quality penalty" />
+                        Binding="{Binding Meanings.Count, Mode=OneWay}"
+                        Header="Num. meanings" />
+
+
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter
@@ -85,20 +103,20 @@
                     CanUserSortColumns="True"
                     HorizontalGridLinesBrush="LightGray"
                     IsReadOnly="True"
-                    ItemsSource="{Binding SelectedFlashcard.Warnings, Mode=OneWay}"
+                    ItemsSource="{Binding SelectedFlashcard.Meanings, Mode=OneWay}"
                     VerticalGridLinesBrush="LightGray">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Message, Mode=OneTime}"
-                            Header="Warning" />
-
-                        <DataGridTextColumn
                             Width="Auto"
                             MinWidth="100"
-                            Binding="{Binding Penalty, Mode=OneTime}"
-                            Header="Penalty" />
+                            Binding="{Binding EnglishEquivalent, Mode=OneTime}"
+                            Header="Meaning" />
+
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Definition, Mode=OneTime}"
+                            Header="Definition" />
 
                     </DataGrid.Columns>
 
@@ -113,7 +131,7 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     SnapsToDevicePixels="True">
-                    <TextBlock Text="{Binding SelectedFlashcard.Comments, Mode=OneWay}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding SelectedFlashcard.QualityIssues, Mode=OneWay}" TextWrapping="Wrap" />
 
                 </Border>
 
