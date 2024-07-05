@@ -17,7 +17,8 @@ internal record FlashcardQualityEvaluation(CefrClassification CEFRClassification
 
 internal static class FlashcardQualityEvaluator
 {
-    internal static async Task<FlashcardQualityEvaluation?> EvaluateFlashcardQuality(AnkiNote note)
+
+    internal static async Task<(FlashcardQualityEvaluation? evaluation, string chatGptResponse)> EvaluateFlashcardQuality(AnkiNote note)
     {
         // generate prompt
         var templateContent = await File.ReadAllTextAsync(Settings.EvaluateCardQualityPromptPath);
@@ -39,6 +40,6 @@ internal static class FlashcardQualityEvaluator
         };
         var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluation>(chatGptResponse, options);
 
-        return evaluation;
+        return (evaluation, chatGptResponse);
     }
 }

@@ -23,7 +23,7 @@ public class MainWindowViewModel
 public record MeaningViewModel(string EnglishEquivalent, string Definition);
 
 [AddINotifyPropertyChangedInterface]
-public sealed class FlashcardViewModel(AnkiNote note, string frontSide, string backSide, CefrClassification cefrClassification, string qualityIssues, string dialect, ObservableCollection<Meaning> meanings, bool? isFlashcardWorthIncludingForA2LevelStudents, string isFlashcardWorthIncludingJustification)
+public sealed class FlashcardViewModel(AnkiNote note, string frontSide, string backSide, CefrClassification cefrClassification, string qualityIssues, string dialect, ObservableCollection<Meaning> meanings, bool? isFlashcardWorthIncludingForA2LevelStudents, string isFlashcardWorthIncludingJustification, string rawResponseFromChatGptApi)
 {
     public AnkiNote Note { get; } = note;
     public string FrontSide { get; } = frontSide;
@@ -35,4 +35,5 @@ public sealed class FlashcardViewModel(AnkiNote note, string frontSide, string b
     public bool? IsFlashcardWorthIncludingForA2LevelStudents { get; set; } = isFlashcardWorthIncludingForA2LevelStudents;
     public string IsFlashcardWorthIncludingJustification { get; set; } = isFlashcardWorthIncludingJustification;
     public string QualityIssues { get; set; } = qualityIssues;
+    public string RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;
 }

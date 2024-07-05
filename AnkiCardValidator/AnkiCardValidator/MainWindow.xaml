@@ -131,7 +131,7 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     SnapsToDevicePixels="True">
-                    <TextBlock Text="{Binding SelectedFlashcard.QualityIssues, Mode=OneWay}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding SelectedFlashcard.RawResponseFromChatGptApi, Mode=OneWay}" TextWrapping="Wrap" />
 
                 </Border>
 
