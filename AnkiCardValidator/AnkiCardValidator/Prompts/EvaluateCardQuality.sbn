@@ -1,0 +1,26 @@
+﻿Your input will contain a front side and a back side of a flashcard flashcard designed to help students on the A2 level who are learning Spanish language. The input format is:
+
+```json
+{
+    "FrontSide": "the front side of a flashcard, usually in Spanish, but might contain comments in Polish and English too",
+    "BackSide": "the back side of a flashcard, usually in Spanish, but might contain comments in Polish and English too",
+}
+```
+
+Your job is to assess several aspects of quality of the flashcard. The response should be in JSON format similar to:
+
+```json
+{
+    "FrontSideCEFRClassification": "C2",
+    "Comments": "The word is a highly-technical jargon, unlikely to be needed at the A2 level.",
+}
+```
+
+Additional requirements:
+- "FrontSideCEFRClassification" should be one of "A1", "A2", "B1", "B2", "C1", "C2", "Unclear". Use "Unclear" if the word is not recognized, or input contains longer content and it's not clear what is being evaluated.
+- "Comments" should be in English. This field is mostly to indicate warnings and problems related to flashcard's quality. It can be left empty if flashcard seems to have no issues worth correcting.
+
+The input to process is:
+```json
+{{FlashcardModelSerialized}}
+```

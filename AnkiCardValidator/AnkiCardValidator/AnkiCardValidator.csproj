@@ -8,14 +8,19 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>AnkiCardValidator.ico</ApplicationIcon>
     <PackageIcon></PackageIcon>
+    <UserSecretsId>91483aa8-e1ab-440c-810c-62faae8d37c6</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="OpenAI" Version="2.0.0-beta.7" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+    <PackageReference Include="Scriban" Version="5.10.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Utilities\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 

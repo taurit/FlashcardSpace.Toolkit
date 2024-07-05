@@ -10,6 +10,7 @@
     Title="Anki Card Validator"
     Width="1200"
     Height="660"
+    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
     <Window.Resources>
         <converters:PenaltyToColorConverter x:Key="PenaltyToColorConverter" />
@@ -17,7 +18,7 @@
     <DockPanel LastChildFill="True">
         <ToolBar DockPanel.Dock="Top">
             <Button Padding="5" Click="LoadFlashcards_OnClick">Load flashcards</Button>
-            <Button Padding="5">Validate</Button>
+            <Button Padding="5" Click="EvaluateCards_OnClick">Validate</Button>
         </ToolBar>
         <Grid>
             <Grid.RowDefinitions>
@@ -26,8 +27,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <DataGrid
-                d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
                 AutoGenerateColumns="False"
+                Background="White"
                 CanUserSortColumns="True"
                 HorizontalGridLinesBrush="LightGray"
                 IsReadOnly="True"
@@ -43,22 +44,27 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="*"
-                        Binding="{Binding FrontSide, Mode=OneTime}"
-                        Header="Front side" />
+                        Binding="{Binding FrontSide, Mode=OneWay}"
+                        Header="Front side (Spanish)" />
                     <DataGridTextColumn
                         Width="*"
-                        Binding="{Binding BackSide, Mode=OneTime}"
-                        Header="Back side" />
+                        Binding="{Binding BackSide, Mode=OneWay}"
+                        Header="Back side (Polish)" />
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding CefrClassification, Mode=OneTime}"
+                        Binding="{Binding CefrClassification, Mode=OneWay}"
                         Header="CEFR classification" />
+
+                    <DataGridTextColumn
+                        Width="2*"
+                        Binding="{Binding Comments, Mode=OneWay}"
+                        Header="Comments" />
 
                     <DataGridTextColumn
                         Width="Auto"
                         MinWidth="100"
-                        Binding="{Binding QualityPenalty, Mode=OneTime}"
+                        Binding="{Binding QualityPenalty, Mode=OneWay}"
                         Header="Quality penalty" />
                 </DataGrid.Columns>
             </DataGrid>
@@ -74,8 +80,8 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <DataGrid
-                    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
                     AutoGenerateColumns="False"
+                    Background="White"
                     CanUserSortColumns="True"
                     HorizontalGridLinesBrush="LightGray"
                     IsReadOnly="True"
@@ -102,7 +108,15 @@
                     Grid.Column="1"
                     Width="10"
                     ResizeBehavior="PreviousAndNext" />
-                <TextBlock Grid.Column="2" />
+                <Border
+                    Grid.Column="2"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    SnapsToDevicePixels="True">
+                    <TextBlock Text="{Binding SelectedFlashcard.Comments, Mode=OneWay}" TextWrapping="Wrap" />
+
+                </Border>
+
             </Grid>
         </Grid>
 
