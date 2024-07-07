@@ -22,13 +22,16 @@ public partial class MainWindow : Window
         _spanishFrequencyDataProvider.LoadFrequencyData();
 
         var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 6);
-
         ViewModel.Flashcards.Clear();
+
+
         foreach (var flashcard in notes)
         {
             var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(flashcard.FrontSide);
+            var duplicatesFront = DuplicateDetector.DetectDuplicatesFront(flashcard, notes);
+            var duplicatesBack = DuplicateDetector.DetectDuplicatesFront(flashcard, notes);
 
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, frequencyPositionFrontSide, CefrClassification.Unknown, null, null, null);
+            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, CefrClassification.Unknown, null, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }

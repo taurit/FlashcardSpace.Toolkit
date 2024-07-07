@@ -65,6 +65,16 @@
 
                     <DataGridTextColumn
                         Width="Auto"
+                        Binding="{Binding DuplicatesOfFrontSide.Count, Mode=OneWay}"
+                        Header="Num. dup. front" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding DuplicatesOfBackSide.Count, Mode=OneWay}"
+                        Header="Num. dup. back" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
                         Binding="{Binding CefrLevel, Mode=OneWay}"
                         Header="CEFR classification" />
 
