@@ -1,6 +1,10 @@
 ﻿using AnkiCardValidator.Models;
 using AnkiCardValidator.Utilities;
 using AnkiCardValidator.ViewModels;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Windows;
 
 namespace AnkiCardValidator;
@@ -25,7 +29,6 @@ public partial class MainWindow : Window
         var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", null);
         ViewModel.Flashcards.Clear();
 
-
         foreach (var flashcard in notes)
         {
             var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(flashcard.FrontSide);
@@ -38,28 +41,83 @@ public partial class MainWindow : Window
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
+
+        SortFlashcardsByMostPromising();
     }
 
     private async void ValidateCards_OnClick(object sender, RoutedEventArgs e)
     {
-        var vmBatch = ViewModel.Flashcards.Take(10).ToList();
-        var modelBatch = vmBatch.Select(x => x.Note).ToList();
-        (var evaluationResult, var rawChatGptResponse) = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(modelBatch);
+        var batchSize = Int32.Parse(BatchSize.Text);
 
-        int i = -1;
-        foreach (var evaluation in evaluationResult)
+        // Load as much as you can from the local cache
+        var vmsForWhichCacheExists = ViewModel.Flashcards.Where(x => File.Exists(GenerateCacheFilePath(x))).ToList();
+
+        // Sort the rest by the most promising ones (lowest penalty score)
+        var notesWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists).OrderBy(x => x.Penalty).ToList();
+
+        var batchOfVms = notesWithEvaluationMissing.Take(batchSize).ToList();
+        var batchOfNotes = batchOfVms.Select(x => x.Note).ToList();
+        var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(batchOfNotes);
+
+        int i = 0;
+        var jsonSerializerOptions = new JsonSerializerOptions
         {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true
+        };
+        foreach (var vm in batchOfVms)
+        {
+            var evaluation = evaluationResult.Evaluations[i];
+
+            // save to cache
+            var cacheFilePath = GenerateCacheFilePath(vm);
+            var cacheContent = new FlashcardQualityEvaluationCacheModel(evaluation, evaluationResult.RawChatGptResponse);
+            var cacheContentSerialized = JsonSerializer.Serialize(cacheContent, jsonSerializerOptions);
+            await File.WriteAllTextAsync(cacheFilePath, cacheContentSerialized);
+
             i++;
+        }
 
-            var flashcard = vmBatch[i];
-            flashcard.CefrLevel = evaluation.CEFR;
-            flashcard.QualityIssues = evaluation.Issues;
+        // Update the ViewModels
+        foreach (var vm in ViewModel.Flashcards)
+        {
+            var cachePath = GenerateCacheFilePath(vm);
+            await TryUpdateViewModelWithEvaluationData(vm, cachePath);
+        }
 
-            flashcard.Meanings.Clear();
-            foreach (var meaning in evaluation.Meanings)
-            {
-                flashcard.Meanings.Add(meaning);
-            }
+        SortFlashcardsByMostPromising();
+    }
+
+    private void SortFlashcardsByMostPromising()
+    {
+        ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty));
+    }
+
+    private static string GenerateCacheFilePath(FlashcardViewModel flashcardVm)
+    {
+        var cacheFileName = $"eval-{Settings.OpenAiModelId}_{flashcardVm.Note.Id}.txt";
+        var cacheFilePath = Path.Combine(Settings.GptResponseCacheDirectory, cacheFileName);
+        return cacheFilePath;
+    }
+
+    private static async Task TryUpdateViewModelWithEvaluationData(FlashcardViewModel flashcardVm, string cacheFilePath)
+    {
+        if (!File.Exists(cacheFilePath)) return;
+
+        var cacheContent = await File.ReadAllTextAsync(cacheFilePath);
+
+        var cached = JsonSerializer.Deserialize<FlashcardQualityEvaluationCacheModel>(cacheContent);
+
+        flashcardVm.CefrLevel = cached.Evaluation.CEFR;
+        flashcardVm.QualityIssues = cached.Evaluation.Issues;
+        flashcardVm.RawResponseFromChatGptApi = cached.RawChatGptResponse;
+
+        flashcardVm.Meanings.Clear();
+        foreach (var meaning in cached.Evaluation.Meanings)
+        {
+            flashcardVm.Meanings.Add(meaning);
         }
     }
 }
+
+internal record FlashcardQualityEvaluationCacheModel(FlashcardQualityEvaluation Evaluation, string RawChatGptResponse);

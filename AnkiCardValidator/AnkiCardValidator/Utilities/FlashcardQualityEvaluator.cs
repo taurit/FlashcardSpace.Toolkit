@@ -1,6 +1,5 @@
 ﻿using AnkiCardValidator.Models;
 using Scriban;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Encodings.Web;
@@ -20,11 +19,16 @@ public record Meaning(string EN, string PL, string Def);
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
 internal record FlashcardQualityEvaluation(CefrClassification CEFR, string Issues, List<Meaning> Meanings);
 
+/// <summary>
+/// Model for ChatGPT JSON response (must be an object, not an array)
+/// </summary>
 internal record FlashcardQualityEvaluationBatch(List<FlashcardQualityEvaluation> Evaluations);
+
+internal record FlashcardQualityEvaluationBatchResult(List<FlashcardQualityEvaluation> Evaluations, string RawChatGptResponse);
 
 internal static class FlashcardQualityEvaluator
 {
-    internal static async Task<(List<FlashcardQualityEvaluation?> evaluation, string chatGptResponse)> EvaluateFlashcardsQuality(List<AnkiNote> noteBatch)
+    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<AnkiNote> noteBatch)
     {
         var jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -38,8 +42,6 @@ internal static class FlashcardQualityEvaluator
         var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
         var prompt = await template.RenderAsync(templateInput, x => x.Name);
 
-        Debug.WriteLine(prompt);
-
         // get response
         var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(prompt);
         var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
@@ -52,6 +54,11 @@ internal static class FlashcardQualityEvaluator
         };
         var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluationBatch>(chatGptResponse, options);
 
-        return (evaluation.Evaluations, chatGptResponse);
+        if (evaluation.Evaluations.Count != noteBatch.Count)
+        {
+            throw new InvalidOperationException("Number of items in output array does not match number of items in input, cannot continue.");
+        }
+
+        return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);
     }
 }

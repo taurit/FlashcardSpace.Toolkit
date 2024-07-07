@@ -19,6 +19,14 @@
     <DockPanel LastChildFill="True">
         <ToolBar DockPanel.Dock="Top">
             <Button Padding="5" Click="LoadFlashcards_OnClick">Load flashcards</Button>
+            <Separator />
+            <Label Padding="10">Batch size:</Label>
+            <TextBox
+                Name="BatchSize"
+                Padding="15,5"
+                FontSize="18">
+                0
+            </TextBox>
             <Button Padding="5" Click="ValidateCards_OnClick">Validate</Button>
         </ToolBar>
         <Grid>
@@ -151,7 +159,11 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     SnapsToDevicePixels="True">
-                    <TextBlock Text="{Binding SelectedFlashcard.RawResponseFromChatGptApi, Mode=OneWay}" TextWrapping="Wrap" />
+                    <TextBox
+                        IsReadOnly="True"
+                        Text="{Binding SelectedFlashcard.QualityIssues, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
 
                 </Border>
 
