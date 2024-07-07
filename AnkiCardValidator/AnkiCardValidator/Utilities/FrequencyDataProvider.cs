@@ -44,11 +44,51 @@ public class FrequencyDataProvider(string frequencyDictionaryFilePath)
     /// <returns>The position of the word in the dataset, or null if the word is not found.</returns>
     public int? GetPosition(string word)
     {
-        if (_frequencyData.TryGetValue(word, out var position))
+        var wordSanitizedForFrequencyCheck = SanitizeWordForFrequencyCheck(word);
+
+        if (_frequencyData.TryGetValue(wordSanitizedForFrequencyCheck, out var position))
         {
             return position;
         }
 
         return null;
     }
+
+    /// <summary>
+    /// Heuristically attempts to convert a flashcard content to a word that can be looked up in the frequency dataset.
+    /// Examples:
+    /// - "el teléfono" -> "teléfono"
+    /// - "por un lado..." -> "por un lado"
+    /// - "¡Hola!" -> "hola"
+    /// - "¿Cómo?" -> "cómo"
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public string SanitizeWordForFrequencyCheck(string input)
+    {
+        // remove punctuation
+        var sanitized = new string(input.Where(c => !char.IsPunctuation(c)).ToArray());
+
+        // remove leading/trailing whitespaces
+        sanitized = sanitized.Trim();
+
+        // lowercase
+        var lowercase = sanitized.ToLowerInvariant();
+
+        // remove preceding "el", "la", "los", "las", "un", "una", "unos", "unas"
+        var wordsToRemove = new[] { "el", "la", "los", "las", "un", "una", "unos", "unas" };
+        foreach (var wordToRemove in wordsToRemove)
+        {
+            if (lowercase.StartsWith(wordToRemove + " "))
+            {
+                lowercase = lowercase.Substring(wordToRemove.Length + 1);
+            }
+        }
+
+        // trim what's left
+        var trimmed = lowercase.Trim();
+
+        return trimmed;
+    }
+
 }

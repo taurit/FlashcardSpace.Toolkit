@@ -55,5 +55,18 @@ public class FrequencyDataProviderTest
         position4.Should().Be(1);
     }
 
+    [DataTestMethod]
+    [DataRow("el teléfono", "teléfono")]
+    [DataRow("por un lado...", "por un lado")]
+    [DataRow("¡Hola!", "hola")]
+    [DataRow("¿Cómo?", "cómo")]
+    public void FrequencyDataProviderTests(string word, string expectedSanitizedWord)
+    {
+        // Act
+        var sanitizedWord = _sut.SanitizeWordForFrequencyCheck(word);
+
+        // Assert
+        sanitizedWord.Should().Be(expectedSanitizedWord);
+    }
 
 }
