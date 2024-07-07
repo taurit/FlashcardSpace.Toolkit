@@ -28,4 +28,4 @@ jobs:
       run: dotnet build AnkiCardValidator/AnkiCardValidator.sln --configuration Debug --no-restore
 
     - name: Run unit tests
-      run: dotnet test AnkiCardValidator/AnkiCardValidator.sln --configuration Debug --no-build --no-restore
+      run: dotnet test AnkiCardValidator/AnkiCardValidator.sln --configuration Debug --no-build --no-restore --filter FullyQualifiedName\!~AnkiCardValidator.Tests.LocalOnly
