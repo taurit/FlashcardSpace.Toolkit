@@ -6,7 +6,7 @@ namespace AnkiCardValidator.Utilities;
 /// <remarks>
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
-public record AnkiNote([property: JsonIgnore] long Id, string FrontSide, string BackSide);
+public record AnkiNote([property: JsonIgnore] long Id, string FrontSide, string BackSide, [property: JsonIgnore] HashSet<string> Tags);
 
 /// <summary>
 /// Allows to read relevant data from Anki's SQLite database and returns them as .NET objects.
@@ -25,24 +25,24 @@ public static class AnkiHelpers
         connection.Open();
 
         var query = $@"
-            SELECT DISTINCT
-                notes.id, notes.flds
-            FROM
-                cards
-            JOIN
-                notes
-            ON
-                cards.nid = notes.id
-            JOIN
-                revlog
-            ON
-                cards.id = revlog.cid
-            WHERE
-                cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
-            ORDER BY
-                revlog.id DESC
-            LIMIT {numCardsToFetchLimit}
-        ";
+                SELECT DISTINCT
+                    notes.id, notes.flds, notes.tags
+                FROM
+                    cards
+                JOIN
+                    notes
+                ON
+                    cards.nid = notes.id
+                JOIN
+                    revlog
+                ON
+                    cards.id = revlog.cid
+                WHERE
+                    cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
+                ORDER BY
+                    revlog.id DESC
+                LIMIT {numCardsToFetchLimit}
+            ";
 
         using var command = new SQLiteCommand(query, connection);
         using var reader = command.ExecuteReader();
@@ -52,6 +52,7 @@ public static class AnkiHelpers
         {
             var noteId = reader.GetInt64(0);
             var fields = reader.GetString(1).Split('\x1f');
+            var tags = reader.GetString(2);
 
             // quick and hackish way to recognize fields in the card and what they mean (only in PoC)
 
@@ -59,11 +60,25 @@ public static class AnkiHelpers
             var wordInLearnedLanguage = fields[2];
             var wordInUserNativeLanguage = fields[0];
 
-            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage);
+            var tagsList = ParseTags(tags);
+
+            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage, tagsList);
             flashcards.Add(ankiNote);
         }
 
         return flashcards;
     }
+
+    /// <summary>
+    /// Parses tags from a string residing in `notes.tags`. Tags are separated by a space. Also, there is a leading space at the beginning, and a trailing space at the end of the string (most likely to simplify SQL queries, so they can use LIKE `%tag%` syntax).
+    /// </summary>
+    /// <param name="tagsString"></param>
+    /// <returns></returns>
+    public static HashSet<string> ParseTags(string tagsString)
+    {
+        return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+    }
 }
+
+
 

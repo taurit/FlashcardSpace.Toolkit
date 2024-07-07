@@ -22,7 +22,7 @@ public partial class MainWindow : Window
         ViewModel.Flashcards.Clear();
         foreach (var flashcard in notes)
         {
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, CefrClassification.Unknown, null, null, null);
+            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, CefrClassification.Unknown, null, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }

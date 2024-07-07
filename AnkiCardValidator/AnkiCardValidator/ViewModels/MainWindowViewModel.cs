@@ -26,6 +26,7 @@ public sealed class FlashcardViewModel(
     AnkiNote note,
     string frontSide,
     string backSide,
+    HashSet<string> tags,
     CefrClassification cefrLevel,
     string? qualityIssues,
     string? dialect,
@@ -37,6 +38,9 @@ public sealed class FlashcardViewModel(
     // data loaded from Anki
     public string FrontSide { get; } = frontSide;
     public string BackSide { get; } = backSide;
+    public HashSet<string> Tags { get; } = tags;
+
+    [DependsOn(nameof(Tags))] public string TagsSerialized => String.Join(",", Tags);
 
     // data received from ChatGPT
     public string? RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;

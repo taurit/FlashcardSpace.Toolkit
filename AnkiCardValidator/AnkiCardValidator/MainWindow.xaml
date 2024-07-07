@@ -54,6 +54,11 @@
 
                     <DataGridTextColumn
                         Width="Auto"
+                        Binding="{Binding TagsSerialized, Mode=OneWay}"
+                        Header="Tags" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
                         Binding="{Binding CefrLevel, Mode=OneWay}"
                         Header="CEFR classification" />
 
