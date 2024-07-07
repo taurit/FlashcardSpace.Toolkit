@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     {
         _spanishFrequencyDataProvider.LoadFrequencyData();
 
-        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 6);
+        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 1000);
         ViewModel.Flashcards.Clear();
 
 

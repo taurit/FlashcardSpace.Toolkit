@@ -46,6 +46,28 @@ public class DuplicateDetectionEqualityComparer : IEqualityComparer<string>
 
     private static string ConvertToComparableForm(string input)
     {
-        return input.ToLowerInvariant();
+        // remove punctuation
+        var sanitized = new string(input.Where(c => !char.IsPunctuation(c)).ToArray());
+
+        // remove leading/trailing whitespaces
+        sanitized = sanitized.Trim();
+
+        // lowercase
+        var lowercase = sanitized.ToLowerInvariant();
+
+        // remove preceding articles
+        var wordsToRemove = new[] { "el", "la", "los", "las", "un", "una", "unos", "unas" };
+        foreach (var wordToRemove in wordsToRemove)
+        {
+            if (lowercase.StartsWith(wordToRemove + " "))
+            {
+                lowercase = lowercase.Substring(wordToRemove.Length + 1);
+            }
+        }
+
+        // trim what's left
+        var trimmed = lowercase.Trim();
+
+        return trimmed;
     }
 }
