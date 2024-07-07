@@ -53,7 +53,7 @@ public partial class MainWindow : Window
 
             var flashcard = vmBatch[i];
             flashcard.CefrLevel = evaluation.CEFRClassification;
-            flashcard.QualityIssues = evaluation.QualityIssues;
+            flashcard.QualityIssues = evaluation.Issues;
 
             flashcard.Meanings.Clear();
             foreach (var meaning in evaluation.Meanings)

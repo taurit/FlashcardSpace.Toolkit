@@ -15,9 +15,9 @@ namespace AnkiCardValidator.Utilities;
 internal record FlashcardQualityEvaluationInput(string FlashcardModelSerialized);
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
-public record Meaning(string EnglishEquivalent, string PolishEquivalent, string Definition);
+public record Meaning(string EN, string PL, string Def);
 
-internal record FlashcardQualityEvaluation(CefrClassification CEFRClassification, string QualityIssues, List<Meaning> Meanings);
+internal record FlashcardQualityEvaluation(CefrClassification CEFR, string Issues, List<Meaning> Meanings);
 internal record FlashcardQualityEvaluationBatch(List<FlashcardQualityEvaluation> Evaluations);
 
 internal static class FlashcardQualityEvaluator

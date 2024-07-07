@@ -124,18 +124,18 @@
                         <DataGridTextColumn
                             Width="Auto"
                             MinWidth="100"
-                            Binding="{Binding EnglishEquivalent, Mode=OneTime}"
+                            Binding="{Binding EN, Mode=OneTime}"
                             Header="Meaning (en)" />
 
                         <DataGridTextColumn
                             Width="Auto"
                             MinWidth="100"
-                            Binding="{Binding PolishEquivalent, Mode=OneTime}"
+                            Binding="{Binding PL, Mode=OneTime}"
                             Header="Meaning (pl)" />
 
                         <DataGridTextColumn
                             Width="*"
-                            Binding="{Binding Definition, Mode=OneTime}"
+                            Binding="{Binding Def, Mode=OneTime}"
                             Header="Definition" />
 
                     </DataGrid.Columns>
