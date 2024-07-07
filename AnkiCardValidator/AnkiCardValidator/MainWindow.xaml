@@ -13,7 +13,7 @@
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
     <Window.Resources>
-        <converters:DecisionToColorConverter x:Key="DecisionToColorConverter" />
+        <converters:PenaltyToColorConverter x:Key="PenaltyToColorConverter" />
         <converters:EmptyStringToCheckboxConverter x:Key="EmptyStringToCheckboxConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="True">
@@ -39,7 +39,7 @@
                 VerticalGridLinesBrush="LightGray">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="Background" Value="{Binding IsFlashcardWorthIncludingInMySet, Converter={StaticResource DecisionToColorConverter}}" />
+                        <Setter Property="Background" Value="{Binding Penalty, Converter={StaticResource PenaltyToColorConverter}}" />
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
@@ -101,8 +101,8 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding IsFlashcardWorthIncludingInMySet, Mode=OneWay}"
-                        Header="Include?" />
+                        Binding="{Binding Penalty, Mode=OneWay}"
+                        Header="Penalty" />
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter

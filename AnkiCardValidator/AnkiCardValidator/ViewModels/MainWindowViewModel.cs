@@ -64,11 +64,29 @@ public sealed class FlashcardViewModel(
     // data derived from ChatGPT response
     [DependsOn(nameof(QualityIssues))] private bool HasQualityIssues => !String.IsNullOrWhiteSpace(QualityIssues);
 
+
     [DependsOn(nameof(CefrLevel), nameof(HasQualityIssues), nameof(Meanings))]
-    public bool? IsFlashcardWorthIncludingInMySet => this.CefrLevel is CefrClassification.Unknown
-        ? null
-        : (this.CefrLevel is not CefrClassification.Unknown &&
-           this.CefrLevel <= CefrClassification.B1 &&
-           Meanings.Count <= 2 &&
-           !HasQualityIssues);
+    public int Penalty =>
+        // missing information about CEFR level
+        (this.CefrLevel == CefrClassification.Unknown ? 1 : 0) +
+
+        // words with CEFR level B2 and higher should be prioritized down until I learn basics
+        (this.CefrLevel >= CefrClassification.B2 ? 1 : 0) +
+
+        // words with CEFR level C1 and higher should be prioritized down even more than B2
+        (this.CefrLevel >= CefrClassification.C1 ? 1 : 0) +
+
+        // the more individual meanings word has, the more confusing learning it with flashcards might be
+        Meanings.Count +
+
+        // ChatGPT raised at least one quality issue
+        (HasQualityIssues ? 1 : 0) +
+
+        // word appears to have duplicates in the deck (front side)
+        DuplicatesOfFrontSide.Count +
+
+        // word appears to have duplicates in the deck (back side)
+        DuplicatesOfBackSide.Count
+
+        ;
 }

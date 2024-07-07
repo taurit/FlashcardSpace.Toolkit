@@ -24,6 +24,8 @@ public static class AnkiHelpers
         using var connection = new SQLiteConnection($"Data Source={databaseFilePath};Version=3;");
         connection.Open();
 
+        string limitString = numCardsToFetchLimit is null ? "" : $"LIMIT {numCardsToFetchLimit}";
+
         var query = $@"
                 SELECT DISTINCT
                     notes.id, notes.flds, notes.tags
@@ -33,16 +35,13 @@ public static class AnkiHelpers
                     notes
                 ON
                     cards.nid = notes.id
-                JOIN
-                    revlog
-                ON
-                    cards.id = revlog.cid
                 WHERE
                     cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
-                ORDER BY
-                    revlog.id DESC
-                LIMIT {numCardsToFetchLimit}
+                    
+                {limitString}
             ";
+
+        // AND notes.tags LIKE '%hiszpanski-fajowe-znalezione-fiszki-z-audio%'
 
         using var command = new SQLiteCommand(query, connection);
         using var reader = command.ExecuteReader();

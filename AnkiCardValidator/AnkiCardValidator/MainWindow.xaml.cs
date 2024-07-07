@@ -22,7 +22,7 @@ public partial class MainWindow : Window
         _spanishFrequencyDataProvider.LoadFrequencyData();
         _polishFrequencyDataProvider.LoadFrequencyData();
 
-        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 1000);
+        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", null);
         ViewModel.Flashcards.Clear();
 
 
@@ -42,7 +42,7 @@ public partial class MainWindow : Window
 
     private async void ValidateCards_OnClick(object sender, RoutedEventArgs e)
     {
-        foreach (var flashcard in ViewModel.Flashcards)
+        foreach (var flashcard in ViewModel.Flashcards.Take(10))
         {
             (var evaluationResult, var rawChatGptResponse) = await FlashcardQualityEvaluator.EvaluateFlashcardQuality(flashcard.Note);
 
