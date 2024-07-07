@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AnkiCardValidator.Tests": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "RUN_LOCAL_TESTS": "true"
+      }
+    }
+  }
+}

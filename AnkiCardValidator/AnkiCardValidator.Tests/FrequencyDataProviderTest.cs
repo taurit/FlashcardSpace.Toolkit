@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace AnkiCardValidator.Tests;
 
 [TestClass]
-[Ignore("I'm not committing the dictionaries at the moment so those tests wouldn't work in pipelines. Todo: set up LFS and un-hardcode paths someday.")]
+[IgnoreIfEnvironmentVariableNotSet("RUN_LOCAL_TESTS", "I'm not committing the dictionaries at the moment so those tests wouldn't work in pipelines. Todo: set up LFS and un-hardcode paths someday.")]
 public class FrequencyDataProviderTest
 {
     private static FrequencyDataProvider _sut = null!;
