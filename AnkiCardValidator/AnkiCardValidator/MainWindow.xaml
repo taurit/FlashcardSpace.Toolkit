@@ -27,7 +27,7 @@
                 FontSize="18">
                 0
             </TextBox>
-            <Button Padding="5" Click="ValidateCards_OnClick">Validate</Button>
+            <Button Padding="5" Click="EvaluateFewMoreCards_OnClick">Evaluate few more cards</Button>
         </ToolBar>
         <Grid>
             <Grid.RowDefinitions>

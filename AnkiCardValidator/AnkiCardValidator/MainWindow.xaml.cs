@@ -21,7 +21,7 @@ public partial class MainWindow : Window
         this.DataContext = new MainWindowViewModel();
     }
 
-    private void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
+    private async void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
     {
         _spanishFrequencyDataProvider.LoadFrequencyData();
         _polishFrequencyDataProvider.LoadFrequencyData();
@@ -42,10 +42,10 @@ public partial class MainWindow : Window
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
 
-        SortFlashcardsByMostPromising();
+        await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }
 
-    private async void ValidateCards_OnClick(object sender, RoutedEventArgs e)
+    private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
         var batchSize = Int32.Parse(BatchSize.Text);
 
@@ -78,18 +78,16 @@ public partial class MainWindow : Window
             i++;
         }
 
-        // Update the ViewModels
-        foreach (var vm in ViewModel.Flashcards)
-        {
-            var cachePath = GenerateCacheFilePath(vm);
-            await TryUpdateViewModelWithEvaluationData(vm, cachePath);
-        }
-
-        SortFlashcardsByMostPromising();
+        await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }
 
-    private void SortFlashcardsByMostPromising()
+    private async Task ReloadFlashcardsEvaluationAndSortByMostPromising()
     {
+        foreach (var vm in ViewModel.Flashcards)
+        {
+            await TryUpdateViewModelWithEvaluationData(vm);
+        }
+
         ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty));
     }
 
@@ -100,8 +98,9 @@ public partial class MainWindow : Window
         return cacheFilePath;
     }
 
-    private static async Task TryUpdateViewModelWithEvaluationData(FlashcardViewModel flashcardVm, string cacheFilePath)
+    private static async Task TryUpdateViewModelWithEvaluationData(FlashcardViewModel flashcardVm)
     {
+        var cacheFilePath = GenerateCacheFilePath(flashcardVm);
         if (!File.Exists(cacheFilePath)) return;
 
         var cacheContent = await File.ReadAllTextAsync(cacheFilePath);
