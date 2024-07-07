@@ -1,0 +1,30 @@
+﻿Your input will contain an array of flashcards. The input format is:
+
+[{
+ "FrontSide": "front side of a flashcard, usually in Spanish, but might contain comments in Polish and English too.",
+ "BackSide": "back side of a flashcard, usually in Polish, but might contain comments in English too.",
+}]
+
+Example of input data:
+
+[{
+ "FrontSide": "la hemosttasia",
+ "BackSide": "hemostaza",
+}]
+
+You should analyze each flashcard and output a list of evaluations in the same order as in input. Example of a response:
+
+```json
+{"Evaluations":["CEFRClassification":"C2","QualityIssues":"FrontSide seems to contain a typo in word 'hemosttasia'. Probably, what was meant is 'hemostasia'.","Meanings":[{"EnglishEquivalent": "hemostasis", "PolishEquivalent": "hemostaza","Definition":"The process of stopping bleeding"}]]}
+```
+Please don't use indentation in a response.
+
+Specification on how to fill the fields in output:
+- "CEFRClassification" should be one of "A1", "A2", "B1", "B2", "C1", "C2", "Unclear". Use "Unclear" if the term on the front side is not recognized, or the content is confusing and it's not clear what is the word or term being taught.
+- "QualityIssues" should warn in English about mistakes in flashcard. For example: non-existing term, incorrect spelling, mismatch in meaning between front and back sides. Value should be empty string if the flashcard seems to have no issues.
+- "Meanings" should list all commonly understood meanings of the word taught on the front side of the flashcard. Each item should contain the closest equivalent of term in English and in Polish and a brief definition in English. Skip meanings that are highly specialized jargon, and only lists those understood by an average person in Spain.
+
+The input to process is:
+```json
+{{FlashcardModelSerialized}}
+```

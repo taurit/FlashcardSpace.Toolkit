@@ -34,7 +34,7 @@ public partial class MainWindow : Window
             var duplicatesFront = DuplicateDetector.DetectDuplicatesFront(flashcard, notes);
             var duplicatesBack = DuplicateDetector.DetectDuplicatesFront(flashcard, notes);
 
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, CefrClassification.Unknown, null, null, null);
+            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -42,22 +42,42 @@ public partial class MainWindow : Window
 
     private async void ValidateCards_OnClick(object sender, RoutedEventArgs e)
     {
-        foreach (var flashcard in ViewModel.Flashcards.Take(10))
+        var vmBatch = ViewModel.Flashcards.Take(10).ToList();
+        var modelBatch = vmBatch.Select(x => x.Note).ToList();
+        (var evaluationResult, var rawChatGptResponse) = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(modelBatch);
+
+        int i = -1;
+        foreach (var evaluation in evaluationResult)
         {
-            (var evaluationResult, var rawChatGptResponse) = await FlashcardQualityEvaluator.EvaluateFlashcardQuality(flashcard.Note);
+            i++;
 
-            // for easier debugging
-            flashcard.RawResponseFromChatGptApi = rawChatGptResponse;
-
-            flashcard.CefrLevel = evaluationResult.CEFRClassification;
-            flashcard.QualityIssues = evaluationResult.QualityIssues;
-            flashcard.Dialect = evaluationResult.Dialect;
+            var flashcard = vmBatch[i];
+            flashcard.CefrLevel = evaluation.CEFRClassification;
+            flashcard.QualityIssues = evaluation.QualityIssues;
 
             flashcard.Meanings.Clear();
-            foreach (var meaning in evaluationResult.Meanings)
+            foreach (var meaning in evaluation.Meanings)
             {
                 flashcard.Meanings.Add(meaning);
             }
         }
+
+        return;
+        //foreach (var flashcard in ViewModel.Flashcards.Take(10))
+        //{
+        //    (var evaluationResult, var rawChatGptResponse) = await FlashcardQualityEvaluator.EvaluateFlashcardQuality(flashcard.Note);
+
+        //    // for easier debugging
+        //    flashcard.RawResponseFromChatGptApi = rawChatGptResponse;
+
+        //    flashcard.CefrLevel = evaluationResult.CEFRClassification;
+        //    flashcard.QualityIssues = evaluationResult.QualityIssues;
+
+        //    flashcard.Meanings.Clear();
+        //    foreach (var meaning in evaluationResult.Meanings)
+        //    {
+        //        flashcard.Meanings.Add(meaning);
+        //    }
+        //}
     }
 }

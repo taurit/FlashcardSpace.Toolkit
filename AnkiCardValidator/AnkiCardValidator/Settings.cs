@@ -3,8 +3,8 @@
 namespace AnkiCardValidator;
 public class Settings
 {
-    public const string OpenAiModelId = "gpt-3.5-turbo";
-    //public const string OpenAiModelId = "gpt-4o";
+    //public const string OpenAiModelId = "gpt-3.5-turbo";
+    public const string OpenAiModelId = "gpt-4o";
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string AnkiDatabaseFilePathDev = "d:\\Projekty\\AnkiStoryGenerator\\LocalDevData\\collection.anki2";
@@ -12,6 +12,7 @@ public class Settings
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string EvaluateCardQualityPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQuality.sbn";
+    public const string EvaluateCardQualityBatchPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatch.sbn";
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string GptResponseCacheDirectory = "s:\\Caches\\AnkiCardValidatorGptResponseCache\\";

@@ -2,6 +2,7 @@
 using AnkiCardValidator.Utilities;
 using PropertyChanged;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace AnkiCardValidator.ViewModels;
 
@@ -16,6 +17,7 @@ public class MainWindowViewModel
 public record MeaningViewModel(string EnglishEquivalent, string Definition);
 
 [AddINotifyPropertyChangedInterface]
+[DebuggerDisplay("{FrontSide} -> {BackSide}")]
 public sealed class FlashcardViewModel(
     // raw source data
     AnkiNote note,
@@ -32,7 +34,6 @@ public sealed class FlashcardViewModel(
     // derived from source data using ChatGPT
     CefrClassification cefrLevel,
     string? qualityIssues,
-    string? dialect,
     string? rawResponseFromChatGptApi
 )
 {
@@ -57,7 +58,6 @@ public sealed class FlashcardViewModel(
     public string? RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;
 
     public CefrClassification CefrLevel { get; set; } = cefrLevel;
-    public string? Dialect { get; set; } = dialect;
     public string? QualityIssues { get; set; } = qualityIssues;
     public ObservableCollection<Meaning> Meanings { get; init; } = [];
 

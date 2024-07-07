@@ -84,11 +84,6 @@
                         Header="CEFR classification" />
 
                     <DataGridTextColumn
-                        Width="Auto"
-                        Binding="{Binding Dialect, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
-                        Header="Dialect" />
-
-                    <DataGridTextColumn
                         Width="2*"
                         Binding="{Binding QualityIssues, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
                         Header="Quality issues" />

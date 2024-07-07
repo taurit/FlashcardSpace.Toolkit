@@ -27,7 +27,6 @@ Your job is to assess several aspects of quality of the flashcard. The response 
 ```json
 {
     "CEFRClassification": "C2",
-    "Dialect": "",
     "QualityIssues": "FrontSide seems to contain a typo in word 'hemosttasia'. Probably, what was meant is 'hemostasia'.",
     "Meanings": [ {"EnglishEquivalent": "hemostasis", "PolishEquivalent": "hemostaza", "Definition": "The process of stopping bleeding" }],   
 }
@@ -35,7 +34,6 @@ Your job is to assess several aspects of quality of the flashcard. The response 
 
 Specification on how to fill the fields in output:
 - "CEFRClassification" should be one of "A1", "A2", "B1", "B2", "C1", "C2", "Unclear". Use "Unclear" if the term on the front side is not recognized, or the content is confusing and it's not clear what is the word or term being taught.
-- "Dialect" should be an empty string if the term defined on the front side of the flashcard is widely used and recignozed in Spanish-Castellano. However, if the term is more typical for Latin American Spanish, Catalan or other regional variant, the value should be a brief human-readable explanation about where the term is used.
 - "QualityIssues" should be in English. This field should list warnings related to mistakes in flashcard, for example: non-existing term, incorrect spelling, not recognized meaning of the word, mismatch in meaning between front side and a back side. Value should be empty string if the flashcard seems to have no issues which require correction.
 - "Meanings" should list all commonly understood meanings of the word taught on the front side of the flashcard. Value should be a JSON array containing items representing distinct meaning of the term. Each item should contain the closest equivalent in English and in Polish and a brief definition in English. Skip meanings that are highly specialized jargon, and only lists those understood by an average person in Spain.
 

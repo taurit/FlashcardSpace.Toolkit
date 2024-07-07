@@ -35,7 +35,7 @@ internal static class ChatGptHelper
         };
         List<ChatMessage> messages = new List<ChatMessage>
             {
-                new SystemChatMessage("You are an assistant to help students of Spanish language evaluate the quality of their flashcards."),
+                new SystemChatMessage("You are an assistant to help students of Spanish language evaluate the quality of flashcards. Students already know Polish and English."),
                 new UserChatMessage(prompt)
             };
 
