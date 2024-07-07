@@ -27,6 +27,7 @@ public sealed class FlashcardViewModel(
     string frontSide,
     string backSide,
     HashSet<string> tags,
+    int? frequencyPosition,
     CefrClassification cefrLevel,
     string? qualityIssues,
     string? dialect,
@@ -38,6 +39,7 @@ public sealed class FlashcardViewModel(
     // data loaded from Anki
     public string FrontSide { get; } = frontSide;
     public string BackSide { get; } = backSide;
+    public int? FrequencyPosition { get; } = frequencyPosition;
     public HashSet<string> Tags { get; } = tags;
 
     [DependsOn(nameof(Tags))] public string TagsSerialized => String.Join(",", Tags);

@@ -47,6 +47,7 @@
                         Width="*"
                         Binding="{Binding FrontSide, Mode=OneWay}"
                         Header="Front side (Spanish)" />
+
                     <DataGridTextColumn
                         Width="*"
                         Binding="{Binding BackSide, Mode=OneWay}"
@@ -56,6 +57,11 @@
                         Width="Auto"
                         Binding="{Binding TagsSerialized, Mode=OneWay}"
                         Header="Tags" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding FrequencyPosition, Mode=OneWay}"
+                        Header="Freq. position (front)" />
 
                     <DataGridTextColumn
                         Width="Auto"

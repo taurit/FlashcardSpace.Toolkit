@@ -8,21 +8,27 @@ namespace AnkiCardValidator;
 public partial class MainWindow : Window
 {
     MainWindowViewModel ViewModel => (MainWindowViewModel)this.DataContext;
+    readonly FrequencyDataProvider _spanishFrequencyDataProvider = new(Settings.FrequencyDictionarySpanish);
 
     public MainWindow()
     {
         InitializeComponent();
         this.DataContext = new MainWindowViewModel();
+
     }
 
     private void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
     {
+        _spanishFrequencyDataProvider.LoadFrequencyData();
+
         var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", 6);
 
         ViewModel.Flashcards.Clear();
         foreach (var flashcard in notes)
         {
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, CefrClassification.Unknown, null, null, null);
+            var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(flashcard.FrontSide);
+
+            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, frequencyPositionFrontSide, CefrClassification.Unknown, null, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
