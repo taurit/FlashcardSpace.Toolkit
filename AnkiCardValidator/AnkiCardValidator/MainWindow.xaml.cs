@@ -52,7 +52,7 @@ public partial class MainWindow : Window
             i++;
 
             var flashcard = vmBatch[i];
-            flashcard.CefrLevel = evaluation.CEFRClassification;
+            flashcard.CefrLevel = evaluation.CEFR;
             flashcard.QualityIssues = evaluation.Issues;
 
             flashcard.Meanings.Clear();
@@ -61,23 +61,5 @@ public partial class MainWindow : Window
                 flashcard.Meanings.Add(meaning);
             }
         }
-
-        return;
-        //foreach (var flashcard in ViewModel.Flashcards.Take(10))
-        //{
-        //    (var evaluationResult, var rawChatGptResponse) = await FlashcardQualityEvaluator.EvaluateFlashcardQuality(flashcard.Note);
-
-        //    // for easier debugging
-        //    flashcard.RawResponseFromChatGptApi = rawChatGptResponse;
-
-        //    flashcard.CefrLevel = evaluationResult.CEFRClassification;
-        //    flashcard.QualityIssues = evaluationResult.QualityIssues;
-
-        //    flashcard.Meanings.Clear();
-        //    foreach (var meaning in evaluationResult.Meanings)
-        //    {
-        //        flashcard.Meanings.Add(meaning);
-        //    }
-        //}
     }
 }

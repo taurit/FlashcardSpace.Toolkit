@@ -17,36 +17,13 @@ internal record FlashcardQualityEvaluationInput(string FlashcardModelSerialized)
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
 public record Meaning(string EN, string PL, string Def);
 
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
 internal record FlashcardQualityEvaluation(CefrClassification CEFR, string Issues, List<Meaning> Meanings);
+
 internal record FlashcardQualityEvaluationBatch(List<FlashcardQualityEvaluation> Evaluations);
 
 internal static class FlashcardQualityEvaluator
 {
-    internal static async Task<(FlashcardQualityEvaluation? evaluation, string chatGptResponse)> EvaluateFlashcardQuality(AnkiNote note)
-    {
-        // generate prompt
-        var templateContent = await File.ReadAllTextAsync(Settings.EvaluateCardQualityPromptPath);
-        var template = Template.Parse(templateContent, Settings.EvaluateCardQualityPromptPath);
-        var templateInput = new FlashcardQualityEvaluationInput(JsonSerializer.Serialize(note));
-        var prompt = await template.RenderAsync(templateInput, x => x.Name);
-
-        Debug.WriteLine(prompt);
-
-        // get response
-        var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(prompt);
-        var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
-
-        // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-            PropertyNameCaseInsensitive = true
-        };
-        var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluation>(chatGptResponse, options);
-
-        return (evaluation, chatGptResponse);
-    }
-
     internal static async Task<(List<FlashcardQualityEvaluation?> evaluation, string chatGptResponse)> EvaluateFlashcardsQuality(List<AnkiNote> noteBatch)
     {
         var jsonSerializerOptions = new JsonSerializerOptions
