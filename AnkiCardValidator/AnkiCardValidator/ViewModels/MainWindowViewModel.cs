@@ -26,7 +26,8 @@ public sealed class FlashcardViewModel(
     HashSet<string> tags,
     List<AnkiNote> duplicatesFront,
     List<AnkiNote> duplicatesBack,
-    int? frequencyPosition,
+    int? frequencyPositionFrontSide,
+    int? frequencyPositionBackSide,
 
     // derived from source data using ChatGPT
     CefrClassification cefrLevel,
@@ -46,7 +47,9 @@ public sealed class FlashcardViewModel(
     [DependsOn(nameof(Tags))] public string TagsSerialized => String.Join(",", Tags);
 
     // quality signals calculated locally
-    public int? FrequencyPosition { get; } = frequencyPosition;
+    public int? FrequencyPositionFrontSide { get; } = frequencyPositionFrontSide;
+    public int? FrequencyPositionBackSide { get; } = frequencyPositionBackSide;
+
     public ObservableCollection<AnkiNote> DuplicatesOfFrontSide { get; } = new(duplicatesFront);
     public ObservableCollection<AnkiNote> DuplicatesOfBackSide { get; } = new(duplicatesBack);
 

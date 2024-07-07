@@ -31,11 +31,11 @@
                 AutoGenerateColumns="False"
                 Background="White"
                 CanUserSortColumns="True"
+                ClipboardCopyMode="IncludeHeader"
                 HorizontalGridLinesBrush="LightGray"
                 IsReadOnly="True"
                 ItemsSource="{Binding Flashcards}"
                 SelectedItem="{Binding SelectedFlashcard}"
-                SelectionMode="Single"
                 VerticalGridLinesBrush="LightGray">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
@@ -60,8 +60,13 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding FrequencyPosition, Mode=OneWay}"
+                        Binding="{Binding FrequencyPositionFrontSide, Mode=OneWay}"
                         Header="Freq. position (front)" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding FrequencyPositionBackSide, Mode=OneWay}"
+                        Header="Freq. position (back)" />
 
                     <DataGridTextColumn
                         Width="Auto"
