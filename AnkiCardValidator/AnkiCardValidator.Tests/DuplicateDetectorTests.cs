@@ -36,6 +36,7 @@ public class DuplicateDetectorTests
 
     [DataTestMethod]
     [DataRow("test", "test")]
+    [DataRow("test", "test *")] // typical for my imported Spanish deck
     [DataRow("test", "test * ")] // typical for my imported Spanish deck
     [DataRow("test", "Test")] // hypothetical: only differ in casing
     [DataRow("el pozo", "pozo")] // spanish: with & without article
@@ -45,6 +46,15 @@ public class DuplicateDetectorTests
     [DataRow("por un lado", "por un lado...")] // spanish: with & without ellipsis
     [DataRow("¡Hola!", "hola")] // spanish: with & without punctuation
     [DataRow("¿Cómo?", "cómo")] // spanish: with & without punctuation
+    [DataRow("przed (domem)", "przed")]
+    [DataRow("ładny (<i>ang. pretty</i>)", "ładny")]
+    [DataRow("wiadomość, news", "wiadomość")] // todo similar tests could be useful in deduplication!
+    [DataRow("(jaka) szkoda", "szkoda")]
+    [DataRow("depozyt, kaucja (np. na czynsz)", "depozyt")]
+    [DataRow("tym... (tym lepiej)", "tym")]
+    [DataRow("1) człowiek<br />2) mężczyzna", "człowiek")]
+    [DataRow("droga<br />(szlak, metaforyczne pojęcie)", "droga")]
+    [DataRow("statek *", "statek")]
     public void SimilarEnough_AreDuplicates(string s1, string s2)
     {
         // Arrange

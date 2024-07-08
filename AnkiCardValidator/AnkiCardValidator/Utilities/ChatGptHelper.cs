@@ -43,6 +43,9 @@ internal static class ChatGptHelper
         var responseToPrompt = completion.Content[0].Text;
 
         await File.WriteAllTextAsync(responseToPromptFileName, responseToPrompt);
+
+        Debug.WriteLine($"Query finished, total tokens: input={completion.Usage.InputTokens}, output={completion.Usage.OutputTokens}");
+
         return responseToPromptFileName;
     }
 }
