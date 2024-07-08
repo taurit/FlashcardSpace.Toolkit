@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AnkiCardValidator.Utilities;
 
@@ -66,27 +67,41 @@ public class FrequencyDataProvider(string frequencyDictionaryFilePath)
     /// <returns></returns>
     public string SanitizeWordForFrequencyCheck(string input)
     {
-        // remove punctuation
-        var sanitized = new string(input.Where(c => !char.IsPunctuation(c)).ToArray());
+        // remove everything after `<br />` if it's found
+        var indexOfBr = input.IndexOf("<br />", StringComparison.OrdinalIgnoreCase);
+        if (indexOfBr != -1)
+        {
+            input = input.Substring(0, indexOfBr);
+        }
 
-        // remove leading/trailing whitespaces
-        sanitized = sanitized.Trim();
+        // remove everything in parentheses
+        var sanitized = Regex.Replace(input, @"\([^)]*\)", "");
+
+        // in case of multiple terms separated by a coma (like `depozyt, kaucja`), only keep the first one (here: `depozyt`)
+        var indexOfComa = sanitized.IndexOf(",", StringComparison.Ordinal);
+        if (indexOfComa != -1)
+        {
+            sanitized = sanitized.Substring(0, indexOfComa);
+        }
 
         // lowercase
-        var lowercase = sanitized.ToLowerInvariant();
+        sanitized = sanitized.ToLowerInvariant();
 
         // remove preceding "el", "la", "los", "las", "un", "una", "unos", "unas"
-        var wordsToRemove = new[] { "el", "la", "los", "las", "un", "una", "unos", "unas" };
+        var wordsToRemove = new[] { "el", "la", "los", "las", "un", "una", "unos", "unas", "1)", "2)", "3)", "4)" };
         foreach (var wordToRemove in wordsToRemove)
         {
-            if (lowercase.StartsWith(wordToRemove + " "))
+            if (sanitized.StartsWith(wordToRemove + " "))
             {
-                lowercase = lowercase.Substring(wordToRemove.Length + 1);
+                sanitized = sanitized.Substring(wordToRemove.Length + 1);
             }
         }
 
+        // remove punctuation
+        sanitized = new string(sanitized.Where(c => !char.IsPunctuation(c)).ToArray());
+
         // trim what's left
-        var trimmed = lowercase.Trim();
+        var trimmed = sanitized.Trim();
 
         return trimmed;
     }

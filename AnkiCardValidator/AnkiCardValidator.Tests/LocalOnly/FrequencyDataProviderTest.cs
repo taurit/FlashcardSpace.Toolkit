@@ -59,6 +59,15 @@ public class FrequencyDataProviderTest
     [DataRow("por un lado...", "por un lado")]
     [DataRow("¡Hola!", "hola")]
     [DataRow("¿Cómo?", "cómo")]
+    [DataRow("przed (domem)", "przed")]
+    [DataRow("ładny (<i>ang. pretty</i>)", "ładny")]
+    [DataRow("wiadomość, news", "wiadomość")] // todo similar tests could be useful in deduplication!
+    [DataRow("(jaka) szkoda", "szkoda")]
+    [DataRow("depozyt, kaucja (np. na czynsz)", "depozyt")]
+    [DataRow("tym... (tym lepiej)", "tym")]
+    [DataRow("1) człowiek<br />2) mężczyzna", "człowiek")]
+    [DataRow("droga<br />(szlak, metaforyczne pojęcie)", "droga")]
+    [DataRow("statek *", "statek")]
     public void FrequencyDataProviderTests(string word, string expectedSanitizedWord)
     {
         // Act
