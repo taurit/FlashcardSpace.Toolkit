@@ -54,6 +54,10 @@ internal static class FlashcardQualityEvaluator
         };
         var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluationBatch>(chatGptResponse, options);
 
+        if (evaluation is null)
+        {
+            throw new InvalidOperationException("Failed to deserialize ChatGPT response.");
+        }
         if (evaluation.Evaluations.Count != noteBatch.Count)
         {
             throw new InvalidOperationException("Number of items in output array does not match number of items in input, cannot continue.");

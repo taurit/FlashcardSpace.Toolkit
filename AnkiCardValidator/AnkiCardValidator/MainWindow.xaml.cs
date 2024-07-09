@@ -27,7 +27,7 @@ public partial class MainWindow : Window
 
         // tech debt: DI container should make it simpler
         _duplicateDetector = new(_normalFormProvider);
-        _definitionCounter = new(_normalFormProvider);
+        _definitionCounter = new();
         _spanishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionarySpanish);
         _polishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionaryPolish);
     }
@@ -120,6 +120,11 @@ public partial class MainWindow : Window
         var cacheContent = await File.ReadAllTextAsync(cacheFilePath);
 
         var cached = JsonSerializer.Deserialize<FlashcardQualityEvaluationCacheModel>(cacheContent);
+
+        if (cached is null)
+        {
+            throw new InvalidOperationException("Failed to deserialize cache content.");
+        }
 
         flashcardVm.CefrLevel = cached.Evaluation.CEFR;
         flashcardVm.QualityIssues = cached.Evaluation.Issues;

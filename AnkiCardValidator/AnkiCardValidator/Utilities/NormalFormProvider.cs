@@ -44,7 +44,7 @@ public class NormalFormProvider
         sanitized = Regex.Replace(sanitized, @"\([^)]*\)", "");
 
         // in case of multiple terms separated by a coma (like `depozyt, kaucja`), only keep the first one (here: `depozyt`)
-        var indexOfComa = sanitized.IndexOf(",", StringComparison.Ordinal);
+        var indexOfComa = sanitized.IndexOf(',', StringComparison.Ordinal);
         if (indexOfComa != -1)
         {
             sanitized = sanitized.Substring(0, indexOfComa);

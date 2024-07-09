@@ -10,7 +10,7 @@ public class DefinitionCounterTests
     public void CountDefinitions_ShouldReturnZero_WhenWordIsEmpty()
     {
         // Arrange
-        var definitionCounter = new DefinitionCounter(new NormalFormProvider());
+        var definitionCounter = new DefinitionCounter();
 
         // Act
         int result = definitionCounter.CountDefinitions("");
@@ -23,7 +23,7 @@ public class DefinitionCounterTests
     public void CountDefinitions_ShouldReturnOne_WhenWordHasSingleDefinition()
     {
         // Arrange
-        var definitionCounter = new DefinitionCounter(new NormalFormProvider());
+        var definitionCounter = new DefinitionCounter();
 
         // Act
         int result = definitionCounter.CountDefinitions("definition");
@@ -36,7 +36,7 @@ public class DefinitionCounterTests
     public void CountDefinitions_ShouldReturnTwo_WhenWordHasTwoDefinitions()
     {
         // Arrange
-        var definitionCounter = new DefinitionCounter(new NormalFormProvider());
+        var definitionCounter = new DefinitionCounter();
 
         // Act
         int result = definitionCounter.CountDefinitions("definition1,definition2");
@@ -49,7 +49,7 @@ public class DefinitionCounterTests
     public void CountDefinitions_ShouldReturnThree_WhenWordHasThreeDefinitions()
     {
         // Arrange
-        var definitionCounter = new DefinitionCounter(new NormalFormProvider());
+        var definitionCounter = new DefinitionCounter();
 
         // Act
         int result = definitionCounter.CountDefinitions("definition1,definition2,definition3");
@@ -62,7 +62,7 @@ public class DefinitionCounterTests
     public void CountDefinitions_ShouldDiscardEverythingInParentheses()
     {
         // Arrange
-        var definitionCounter = new DefinitionCounter(new NormalFormProvider());
+        var definitionCounter = new DefinitionCounter();
 
         // Act
         int result = definitionCounter.CountDefinitions("orzech (ogólnie, <i>nut</i>, nie jakiś specyficzny)");
@@ -75,7 +75,7 @@ public class DefinitionCounterTests
     public void CountDefinitions_ShouldDiscardComasInHtmlTags()
     {
         // Arrange
-        var definitionCounter = new DefinitionCounter(new NormalFormProvider());
+        var definitionCounter = new DefinitionCounter();
 
         // Act
         int result = definitionCounter.CountDefinitions("orzech <span d-test='a,b,c,d'>włoski</span>, dwa kokoski");
