@@ -46,7 +46,7 @@ public partial class MainWindow : Window
             var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(note.BackSide);
 
             var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
-            var duplicatesBack = _duplicateDetector.DetectDuplicatesFront(note, notes);
+            var duplicatesBack = _duplicateDetector.DetectDuplicatesBack(note, notes);
 
             var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
             var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
