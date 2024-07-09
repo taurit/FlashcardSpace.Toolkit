@@ -28,6 +28,8 @@
                 0
             </TextBox>
             <Button Padding="5" Click="EvaluateFewMoreCards_OnClick">Evaluate few more cards</Button>
+            <Separator />
+            <Button Padding="5" Click="TagGreenCards_OnClick">Tag green cards</Button>
         </ToolBar>
         <Grid>
             <Grid.RowDefinitions>
@@ -63,7 +65,7 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding TagsSerialized, Mode=OneWay}"
+                        Binding="{Binding Note.Tags, Mode=OneWay}"
                         Header="Tags" />
 
                     <DataGridTextColumn

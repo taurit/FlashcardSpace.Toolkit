@@ -1,4 +1,6 @@
-﻿using System.Data.SQLite;
+﻿using AnkiCardValidator.ViewModels;
+using PropertyChanged;
+using System.Data.SQLite;
 using System.Text.Json.Serialization;
 
 namespace AnkiCardValidator.Utilities;
@@ -6,7 +8,12 @@ namespace AnkiCardValidator.Utilities;
 /// <remarks>
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
-public record AnkiNote([property: JsonIgnore] long Id, string FrontSide, string BackSide, [property: JsonIgnore] HashSet<string> Tags);
+[AddINotifyPropertyChangedInterface]
+public record AnkiNote([property: JsonIgnore] long Id, string FrontSide, string BackSide, string Tags)
+{
+    [JsonIgnore]
+    public string Tags { get; set; } = Tags;
+}
 
 /// <summary>
 /// Allows to read relevant data from Anki's SQLite database and returns them as .NET objects.
@@ -59,24 +66,75 @@ public static class AnkiHelpers
             var wordInLearnedLanguage = fields[2];
             var wordInUserNativeLanguage = fields[0];
 
-            var tagsList = ParseTags(tags);
-
-            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage, tagsList);
+            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage, tags);
             flashcards.Add(ankiNote);
         }
 
         return flashcards;
     }
 
+
     /// <summary>
     /// Parses tags from a string residing in `notes.tags`. Tags are separated by a space. Also, there is a leading space at the beginning, and a trailing space at the end of the string (most likely to simplify SQL queries, so they can use LIKE `%tag%` syntax).
     /// </summary>
-    /// <param name="tagsString"></param>
-    /// <returns></returns>
     public static HashSet<string> ParseTags(string tagsString)
     {
         return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
     }
+
+    public static void AddTagToNotes(string ankiDatabasePath, List<FlashcardViewModel> notesWithNoPenalty, string tagToAdd)
+    {
+        foreach (var noteVm in notesWithNoPenalty)
+        {
+            var note = noteVm.Note;
+
+            if (note.Tags.Contains($" {tagToAdd} ")) continue; // already has the tag
+
+            var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
+
+            // update tags string for the current note in the Anki database
+            using var connection = new SQLiteConnection($"Data Source={ankiDatabasePath};Version=3;");
+            connection.Open();
+
+            var query = $@"
+                UPDATE notes
+                SET tags = '{tagsAfterAdding}'
+                WHERE id = {note.Id};";
+
+            using var command = new SQLiteCommand(query, connection);
+            var numRowsAffected = command.ExecuteNonQuery();
+
+            if (numRowsAffected != 1)
+            {
+                throw new InvalidOperationException($"Expected to update exactly one row, but updated {numRowsAffected} rows.");
+            }
+
+            noteVm.Note.Tags = tagsAfterAdding;
+        }
+    }
+
+    /// <summary>
+    /// Adds a tag to a string of tags. The tag is added only if it's not already there.
+    /// Anki's tags are separated by a space. Also, there is a leading space at the beginning, and a trailing space at the end of the string (most likely to simplify SQL queries, so they can use LIKE `%tag%` syntax).
+    /// Tags itself must not contain spaces and special characters, this method should throw exception if they do.
+    /// </summary>
+    /// <param name="tagToAdd">A tag to validate and add</param>
+    /// <param name="tagsString">Existing tags</param>
+    /// <returns></returns>
+    public static string AddTagToAnkiTagsString(string tagToAdd, string tagsString)
+    {
+        if (tagToAdd.Contains(' ') || tagToAdd.Contains('%'))
+        {
+            throw new ArgumentException("Tag must not contain spaces or special characters.");
+        }
+
+        if (tagsString.Contains($" {tagToAdd} ")) return tagsString; // already has the tag
+
+        var newTags = ParseTags(tagsString).Append(tagToAdd).Distinct();
+        var newTagsString = $" {string.Join(' ', newTags)} ";
+        return newTagsString;
+    }
+
 }
 
 

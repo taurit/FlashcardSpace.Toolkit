@@ -25,7 +25,6 @@ public sealed class FlashcardViewModel(
     string backSide,
 
     // derived from source data locally
-    HashSet<string> tags,
     List<AnkiNote> duplicatesFront,
     List<AnkiNote> duplicatesBack,
     int? frequencyPositionFrontSide,
@@ -43,9 +42,6 @@ public sealed class FlashcardViewModel(
     // data loaded from Anki
     public string FrontSide { get; } = frontSide;
     public string BackSide { get; } = backSide;
-    public HashSet<string> Tags { get; } = tags;
-
-    [DependsOn(nameof(Tags))] public string TagsSerialized => String.Join(",", Tags);
 
     // quality signals calculated locally
     public int? FrequencyPositionFrontSide { get; } = frequencyPositionFrontSide;

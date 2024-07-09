@@ -26,18 +26,18 @@ public partial class MainWindow : Window
         _spanishFrequencyDataProvider.LoadFrequencyData();
         _polishFrequencyDataProvider.LoadFrequencyData();
 
-        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePathDev, "1. Spanish", null);
+        var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePath, "1. Spanish", null);
         ViewModel.Flashcards.Clear();
 
-        foreach (var flashcard in notes)
+        foreach (var note in notes)
         {
-            var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(flashcard.FrontSide);
-            var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(flashcard.BackSide);
+            var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(note.FrontSide);
+            var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(note.BackSide);
 
-            var duplicatesFront = DuplicateDetector.DetectDuplicatesFront(flashcard, notes);
-            var duplicatesBack = DuplicateDetector.DetectDuplicatesFront(flashcard, notes);
+            var duplicatesFront = DuplicateDetector.DetectDuplicatesFront(note, notes);
+            var duplicatesBack = DuplicateDetector.DetectDuplicatesFront(note, notes);
 
-            var flashcardViewModel = new FlashcardViewModel(flashcard, flashcard.FrontSide, flashcard.BackSide, flashcard.Tags, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, CefrClassification.Unknown, null, null);
+            var flashcardViewModel = new FlashcardViewModel(note, note.FrontSide, note.BackSide, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -88,7 +88,7 @@ public partial class MainWindow : Window
             await TryUpdateViewModelWithEvaluationData(vm);
         }
 
-        ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty));
+        ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty).ThenBy(x => x.FrontSide));
     }
 
     private static string GenerateCacheFilePath(FlashcardViewModel flashcardVm)
@@ -116,6 +116,16 @@ public partial class MainWindow : Window
         {
             flashcardVm.Meanings.Add(meaning);
         }
+    }
+
+    private async void TagGreenCards_OnClick(object sender, RoutedEventArgs e)
+    {
+        var notesWithNoPenalty = ViewModel.Flashcards.Where(x => x.Penalty == 0)
+            .Take(2) // debug
+            .ToList();
+        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, notesWithNoPenalty, "opportunity");
+
+        await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }
 }
 
