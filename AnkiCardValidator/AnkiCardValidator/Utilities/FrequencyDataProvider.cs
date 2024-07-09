@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text.RegularExpressions;
 
 namespace AnkiCardValidator.Utilities;
 
@@ -9,6 +8,9 @@ namespace AnkiCardValidator.Utilities;
 public class FrequencyDataProvider(string frequencyDictionaryFilePath)
 {
     private readonly Dictionary<string, int> _frequencyData = new(StringComparer.OrdinalIgnoreCase);
+
+    // static because it holds a cache of normalized forms of words
+    private static readonly DuplicateDetectionEqualityComparer DuplicateDetectionEqualityComparer = new();
 
     /// <summary>
     /// Read data from a text file (over 1,000,000 rows) and store it in memory for efficient lookup of frequency.
@@ -55,55 +57,9 @@ public class FrequencyDataProvider(string frequencyDictionaryFilePath)
         return null;
     }
 
-    /// <summary>
-    /// Heuristically attempts to convert a flashcard content to a word that can be looked up in the frequency dataset.
-    /// Examples:
-    /// - "el teléfono" -> "teléfono"
-    /// - "por un lado..." -> "por un lado"
-    /// - "¡Hola!" -> "hola"
-    /// - "¿Cómo?" -> "cómo"
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
+
     public string SanitizeWordForFrequencyCheck(string input)
     {
-        // remove everything after `<br />` if it's found
-        var indexOfBr = input.IndexOf("<br />", StringComparison.OrdinalIgnoreCase);
-        if (indexOfBr != -1)
-        {
-            input = input.Substring(0, indexOfBr);
-        }
-
-        // remove everything in parentheses
-        var sanitized = Regex.Replace(input, @"\([^)]*\)", "");
-
-        // in case of multiple terms separated by a coma (like `depozyt, kaucja`), only keep the first one (here: `depozyt`)
-        var indexOfComa = sanitized.IndexOf(",", StringComparison.Ordinal);
-        if (indexOfComa != -1)
-        {
-            sanitized = sanitized.Substring(0, indexOfComa);
-        }
-
-        // lowercase
-        sanitized = sanitized.ToLowerInvariant();
-
-        // remove preceding "el", "la", "los", "las", "un", "una", "unos", "unas"
-        var wordsToRemove = new[] { "el", "la", "los", "las", "un", "una", "unos", "unas", "1)", "2)", "3)", "4)" };
-        foreach (var wordToRemove in wordsToRemove)
-        {
-            if (sanitized.StartsWith(wordToRemove + " "))
-            {
-                sanitized = sanitized.Substring(wordToRemove.Length + 1);
-            }
-        }
-
-        // remove punctuation
-        sanitized = new string(sanitized.Where(c => !char.IsPunctuation(c)).ToArray());
-
-        // trim what's left
-        var trimmed = sanitized.Trim();
-
-        return trimmed;
+        return DuplicateDetectionEqualityComparer.GetNormalizedFormOfLearnedTermWithCache(input);
     }
-
 }
