@@ -60,8 +60,18 @@
 
                     <DataGridTextColumn
                         Width="*"
+                        Binding="{Binding NumDefinitionsOnFrontSide, Mode=OneWay}"
+                        Header="Num. terms front" />
+
+                    <DataGridTextColumn
+                        Width="*"
                         Binding="{Binding BackSide, Mode=OneWay}"
                         Header="Back side (Polish)" />
+
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding NumDefinitionsOnBackSide, Mode=OneWay}"
+                        Header="Num. terms back" />
 
                     <DataGridTextColumn
                         Width="Auto"

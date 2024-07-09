@@ -5,12 +5,9 @@ namespace AnkiCardValidator.Utilities;
 /// <summary>
 /// Provides information about the frequency of words' occurrence in a language.
 /// </summary>
-public class FrequencyDataProvider(string frequencyDictionaryFilePath)
+public class FrequencyDataProvider(NormalFormProvider normalFormProvider, string frequencyDictionaryFilePath)
 {
     private readonly Dictionary<string, int> _frequencyData = new(StringComparer.OrdinalIgnoreCase);
-
-    // static because it holds a cache of normalized forms of words
-    private static readonly DuplicateDetectionEqualityComparer DuplicateDetectionEqualityComparer = new();
 
     /// <summary>
     /// Read data from a text file (over 1,000,000 rows) and store it in memory for efficient lookup of frequency.
@@ -57,9 +54,8 @@ public class FrequencyDataProvider(string frequencyDictionaryFilePath)
         return null;
     }
 
-
     public string SanitizeWordForFrequencyCheck(string input)
     {
-        return DuplicateDetectionEqualityComparer.GetNormalizedFormOfLearnedTermWithCache(input);
+        return normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(input);
     }
 }

@@ -12,13 +12,24 @@ namespace AnkiCardValidator;
 public partial class MainWindow : Window
 {
     MainWindowViewModel ViewModel => (MainWindowViewModel)this.DataContext;
-    readonly FrequencyDataProvider _spanishFrequencyDataProvider = new(Settings.FrequencyDictionarySpanish);
-    readonly FrequencyDataProvider _polishFrequencyDataProvider = new(Settings.FrequencyDictionaryPolish);
+
+    readonly NormalFormProvider _normalFormProvider = new();
+
+    readonly FrequencyDataProvider _spanishFrequencyDataProvider;
+    readonly FrequencyDataProvider _polishFrequencyDataProvider;
+    readonly DuplicateDetector _duplicateDetector;
+    readonly DefinitionCounter _definitionCounter;
 
     public MainWindow()
     {
         InitializeComponent();
         this.DataContext = new MainWindowViewModel();
+
+        // tech debt: DI container should make it simpler
+        _duplicateDetector = new(_normalFormProvider);
+        _definitionCounter = new(_normalFormProvider);
+        _spanishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionarySpanish);
+        _polishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionaryPolish);
     }
 
     private async void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
@@ -34,10 +45,13 @@ public partial class MainWindow : Window
             var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(note.FrontSide);
             var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(note.BackSide);
 
-            var duplicatesFront = DuplicateDetector.DetectDuplicatesFront(note, notes);
-            var duplicatesBack = DuplicateDetector.DetectDuplicatesFront(note, notes);
+            var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
+            var duplicatesBack = _duplicateDetector.DetectDuplicatesFront(note, notes);
 
-            var flashcardViewModel = new FlashcardViewModel(note, note.FrontSide, note.BackSide, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, CefrClassification.Unknown, null, null);
+            var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
+            var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
+
+            var flashcardViewModel = new FlashcardViewModel(note, note.FrontSide, note.BackSide, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }

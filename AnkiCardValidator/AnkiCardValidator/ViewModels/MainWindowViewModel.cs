@@ -29,6 +29,8 @@ public sealed class FlashcardViewModel(
     List<AnkiNote> duplicatesBack,
     int? frequencyPositionFrontSide,
     int? frequencyPositionBackSide,
+    int numDefinitionsOnFrontSide,
+    int numDefinitionsOnBackSide,
 
     // derived from source data using ChatGPT
     CefrClassification cefrLevel,
@@ -47,6 +49,9 @@ public sealed class FlashcardViewModel(
     public int? FrequencyPositionFrontSide { get; } = frequencyPositionFrontSide;
     public int? FrequencyPositionBackSide { get; } = frequencyPositionBackSide;
 
+    public int NumDefinitionsOnFrontSide { get; } = numDefinitionsOnFrontSide;
+    public int NumDefinitionsOnBackSide { get; } = numDefinitionsOnBackSide;
+
     public ObservableCollection<AnkiNote> DuplicatesOfFrontSide { get; } = new(duplicatesFront);
     public ObservableCollection<AnkiNote> DuplicatesOfBackSide { get; } = new(duplicatesBack);
 
@@ -61,7 +66,7 @@ public sealed class FlashcardViewModel(
     [DependsOn(nameof(QualityIssues))] private bool HasQualityIssues => !String.IsNullOrWhiteSpace(QualityIssues);
 
 
-    [DependsOn(nameof(CefrLevel), nameof(HasQualityIssues), nameof(Meanings))]
+    [DependsOn(nameof(CefrLevel), nameof(HasQualityIssues), nameof(Meanings), nameof(NumDefinitionsOnFrontSide), nameof(NumDefinitionsOnBackSide))]
     public int Penalty =>
         // missing information about CEFR level
         (this.CefrLevel == CefrClassification.Unknown ? 1 : 0) +
@@ -83,6 +88,11 @@ public sealed class FlashcardViewModel(
 
         // word appears to have duplicates in the deck (back side)
         DuplicatesOfBackSide.Count +
+
+        // number of terms on the side of the flashcard. For example, if the front contains text 'mnich, zakonnik', this will be 2
+        // (the ideal number is 1)
+        (NumDefinitionsOnFrontSide - 1) +
+        (NumDefinitionsOnBackSide - 1) +
 
         // no frequency data - this can be false negative, if term is a sentence, or HTML tags weren't sanitized.
         // I can improve false alarms with heuristics
