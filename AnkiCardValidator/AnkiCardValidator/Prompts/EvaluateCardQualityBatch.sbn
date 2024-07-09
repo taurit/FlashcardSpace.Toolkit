@@ -4,19 +4,19 @@
 
 Example of input data:
 
-[{"FrontSide": "la hemosttasia","BackSide": "hemostaza"}]
+[{"FrontSide": "la hemosttasia","BackSide": "hemostaza"},{"FrontSide": "el mancebo","BackSide": "młodzieniec"},{"FrontSide": "ensuciar","BackSide": "brudzić, plamić"}]
 
 You should analyze each flashcard and output a list of evaluations in the same order as in input. Example of a response:
 
 ```json
-{"Evaluations":["CEFR":"C2","Issues":"FrontSide seems to contain a typo in word 'hemosttasia'. Probably, what was meant is 'hemostasia'.","Meanings":[{"EN": "hemostasis", "PL": "hemostaza","Def":"The process of stopping bleeding."}]]}
+{"Evaluations":[{"CEFR":"C2","Issues":"FrontSide seems to contain a typo in word 'hemosttasia'. Probably, what was meant is 'hemostasia'.","Meanings":[{"EN": "hemostasis", "PL": "hemostaza","Def":"The process of stopping bleeding."}]},{"CEFR":"C1","Issues":"The word 'mancebo' is archaic. 'joven' is much more common.","Meanings":[{"EN": "young man", "PL": "młodzieniec","Def":"A young male."}]},{"CEFR":"A2","Issues":"The back side unnecessarily contains two definitions for 'ensuciar', which can be confusing. 'Brudzić' is a good equivalent, but 'plamić' would be typically translated to 'manchar' in Spanish","Meanings":[{"EN": "to dirty", "PL": "brudzić","Def":"The action of making something unclean."}]}]}
 ```
 
 Please don't indent the JSON response.
 
 Specification on how to fill the fields in output:
 - "CEFR" should be one of "A1", "A2", "B1", "B2", "C1", "C2", "Unclear". Use "Unclear" if the term on the front side is not recognized, or the content is confusing and it's not clear what is the word or term being taught.
-- "Issues" should warn in English about mistakes in flashcard. For example: non-existing term, incorrect spelling, mismatch in meaning between front and back sides. Value should be empty string if the flashcard seems to have no issues.
+- "Issues" should warn in English about mistakes in flashcard and suggest how to correct them. Examples: non-existing term, incorrect spelling, mismatch in meaning between front and back sides, a multi-word definition where one of the words is redundant. If there are no issues, value should be an empty string.
 - "Meanings" should list all commonly understood meanings of the word taught on the front side of the flashcard. Each item should contain the closest equivalent of term in English and in Polish and a brief definition in English. Skip meanings that are highly specialized jargon, and only lists those understood by an average person in Spain.
 
 The input to process is:
