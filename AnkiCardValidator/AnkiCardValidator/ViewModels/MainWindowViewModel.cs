@@ -108,11 +108,10 @@ public sealed class FlashcardViewModel(
 
     private int CalculateFrequencyPenalty(int position) => position switch
     {
-        < 5000 => 0,
-        < 10000 => 1,
-        < 15000 => 2,
-        < 20000 => 3,
-        < 25000 => 4,
-        _ => 5
+        < 10000 => 0,
+        < 20000 => 1,
+        < 30000 => 2,
+        < 40000 => 3,
+        _ => 4
     };
 }

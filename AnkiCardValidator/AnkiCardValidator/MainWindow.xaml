@@ -14,7 +14,13 @@
     mc:Ignorable="d">
     <Window.Resources>
         <converters:PenaltyToColorConverter x:Key="PenaltyToColorConverter" />
+        <converters:NumMeaningsPenaltyToColorConverter x:Key="NumMeaningsPenaltyToColorConverter" />
+        <converters:NumTermsPenaltyToColorConverter x:Key="NumTermsPenaltyToColorConverter" />
+        <converters:NumDuplicatesPenaltyToColorConverter x:Key="NumDuplicatesPenaltyToColorConverter" />
+        <converters:CefrPenaltyToColorConverter x:Key="CefrPenaltyToColorConverter" />
+        <converters:FrequencyPenaltyToColorConverter x:Key="FrequencyPenaltyToColorConverter" />
         <converters:EmptyStringToCheckboxConverter x:Key="EmptyStringToCheckboxConverter" />
+        <converters:QualityIssuesToColorConverter x:Key="QualityIssuesToColorConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <ToolBar DockPanel.Dock="Top">
@@ -40,84 +46,149 @@
             <DataGrid
                 AutoGenerateColumns="False"
                 Background="White"
+                BorderThickness="0"
                 CanUserSortColumns="True"
                 ClipboardCopyMode="IncludeHeader"
+                GridLinesVisibility="Horizontal"
                 HorizontalGridLinesBrush="LightGray"
                 IsReadOnly="True"
                 ItemsSource="{Binding Flashcards}"
                 SelectedItem="{Binding SelectedFlashcard}"
-                VerticalGridLinesBrush="LightGray">
-                <DataGrid.RowStyle>
+                VerticalGridLinesBrush="Transparent">
+                <!--<DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Setter Property="Background" Value="{Binding Penalty, Converter={StaticResource PenaltyToColorConverter}}" />
                     </Style>
-                </DataGrid.RowStyle>
+                </DataGrid.RowStyle>-->
                 <DataGrid.Columns>
                     <DataGridTextColumn
-                        Width="*"
+                        Width="2*"
                         Binding="{Binding FrontSide, Mode=OneWay}"
                         Header="Front side (Spanish)" />
 
                     <DataGridTextColumn
-                        Width="*"
+                        Width="Auto"
                         Binding="{Binding NumDefinitionsOnFrontSide, Mode=OneWay}"
-                        Header="Num. terms front" />
+                        Header="#">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding NumDefinitionsOnFrontSide, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <DataGridTextColumn
-                        Width="*"
+                        Width="2*"
                         Binding="{Binding BackSide, Mode=OneWay}"
                         Header="Back side (Polish)" />
 
                     <DataGridTextColumn
-                        Width="*"
+                        Width="Auto"
                         Binding="{Binding NumDefinitionsOnBackSide, Mode=OneWay}"
-                        Header="Num. terms back" />
+                        Header="#">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding NumDefinitionsOnBackSide, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
-                    <DataGridTextColumn
+                    <!--<DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding Note.Tags, Mode=OneWay}"
-                        Header="Tags" />
+                        Header="Tags" />-->
 
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding FrequencyPositionFrontSide, Mode=OneWay}"
-                        Header="Freq. position (front)" />
+                        Header="Freq. position (front)">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding FrequencyPositionFrontSide, Converter={StaticResource FrequencyPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
 
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding FrequencyPositionBackSide, Mode=OneWay}"
-                        Header="Freq. position (back)" />
+                        Header="Freq. position (back)">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding FrequencyPositionBackSide, Converter={StaticResource FrequencyPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding DuplicatesOfFrontSide.Count, Mode=OneWay}"
-                        Header="Num. dup. front" />
+                        Header="Num. dup. front">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding DuplicatesOfFrontSide.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding DuplicatesOfBackSide.Count, Mode=OneWay}"
-                        Header="Num. dup. back" />
+                        Header="Num. dup. back">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding DuplicatesOfBackSide.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding CefrLevel, Mode=OneWay}"
-                        Header="CEFR classification" />
+                        Header="CEFR classification">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding CefrLevel, Converter={StaticResource CefrPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <DataGridTextColumn
-                        Width="2*"
+                        Width="*"
                         Binding="{Binding QualityIssues, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
-                        Header="Quality issues" />
+                        Header="Quality issues">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding QualityIssues, Converter={StaticResource QualityIssuesToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
 
                     <DataGridTextColumn
                         Width="Auto"
                         MinWidth="100"
                         Binding="{Binding Meanings.Count, Mode=OneWay}"
-                        Header="Num. meanings" />
+                        Header="Num. meanings">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding Meanings.Count, Converter={StaticResource NumMeaningsPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding Penalty, Mode=OneWay}"
-                        Header="Penalty" />
+                        Header="Penalty">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding Penalty, Converter={StaticResource PenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter
