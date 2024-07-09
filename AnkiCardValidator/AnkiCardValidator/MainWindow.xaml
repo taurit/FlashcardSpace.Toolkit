@@ -28,7 +28,7 @@
             <Separator />
             <Label Padding="10">Batch size:</Label>
             <TextBox
-                Name="BatchSize"
+                Name="NumCardsToEvaluate"
                 Padding="15,5"
                 FontSize="18">
                 0

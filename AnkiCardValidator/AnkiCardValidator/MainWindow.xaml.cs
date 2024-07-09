@@ -61,35 +61,48 @@ public partial class MainWindow : Window
 
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
-        var batchSize = Int32.Parse(BatchSize.Text);
+        // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
+        const int chunkSize = 30;
+
+        var numCardsToEvaluate = Int32.Parse(NumCardsToEvaluate.Text);
 
         // Load as much as you can from the local cache
         var vmsForWhichCacheExists = ViewModel.Flashcards.Where(x => File.Exists(GenerateCacheFilePath(x))).ToList();
 
         // Sort the rest by the most promising ones (lowest penalty score)
-        var notesWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists).OrderBy(x => x.Penalty).ToList();
+        var allFlashcardsWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists);
+        var flashcardsToEvaluateThisTime = allFlashcardsWithEvaluationMissing
+            .OrderBy(x => x.Penalty)
+            .Take(numCardsToEvaluate)
+            .ToList();
 
-        var batchOfVms = notesWithEvaluationMissing.Take(batchSize).ToList();
-        var batchOfNotes = batchOfVms.Select(x => x.Note).ToList();
-        var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(batchOfNotes);
+        var chunksToEvaluate = flashcardsToEvaluateThisTime.Chunk(chunkSize).ToList();
 
-        int i = 0;
         var jsonSerializerOptions = new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             WriteIndented = true
         };
-        foreach (var vm in batchOfVms)
+
+        foreach (var chunk in chunksToEvaluate)
         {
-            var evaluation = evaluationResult.Evaluations[i];
+            var chunkOfNotes = chunk.Select(x => x.Note).ToList();
+            var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes);
 
-            // save to cache
-            var cacheFilePath = GenerateCacheFilePath(vm);
-            var cacheContent = new FlashcardQualityEvaluationCacheModel(evaluation, evaluationResult.RawChatGptResponse);
-            var cacheContentSerialized = JsonSerializer.Serialize(cacheContent, jsonSerializerOptions);
-            await File.WriteAllTextAsync(cacheFilePath, cacheContentSerialized);
+            int i = 0;
 
-            i++;
+            foreach (var vm in chunk)
+            {
+                var evaluation = evaluationResult.Evaluations[i];
+
+                // save to cache
+                var cacheFilePath = GenerateCacheFilePath(vm);
+                var cacheContent = new FlashcardQualityEvaluationCacheModel(evaluation, evaluationResult.RawChatGptResponse);
+                var cacheContentSerialized = JsonSerializer.Serialize(cacheContent, jsonSerializerOptions);
+                await File.WriteAllTextAsync(cacheFilePath, cacheContentSerialized);
+
+                i++;
+            }
         }
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
@@ -140,7 +153,6 @@ public partial class MainWindow : Window
     private async void TagGreenCards_OnClick(object sender, RoutedEventArgs e)
     {
         var notesWithNoPenalty = ViewModel.Flashcards.Where(x => x.Penalty == 0)
-            .Take(2) // debug
             .ToList();
         AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, notesWithNoPenalty, "opportunity");
 
