@@ -14,15 +14,17 @@ public class DuplicateDetectorTests
         var note2 = new AnkiNote(1, "front2", "back2", " tagA ");
         var note3 = new AnkiNote(1, "front3", "back3", " tagB ");
         var ankiNotes = new List<AnkiNote>() { note1, note2, note3 };
+        var sut = new DuplicateDetector(new NormalFormProvider());
 
         // Act
-        var resultFront1 = DuplicateDetector.DetectDuplicatesFront(note1, ankiNotes);
-        var resultFront2 = DuplicateDetector.DetectDuplicatesFront(note2, ankiNotes);
-        var resultFront3 = DuplicateDetector.DetectDuplicatesFront(note3, ankiNotes);
 
-        var resultBack1 = DuplicateDetector.DetectDuplicatesBack(note1, ankiNotes);
-        var resultBack2 = DuplicateDetector.DetectDuplicatesBack(note2, ankiNotes);
-        var resultBack3 = DuplicateDetector.DetectDuplicatesBack(note3, ankiNotes);
+        var resultFront1 = sut.DetectDuplicatesFront(note1, ankiNotes);
+        var resultFront2 = sut.DetectDuplicatesFront(note2, ankiNotes);
+        var resultFront3 = sut.DetectDuplicatesFront(note3, ankiNotes);
+
+        var resultBack1 = sut.DetectDuplicatesBack(note1, ankiNotes);
+        var resultBack2 = sut.DetectDuplicatesBack(note2, ankiNotes);
+        var resultBack3 = sut.DetectDuplicatesBack(note3, ankiNotes);
 
         // Assert
         resultFront1.Should().BeEmpty();
@@ -66,12 +68,14 @@ public class DuplicateDetectorTests
         var note2B = new AnkiNote(1, "front2", s2, " tag1 ");
         var ankiNotesForTestingBack = new List<AnkiNote>() { note1B, note2B, };
 
-        // Act
-        var resultFront1 = DuplicateDetector.DetectDuplicatesFront(note1F, ankiNotesForTestingFront);
-        var resultFront2 = DuplicateDetector.DetectDuplicatesFront(note2F, ankiNotesForTestingFront);
+        var sut = new DuplicateDetector(new NormalFormProvider());
 
-        var resultBack1 = DuplicateDetector.DetectDuplicatesBack(note1B, ankiNotesForTestingBack);
-        var resultBack2 = DuplicateDetector.DetectDuplicatesBack(note2B, ankiNotesForTestingBack);
+        // Act
+        var resultFront1 = sut.DetectDuplicatesFront(note1F, ankiNotesForTestingFront);
+        var resultFront2 = sut.DetectDuplicatesFront(note2F, ankiNotesForTestingFront);
+
+        var resultBack1 = sut.DetectDuplicatesBack(note1B, ankiNotesForTestingBack);
+        var resultBack2 = sut.DetectDuplicatesBack(note2B, ankiNotesForTestingBack);
 
         // Assert
         resultFront1.Should().NotBeNull();
