@@ -30,6 +30,9 @@ public class DefinitionCounter
         // remove everything in parentheses
         sanitized = Regex.Replace(sanitized, @"\([^)]*\)", "");
 
+        // remove everything which looks like HTML tags (between `<` and `>`)
+        sanitized = Regex.Replace(sanitized, @"<[^>]*>", "");
+
         // count the number of definitions
         var numDefinitions = sanitized.Split(',').Length;
 

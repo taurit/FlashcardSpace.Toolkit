@@ -72,7 +72,7 @@ public class DefinitionCounterTests
     }
 
     [TestMethod]
-    public void CountDefinitions_ShouldDiscardComasInHtmlTags()
+    public void CountDefinitions_ShouldDiscardComasInHtmlAttributes()
     {
         // Arrange
         var definitionCounter = new DefinitionCounter();
@@ -82,5 +82,18 @@ public class DefinitionCounterTests
 
         // Assert
         result.Should().Be(2);
+    }
+
+    [TestMethod]
+    public void CountDefinitions_ShouldNotDiscardComasInHtmlTagContent()
+    {
+        // Arrange
+        var definitionCounter = new DefinitionCounter();
+
+        // Act
+        int result = definitionCounter.CountDefinitions("raz, <span>dwa, trzy</span>, cztery");
+
+        // Assert
+        result.Should().Be(4);
     }
 }
