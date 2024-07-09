@@ -21,8 +21,6 @@ public record MeaningViewModel(string EnglishEquivalent, string Definition);
 public sealed class FlashcardViewModel(
     // raw source data
     AnkiNote note,
-    string frontSide,
-    string backSide,
 
     // derived from source data locally
     List<AnkiNote> duplicatesFront,
@@ -40,10 +38,6 @@ public sealed class FlashcardViewModel(
 {
     // reference to the evaluated note
     public AnkiNote Note { get; } = note;
-
-    // data loaded from Anki
-    public string FrontSide { get; } = frontSide;
-    public string BackSide { get; } = backSide;
 
     // quality signals calculated locally
     public int? FrequencyPositionFrontSide { get; } = frequencyPositionFrontSide;

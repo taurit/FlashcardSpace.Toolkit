@@ -56,11 +56,11 @@ internal static class FlashcardQualityEvaluator
 
         if (evaluation is null)
         {
-            throw new InvalidOperationException("Failed to deserialize ChatGPT response.");
+            throw new InvalidOperationException($"Failed to deserialize ChatGPT response. Response is cached in {responseFileName}.");
         }
         if (evaluation.Evaluations.Count != noteBatch.Count)
         {
-            throw new InvalidOperationException("Number of items in output array does not match number of items in input, cannot continue.");
+            throw new InvalidOperationException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Response is cached in {responseFileName}.");
         }
 
         return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);

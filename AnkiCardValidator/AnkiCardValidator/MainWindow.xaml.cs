@@ -51,7 +51,7 @@ public partial class MainWindow : Window
             var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
             var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
 
-            var flashcardViewModel = new FlashcardViewModel(note, note.FrontSide, note.BackSide, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
+            var flashcardViewModel = new FlashcardViewModel(note, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -62,7 +62,7 @@ public partial class MainWindow : Window
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
-        const int chunkSize = 30;
+        const int chunkSize = 29;
 
         var numCardsToEvaluate = Int32.Parse(NumCardsToEvaluate.Text);
 
@@ -115,7 +115,7 @@ public partial class MainWindow : Window
             await TryUpdateViewModelWithEvaluationData(vm);
         }
 
-        ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty).ThenBy(x => x.FrontSide));
+        ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty).ThenBy(x => x.Note.FrontSide));
     }
 
     private static string GenerateCacheFilePath(FlashcardViewModel flashcardVm)

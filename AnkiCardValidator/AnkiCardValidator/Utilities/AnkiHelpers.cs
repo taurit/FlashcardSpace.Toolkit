@@ -1,6 +1,7 @@
 ﻿using AnkiCardValidator.ViewModels;
 using PropertyChanged;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 namespace AnkiCardValidator.Utilities;
@@ -90,6 +91,9 @@ public static class AnkiHelpers
 
             if (note.Tags.Contains($" {tagToAdd} ")) continue; // already has the tag
 
+            // a hack to support my convention of renaming tags in Anki and adding suffixes for subsequent batches 
+            if (note.Tags.Contains($" {tagToAdd}")) continue; // has the tag like tagSUFFIX, e.g. `opportunity1`
+
             var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
 
             // update tags string for the current note in the Anki database
@@ -111,6 +115,8 @@ public static class AnkiHelpers
 
             noteVm.Note.Tags = tagsAfterAdding;
         }
+
+        Debug.WriteLine("Finished adding tags");
     }
 
     /// <summary>
