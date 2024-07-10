@@ -44,8 +44,12 @@ public partial class MainWindow : Window
 
         foreach (var note in notes)
         {
-            var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(note.FrontSide);
-            var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(note.BackSide);
+            // Here's a hack for inconsistent conventions in the dataset. Sometimes Polish and Spanish sides are swapped.
+            // So we should swap the dictionaries during the check
+            var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(note.FrontSide) ??
+                                             _polishFrequencyDataProvider.GetPosition(note.FrontSide);
+            var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(note.BackSide) ??
+                                            _spanishFrequencyDataProvider.GetPosition(note.BackSide);
 
             var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
             var duplicatesBack = _duplicateDetector.DetectDuplicatesBack(note, notes);
