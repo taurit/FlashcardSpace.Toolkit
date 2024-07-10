@@ -65,11 +65,11 @@ public sealed class FlashcardViewModel(
         // missing information about CEFR level
         (this.CefrLevel == CefrClassification.Unknown ? 1 : 0) +
 
-        // words with CEFR level B2 and higher should be prioritized down until I learn basics
-        (this.CefrLevel >= CefrClassification.B2 ? 1 : 0) +
-
-        // words with CEFR level C1 and higher should be prioritized down even more than B2
+        // words with CEFR level C1 and higher should be prioritized down until I learn basics
         (this.CefrLevel >= CefrClassification.C1 ? 1 : 0) +
+
+        // words with CEFR level C2 should be prioritized down even more than B2
+        (this.CefrLevel >= CefrClassification.C2 ? 1 : 0) +
 
         // the more individual meanings word has, the more confusing learning it with flashcards might be
         (Meanings.Count > 0 ? Meanings.Count - 1 : 0) +
