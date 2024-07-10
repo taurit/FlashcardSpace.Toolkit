@@ -91,10 +91,10 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!--<DataGridTextColumn
+                    <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding Note.Tags, Mode=OneWay}"
-                        Header="Tags" />-->
+                        Header="Tags" />
 
                     <DataGridTextColumn
                         Width="Auto"
@@ -159,6 +159,7 @@
 
                     <DataGridTextColumn
                         Width="*"
+                        MinWidth="150"
                         d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding QualityIssues, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
                         Header="Quality issues">

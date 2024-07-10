@@ -91,8 +91,11 @@ public static class AnkiHelpers
 
             if (note.Tags.Contains($" {tagToAdd} ")) continue; // already has the tag
 
+            // my convention for marking cards as fit for learning feed
+            if (note.Tags.Contains($" qa ")) continue;
+
             // a hack to support my convention of renaming tags in Anki and adding suffixes for subsequent batches 
-            if (note.Tags.Contains($" {tagToAdd}")) continue; // has the tag like tagSUFFIX, e.g. `opportunity1`
+            if (note.Tags.Contains($" opportunity")) continue; // hack: legacy convention of tagging with opportunity[NUMBER_OF_BATCH]
 
             var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
 

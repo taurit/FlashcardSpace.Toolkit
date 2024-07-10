@@ -2,6 +2,7 @@
 using AnkiCardValidator.Utilities;
 using AnkiCardValidator.ViewModels;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -34,6 +35,7 @@ public partial class MainWindow : Window
 
     private async void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
     {
+        var sw = Stopwatch.StartNew();
         _spanishFrequencyDataProvider.LoadFrequencyData();
         _polishFrequencyDataProvider.LoadFrequencyData();
 
@@ -57,6 +59,9 @@ public partial class MainWindow : Window
         }
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
+
+        sw.Stop();
+        MessageBox.Show($"Loaded {ViewModel.Flashcards.Count} flashcards in {sw.ElapsedMilliseconds} ms.");
     }
 
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
@@ -154,7 +159,7 @@ public partial class MainWindow : Window
     {
         var notesWithNoPenalty = ViewModel.Flashcards.Where(x => x.Penalty == 0)
             .ToList();
-        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, notesWithNoPenalty, "opportunity");
+        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, notesWithNoPenalty, "modified");
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }
