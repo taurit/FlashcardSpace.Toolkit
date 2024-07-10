@@ -6,16 +6,22 @@ public class NormalFormProvider
 {
     private readonly Dictionary<string, string> _normalizedStringsCache = new();
 
+    public NormalFormProvider()
+    {
+        _normalizedStringsCache.EnsureCapacity(60000);
+    }
+
     internal string GetNormalizedFormOfLearnedTermWithCache(string input)
     {
-        if (!_normalizedStringsCache.ContainsKey(input))
-        {
-            var trimmed = GetNormalizedFormOfLearnedTerm(input);
 
-            _normalizedStringsCache[input] = trimmed;
+        if (_normalizedStringsCache.TryGetValue(input, out var trimmed))
+        {
+            return trimmed;
         }
 
-        return _normalizedStringsCache[input];
+        trimmed = GetNormalizedFormOfLearnedTerm(input);
+        _normalizedStringsCache[input] = trimmed;
+        return trimmed;
     }
 
     /// <summary>
