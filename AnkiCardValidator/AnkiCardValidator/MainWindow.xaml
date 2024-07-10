@@ -208,54 +208,56 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <DataGrid
-                    AutoGenerateColumns="False"
-                    Background="White"
-                    CanUserSortColumns="True"
-                    HorizontalGridLinesBrush="LightGray"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding SelectedFlashcard.Meanings, Mode=OneWay}"
-                    VerticalGridLinesBrush="LightGray">
 
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="Auto"
-                            MinWidth="100"
-                            Binding="{Binding EN, Mode=OneTime}"
-                            Header="Meaning (en)" />
-
-                        <DataGridTextColumn
-                            Width="Auto"
-                            MinWidth="100"
-                            Binding="{Binding PL, Mode=OneTime}"
-                            Header="Meaning (pl)" />
-
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Def, Mode=OneTime}"
-                            Header="Definition" />
-
-                    </DataGrid.Columns>
-
-                </DataGrid>
+                <Grid Background="GreenYellow" />
 
                 <GridSplitter
                     Grid.Column="1"
                     Width="10"
                     ResizeBehavior="PreviousAndNext" />
-                <Border
-                    Grid.Column="2"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    SnapsToDevicePixels="True">
-                    <TextBox
-                        IsReadOnly="True"
+
+                <DockPanel Grid.Column="2" LastChildFill="True">
+                    <TextBlock
+                        Padding="10"
+                        DockPanel.Dock="Bottom"
+                        FontSize="20"
+                        Foreground="DarkRed"
                         Text="{Binding SelectedFlashcard.QualityIssues, Mode=OneWay}"
-                        TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto" />
+                        TextWrapping="Wrap" />
 
-                </Border>
+                    <DataGrid
+                        AutoGenerateColumns="False"
+                        Background="White"
+                        CanUserSortColumns="True"
+                        DockPanel.Dock="Top"
+                        HorizontalGridLinesBrush="LightGray"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding SelectedFlashcard.Meanings, Mode=OneWay}"
+                        VerticalGridLinesBrush="LightGray">
 
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="Auto"
+                                MinWidth="100"
+                                Binding="{Binding EN, Mode=OneTime}"
+                                Header="Meaning (en)" />
+
+                            <DataGridTextColumn
+                                Width="Auto"
+                                MinWidth="100"
+                                Binding="{Binding PL, Mode=OneTime}"
+                                Header="Meaning (pl)" />
+
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Def, Mode=OneTime}"
+                                Header="Definition" />
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </DockPanel>
             </Grid>
         </Grid>
 
