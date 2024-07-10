@@ -5,6 +5,7 @@ namespace AnkiCardValidator.Utilities;
 public class NormalFormProvider
 {
     private readonly Dictionary<string, string> _normalizedStringsCache = new();
+    private static readonly Regex ParenthesesRegex = new(@"\([^)]*\)", RegexOptions.Compiled);
 
     public NormalFormProvider()
     {
@@ -13,7 +14,6 @@ public class NormalFormProvider
 
     internal string GetNormalizedFormOfLearnedTermWithCache(string input)
     {
-
         if (_normalizedStringsCache.TryGetValue(input, out var trimmed))
         {
             return trimmed;
@@ -47,7 +47,7 @@ public class NormalFormProvider
         }
 
         // remove everything in parentheses
-        sanitized = Regex.Replace(sanitized, @"\([^)]*\)", "");
+        sanitized = ParenthesesRegex.Replace(sanitized, "");
 
         // in case of multiple terms separated by a coma (like `depozyt, kaucja`), only keep the first one (here: `depozyt`)
         var indexOfComa = sanitized.IndexOf(',', StringComparison.Ordinal);
@@ -66,6 +66,7 @@ public class NormalFormProvider
             if (sanitized.StartsWith(wordToRemove + " "))
             {
                 sanitized = sanitized.Substring(wordToRemove.Length + 1);
+                break;
             }
         }
 
