@@ -58,7 +58,6 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="2*"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding Note.FrontSide, Mode=OneWay}"
                         Header="Front side (Spanish)" />
 
@@ -67,7 +66,7 @@
                         Binding="{Binding NumDefinitionsOnFrontSide, Mode=OneWay}"
                         Header="#">
                         <DataGridTextColumn.ElementStyle>
-                            <Style d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}" TargetType="TextBlock">
+                            <Style TargetType="TextBlock">
                                 <Setter Property="Background" Value="{Binding NumDefinitionsOnFrontSide, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
@@ -75,13 +74,11 @@
 
                     <DataGridTextColumn
                         Width="2*"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding Note.BackSide, Mode=OneWay}"
                         Header="Back side (Polish)" />
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding NumDefinitionsOnBackSide, Mode=OneWay}"
                         Header="#">
                         <DataGridTextColumn.ElementStyle>
@@ -98,7 +95,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding FrequencyPositionFrontSide, Mode=OneWay}"
                         Header="Freq. position (front)">
                         <DataGridTextColumn.ElementStyle>
@@ -111,7 +107,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding FrequencyPositionBackSide, Mode=OneWay}"
                         Header="Freq. position (back)">
                         <DataGridTextColumn.ElementStyle>
@@ -123,7 +118,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding DuplicatesOfFrontSide.Count, Mode=OneWay}"
                         Header="Num. dup. front">
                         <DataGridTextColumn.ElementStyle>
@@ -135,7 +129,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding DuplicatesOfBackSide.Count, Mode=OneWay}"
                         Header="Num. dup. back">
                         <DataGridTextColumn.ElementStyle>
@@ -147,7 +140,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding CefrLevel, Mode=OneWay}"
                         Header="CEFR classification">
                         <DataGridTextColumn.ElementStyle>
@@ -160,7 +152,6 @@
                     <DataGridTextColumn
                         Width="*"
                         MinWidth="150"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding QualityIssues, Mode=OneWay, Converter={StaticResource EmptyStringToCheckboxConverter}}"
                         Header="Quality issues">
                         <DataGridTextColumn.ElementStyle>
@@ -173,7 +164,6 @@
                     <DataGridTextColumn
                         Width="Auto"
                         MinWidth="100"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding Meanings.Count, Mode=OneWay}"
                         Header="Num. meanings">
                         <DataGridTextColumn.ElementStyle>
@@ -185,7 +175,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        d:DataContext="{d:DesignInstance Type=viewModels:FlashcardViewModel}"
                         Binding="{Binding Penalty, Mode=OneWay}"
                         Header="Penalty">
                         <DataGridTextColumn.ElementStyle>
