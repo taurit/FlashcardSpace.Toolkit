@@ -167,6 +167,19 @@ public partial class MainWindow : Window
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }
+
+    private async void ResolveDuplicates_OnClick(object sender, RoutedEventArgs e)
+    {
+        // we can skip cards with no duplicates for performance; they won't be needed in the flow
+        var flashcardsWithDuplicates = ViewModel.Flashcards
+            .Where(x => x.DuplicatesOfFrontSide.Count > 0 || x.DuplicatesOfBackSide.Count > 0)
+            .ToList();
+
+        var resolveDuplicatesTool = new ResolveDuplicatesTool(flashcardsWithDuplicates);
+        resolveDuplicatesTool.ShowDialog();
+
+        await ReloadFlashcardsEvaluationAndSortByMostPromising();
+    }
 }
 
 internal record FlashcardQualityEvaluationCacheModel(FlashcardQualityEvaluation Evaluation, string RawChatGptResponse);

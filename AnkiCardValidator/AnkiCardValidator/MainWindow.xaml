@@ -36,6 +36,9 @@
             <Button Padding="5" Click="EvaluateFewMoreCards_OnClick">Evaluate few more cards</Button>
             <Separator />
             <Button Padding="5" Click="TagGreenCards_OnClick">Tag green cards</Button>
+            <Separator />
+            
+            <Button Padding="5" Click="ResolveDuplicates_OnClick">Resolve duplicates...</Button>
         </ToolBar>
         <Grid>
             <Grid.RowDefinitions>
