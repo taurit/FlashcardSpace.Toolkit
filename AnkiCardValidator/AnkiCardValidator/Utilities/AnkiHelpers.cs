@@ -14,6 +14,12 @@ public record AnkiNote([property: JsonIgnore] long Id, string FrontSide, string 
 {
     [JsonIgnore]
     public string Tags { get; set; } = Tags;
+
+    /// <summary>
+    /// Tagged for removal by the duplicate detection flow.
+    /// </summary>
+    [JsonIgnore]
+    public bool IsScheduledForRemoval => Tags.Contains(" remove ");
 }
 
 /// <summary>

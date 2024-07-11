@@ -1,4 +1,5 @@
-﻿using AnkiCardValidator.ViewModels;
+﻿using AnkiCardValidator.Utilities;
+using AnkiCardValidator.ViewModels;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System.Windows;
@@ -33,13 +34,34 @@ public partial class ResolveDuplicatesTool : Window
 
     private async void StartReviewFlow_OnClick(object sender, RoutedEventArgs e)
     {
-        await SetPreviewWindowHtml(this.LeftPreview, "Yo <b>dawg</b>");
+        var conflict = GetNextUnresolvedConflict();
+
+        await SetPreviewWindowHtml(this.LeftPreview, GenerateHtmlPreviewForNote(conflict.Left));
+        await SetPreviewWindowHtml(this.RightPreview, GenerateHtmlPreviewForNote(conflict.Right));
+
     }
 
-    private async void GetNextUnresolvedConflict(object sender, RoutedEventArgs e)
+    private static string GenerateHtmlPreviewForNote(AnkiNote note)
     {
-        var flashcardsWithConflictOnFront = _flashcards.Where(x => x.DuplicatesOfFrontSide.Count > 0).ToList();
+        return $"{note.FrontSide}<hr />{note.BackSide}";
+    }
+
+    private FlashcardConflict GetNextUnresolvedConflict()
+    {
+        var flashcardsWithConflictOnFront = _flashcards.Where(x =>
+            // skip conflict that are already resolved
+            !x.Note.IsScheduledForRemoval &&
+            x.DuplicatesOfFrontSide.Count(dup => !dup.IsScheduledForRemoval) > 0
+         ).ToList();
+
         // todo add support for conflicts in the back side
 
+        var flashcard = flashcardsWithConflictOnFront.First();
+        var conflictingFlashcards = flashcard.DuplicatesOfFrontSide.Where(dup => !dup.IsScheduledForRemoval);
+        var firstConflictingFlashcard = conflictingFlashcards.First();
+
+        return new FlashcardConflict(flashcard.Note, firstConflictingFlashcard);
     }
 }
+
+internal record FlashcardConflict(AnkiNote Left, AnkiNote Right);
