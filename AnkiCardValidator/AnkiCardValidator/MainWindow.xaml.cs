@@ -52,12 +52,11 @@ public partial class MainWindow : Window
                                             _spanishFrequencyDataProvider.GetPosition(note.BackSide);
 
             var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
-            var duplicatesBack = _duplicateDetector.DetectDuplicatesBack(note, notes);
 
             var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
             var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
 
-            var flashcardViewModel = new CardViewModel(note, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
+            var flashcardViewModel = new CardViewModel(note, duplicatesFront, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -172,7 +171,7 @@ public partial class MainWindow : Window
     {
         // we can skip cards with no duplicates for performance; they won't be needed in the flow
         var flashcardsWithDuplicates = ViewModel.Flashcards
-            .Where(x => x.DuplicatesOfQuestion.Count > 0 || x.DuplicatesOfAnswer.Count > 0)
+            .Where(x => x.DuplicatesOfQuestion.Count > 0)
             .ToList();
 
         var resolveDuplicatesTool = new ResolveDuplicatesTool(flashcardsWithDuplicates);

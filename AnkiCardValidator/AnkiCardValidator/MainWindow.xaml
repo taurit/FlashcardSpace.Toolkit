@@ -144,17 +144,6 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding DuplicatesOfAnswer.Count, Mode=OneWay}"
-                        Header="Num. dup. back">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding DuplicatesOfAnswer.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <DataGridTextColumn
-                        Width="Auto"
                         Binding="{Binding CefrLevelQuestion, Mode=OneWay}"
                         Header="CEFR classification">
                         <DataGridTextColumn.ElementStyle>

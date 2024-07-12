@@ -24,7 +24,6 @@ public sealed class CardViewModel(
 
     // derived from source data locally
     List<AnkiNote> duplicatesQuestion,
-    List<AnkiNote> duplicatesAnswer,
     int? frequencyPositionQuestion,
     int? frequencyPositionAnswer,
     int numDefinitionsForQuestion,
@@ -47,7 +46,6 @@ public sealed class CardViewModel(
     public int NumDefinitionsForAnswer { get; } = numDefinitionsForAnswer;
 
     public ObservableCollection<AnkiNote> DuplicatesOfQuestion { get; } = new(duplicatesQuestion);
-    public ObservableCollection<AnkiNote> DuplicatesOfAnswer { get; } = new(duplicatesAnswer);
 
     // data received from ChatGPT
     public string? RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;
@@ -76,11 +74,8 @@ public sealed class CardViewModel(
         // ChatGPT raised at least one quality issue
         (HasQualityIssues ? 1 : 0) +
 
-        // word appears to have duplicates in the deck (front side)
+        // Question appears to have duplicates in the Anki collection
         DuplicatesOfQuestion.Count +
-
-        // word appears to have duplicates in the deck (back side)
-        DuplicatesOfAnswer.Count +
 
         // number of terms on the side of the flashcard. For example, if the front contains text 'mnich, zakonnik', this will be 2
         // (the ideal number is 1)
