@@ -160,7 +160,7 @@ public partial class MainWindow : Window
 
     private async void TagGreenCards_OnClick(object sender, RoutedEventArgs e)
     {
-        var notesWithNoPenalty = ViewModel.Flashcards.Where(x => x.Penalty == 0)
+        var notesWithNoPenalty = ViewModel.Flashcards.Where(x => x.Penalty <= 1) // change to 0 for perfect cards
             .ToList();
         AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, notesWithNoPenalty, "modified");
 
