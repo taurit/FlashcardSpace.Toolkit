@@ -11,9 +11,9 @@ namespace AnkiCardValidator;
 /// </summary>
 public partial class ResolveDuplicatesTool : Window
 {
-    private readonly List<FlashcardViewModel> _flashcards;
+    private readonly List<CardViewModel> _flashcards;
 
-    public ResolveDuplicatesTool(List<FlashcardViewModel> flashcards)
+    public ResolveDuplicatesTool(List<CardViewModel> flashcards)
     {
         _flashcards = flashcards;
         InitializeComponent();
@@ -51,13 +51,13 @@ public partial class ResolveDuplicatesTool : Window
         var flashcardsWithConflictOnFront = _flashcards.Where(x =>
             // skip conflict that are already resolved
             !x.Note.IsScheduledForRemoval &&
-            x.DuplicatesOfFrontSide.Count(dup => !dup.IsScheduledForRemoval) > 0
+            x.DuplicatesOfQuestion.Count(dup => !dup.IsScheduledForRemoval) > 0
          ).ToList();
 
         // todo add support for conflicts in the back side
 
         var flashcard = flashcardsWithConflictOnFront.First();
-        var conflictingFlashcards = flashcard.DuplicatesOfFrontSide.Where(dup => !dup.IsScheduledForRemoval);
+        var conflictingFlashcards = flashcard.DuplicatesOfQuestion.Where(dup => !dup.IsScheduledForRemoval);
         var firstConflictingFlashcard = conflictingFlashcards.First();
 
         return new FlashcardConflict(flashcard.Note, firstConflictingFlashcard);

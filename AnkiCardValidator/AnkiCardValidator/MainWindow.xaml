@@ -37,7 +37,7 @@
             <Separator />
             <Button Padding="5" Click="TagGreenCards_OnClick">Tag green cards</Button>
             <Separator />
-            
+
             <Button Padding="5" Click="ResolveDuplicates_OnClick">Resolve duplicates...</Button>
         </ToolBar>
         <Grid>
@@ -56,21 +56,21 @@
                 HorizontalGridLinesBrush="LightGray"
                 IsReadOnly="True"
                 ItemsSource="{Binding Flashcards}"
-                SelectedItem="{Binding SelectedFlashcard}"
+                SelectedItem="{Binding SelectedCard}"
                 VerticalGridLinesBrush="Transparent">
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="2*"
                         Binding="{Binding Note.FrontSide, Mode=OneWay}"
-                        Header="Front side (Spanish)" />
+                        Header="Question" />
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding NumDefinitionsOnFrontSide, Mode=OneWay}"
+                        Binding="{Binding NumDefinitionsForQuestion, Mode=OneWay}"
                         Header="#">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding NumDefinitionsOnFrontSide, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding NumDefinitionsForQuestion, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -78,15 +78,15 @@
                     <DataGridTextColumn
                         Width="2*"
                         Binding="{Binding Note.BackSide, Mode=OneWay}"
-                        Header="Back side (Polish)" />
+                        Header="Answer" />
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding NumDefinitionsOnBackSide, Mode=OneWay}"
+                        Binding="{Binding NumDefinitionsForAnswer, Mode=OneWay}"
                         Header="#">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding NumDefinitionsOnBackSide, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding NumDefinitionsForAnswer, Converter={StaticResource NumTermsPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -98,11 +98,11 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding FrequencyPositionFrontSide, Mode=OneWay}"
+                        Binding="{Binding FrequencyPositionQuestion, Mode=OneWay}"
                         Header="Freq. position (front)">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding FrequencyPositionFrontSide, Converter={StaticResource FrequencyPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding FrequencyPositionQuestion, Converter={StaticResource FrequencyPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -110,44 +110,56 @@
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding FrequencyPositionBackSide, Mode=OneWay}"
+                        Binding="{Binding FrequencyPositionAnswer, Mode=OneWay}"
                         Header="Freq. position (back)">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding FrequencyPositionBackSide, Converter={StaticResource FrequencyPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding FrequencyPositionAnswer, Converter={StaticResource FrequencyPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding DuplicatesOfFrontSide.Count, Mode=OneWay}"
-                        Header="Num. dup. front">
+                        Binding="{Binding DuplicatesOfQuestion.Count, Mode=OneWay}"
+                        Header="Num. dup. question">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding DuplicatesOfFrontSide.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding DuplicatesOfQuestion.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding DuplicatesOfBackSide.Count, Mode=OneWay}"
+                        MinWidth="100"
+                        Binding="{Binding Meanings.Count, Mode=OneWay}"
+                        Header="Num. meanings question">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding Meanings.Count, Converter={StaticResource NumMeaningsPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding DuplicatesOfAnswer.Count, Mode=OneWay}"
                         Header="Num. dup. back">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding DuplicatesOfBackSide.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding DuplicatesOfAnswer.Count, Converter={StaticResource NumDuplicatesPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding CefrLevel, Mode=OneWay}"
+                        Binding="{Binding CefrLevelQuestion, Mode=OneWay}"
                         Header="CEFR classification">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding CefrLevel, Converter={StaticResource CefrPenaltyToColorConverter}}" />
+                                <Setter Property="Background" Value="{Binding CefrLevelQuestion, Converter={StaticResource CefrPenaltyToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -164,17 +176,6 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn
-                        Width="Auto"
-                        MinWidth="100"
-                        Binding="{Binding Meanings.Count, Mode=OneWay}"
-                        Header="Num. meanings">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Background" Value="{Binding Meanings.Count, Converter={StaticResource NumMeaningsPenaltyToColorConverter}}" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
 
                     <DataGridTextColumn
                         Width="Auto"
@@ -206,7 +207,7 @@
                     CanUserSortColumns="True"
                     HorizontalGridLinesBrush="LightGray"
                     IsReadOnly="True"
-                    ItemsSource="{Binding SelectedFlashcard.Meanings, Mode=OneWay}"
+                    ItemsSource="{Binding SelectedCard.Meanings, Mode=OneWay}"
                     VerticalGridLinesBrush="LightGray">
 
                     <DataGrid.Columns>
@@ -242,7 +243,7 @@
                     SnapsToDevicePixels="True">
                     <TextBox
                         IsReadOnly="True"
-                        Text="{Binding SelectedFlashcard.QualityIssues, Mode=OneWay}"
+                        Text="{Binding SelectedCard.QualityIssues, Mode=OneWay}"
                         TextWrapping="Wrap"
                         VerticalScrollBarVisibility="Auto" />
 

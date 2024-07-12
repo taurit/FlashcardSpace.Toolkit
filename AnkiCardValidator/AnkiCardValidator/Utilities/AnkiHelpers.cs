@@ -89,7 +89,7 @@ public static class AnkiHelpers
         return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
     }
 
-    public static void AddTagToNotes(string ankiDatabasePath, List<FlashcardViewModel> notesWithNoPenalty, string tagToAdd)
+    public static void AddTagToNotes(string ankiDatabasePath, List<CardViewModel> notesWithNoPenalty, string tagToAdd)
     {
         foreach (var noteVm in notesWithNoPenalty)
         {

@@ -9,8 +9,8 @@ namespace AnkiCardValidator.ViewModels;
 [AddINotifyPropertyChangedInterface]
 public class MainWindowViewModel
 {
-    public ObservableCollection<FlashcardViewModel> Flashcards { get; set; } = [];
-    public FlashcardViewModel? SelectedFlashcard { get; set; } = null;
+    public ObservableCollection<CardViewModel> Flashcards { get; set; } = [];
+    public CardViewModel? SelectedCard { get; set; } = null;
 }
 
 [AddINotifyPropertyChangedInterface]
@@ -18,20 +18,20 @@ public record MeaningViewModel(string EnglishEquivalent, string Definition);
 
 [AddINotifyPropertyChangedInterface]
 [DebuggerDisplay("{FrontSide} -> {BackSide}")]
-public sealed class FlashcardViewModel(
+public sealed class CardViewModel(
     // raw source data
     AnkiNote note,
 
     // derived from source data locally
-    List<AnkiNote> duplicatesFront,
-    List<AnkiNote> duplicatesBack,
-    int? frequencyPositionFrontSide,
-    int? frequencyPositionBackSide,
-    int numDefinitionsOnFrontSide,
-    int numDefinitionsOnBackSide,
+    List<AnkiNote> duplicatesQuestion,
+    List<AnkiNote> duplicatesAnswer,
+    int? frequencyPositionQuestion,
+    int? frequencyPositionAnswer,
+    int numDefinitionsForQuestion,
+    int numDefinitionsForAnswer,
 
     // derived from source data using ChatGPT
-    CefrClassification cefrLevel,
+    CefrClassification cefrLevelQuestion,
     string? qualityIssues,
     string? rawResponseFromChatGptApi
 )
@@ -40,36 +40,35 @@ public sealed class FlashcardViewModel(
     public AnkiNote Note { get; } = note;
 
     // quality signals calculated locally
-    public int? FrequencyPositionFrontSide { get; } = frequencyPositionFrontSide;
-    public int? FrequencyPositionBackSide { get; } = frequencyPositionBackSide;
+    public int? FrequencyPositionQuestion { get; } = frequencyPositionQuestion;
+    public int? FrequencyPositionAnswer { get; } = frequencyPositionAnswer;
 
-    public int NumDefinitionsOnFrontSide { get; } = numDefinitionsOnFrontSide;
-    public int NumDefinitionsOnBackSide { get; } = numDefinitionsOnBackSide;
+    public int NumDefinitionsForQuestion { get; } = numDefinitionsForQuestion;
+    public int NumDefinitionsForAnswer { get; } = numDefinitionsForAnswer;
 
-    public ObservableCollection<AnkiNote> DuplicatesOfFrontSide { get; } = new(duplicatesFront);
-    public ObservableCollection<AnkiNote> DuplicatesOfBackSide { get; } = new(duplicatesBack);
+    public ObservableCollection<AnkiNote> DuplicatesOfQuestion { get; } = new(duplicatesQuestion);
+    public ObservableCollection<AnkiNote> DuplicatesOfAnswer { get; } = new(duplicatesAnswer);
 
     // data received from ChatGPT
     public string? RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;
 
-    public CefrClassification CefrLevel { get; set; } = cefrLevel;
+    public CefrClassification CefrLevelQuestion { get; set; } = cefrLevelQuestion;
     public string? QualityIssues { get; set; } = qualityIssues;
     public ObservableCollection<Meaning> Meanings { get; init; } = [];
 
     // data derived from ChatGPT response
     [DependsOn(nameof(QualityIssues))] private bool HasQualityIssues => !String.IsNullOrWhiteSpace(QualityIssues);
 
-
-    [DependsOn(nameof(CefrLevel), nameof(HasQualityIssues), nameof(Meanings), nameof(NumDefinitionsOnFrontSide), nameof(NumDefinitionsOnBackSide))]
+    [DependsOn(nameof(CefrLevelQuestion), nameof(HasQualityIssues), nameof(Meanings), nameof(NumDefinitionsForQuestion), nameof(NumDefinitionsForAnswer))]
     public int Penalty =>
         // missing information about CEFR level
-        (this.CefrLevel == CefrClassification.Unknown ? 1 : 0) +
+        (this.CefrLevelQuestion == CefrClassification.Unknown ? 1 : 0) +
 
         // words with CEFR level C1 and higher should be prioritized down until I learn basics
-        (this.CefrLevel >= CefrClassification.C1 ? 1 : 0) +
+        (this.CefrLevelQuestion >= CefrClassification.C1 ? 1 : 0) +
 
         // words with CEFR level C2 should be prioritized down even more than B2
-        (this.CefrLevel >= CefrClassification.C2 ? 1 : 0) +
+        (this.CefrLevelQuestion >= CefrClassification.C2 ? 1 : 0) +
 
         // the more individual meanings word has, the more confusing learning it with flashcards might be
         (Meanings.Count > 0 ? Meanings.Count - 1 : 0) +
@@ -78,26 +77,26 @@ public sealed class FlashcardViewModel(
         (HasQualityIssues ? 1 : 0) +
 
         // word appears to have duplicates in the deck (front side)
-        DuplicatesOfFrontSide.Count +
+        DuplicatesOfQuestion.Count +
 
         // word appears to have duplicates in the deck (back side)
-        DuplicatesOfBackSide.Count +
+        DuplicatesOfAnswer.Count +
 
         // number of terms on the side of the flashcard. For example, if the front contains text 'mnich, zakonnik', this will be 2
         // (the ideal number is 1)
-        (NumDefinitionsOnFrontSide - 1) +
-        (NumDefinitionsOnBackSide - 1) +
+        (NumDefinitionsForQuestion - 1) +
+        (NumDefinitionsForAnswer - 1) +
 
         // no frequency data - this can be false negative, if term is a sentence, or HTML tags weren't sanitized.
         // I can improve false alarms with heuristics
-        (FrequencyPositionFrontSide.HasValue ? 0 : 1) +
-        (FrequencyPositionBackSide.HasValue ? 0 : 1) +
+        (FrequencyPositionQuestion.HasValue ? 0 : 1) +
+        (FrequencyPositionAnswer.HasValue ? 0 : 1) +
 
         // frequency data exists and suggests that Spanish word is used very infrequently
-        (FrequencyPositionFrontSide.HasValue ? CalculateFrequencyPenalty(FrequencyPositionFrontSide.Value) : 0) +
+        (FrequencyPositionQuestion.HasValue ? CalculateFrequencyPenalty(FrequencyPositionQuestion.Value) : 0) +
 
         // same for polish side
-        (FrequencyPositionBackSide.HasValue ? CalculateFrequencyPenalty(FrequencyPositionBackSide.Value) : 0)
+        (FrequencyPositionAnswer.HasValue ? CalculateFrequencyPenalty(FrequencyPositionAnswer.Value) : 0)
         ;
 
     private int CalculateFrequencyPenalty(int position) => position switch

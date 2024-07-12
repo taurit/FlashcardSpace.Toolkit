@@ -57,7 +57,7 @@ public partial class MainWindow : Window
             var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
             var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
 
-            var flashcardViewModel = new FlashcardViewModel(note, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
+            var flashcardViewModel = new CardViewModel(note, duplicatesFront, duplicatesBack, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -124,19 +124,19 @@ public partial class MainWindow : Window
             await TryUpdateViewModelWithEvaluationData(vm);
         }
 
-        ViewModel.Flashcards = new ObservableCollection<FlashcardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty).ThenBy(x => x.Note.FrontSide));
+        ViewModel.Flashcards = new ObservableCollection<CardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty).ThenBy(x => x.Note.FrontSide));
     }
 
-    private static string GenerateCacheFilePath(FlashcardViewModel flashcardVm)
+    private static string GenerateCacheFilePath(CardViewModel cardVm)
     {
-        var cacheFileName = $"eval-{Settings.OpenAiModelId}_{flashcardVm.Note.Id}.txt";
+        var cacheFileName = $"eval-{Settings.OpenAiModelId}_{cardVm.Note.Id}.txt";
         var cacheFilePath = Path.Combine(Settings.GptResponseCacheDirectory, cacheFileName);
         return cacheFilePath;
     }
 
-    private static async Task TryUpdateViewModelWithEvaluationData(FlashcardViewModel flashcardVm)
+    private static async Task TryUpdateViewModelWithEvaluationData(CardViewModel cardVm)
     {
-        var cacheFilePath = GenerateCacheFilePath(flashcardVm);
+        var cacheFilePath = GenerateCacheFilePath(cardVm);
         if (!File.Exists(cacheFilePath)) return;
 
         var cacheContent = await File.ReadAllTextAsync(cacheFilePath);
@@ -148,14 +148,14 @@ public partial class MainWindow : Window
             throw new InvalidOperationException("Failed to deserialize cache content.");
         }
 
-        flashcardVm.CefrLevel = cached.Evaluation.CEFR;
-        flashcardVm.QualityIssues = cached.Evaluation.Issues;
-        flashcardVm.RawResponseFromChatGptApi = cached.RawChatGptResponse;
+        cardVm.CefrLevelQuestion = cached.Evaluation.CEFR;
+        cardVm.QualityIssues = cached.Evaluation.Issues;
+        cardVm.RawResponseFromChatGptApi = cached.RawChatGptResponse;
 
-        flashcardVm.Meanings.Clear();
+        cardVm.Meanings.Clear();
         foreach (var meaning in cached.Evaluation.Meanings)
         {
-            flashcardVm.Meanings.Add(meaning);
+            cardVm.Meanings.Add(meaning);
         }
     }
 
@@ -172,7 +172,7 @@ public partial class MainWindow : Window
     {
         // we can skip cards with no duplicates for performance; they won't be needed in the flow
         var flashcardsWithDuplicates = ViewModel.Flashcards
-            .Where(x => x.DuplicatesOfFrontSide.Count > 0 || x.DuplicatesOfBackSide.Count > 0)
+            .Where(x => x.DuplicatesOfQuestion.Count > 0 || x.DuplicatesOfAnswer.Count > 0)
             .ToList();
 
         var resolveDuplicatesTool = new ResolveDuplicatesTool(flashcardsWithDuplicates);
