@@ -5,9 +5,22 @@ namespace AnkiCardValidator.Utilities;
 /// <summary>
 /// Provides information about the frequency of words' occurrence in a language.
 /// </summary>
-public class FrequencyDataProvider(NormalFormProvider normalFormProvider, string frequencyDictionaryFilePath)
+public class FrequencyDataProvider
 {
     private readonly Dictionary<string, int> _frequencyData = new(StringComparer.OrdinalIgnoreCase);
+    private readonly NormalFormProvider _normalFormProvider;
+    private readonly string _frequencyDictionaryFilePath;
+
+    /// <summary>
+    /// Provides information about the frequency of words' occurrence in a language.
+    /// </summary>
+    public FrequencyDataProvider(NormalFormProvider normalFormProvider, string frequencyDictionaryFilePath)
+    {
+        _normalFormProvider = normalFormProvider;
+        _frequencyDictionaryFilePath = frequencyDictionaryFilePath;
+
+        LoadFrequencyData();
+    }
 
     /// <summary>
     /// Read data from a text file (over 1,000,000 rows) and store it in memory for efficient lookup of frequency.
@@ -21,11 +34,11 @@ public class FrequencyDataProvider(NormalFormProvider normalFormProvider, string
     /// The file is sorted by the number of occurrences in descending order. This service should allow look up the position of a word in the dataset.
     /// We are not interested in the actual number of occurrences, only the position of the word in the dataset.
     /// </summary>
-    public void LoadFrequencyData()
+    private void LoadFrequencyData()
     {
         if (_frequencyData.Any()) return;
 
-        var lines = File.ReadAllLines(frequencyDictionaryFilePath);
+        var lines = File.ReadAllLines(_frequencyDictionaryFilePath);
         for (var i = 0; i < lines.Length; i++)
         {
             var line = lines[i];
@@ -56,6 +69,6 @@ public class FrequencyDataProvider(NormalFormProvider normalFormProvider, string
 
     public string SanitizeWordForFrequencyCheck(string input)
     {
-        return normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(input);
+        return _normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(input);
     }
 }

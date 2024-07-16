@@ -60,6 +60,10 @@
                 VerticalGridLinesBrush="Transparent">
                 <DataGrid.Columns>
                     <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding DirectionFlag, Mode=OneWay}"
+                        Header="Direction" />
+                    <DataGridTextColumn
                         Width="2*"
                         Binding="{Binding Note.FrontSide, Mode=OneWay}"
                         Header="Question" />

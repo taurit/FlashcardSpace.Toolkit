@@ -15,7 +15,6 @@ public class FrequencyDataProviderTest
         // Time-consuming operation, so it's done only once for all tests
         var sw = Stopwatch.StartNew();
         _sut = new FrequencyDataProvider(new NormalFormProvider(), Settings.FrequencyDictionarySpanish);
-        _sut.LoadFrequencyData();
         sw.Stop();
 
         // Assert

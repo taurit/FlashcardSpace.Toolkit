@@ -7,21 +7,18 @@ public static class StringHelpers
 
     public static bool IsStringLikelyInSpanishLanguage(String query)
     {
-        var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
         // "Óó" is shared by Polish and Spanish, so let's try heuristics
         // "kroplówka" still was Spanish... I'll change to be more conservative and treat "ó" as non-decisive letter
         var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
+        var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
+        var containsFrequentSpanishWords = ContainsCommonSpanishWords(query);
+        var containsFrequentPolishWords = ContainsCommonPolishWords(query);
 
-        var containsFrequentSpanishWords = CommonSpanishWords
-            .Any(x =>
-                query.Contains($" {x} ", StringComparison.InvariantCultureIgnoreCase) ||
-                query.StartsWith($"{x} ", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}.", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
-                );
-        var containsFrequentPolishWords = CommonPolishWords
+        return (containsSpanishCharacters || containsFrequentSpanishWords) && !containsPolishCharacters && !containsFrequentPolishWords;
+    }
+
+    private static bool ContainsCommonSpanishWords(string query) =>
+        CommonSpanishWords
             .Any(x =>
                 query.Contains($" {x} ", StringComparison.InvariantCultureIgnoreCase) ||
                 query.StartsWith($"{x} ", StringComparison.InvariantCultureIgnoreCase) ||
@@ -30,6 +27,25 @@ public static class StringHelpers
                 query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
                 query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
             );
-        return (containsSpanishCharacters || containsFrequentSpanishWords) && !containsPolishCharacters && !containsFrequentPolishWords;
+
+    private static bool ContainsCommonPolishWords(string query) =>
+        CommonPolishWords
+            .Any(x =>
+                query.Contains($" {x} ", StringComparison.InvariantCultureIgnoreCase) ||
+                query.StartsWith($"{x} ", StringComparison.InvariantCultureIgnoreCase) ||
+                query.EndsWith($" {x}", StringComparison.InvariantCultureIgnoreCase) ||
+                query.EndsWith($" {x}.", StringComparison.InvariantCultureIgnoreCase) ||
+                query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
+                query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
+            );
+
+    public static bool IsStringLikelyInPolishLanguage(string query)
+    {
+        var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
+        var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
+        var containsFrequentSpanishWords = ContainsCommonSpanishWords(query);
+        var containsFrequentPolishWords = ContainsCommonPolishWords(query);
+
+        return (containsPolishCharacters || containsFrequentPolishWords) && !containsSpanishCharacters && !containsFrequentSpanishWords;
     }
 }

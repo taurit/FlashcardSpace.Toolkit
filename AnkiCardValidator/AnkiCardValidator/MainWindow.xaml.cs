@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     readonly FrequencyDataProvider _polishFrequencyDataProvider;
     readonly DuplicateDetector _duplicateDetector;
     readonly DefinitionCounter _definitionCounter;
+    readonly FlashcardDirectionDetector _directionDetector;
 
     public MainWindow()
     {
@@ -31,19 +32,21 @@ public partial class MainWindow : Window
         _definitionCounter = new();
         _spanishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionarySpanish);
         _polishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionaryPolish);
+        _directionDetector = new(_polishFrequencyDataProvider, _spanishFrequencyDataProvider);
     }
 
     private async void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
     {
         var sw = Stopwatch.StartNew();
-        _spanishFrequencyDataProvider.LoadFrequencyData();
-        _polishFrequencyDataProvider.LoadFrequencyData();
 
         var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePath, "1. Spanish", null);
         ViewModel.Flashcards.Clear();
 
         foreach (var note in notes)
         {
+            // todo handle bi-directional notes (add 2 flashcards then)
+            var direction = _directionDetector.DetectDirectionOfACard(note);
+
             // Here's a hack for inconsistent conventions in the dataset. Sometimes Polish and Spanish sides are swapped.
             // So we should swap the dictionaries during the check
             var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(note.FrontSide) ??
@@ -56,7 +59,7 @@ public partial class MainWindow : Window
             var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
             var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
 
-            var flashcardViewModel = new CardViewModel(note, duplicatesFront, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
+            var flashcardViewModel = new CardViewModel(note, direction, duplicatesFront, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
             ViewModel.Flashcards.Add(flashcardViewModel);
         }
@@ -66,6 +69,8 @@ public partial class MainWindow : Window
         sw.Stop();
         MessageBox.Show($"Loaded {ViewModel.Flashcards.Count} flashcards in {sw.ElapsedMilliseconds} ms.");
     }
+
+
 
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {

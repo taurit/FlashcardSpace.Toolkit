@@ -23,6 +23,7 @@ public sealed class CardViewModel(
     AnkiNote note,
 
     // derived from source data locally
+    FlashcardDirection direction,
     List<AnkiNote> duplicatesQuestion,
     int? frequencyPositionQuestion,
     int? frequencyPositionAnswer,
@@ -39,6 +40,14 @@ public sealed class CardViewModel(
     public AnkiNote Note { get; } = note;
 
     // quality signals calculated locally
+    public FlashcardDirection Direction { get; } = direction;
+    [DependsOn(nameof(Direction))]
+    public string DirectionFlag => Direction == FlashcardDirection.QuestionInPolish
+        ? "\ud83c\uddf5\ud83c\uddf1" // Polish flag emoji
+        : "\ud83c\uddea\ud83c\uddf8" // Spanish flag emoji
+    ;
+
+
     public int? FrequencyPositionQuestion { get; } = frequencyPositionQuestion;
     public int? FrequencyPositionAnswer { get; } = frequencyPositionAnswer;
 
@@ -73,6 +82,8 @@ public sealed class CardViewModel(
 
     // data derived from ChatGPT response
     [DependsOn(nameof(QualityIssues))] private bool HasQualityIssues => !String.IsNullOrWhiteSpace(QualityIssues);
+
+
 
     [DependsOn(nameof(CefrLevelQuestion), nameof(HasQualityIssues), nameof(Meanings), nameof(NumDefinitionsForQuestion), nameof(NumDefinitionsForAnswer))]
     public int Penalty =>
