@@ -7,6 +7,7 @@ public class NormalFormProvider
     private readonly Dictionary<string, string> _normalizedStringsCache = new();
     private static readonly Regex ParenthesesRegex = new(@"\([^)]*\)", RegexOptions.Compiled);
     private static readonly Regex BrRegex = new(@"<br\s*/?>.*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex HtmlTagsRegex = new("<.*?>", RegexOptions.Compiled);
 
     public NormalFormProvider()
     {
@@ -42,6 +43,9 @@ public class NormalFormProvider
 
         // remove everything after `<br />`, `<br>`, `<br/>`, `<br    />` if it's found
         sanitized = BrRegex.Replace(sanitized, "");
+
+        // remove all HTML tags
+        sanitized = HtmlTagsRegex.Replace(sanitized, string.Empty);
 
         // remove everything in parentheses
         sanitized = ParenthesesRegex.Replace(sanitized, "");
