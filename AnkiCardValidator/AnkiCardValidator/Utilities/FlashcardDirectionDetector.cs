@@ -10,7 +10,6 @@ public class FlashcardDirectionDetector(FrequencyDataProvider polishFrequencyDat
         var isAnswerLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.BackSide);
         var isAnswerLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.BackSide);
 
-
         if (isQuestionLikelyInPolish && isAnswerLikelyInSpanish)
         {
             // most certain case
@@ -41,20 +40,43 @@ public class FlashcardDirectionDetector(FrequencyDataProvider polishFrequencyDat
         var answerPositionInSpanishFrequencyDictionary = spanishFrequencyDataProvider.GetPosition(note.BackSide);
 
         if (questionPositionInPolishFrequencyDictionary.HasValue && answerPositionInSpanishFrequencyDictionary.HasValue)
-        {
             return FlashcardDirection.QuestionInPolish;
-        }
 
         if (questionPositionInSpanishFrequencyDictionary.HasValue && answerPositionInPolishFrequencyDictionary.HasValue)
-        {
             return FlashcardDirection.QuestionInSpanish;
-        }
 
         if (questionPositionInPolishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInPolish;
         if (questionPositionInSpanishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInSpanish;
         if (answerPositionInPolishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInSpanish;
         if (answerPositionInSpanishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInPolish;
 
+        // also use frequency dictionary heuristic if a term has more than 1 word...
+        var wordsInQuestion = note.FrontSide.Split(' ');
+        var wordsInAnswer = note.BackSide.Split(' ');
+        var allWordsInQuestionArePresentInPolishDictionary = wordsInQuestion.All(
+            x => polishFrequencyDataProvider.GetPosition(x).HasValue
+        );
+        var allWordsInQuestionArePresentInSpanishDictionary = wordsInQuestion.All(
+            x => spanishFrequencyDataProvider.GetPosition(x).HasValue
+        );
+        var allWordsInAnswerArePresentInPolishDictionary = wordsInAnswer.All(
+            x => polishFrequencyDataProvider.GetPosition(x).HasValue
+        );
+        var allWordsInAnswerArePresentInSpanishDictionary = wordsInAnswer.All(
+            x => spanishFrequencyDataProvider.GetPosition(x).HasValue
+        );
+        if (allWordsInQuestionArePresentInPolishDictionary && allWordsInAnswerArePresentInSpanishDictionary)
+            return FlashcardDirection.QuestionInPolish;
+        if (allWordsInQuestionArePresentInSpanishDictionary && allWordsInAnswerArePresentInPolishDictionary)
+            return FlashcardDirection.QuestionInSpanish;
+        if (allWordsInQuestionArePresentInPolishDictionary)
+            return FlashcardDirection.QuestionInPolish;
+        if (allWordsInQuestionArePresentInSpanishDictionary)
+            return FlashcardDirection.QuestionInSpanish;
+        if (allWordsInAnswerArePresentInSpanishDictionary)
+            return FlashcardDirection.QuestionInPolish;
+        if (allWordsInAnswerArePresentInPolishDictionary)
+            return FlashcardDirection.QuestionInSpanish;
 
         throw new NotImplementedException($"Could not decide. Front={note.FrontSide}. Back={note.BackSide}");
     }
