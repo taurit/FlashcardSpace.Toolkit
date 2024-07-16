@@ -112,7 +112,7 @@ public class FrequencyPenaltyToColorConverter : IValueConverter
             };
         }
 
-        return Brushes.Transparent;
+        return Brushes.Orange;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

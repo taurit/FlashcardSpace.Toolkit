@@ -72,7 +72,7 @@ public sealed class CardViewModel(
         (Meanings.Count > 0 ? Meanings.Count - 1 : 0) +
 
         // ChatGPT raised at least one quality issue
-        (HasQualityIssues ? 1 : 0) +
+        (HasQualityIssues ? 2 : 0) +
 
         // Question appears to have duplicates in the Anki collection
         DuplicatesOfQuestion.Count +
@@ -84,15 +84,14 @@ public sealed class CardViewModel(
 
         // no frequency data - this can be false negative, if term is a sentence, or HTML tags weren't sanitized.
         // I can improve false alarms with heuristics
-        (FrequencyPositionQuestion.HasValue ? 0 : 1) +
-        (FrequencyPositionAnswer.HasValue ? 0 : 1) +
+        (FrequencyPositionQuestion.HasValue ? 0 : 2) +
+        (FrequencyPositionAnswer.HasValue ? 0 : 2) +
 
         // frequency data exists and suggests that Spanish word is used very infrequently
         (FrequencyPositionQuestion.HasValue ? CalculateFrequencyPenalty(FrequencyPositionQuestion.Value) : 0) +
 
         // same for polish side
-        (FrequencyPositionAnswer.HasValue ? CalculateFrequencyPenalty(FrequencyPositionAnswer.Value) : 0)
-        ;
+        (FrequencyPositionAnswer.HasValue ? CalculateFrequencyPenalty(FrequencyPositionAnswer.Value) : 0);
 
     private int CalculateFrequencyPenalty(int position) => position switch
     {
