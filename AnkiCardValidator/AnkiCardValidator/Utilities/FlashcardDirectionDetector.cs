@@ -1,7 +1,7 @@
 ﻿using AnkiCardValidator.Models;
 
 namespace AnkiCardValidator.Utilities;
-public class FlashcardDirectionDetector(FrequencyDataProvider polishFrequencyDataProvider, FrequencyDataProvider spanishFrequencyDataProvider)
+public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, FrequencyDataProvider polishFrequencyDataProvider, FrequencyDataProvider spanishFrequencyDataProvider)
 {
     public FlashcardDirection DetectDirectionOfACard(AnkiNote note)
     {
@@ -51,32 +51,69 @@ public class FlashcardDirectionDetector(FrequencyDataProvider polishFrequencyDat
         if (answerPositionInSpanishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInPolish;
 
         // also use frequency dictionary heuristic if a term has more than 1 word...
-        var wordsInQuestion = note.FrontSide.Split(' ');
-        var wordsInAnswer = note.BackSide.Split(' ');
-        var allWordsInQuestionArePresentInPolishDictionary = wordsInQuestion.All(
-            x => polishFrequencyDataProvider.GetPosition(x).HasValue
-        );
-        var allWordsInQuestionArePresentInSpanishDictionary = wordsInQuestion.All(
+        var wordsInQuestion = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(note.FrontSide).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var wordsInAnswer = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(note.BackSide).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        var numQuestionWordsPresentInSpanishDictionary = wordsInQuestion.Count(
             x => spanishFrequencyDataProvider.GetPosition(x).HasValue
         );
-        var allWordsInAnswerArePresentInPolishDictionary = wordsInAnswer.All(
+        var numQuestionWordsPresentInPolishDictionary = wordsInQuestion.Count(
             x => polishFrequencyDataProvider.GetPosition(x).HasValue
         );
-        var allWordsInAnswerArePresentInSpanishDictionary = wordsInAnswer.All(
+
+        if (numQuestionWordsPresentInPolishDictionary != numQuestionWordsPresentInSpanishDictionary)
+            return numQuestionWordsPresentInPolishDictionary > numQuestionWordsPresentInSpanishDictionary
+                ? FlashcardDirection.QuestionInPolish
+                : FlashcardDirection.QuestionInSpanish;
+        var numAnswerWordsPresentInSpanishDictionary = wordsInAnswer.Count(
             x => spanishFrequencyDataProvider.GetPosition(x).HasValue
         );
-        if (allWordsInQuestionArePresentInPolishDictionary && allWordsInAnswerArePresentInSpanishDictionary)
-            return FlashcardDirection.QuestionInPolish;
-        if (allWordsInQuestionArePresentInSpanishDictionary && allWordsInAnswerArePresentInPolishDictionary)
-            return FlashcardDirection.QuestionInSpanish;
-        if (allWordsInQuestionArePresentInPolishDictionary)
-            return FlashcardDirection.QuestionInPolish;
-        if (allWordsInQuestionArePresentInSpanishDictionary)
-            return FlashcardDirection.QuestionInSpanish;
-        if (allWordsInAnswerArePresentInSpanishDictionary)
-            return FlashcardDirection.QuestionInPolish;
-        if (allWordsInAnswerArePresentInPolishDictionary)
-            return FlashcardDirection.QuestionInSpanish;
+        var numAnswerWordsPresentInPolishDictionary = wordsInAnswer.Count(
+            x => polishFrequencyDataProvider.GetPosition(x).HasValue
+        );
+        if (numAnswerWordsPresentInPolishDictionary != numAnswerWordsPresentInSpanishDictionary)
+            return numAnswerWordsPresentInPolishDictionary > numAnswerWordsPresentInSpanishDictionary
+                ? FlashcardDirection.QuestionInSpanish
+                : FlashcardDirection.QuestionInPolish;
+
+        // words present in both frequency dictionaries... compare their positions
+        var questionAveragePositionInPolishDictionary = wordsInQuestion
+            .Select(polishFrequencyDataProvider.GetPosition)
+            .Where(x => x.HasValue)
+            .Select(x => x!.Value)
+            .DefaultIfEmpty(int.MaxValue)
+            .Average();
+        var answerAveragePositionInPolishDictionary = wordsInAnswer
+            .Select(polishFrequencyDataProvider.GetPosition)
+            .Where(x => x.HasValue)
+            .Select(x => x!.Value)
+            .DefaultIfEmpty(int.MaxValue)
+            .Average();
+        var questionAveragePositionInSpanishDictionary = wordsInQuestion
+            .Select(spanishFrequencyDataProvider.GetPosition)
+            .Where(x => x.HasValue)
+            .Select(x => x!.Value)
+            .DefaultIfEmpty(int.MaxValue)
+            .Average();
+        var answerAveragePositionInSpanishDictionary = wordsInAnswer
+            .Select(spanishFrequencyDataProvider.GetPosition)
+            .Where(x => x.HasValue)
+            .Select(x => x!.Value)
+            .DefaultIfEmpty(int.MaxValue)
+            .Average();
+
+        if (questionAveragePositionInPolishDictionary < answerAveragePositionInPolishDictionary)
+        {
+            if (questionAveragePositionInPolishDictionary < questionAveragePositionInSpanishDictionary)
+                return FlashcardDirection.QuestionInPolish;
+            else return FlashcardDirection.QuestionInSpanish;
+        }
+        else
+        {
+            if (answerAveragePositionInPolishDictionary < answerAveragePositionInSpanishDictionary)
+                return FlashcardDirection.QuestionInSpanish;
+            else return FlashcardDirection.QuestionInPolish;
+        }
 
         throw new NotImplementedException($"Could not decide. Front={note.FrontSide}. Back={note.BackSide}");
     }

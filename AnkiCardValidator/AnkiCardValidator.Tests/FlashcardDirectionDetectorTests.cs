@@ -7,12 +7,12 @@ namespace AnkiCardValidator.Tests;
 [TestClass]
 public class FlashcardDirectionDetectorTests
 {
-    private static FlashcardDirectionDetector sut;
+    private static FlashcardDirectionDetector _sut = null!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-        sut = GetSut();
+        _sut = GetSut();
     }
 
     [DataTestMethod]
@@ -25,13 +25,20 @@ public class FlashcardDirectionDetectorTests
     [DataRow("el caso", "przypadek", FlashcardDirection.QuestionInSpanish)]
     [DataRow("cuidadoso", "uważny", FlashcardDirection.QuestionInSpanish)]
     [DataRow("sin embargo", "pomimo to, niemniej jednak", FlashcardDirection.QuestionInSpanish)]
+    [DataRow("Uruchom Todoist zminimalizowany", "Empezar Todoist minimizado", FlashcardDirection.QuestionInPolish)]
+    [DataRow("sin embargo", "", FlashcardDirection.QuestionInSpanish)]
+    [DataRow("bohater", "", FlashcardDirection.QuestionInPolish)]
+    [DataRow("abrir", "", FlashcardDirection.QuestionInSpanish)]
+    [DataRow("otwierać", "", FlashcardDirection.QuestionInPolish)]
+    [DataRow("", "sin embargo", FlashcardDirection.QuestionInPolish)]
+    [DataRow("", "otwierać", FlashcardDirection.QuestionInSpanish)]
     public void DetectDirectionOfACard(string frontSide, string backSide, FlashcardDirection expectedDirection)
     {
         // Arrange
         var note = new AnkiNote(0, frontSide, backSide, "");
 
         // Act
-        var direction = sut.DetectDirectionOfACard(note);
+        var direction = _sut.DetectDirectionOfACard(note);
 
         // Assert
         direction.Should().Be(expectedDirection);
@@ -42,7 +49,7 @@ public class FlashcardDirectionDetectorTests
         var normalFormProvider = new NormalFormProvider();
         var polishFrequencyDataProvider = new FrequencyDataProvider(normalFormProvider, Settings.FrequencyDictionaryPolish);
         var spanishFrequencyDataProvider = new FrequencyDataProvider(normalFormProvider, Settings.FrequencyDictionarySpanish);
-        var flashcardDirectionDetector = new FlashcardDirectionDetector(polishFrequencyDataProvider, spanishFrequencyDataProvider);
+        var flashcardDirectionDetector = new FlashcardDirectionDetector(normalFormProvider, polishFrequencyDataProvider, spanishFrequencyDataProvider);
         return flashcardDirectionDetector;
     }
 }

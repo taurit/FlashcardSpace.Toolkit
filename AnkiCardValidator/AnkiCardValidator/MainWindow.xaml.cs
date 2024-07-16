@@ -32,7 +32,7 @@ public partial class MainWindow : Window
         _definitionCounter = new();
         _spanishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionarySpanish);
         _polishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionaryPolish);
-        _directionDetector = new(_polishFrequencyDataProvider, _spanishFrequencyDataProvider);
+        _directionDetector = new(_normalFormProvider, _polishFrequencyDataProvider, _spanishFrequencyDataProvider);
     }
 
     private async void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
