@@ -68,6 +68,7 @@ public class FrequencyDataProviderTest
     [DataRow("1) człowiek<br />2) mężczyzna", "człowiek")]
     [DataRow("droga<br />(szlak, metaforyczne pojęcie)", "droga")]
     [DataRow("statek *", "statek")]
+    [DataRow("1) terco<br>2) testarudo", "terco")]
     public void FrequencyDataProviderTests(string word, string expectedSanitizedWord)
     {
         // Act

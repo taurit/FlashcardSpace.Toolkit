@@ -6,6 +6,7 @@ public class NormalFormProvider
 {
     private readonly Dictionary<string, string> _normalizedStringsCache = new();
     private static readonly Regex ParenthesesRegex = new(@"\([^)]*\)", RegexOptions.Compiled);
+    private static readonly Regex BrRegex = new(@"<br\s*/?>.*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public NormalFormProvider()
     {
@@ -39,12 +40,8 @@ public class NormalFormProvider
     {
         var sanitized = input;
 
-        // remove everything after `<br />` if it's found
-        var indexOfBr = sanitized.IndexOf("<br />", StringComparison.OrdinalIgnoreCase);
-        if (indexOfBr != -1)
-        {
-            sanitized = sanitized.Substring(0, indexOfBr);
-        }
+        // remove everything after `<br />`, `<br>`, `<br/>`, `<br    />` if it's found
+        sanitized = BrRegex.Replace(sanitized, "");
 
         // remove everything in parentheses
         sanitized = ParenthesesRegex.Replace(sanitized, "");
