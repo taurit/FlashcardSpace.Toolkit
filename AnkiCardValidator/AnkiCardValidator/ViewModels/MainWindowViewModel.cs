@@ -51,7 +51,24 @@ public sealed class CardViewModel(
     public string? RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;
 
     public CefrClassification CefrLevelQuestion { get; set; } = cefrLevelQuestion;
-    public string? QualityIssues { get; set; } = qualityIssues;
+
+    public string? QualityIssues { get; set; } =
+        (qualityIssues is not null &&
+         (
+             qualityIssues.StartsWith("None") ||
+             qualityIssues.StartsWith("Fine") ||
+             qualityIssues.StartsWith("No issues") ||
+             qualityIssues.StartsWith("No notable issues") ||
+             qualityIssues.StartsWith("No significant issues") ||
+             qualityIssues.StartsWith("All good") ||
+             qualityIssues.StartsWith("No need for extra notes") ||
+             qualityIssues.StartsWith("Duplicate flashcard") ||
+             qualityIssues.StartsWith("Duplicate entry")
+         )
+        )
+            ? null
+            : qualityIssues;
+
     public ObservableCollection<Meaning> Meanings { get; init; } = [];
 
     // data derived from ChatGPT response
