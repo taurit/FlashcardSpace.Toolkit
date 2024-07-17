@@ -5,54 +5,63 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
 {
     public FlashcardDirection DetectDirectionOfACard(AnkiNote note)
     {
+        var detectedDirectionOfACard = TryDetermineDirectionBasedOnAlphabet(note) ??
+                                       TryDetermineDirectionBasedOnFrequencyDictionaryPresence(note) ??
+                                       TryDetermineDirectionBasedOnFrequencyDictionaryPresenceOfWords(note)
+                                       ;
+
+        if (detectedDirectionOfACard.HasValue) return detectedDirectionOfACard.Value;
+
+        throw new NotImplementedException($"Could not decide. Front={note.FrontSide}. Back={note.BackSide}");
+    }
+
+    private static FlashcardDirection? TryDetermineDirectionBasedOnAlphabet(AnkiNote note)
+    {
         var isQuestionLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.FrontSide);
         var isQuestionLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.FrontSide);
         var isAnswerLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.BackSide);
         var isAnswerLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.BackSide);
 
-        if (isQuestionLikelyInPolish && isAnswerLikelyInSpanish)
-        {
-            // most certain case
-            return FlashcardDirection.QuestionInPolish;
-        }
+        if (isQuestionLikelyInPolish && isAnswerLikelyInSpanish) return FlashcardDirection.QuestionInPolish;
+        if (isQuestionLikelyInSpanish && isAnswerLikelyInPolish) return FlashcardDirection.QuestionInSpanish;
+        if (isQuestionLikelyInPolish) return FlashcardDirection.QuestionInPolish;
+        if (isQuestionLikelyInSpanish) return FlashcardDirection.QuestionInSpanish;
+        if (isAnswerLikelyInPolish) return FlashcardDirection.QuestionInSpanish;
+        if (isAnswerLikelyInSpanish) return FlashcardDirection.QuestionInPolish;
 
-        if (isQuestionLikelyInSpanish && isAnswerLikelyInPolish)
-        {
-            // most certain case
-            return FlashcardDirection.QuestionInSpanish;
-        }
+        return null;
+    }
 
-        if (isQuestionLikelyInPolish)
-            return FlashcardDirection.QuestionInPolish;
-
-        if (isQuestionLikelyInSpanish)
-            return FlashcardDirection.QuestionInSpanish;
-
-        if (isAnswerLikelyInPolish)
-            return FlashcardDirection.QuestionInSpanish;
-
-        if (isAnswerLikelyInSpanish)
-            return FlashcardDirection.QuestionInPolish;
-
+    private FlashcardDirection? TryDetermineDirectionBasedOnFrequencyDictionaryPresence(AnkiNote note)
+    {
         var questionPositionInPolishFrequencyDictionary = polishFrequencyDataProvider.GetPosition(note.FrontSide);
         var questionPositionInSpanishFrequencyDictionary = spanishFrequencyDataProvider.GetPosition(note.FrontSide);
         var answerPositionInPolishFrequencyDictionary = polishFrequencyDataProvider.GetPosition(note.BackSide);
         var answerPositionInSpanishFrequencyDictionary = spanishFrequencyDataProvider.GetPosition(note.BackSide);
 
-        if (questionPositionInPolishFrequencyDictionary.HasValue && answerPositionInSpanishFrequencyDictionary.HasValue)
+        if (questionPositionInPolishFrequencyDictionary.HasValue &&
+            !questionPositionInSpanishFrequencyDictionary.HasValue &&
+            answerPositionInSpanishFrequencyDictionary.HasValue &&
+            !answerPositionInPolishFrequencyDictionary.HasValue)
             return FlashcardDirection.QuestionInPolish;
 
-        if (questionPositionInSpanishFrequencyDictionary.HasValue && answerPositionInPolishFrequencyDictionary.HasValue)
+        if (!questionPositionInPolishFrequencyDictionary.HasValue &&
+            questionPositionInSpanishFrequencyDictionary.HasValue &&
+            !answerPositionInSpanishFrequencyDictionary.HasValue &&
+            answerPositionInPolishFrequencyDictionary.HasValue)
             return FlashcardDirection.QuestionInSpanish;
 
-        if (questionPositionInPolishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInPolish;
-        if (questionPositionInSpanishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInSpanish;
-        if (answerPositionInPolishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInSpanish;
-        if (answerPositionInSpanishFrequencyDictionary.HasValue) return FlashcardDirection.QuestionInPolish;
+        return null;
+    }
 
-        // also use frequency dictionary heuristic if a term has more than 1 word...
-        var wordsInQuestion = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(note.FrontSide).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var wordsInAnswer = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(note.BackSide).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    private FlashcardDirection? TryDetermineDirectionBasedOnFrequencyDictionaryPresenceOfWords(AnkiNote note)
+    {
+        var wordsInQuestion = normalFormProvider
+            .GetNormalizedFormOfLearnedTermWithCache(note.FrontSide)
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var wordsInAnswer = normalFormProvider
+            .GetNormalizedFormOfLearnedTermWithCache(note.BackSide)
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         var numQuestionWordsPresentInSpanishDictionary = wordsInQuestion.Count(
             x => spanishFrequencyDataProvider.GetPosition(x).HasValue
@@ -102,19 +111,19 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
             .DefaultIfEmpty(int.MaxValue)
             .Average();
 
-        if (questionAveragePositionInPolishDictionary < answerAveragePositionInPolishDictionary)
-        {
-            if (questionAveragePositionInPolishDictionary < questionAveragePositionInSpanishDictionary)
-                return FlashcardDirection.QuestionInPolish;
-            else return FlashcardDirection.QuestionInSpanish;
-        }
-        else
-        {
-            if (answerAveragePositionInPolishDictionary < answerAveragePositionInSpanishDictionary)
-                return FlashcardDirection.QuestionInSpanish;
-            else return FlashcardDirection.QuestionInPolish;
-        }
+        var questionSeemsInPolish = questionAveragePositionInPolishDictionary < questionAveragePositionInSpanishDictionary;
+        var questionSeemsInSpanish = questionAveragePositionInPolishDictionary > questionAveragePositionInSpanishDictionary;
+        var answerSeemsInPolish = answerAveragePositionInPolishDictionary < answerAveragePositionInSpanishDictionary;
+        var answerSeemsInSpanish = answerAveragePositionInPolishDictionary > answerAveragePositionInSpanishDictionary;
 
-        throw new NotImplementedException($"Could not decide. Front={note.FrontSide}. Back={note.BackSide}");
+        if (questionSeemsInPolish && answerSeemsInSpanish) return FlashcardDirection.QuestionInPolish;
+        if (questionSeemsInSpanish && answerSeemsInPolish) return FlashcardDirection.QuestionInSpanish;
+        if (questionSeemsInPolish) return FlashcardDirection.QuestionInPolish;
+        if (questionSeemsInSpanish) return FlashcardDirection.QuestionInSpanish;
+        if (answerSeemsInPolish) return FlashcardDirection.QuestionInSpanish;
+        if (answerSeemsInSpanish) return FlashcardDirection.QuestionInPolish;
+
+        return null;
     }
+
 }
