@@ -8,6 +8,7 @@ public class NormalFormProvider
     private static readonly Regex ParenthesesRegex = new(@"\([^)]*\)", RegexOptions.Compiled);
     private static readonly Regex BrRegex = new(@"<br\s*/?>.*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex HtmlTagsRegex = new("<.*?>", RegexOptions.Compiled);
+    private static readonly Regex NbspRegex = new("&nbsp;", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public NormalFormProvider()
     {
@@ -40,6 +41,9 @@ public class NormalFormProvider
     private static string GetNormalizedFormOfLearnedTerm(string input)
     {
         var sanitized = input;
+
+        // replace &nbsp; with a space
+        sanitized = NbspRegex.Replace(sanitized, " ");
 
         // remove everything after `<br />`, `<br>`, `<br/>`, `<br    />` if it's found
         sanitized = BrRegex.Replace(sanitized, "");

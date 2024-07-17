@@ -72,6 +72,9 @@ public class FrequencyDataProviderTest
     [DataRow("<div>terco<br/>obstinado</div>", "terco")]
     [DataRow("<div>ter<strong>co</strong><br/>obstinado</div>", "terco")]
     [DataRow("<testTag/>te<testTag>r<testTag />co<testTag  />", "terco")]
+    [DataRow("el&nbsp;lavavajillas", "lavavajillas")]
+    [DataRow("el&NBSP;lavavajillas", "lavavajillas")]
+    [DataRow("<div> </div> <div>&nbsp;zmywarka</div>", "zmywarka")]
     public void FrequencyDataProviderTests(string word, string expectedSanitizedWord)
     {
         // Act

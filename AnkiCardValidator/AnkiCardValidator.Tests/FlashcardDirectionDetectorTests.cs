@@ -39,6 +39,7 @@ public class FlashcardDirectionDetectorTests
     [DataRow("torcer", "skręcać", FlashcardDirection.QuestionInSpanish)]
     [DataRow("yo", "ja", FlashcardDirection.QuestionInSpanish)]
     [DataRow("cero", "zero", FlashcardDirection.QuestionInSpanish)]
+    [DataRow("el&nbsp;lavavajillas", "<div> </div> <div>&nbsp;zmywarka</div>", FlashcardDirection.QuestionInSpanish)]
     public void DetectDirectionOfACard(string frontSide, string backSide, FlashcardDirection expectedDirection)
     {
         // Arrange
