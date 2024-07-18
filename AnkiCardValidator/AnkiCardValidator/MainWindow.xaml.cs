@@ -126,6 +126,7 @@ public partial class MainWindow : Window
             WriteIndented = true
         };
 
+        int numEvaluatedChunks = 0;
         foreach (var chunk in chunksToEvaluate)
         {
             // sanity check 
@@ -151,9 +152,13 @@ public partial class MainWindow : Window
 
                 i++;
             }
+
+            numEvaluatedChunks++;
+            ViewModel.StatusMessage = $"Evaluated {numEvaluatedChunks} of {chunksToEvaluate.Count} chunks of cards.";
         }
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
+        ViewModel.StatusMessage = $"Evaluated quality of all requested cards.";
     }
 
     private async Task ReloadFlashcardsEvaluationAndSortByMostPromising()
