@@ -212,7 +212,8 @@ public partial class MainWindow : Window
         var cardsWithAcceptablePenalty = ViewModel.Flashcards
             .Where(x => x.Penalty <= 1) // change to 0 for perfect cards
             .ToList();
-        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, cardsWithAcceptablePenalty, "modified");
+        var numModifiedNotes = AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, cardsWithAcceptablePenalty, "modified");
+        ViewModel.StatusMessage = $"Tagged {numModifiedNotes} cards.";
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }

@@ -92,10 +92,14 @@ public static class AnkiHelpers
         return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
     }
 
-    public static void AddTagToNotes(string ankiDatabasePath, List<CardViewModel> cardsWithNoPenalty, string tagToAdd)
+    public static int AddTagToNotes(string ankiDatabasePath, List<CardViewModel> cardsWithNoPenalty, string tagToAdd)
     {
         // tradeoff for simplicity: it's enough that one card has no penalty to add the tag to the note
         // (even though the reverse of the card might have some penalty)
+        using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};");
+        connection.Open();
+
+        int numTaggedCards = 0;
 
         foreach (var noteVm in cardsWithNoPenalty)
         {
@@ -112,9 +116,6 @@ public static class AnkiHelpers
             var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
 
             // update tags string for the current note in the Anki database
-            using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};Version=3;");
-            connection.Open();
-
             var query = $@"
                 UPDATE notes
                 SET tags = '{tagsAfterAdding}'
@@ -127,11 +128,12 @@ public static class AnkiHelpers
             {
                 throw new InvalidOperationException($"Expected to update exactly one row, but updated {numRowsAffected} rows.");
             }
+            numTaggedCards++;
 
             noteVm.Note.Tags = tagsAfterAdding;
         }
 
-        Debug.WriteLine("Finished adding tags");
+        return numTaggedCards;
     }
 
     /// <summary>
