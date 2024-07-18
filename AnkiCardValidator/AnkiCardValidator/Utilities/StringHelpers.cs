@@ -11,7 +11,9 @@ public static class StringHelpers
         // "kroplówka" still was Spanish... I'll change to be more conservative and treat "ó" as non-decisive letter
         var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
         var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
-        var containsFrequentSpanishWords = ContainsCommonSpanishWords(query);
+
+        // performance optimization to not run function unless necessary
+        var containsFrequentSpanishWords = containsSpanishCharacters || ContainsCommonSpanishWords(query);
         var containsFrequentPolishWords = ContainsCommonPolishWords(query);
 
         return (containsSpanishCharacters || containsFrequentSpanishWords) && !containsPolishCharacters && !containsFrequentPolishWords;
@@ -22,10 +24,11 @@ public static class StringHelpers
             .Any(x =>
                 query.Contains($" {x} ", StringComparison.InvariantCultureIgnoreCase) ||
                 query.StartsWith($"{x} ", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}.", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
+                query.EndsWith($" {x}", StringComparison.InvariantCultureIgnoreCase)
+            // seems to not add value and gives minor performance gains:
+            //||query.EndsWith($" {x}.", StringComparison.InvariantCultureIgnoreCase) ||
+            //query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
+            //query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
             );
 
     private static bool ContainsCommonPolishWords(string query) =>
@@ -33,10 +36,11 @@ public static class StringHelpers
             .Any(x =>
                 query.Contains($" {x} ", StringComparison.InvariantCultureIgnoreCase) ||
                 query.StartsWith($"{x} ", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}.", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
-                query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
+                query.EndsWith($" {x}", StringComparison.InvariantCultureIgnoreCase)
+            // seems to not add value and gives minor performance gains:
+            //||query.EndsWith($" {x}.", StringComparison.InvariantCultureIgnoreCase) ||
+            //query.EndsWith($" {x}?", StringComparison.InvariantCultureIgnoreCase) ||
+            //query.EndsWith($" {x}!", StringComparison.InvariantCultureIgnoreCase)
             );
 
     public static bool IsStringLikelyInPolishLanguage(string query)
@@ -44,7 +48,7 @@ public static class StringHelpers
         var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
         var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
         var containsFrequentSpanishWords = ContainsCommonSpanishWords(query);
-        var containsFrequentPolishWords = ContainsCommonPolishWords(query);
+        var containsFrequentPolishWords = containsPolishCharacters || ContainsCommonPolishWords(query);
 
         return (containsPolishCharacters || containsFrequentPolishWords) && !containsSpanishCharacters && !containsFrequentSpanishWords;
     }
