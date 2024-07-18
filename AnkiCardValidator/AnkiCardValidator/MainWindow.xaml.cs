@@ -40,16 +40,11 @@ public partial class MainWindow : Window
         var sw = Stopwatch.StartNew();
 
         var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePath, "1. Spanish", null);
-        ViewModel.Flashcards.Clear();
 
+        ViewModel.Flashcards.Clear();
         foreach (var note in notes)
         {
-            var cardsViewModel = CreateCardsForNote(note, notes);
-
-            foreach (var cardViewModel in cardsViewModel)
-            {
-                ViewModel.Flashcards.Add(cardViewModel);
-            }
+            CreateCardsForNote(note, ViewModel.Flashcards);
         }
 
         // handle duplicates
@@ -61,12 +56,10 @@ public partial class MainWindow : Window
         ViewModel.StatusMessage = $"Loaded {ViewModel.Flashcards.Count} flashcards in {sw.ElapsedMilliseconds} ms.";
     }
 
-    private List<CardViewModel> CreateCardsForNote(AnkiNote note, List<AnkiNote> notes)
+    private void CreateCardsForNote(AnkiNote note, ObservableCollection<CardViewModel> viewModelFlashcards)
     {
         if (note.NoteTemplateName != "OneDirection" && note.NoteTemplateName != "BothDirections")
             throw new InvalidOperationException($"Unexpected note template name: {note.NoteTemplateName}");
-
-        List<CardViewModel> cards = new();
 
         var noteDirection = _directionDetector.DetectDirectionOfACard(note);
 
@@ -81,16 +74,15 @@ public partial class MainWindow : Window
 
         var basicCard = new CardViewModel(note, false, noteDirection, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
-        cards.Add(basicCard);
+        viewModelFlashcards.Add(basicCard);
 
         if (note.NoteTemplateName == "BothDirections")
         {
             var reverseCard = new CardViewModel(note, true, noteDirection, frequencyPositionBackSide, frequencyPositionFrontSide, numDefinitionsOnBackSide, numDefinitionsOnFrontSide, CefrClassification.Unknown, null, null);
 
-            cards.Add(reverseCard);
+            viewModelFlashcards.Add(reverseCard);
         }
 
-        return cards;
     }
 
 

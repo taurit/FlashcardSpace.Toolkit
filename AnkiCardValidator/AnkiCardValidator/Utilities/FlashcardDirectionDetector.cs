@@ -17,12 +17,13 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
 
     private static FlashcardDirection? TryDetermineDirectionBasedOnAlphabet(AnkiNote note)
     {
-        var isQuestionLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.FrontText);
         var isQuestionLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.FrontText);
         var isAnswerLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.BackText);
+        if (isQuestionLikelyInPolish && isAnswerLikelyInSpanish) return FlashcardDirection.FrontTextInPolish;
+
+        var isQuestionLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.FrontText);
         var isAnswerLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.BackText);
 
-        if (isQuestionLikelyInPolish && isAnswerLikelyInSpanish) return FlashcardDirection.FrontTextInPolish;
         if (isQuestionLikelyInSpanish && isAnswerLikelyInPolish) return FlashcardDirection.FrontTextInSpanish;
         if (isQuestionLikelyInPolish) return FlashcardDirection.FrontTextInPolish;
         if (isQuestionLikelyInSpanish) return FlashcardDirection.FrontTextInSpanish;

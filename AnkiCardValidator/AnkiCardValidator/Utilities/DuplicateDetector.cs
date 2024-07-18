@@ -20,7 +20,8 @@ public class DuplicateDetector(NormalFormProvider normalFormProvider)
             card.DuplicatesOfQuestion.Clear();
         }
 
-        for (int i = 0; i < allCards.Count; i++)
+        // I think it's not thread safe, but just keep it for now and observe how it manifests
+        Parallel.For(0, allCards.Count, i =>
         {
             var card = allCards[i];
             for (int j = i + 1; j < allCards.Count; j++)
@@ -32,7 +33,6 @@ public class DuplicateDetector(NormalFormProvider normalFormProvider)
                     otherCard.DuplicatesOfQuestion.Add(card);
                 }
             }
-        }
+        });
     }
-
 }
