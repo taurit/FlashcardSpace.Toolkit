@@ -2,6 +2,6 @@
 
 public enum FlashcardDirection
 {
-    QuestionInSpanish,
-    QuestionInPolish
+    FrontTextInSpanish,
+    FrontTextInPolish
 }

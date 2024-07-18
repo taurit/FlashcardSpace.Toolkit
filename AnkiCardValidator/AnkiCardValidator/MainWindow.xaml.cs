@@ -44,25 +44,16 @@ public partial class MainWindow : Window
 
         foreach (var note in notes)
         {
-            // todo handle bi-directional notes (add 2 flashcards then)
-            var direction = _directionDetector.DetectDirectionOfACard(note);
+            var cardsViewModel = CreateCardsForNote(note, notes);
 
-            // Here's a hack for inconsistent conventions in the dataset. Sometimes Polish and Spanish sides are swapped.
-            // So we should swap the dictionaries during the check
-            var frequencyPositionFrontSide = _spanishFrequencyDataProvider.GetPosition(note.FrontSide) ??
-                                             _polishFrequencyDataProvider.GetPosition(note.FrontSide);
-            var frequencyPositionBackSide = _polishFrequencyDataProvider.GetPosition(note.BackSide) ??
-                                            _spanishFrequencyDataProvider.GetPosition(note.BackSide);
-
-            var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
-
-            var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontSide);
-            var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackSide);
-
-            var flashcardViewModel = new CardViewModel(note, direction, duplicatesFront, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
-
-            ViewModel.Flashcards.Add(flashcardViewModel);
+            foreach (var cardViewModel in cardsViewModel)
+            {
+                ViewModel.Flashcards.Add(cardViewModel);
+            }
         }
+
+        // handle duplicates
+        //var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
 
@@ -70,10 +61,44 @@ public partial class MainWindow : Window
         MessageBox.Show($"Loaded {ViewModel.Flashcards.Count} flashcards in {sw.ElapsedMilliseconds} ms.");
     }
 
+    private List<CardViewModel> CreateCardsForNote(AnkiNote note, List<AnkiNote> notes)
+    {
+        if (note.NoteTemplateName != "OneDirection" && note.NoteTemplateName != "BothDirections")
+            throw new InvalidOperationException($"Unexpected note template name: {note.NoteTemplateName}");
+
+        List<CardViewModel> cards = new();
+
+        var noteDirection = _directionDetector.DetectDirectionOfACard(note);
+
+        var frequencyPositionFrontSide = (noteDirection == FlashcardDirection.FrontTextInPolish)
+                        ? _polishFrequencyDataProvider.GetPosition(note.FrontText)
+                        : _spanishFrequencyDataProvider.GetPosition(note.FrontText);
+        var frequencyPositionBackSide = (noteDirection == FlashcardDirection.FrontTextInPolish)
+                        ? _spanishFrequencyDataProvider.GetPosition(note.BackText)
+                        : _polishFrequencyDataProvider.GetPosition(note.BackText);
+        var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontText);
+        var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackText);
+
+        var basicCard = new CardViewModel(note, false, noteDirection, [], frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
+
+        cards.Add(basicCard);
+
+        if (note.NoteTemplateName == "BothDirections")
+        {
+            var reverseCard = new CardViewModel(note, true, noteDirection, [], frequencyPositionBackSide, frequencyPositionFrontSide, numDefinitionsOnBackSide, numDefinitionsOnFrontSide, CefrClassification.Unknown, null, null);
+
+            cards.Add(reverseCard);
+        }
+
+        return cards;
+    }
 
 
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
+        MessageBox.Show("Not implemented (updated) yet");
+        return; // adjust; stop serializing Note directly; use different prompts for ES->PL and PL->ES
+
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
         const int chunkSize = 29;
 
@@ -128,7 +153,11 @@ public partial class MainWindow : Window
             await TryUpdateViewModelWithEvaluationData(vm);
         }
 
-        ViewModel.Flashcards = new ObservableCollection<CardViewModel>(ViewModel.Flashcards.OrderBy(x => x.Penalty).ThenBy(x => x.Note.FrontSide));
+        var cardsByBestQuality = ViewModel.Flashcards
+            //.OrderBy(x => x.Penalty) // todo uncomment when dev testing done
+            //.ThenBy(x => x.Note.FrontSide)
+            ;
+        ViewModel.Flashcards = new ObservableCollection<CardViewModel>(cardsByBestQuality);
     }
 
     private static string GenerateCacheFilePath(CardViewModel cardVm)

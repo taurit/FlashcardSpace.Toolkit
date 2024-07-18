@@ -2,7 +2,6 @@
 using Microsoft.Data.Sqlite;
 using PropertyChanged;
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 
 namespace AnkiCardValidator.Utilities;
 
@@ -10,20 +9,19 @@ namespace AnkiCardValidator.Utilities;
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
 [AddINotifyPropertyChangedInterface]
-[DebuggerDisplay("{FrontSide} -> {BackSide}")]
+[DebuggerDisplay("{FrontText} -> {BackText}")]
 public record AnkiNote(
-    [property: JsonIgnore] long Id,
-    string FrontSide,
-    string BackSide,
-    [property: JsonIgnore] string Tags,
-    [property: JsonIgnore] string NoteTemplateName)
+    long Id,
+    string FrontText,
+    string BackText,
+    string Tags,
+    string NoteTemplateName)
 {
-    [JsonIgnore] public string Tags { get; set; } = Tags;
+    public string Tags { get; set; } = Tags;
 
     /// <summary>
     /// Tagged for removal by the duplicate detection flow.
     /// </summary>
-    [JsonIgnore]
     public bool IsScheduledForRemoval => Tags.Contains(" remove ");
 }
 
@@ -66,17 +64,22 @@ public static class AnkiHelpers
         while (reader.Read())
         {
             var noteId = reader.GetInt64(0);
-            var fields = reader.GetString(1).Split('\x1f');
+
             var tags = reader.GetString(2);
             var templateName = reader.GetString(3);
 
-            // quick and hackish way to recognize fields in the card and what they mean (only in PoC)
-
             // My typical deck, including Spanish
-            var wordInLearnedLanguage = fields[2];
-            var wordInUserNativeLanguage = fields[0];
+            var fields = reader.GetString(1).Split('\x1f');
 
-            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage, tags, templateName);
+            // works for BothDirections and OneDirection in my collection:
+            var frontText = fields[0];
+            var frontAudio = fields[2];
+            var backText = fields[2];
+            var backAudio = fields[3];
+            var image = fields[4];
+            var comments = fields[5];
+
+            var ankiNote = new AnkiNote(noteId, frontText, backText, tags, templateName);
             flashcards.Add(ankiNote);
         }
 

@@ -21,9 +21,11 @@ public record MeaningViewModel(string EnglishEquivalent, string Definition);
 public sealed class CardViewModel(
     // raw source data
     AnkiNote note,
+    bool isReverseCard,
 
     // derived from source data locally
-    FlashcardDirection direction,
+    FlashcardDirection noteDirection,
+
     List<AnkiNote> duplicatesQuestion,
     int? frequencyPositionQuestion,
     int? frequencyPositionAnswer,
@@ -38,15 +40,22 @@ public sealed class CardViewModel(
 {
     // reference to the evaluated note
     public AnkiNote Note { get; } = note;
+    public bool IsReverseCard { get; } = isReverseCard;
 
     // quality signals calculated locally
-    public FlashcardDirection Direction { get; } = direction;
-    [DependsOn(nameof(Direction))]
-    public string DirectionFlag => Direction == FlashcardDirection.QuestionInPolish
+    public FlashcardDirection NoteDirection { get; } = noteDirection;
+
+    [DependsOn(nameof(NoteDirection))]
+    public string CardDirectionFlag => (NoteDirection == FlashcardDirection.FrontTextInPolish && !IsReverseCard)
         ? "\ud83c\uddf5\ud83c\uddf1" // Polish flag emoji
         : "\ud83c\uddea\ud83c\uddf8" // Spanish flag emoji
     ;
 
+    [DependsOn(nameof(IsReverseCard), nameof(Note))]
+    public string Question => IsReverseCard ? Note.BackText : Note.FrontText;
+
+    [DependsOn(nameof(IsReverseCard), nameof(Note))]
+    public string Answer => IsReverseCard ? Note.FrontText : Note.BackText;
 
     public int? FrequencyPositionQuestion { get; } = frequencyPositionQuestion;
     public int? FrequencyPositionAnswer { get; } = frequencyPositionAnswer;

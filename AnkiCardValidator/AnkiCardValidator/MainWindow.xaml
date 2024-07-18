@@ -61,11 +61,11 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding DirectionFlag, Mode=OneWay}"
+                        Binding="{Binding CardDirectionFlag, Mode=OneWay}"
                         Header="Direction" />
                     <DataGridTextColumn
                         Width="2*"
-                        Binding="{Binding Note.FrontSide, Mode=OneWay}"
+                        Binding="{Binding Question, Mode=OneWay}"
                         Header="Question" />
 
                     <DataGridTextColumn
@@ -81,7 +81,7 @@
 
                     <DataGridTextColumn
                         Width="2*"
-                        Binding="{Binding Note.BackSide, Mode=OneWay}"
+                        Binding="{Binding Answer, Mode=OneWay}"
                         Header="Answer" />
 
                     <DataGridTextColumn

@@ -43,7 +43,7 @@ public partial class ResolveDuplicatesTool : Window
 
     private static string GenerateHtmlPreviewForNote(AnkiNote note)
     {
-        return $"{note.FrontSide}<hr />{note.BackSide}";
+        return $"{note.FrontText}<hr />{note.BackText}";
     }
 
     private FlashcardConflict GetNextUnresolvedConflict()

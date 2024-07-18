@@ -13,14 +13,14 @@ public class DuplicateDetector(NormalFormProvider normalFormProvider)
     public List<AnkiNote> DetectDuplicatesFront(AnkiNote flashcard, List<AnkiNote> allNotes)
     {
         return allNotes
-            .Where(note => note != flashcard && _duplicateDetectionEqualityComparer.Equals(note.FrontSide, flashcard.FrontSide))
+            .Where(note => note != flashcard && _duplicateDetectionEqualityComparer.Equals(note.FrontText, flashcard.FrontText))
             .ToList();
     }
 
     public List<AnkiNote> DetectDuplicatesBack(AnkiNote flashcard, List<AnkiNote> allNotes)
     {
         return allNotes
-            .Where(note => note != flashcard && _duplicateDetectionEqualityComparer.Equals(note.BackSide, flashcard.BackSide))
+            .Where(note => note != flashcard && _duplicateDetectionEqualityComparer.Equals(note.BackText, flashcard.BackText))
             .ToList();
     }
 }
