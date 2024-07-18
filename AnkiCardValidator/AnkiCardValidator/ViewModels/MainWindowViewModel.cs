@@ -17,7 +17,7 @@ public class MainWindowViewModel
 public record MeaningViewModel(string EnglishEquivalent, string Definition);
 
 [AddINotifyPropertyChangedInterface]
-[DebuggerDisplay("{Note}")]
+[DebuggerDisplay("{CardDirectionFlag} {Question} -> {Answer}")]
 public sealed class CardViewModel(
     // raw source data
     AnkiNote note,
@@ -25,8 +25,6 @@ public sealed class CardViewModel(
 
     // derived from source data locally
     FlashcardDirection noteDirection,
-
-    List<AnkiNote> duplicatesQuestion,
     int? frequencyPositionQuestion,
     int? frequencyPositionAnswer,
     int numDefinitionsForQuestion,
@@ -40,22 +38,24 @@ public sealed class CardViewModel(
 {
     // reference to the evaluated note
     public AnkiNote Note { get; } = note;
-    public bool IsReverseCard { get; } = isReverseCard;
 
     // quality signals calculated locally
     public FlashcardDirection NoteDirection { get; } = noteDirection;
 
     [DependsOn(nameof(NoteDirection))]
-    public string CardDirectionFlag => (NoteDirection == FlashcardDirection.FrontTextInPolish && !IsReverseCard)
+    public bool IsQuestionInPolish => ((NoteDirection == FlashcardDirection.FrontTextInPolish && !isReverseCard) || (NoteDirection == FlashcardDirection.FrontTextInSpanish && isReverseCard));
+
+    [DependsOn(nameof(IsQuestionInPolish))]
+    public string CardDirectionFlag => IsQuestionInPolish
         ? "\ud83c\uddf5\ud83c\uddf1" // Polish flag emoji
         : "\ud83c\uddea\ud83c\uddf8" // Spanish flag emoji
     ;
 
-    [DependsOn(nameof(IsReverseCard), nameof(Note))]
-    public string Question => IsReverseCard ? Note.BackText : Note.FrontText;
+    [DependsOn(nameof(Note))]
+    public string Question => isReverseCard ? Note.BackText : Note.FrontText;
 
-    [DependsOn(nameof(IsReverseCard), nameof(Note))]
-    public string Answer => IsReverseCard ? Note.FrontText : Note.BackText;
+    [DependsOn(nameof(Note))]
+    public string Answer => isReverseCard ? Note.FrontText : Note.BackText;
 
     public int? FrequencyPositionQuestion { get; } = frequencyPositionQuestion;
     public int? FrequencyPositionAnswer { get; } = frequencyPositionAnswer;
@@ -63,7 +63,7 @@ public sealed class CardViewModel(
     public int NumDefinitionsForQuestion { get; } = numDefinitionsForQuestion;
     public int NumDefinitionsForAnswer { get; } = numDefinitionsForAnswer;
 
-    public ObservableCollection<AnkiNote> DuplicatesOfQuestion { get; } = new(duplicatesQuestion);
+    public ObservableCollection<CardViewModel> DuplicatesOfQuestion { get; } = [];
 
     // data received from ChatGPT
     public string? RawResponseFromChatGptApi { get; set; } = rawResponseFromChatGptApi;

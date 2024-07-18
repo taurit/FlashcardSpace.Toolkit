@@ -53,7 +53,13 @@ public partial class MainWindow : Window
         }
 
         // handle duplicates
-        //var duplicatesFront = _duplicateDetector.DetectDuplicatesFront(note, notes);
+        foreach (var card in ViewModel.Flashcards)
+        {
+            var duplicatesOfQuestion = _duplicateDetector.DetectDuplicatesInQuestion(card, ViewModel.Flashcards);
+            card.DuplicatesOfQuestion.Clear();
+            foreach (var duplicate in duplicatesOfQuestion) { card.DuplicatesOfQuestion.Add(duplicate); }
+        }
+
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
 
@@ -79,13 +85,13 @@ public partial class MainWindow : Window
         var numDefinitionsOnFrontSide = _definitionCounter.CountDefinitions(note.FrontText);
         var numDefinitionsOnBackSide = _definitionCounter.CountDefinitions(note.BackText);
 
-        var basicCard = new CardViewModel(note, false, noteDirection, [], frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
+        var basicCard = new CardViewModel(note, false, noteDirection, frequencyPositionFrontSide, frequencyPositionBackSide, numDefinitionsOnFrontSide, numDefinitionsOnBackSide, CefrClassification.Unknown, null, null);
 
         cards.Add(basicCard);
 
         if (note.NoteTemplateName == "BothDirections")
         {
-            var reverseCard = new CardViewModel(note, true, noteDirection, [], frequencyPositionBackSide, frequencyPositionFrontSide, numDefinitionsOnBackSide, numDefinitionsOnFrontSide, CefrClassification.Unknown, null, null);
+            var reverseCard = new CardViewModel(note, true, noteDirection, frequencyPositionBackSide, frequencyPositionFrontSide, numDefinitionsOnBackSide, numDefinitionsOnFrontSide, CefrClassification.Unknown, null, null);
 
             cards.Add(reverseCard);
         }

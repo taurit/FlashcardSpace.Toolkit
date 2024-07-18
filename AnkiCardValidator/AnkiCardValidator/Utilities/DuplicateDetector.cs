@@ -1,4 +1,6 @@
-﻿namespace AnkiCardValidator.Utilities;
+﻿using AnkiCardValidator.ViewModels;
+
+namespace AnkiCardValidator.Utilities;
 
 public class DuplicateDetector(NormalFormProvider normalFormProvider)
 {
@@ -10,17 +12,15 @@ public class DuplicateDetector(NormalFormProvider normalFormProvider)
     /// <returns>
     /// Notes with suspiciously similar content of the *front* side.
     /// </returns>
-    public List<AnkiNote> DetectDuplicatesFront(AnkiNote flashcard, List<AnkiNote> allNotes)
+    public List<CardViewModel> DetectDuplicatesInQuestion(CardViewModel flashcard, IEnumerable<CardViewModel> allCards)
     {
-        return allNotes
-            .Where(note => note != flashcard && _duplicateDetectionEqualityComparer.Equals(note.FrontText, flashcard.FrontText))
+        return allCards
+            .Where(otherCard =>
+                otherCard != flashcard &&
+                otherCard.CardDirectionFlag == flashcard.CardDirectionFlag &&
+                _duplicateDetectionEqualityComparer.Equals(otherCard.Question, flashcard.Question)
+            )
             .ToList();
     }
 
-    public List<AnkiNote> DetectDuplicatesBack(AnkiNote flashcard, List<AnkiNote> allNotes)
-    {
-        return allNotes
-            .Where(note => note != flashcard && _duplicateDetectionEqualityComparer.Equals(note.BackText, flashcard.BackText))
-            .ToList();
-    }
 }

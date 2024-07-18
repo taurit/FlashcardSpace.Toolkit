@@ -1,4 +1,6 @@
-﻿using AnkiCardValidator.Utilities;
+﻿using AnkiCardValidator.Models;
+using AnkiCardValidator.Utilities;
+using AnkiCardValidator.ViewModels;
 using FluentAssertions;
 
 namespace AnkiCardValidator.Tests;
@@ -13,27 +15,23 @@ public class DuplicateDetectorTests
         var note1 = new AnkiNote(0, "front1", "back1", " tagA ", "OneDirection");
         var note2 = new AnkiNote(1, "front2", "back2", " tagA ", "OneDirection");
         var note3 = new AnkiNote(1, "front3", "back3", " tagB ", "OneDirection");
-        var ankiNotes = new List<AnkiNote>() { note1, note2, note3 };
+
+        var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+        var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+        var card3 = new CardViewModel(note3, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+
+        var ankiCards = new List<CardViewModel>() { card1, card2, card3, };
         var sut = new DuplicateDetector(new NormalFormProvider());
 
         // Act
-
-        var resultFront1 = sut.DetectDuplicatesFront(note1, ankiNotes);
-        var resultFront2 = sut.DetectDuplicatesFront(note2, ankiNotes);
-        var resultFront3 = sut.DetectDuplicatesFront(note3, ankiNotes);
-
-        var resultBack1 = sut.DetectDuplicatesBack(note1, ankiNotes);
-        var resultBack2 = sut.DetectDuplicatesBack(note2, ankiNotes);
-        var resultBack3 = sut.DetectDuplicatesBack(note3, ankiNotes);
+        var resultFront1 = sut.DetectDuplicatesInQuestion(card1, ankiCards);
+        var resultFront2 = sut.DetectDuplicatesInQuestion(card2, ankiCards);
+        var resultFront3 = sut.DetectDuplicatesInQuestion(card3, ankiCards);
 
         // Assert
         resultFront1.Should().BeEmpty();
         resultFront2.Should().BeEmpty();
         resultFront3.Should().BeEmpty();
-
-        resultBack1.Should().BeEmpty();
-        resultBack2.Should().BeEmpty();
-        resultBack3.Should().BeEmpty();
     }
 
     [DataTestMethod]
@@ -60,38 +58,65 @@ public class DuplicateDetectorTests
     public void SimilarEnough_AreDuplicates(string s1, string s2)
     {
         // Arrange
-        var note1F = new AnkiNote(0, s1, "back1", " tag1 ", "OneDirection");
-        var note2F = new AnkiNote(1, s2, "back2", " tag1 ", "OneDirection");
-        var ankiNotesForTestingFront = new List<AnkiNote>() { note1F, note2F, };
+        var note1 = new AnkiNote(0, s1, "back1", " tag1 ", "OneDirection");
+        var note2 = new AnkiNote(1, s2, "back2", " tag1 ", "OneDirection");
 
-        var note1B = new AnkiNote(0, "front1", s1, " tag1 ", "OneDirection");
-        var note2B = new AnkiNote(1, "front2", s2, " tag1 ", "OneDirection");
-        var ankiNotesForTestingBack = new List<AnkiNote>() { note1B, note2B, };
+        var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+        var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+
+        var cards = new List<CardViewModel>() { card1, card2, };
 
         var sut = new DuplicateDetector(new NormalFormProvider());
 
         // Act
-        var resultFront1 = sut.DetectDuplicatesFront(note1F, ankiNotesForTestingFront);
-        var resultFront2 = sut.DetectDuplicatesFront(note2F, ankiNotesForTestingFront);
-
-        var resultBack1 = sut.DetectDuplicatesBack(note1B, ankiNotesForTestingBack);
-        var resultBack2 = sut.DetectDuplicatesBack(note2B, ankiNotesForTestingBack);
+        var resultFront1 = sut.DetectDuplicatesInQuestion(card1, cards);
+        var resultFront2 = sut.DetectDuplicatesInQuestion(card2, cards);
 
         // Assert
         resultFront1.Should().NotBeNull();
         resultFront1.Should().HaveCount(1);
-        resultFront1.Should().Contain(note2F);
+        resultFront1.Should().Contain(card2);
 
         resultFront2.Should().NotBeNull();
         resultFront2.Should().HaveCount(1);
-        resultFront2.Should().Contain(note1F);
+        resultFront2.Should().Contain(card1);
+    }
 
-        resultBack1.Should().NotBeNull();
-        resultBack1.Should().HaveCount(1);
-        resultBack1.Should().Contain(note2B);
+    [TestMethod]
+    public void DuplicatesAreDetectedInBothDirectionsCardsToo()
+    {
+        // Arrange
+        var note1 = new AnkiNote(0, "kot", "el gato", " tag1 ", "OneDirection");
+        var note2 = new AnkiNote(1, "el gato *", "kot *", " tag1 ", "BothDirections");
 
-        resultBack2.Should().NotBeNull();
-        resultBack2.Should().HaveCount(1);
-        resultBack2.Should().Contain(note1B);
+        var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+
+        var card2A = new CardViewModel(note2, false, FlashcardDirection.FrontTextInSpanish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+        var card2B = new CardViewModel(note2, true, FlashcardDirection.FrontTextInSpanish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+
+        var cards = new List<CardViewModel>() { card1, card2A, card2B };
+
+        var sut = new DuplicateDetector(new NormalFormProvider());
+
+        // Act
+        var foundDuplicates1 = sut.DetectDuplicatesInQuestion(card1, cards);
+        var foundDuplicates2A = sut.DetectDuplicatesInQuestion(card2A, cards);
+        var foundDuplicates2B = sut.DetectDuplicatesInQuestion(card2B, cards);
+
+        // Assert
+        foundDuplicates1.Should().NotBeNull();
+        foundDuplicates1.Should().HaveCount(1);
+        foundDuplicates1.Should().Contain(card2B);
+        foundDuplicates1.Should().NotContain(card2A);
+
+        foundDuplicates2A.Should().NotBeNull();
+        foundDuplicates2A.Should().HaveCount(0);
+
+        foundDuplicates2B.Should().NotBeNull();
+        foundDuplicates2B.Should().HaveCount(1);
+        foundDuplicates2B.Should().Contain(card1);
+        foundDuplicates2B.Should().NotContain(card2A);
+
+
     }
 }

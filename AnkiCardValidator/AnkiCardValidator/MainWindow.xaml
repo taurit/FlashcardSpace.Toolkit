@@ -125,6 +125,7 @@
 
                     <DataGridTextColumn
                         Width="Auto"
+                        MinWidth="100"
                         Binding="{Binding DuplicatesOfQuestion.Count, Mode=OneWay}"
                         Header="Num. dup. question">
                         <DataGridTextColumn.ElementStyle>
@@ -190,7 +191,9 @@
                 ResizeBehavior="PreviousAndNext" />
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -229,8 +232,40 @@
                     Grid.Column="1"
                     Width="10"
                     ResizeBehavior="PreviousAndNext" />
-                <Border
+
+                <DataGrid
                     Grid.Column="2"
+                    AutoGenerateColumns="False"
+                    Background="White"
+                    CanUserSortColumns="True"
+                    HorizontalGridLinesBrush="LightGray"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding SelectedCard.DuplicatesOfQuestion, Mode=OneWay}"
+                    VerticalGridLinesBrush="LightGray">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="*"
+                            MinWidth="100"
+                            Binding="{Binding Question, Mode=OneTime}"
+                            Header="Duplicate: Question" />
+
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Answer, Mode=OneTime}"
+                            Header="Duplicate: Answer" />
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
+                <GridSplitter
+                    Grid.Column="3"
+                    Width="10"
+                    ResizeBehavior="PreviousAndNext" />
+
+                <Border
+                    Grid.Column="4"
                     BorderBrush="Black"
                     BorderThickness="1"
                     SnapsToDevicePixels="True">
