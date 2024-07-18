@@ -11,6 +11,7 @@ public class MainWindowViewModel
 {
     public ObservableCollection<CardViewModel> Flashcards { get; set; } = [];
     public CardViewModel? SelectedCard { get; set; } = null;
+    public string StatusMessage { get; set; }
 }
 
 [AddINotifyPropertyChangedInterface]

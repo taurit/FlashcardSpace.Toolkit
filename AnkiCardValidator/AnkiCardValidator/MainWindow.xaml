@@ -40,6 +40,12 @@
 
             <Button Padding="5" Click="ResolveDuplicates_OnClick">Resolve duplicates...</Button>
         </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}" />
+            </StatusBarItem>
+        </StatusBar>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />

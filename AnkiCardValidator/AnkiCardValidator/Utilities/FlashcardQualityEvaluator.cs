@@ -29,21 +29,16 @@ internal record FlashcardQualityEvaluationBatchResult(List<FlashcardQualityEvalu
 /// <remarks>
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
-[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
 internal record FlashcardToEvaluateSpanishToPolish(string FrontSide, string BackSide);
 
 internal static class FlashcardQualityEvaluator
 {
     internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<FlashcardToEvaluateSpanishToPolish> noteBatch)
     {
-        var jsonSerializerOptions = new JsonSerializerOptions
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
-
         // generate prompt
         var templateContent = await File.ReadAllTextAsync(Settings.EvaluateCardQualityBatchPromptPath);
         var template = Template.Parse(templateContent, Settings.EvaluateCardQualityBatchPromptPath);
+        var jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
         var noteBatchSerialized = JsonSerializer.Serialize(noteBatch, jsonSerializerOptions);
         var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
         var prompt = await template.RenderAsync(templateInput, x => x.Name);

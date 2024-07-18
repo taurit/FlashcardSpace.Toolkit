@@ -92,9 +92,12 @@ public static class AnkiHelpers
         return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
     }
 
-    public static void AddTagToNotes(string ankiDatabasePath, List<CardViewModel> notesWithNoPenalty, string tagToAdd)
+    public static void AddTagToNotes(string ankiDatabasePath, List<CardViewModel> cardsWithNoPenalty, string tagToAdd)
     {
-        foreach (var noteVm in notesWithNoPenalty)
+        // tradeoff for simplicity: it's enough that one card has no penalty to add the tag to the note
+        // (even though the reverse of the card might have some penalty)
+
+        foreach (var noteVm in cardsWithNoPenalty)
         {
             var note = noteVm.Note;
 

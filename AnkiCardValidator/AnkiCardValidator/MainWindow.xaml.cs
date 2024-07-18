@@ -64,7 +64,7 @@ public partial class MainWindow : Window
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
 
         sw.Stop();
-        MessageBox.Show($"Loaded {ViewModel.Flashcards.Count} flashcards in {sw.ElapsedMilliseconds} ms.");
+        ViewModel.StatusMessage = $"Loaded {ViewModel.Flashcards.Count} flashcards in {sw.ElapsedMilliseconds} ms.";
     }
 
     private List<CardViewModel> CreateCardsForNote(AnkiNote note, List<AnkiNote> notes)
@@ -209,9 +209,10 @@ public partial class MainWindow : Window
 
     private async void TagGreenCards_OnClick(object sender, RoutedEventArgs e)
     {
-        var notesWithNoPenalty = ViewModel.Flashcards.Where(x => x.Penalty <= 1) // change to 0 for perfect cards
+        var cardsWithAcceptablePenalty = ViewModel.Flashcards
+            .Where(x => x.Penalty <= 1) // change to 0 for perfect cards
             .ToList();
-        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, notesWithNoPenalty, "modified");
+        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, cardsWithAcceptablePenalty, "modified");
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
     }
