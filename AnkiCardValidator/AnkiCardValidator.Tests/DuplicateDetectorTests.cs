@@ -116,7 +116,27 @@ public class DuplicateDetectorTests
         foundDuplicates2B.Should().HaveCount(1);
         foundDuplicates2B.Should().Contain(card1);
         foundDuplicates2B.Should().NotContain(card2A);
+    }
 
+    [TestMethod]
+    public void WhenContentDiffersOnlyWithArticle_ExpectNotMarkedAsDuplicate()
+    {
+        // Arrange
+        var note1 = new AnkiNote(0, "OneDirection", " tagA ", "el artista", "back1", "", "", "", "");
+        var note2 = new AnkiNote(1, "OneDirection", " tagA ", "la artista", "back2", "", "", "", "");
 
+        var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+        var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
+
+        var ankiCards = new List<CardViewModel>() { card1, card2 };
+        var sut = new DuplicateDetector(new NormalFormProvider());
+
+        // Act
+        var resultFront1 = sut.DetectDuplicatesInQuestion(card1, ankiCards);
+        var resultFront2 = sut.DetectDuplicatesInQuestion(card2, ankiCards);
+
+        // Assert
+        resultFront1.Should().BeEmpty();
+        resultFront2.Should().BeEmpty();
     }
 }

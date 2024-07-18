@@ -11,7 +11,23 @@ public class DuplicateDetectionEqualityComparer(NormalFormProvider normalFormPro
 
         var xNormalized = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(x);
         var yNormalized = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(y);
-        return xNormalized == yNormalized;
+
+        // normalization goes a bit too far and considers "el artista" and "la artista" duplicates, which it's not
+        var seemsLikeADuplicate = (xNormalized == yNormalized);
+
+        if (seemsLikeADuplicate)
+        {
+            var xStartsWithEl = x.StartsWith("el ", StringComparison.InvariantCultureIgnoreCase);
+            var xStartsWithLa = x.StartsWith("la ", StringComparison.InvariantCultureIgnoreCase);
+
+            var yStartsWithEl = y.StartsWith("el ", StringComparison.InvariantCultureIgnoreCase);
+            var yStartsWithLa = y.StartsWith("la ", StringComparison.InvariantCultureIgnoreCase);
+
+            var articlesDiffer = (xStartsWithEl && yStartsWithLa) || (yStartsWithEl && xStartsWithLa);
+            seemsLikeADuplicate = !articlesDiffer;
+        }
+
+        return seemsLikeADuplicate;
     }
 
     public int GetHashCode(string obj)
