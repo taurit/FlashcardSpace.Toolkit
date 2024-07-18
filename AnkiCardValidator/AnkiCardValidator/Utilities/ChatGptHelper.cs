@@ -10,7 +10,7 @@ namespace AnkiCardValidator.Utilities;
 
 internal static class ChatGptHelper
 {
-    internal static async Task<string> GetAnswerToPromptUsingChatGptApi(string prompt)
+    internal static async Task<string> GetAnswerToPromptUsingChatGptApi(string prompt, int attempt)
     {
         var appSettings = new Settings();
         var openAiClientOptions = new OpenAIClientOptions() { OrganizationId = appSettings.OpenAiOrganization };
@@ -19,7 +19,8 @@ internal static class ChatGptHelper
         var stableHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(prompt));
         var stableHash = BitConverter.ToString(stableHashBytes).Replace("-", string.Empty);
 
-        var storyCacheFileName = $"{Settings.OpenAiModelId}_{stableHash}.txt";
+        var attemptNumberFileNameSuffix = attempt > 1 ? $"_attempt{attempt}" : string.Empty;
+        var storyCacheFileName = $"{Settings.OpenAiModelId}_{stableHash}{attemptNumberFileNameSuffix}.txt";
         var responseToPromptFileName = Path.Combine(Settings.GptResponseCacheDirectory, storyCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
@@ -31,7 +32,8 @@ internal static class ChatGptHelper
 
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
-            ResponseFormat = ChatResponseFormat.JsonObject
+            ResponseFormat = ChatResponseFormat.JsonObject,
+            MaxTokens = 3000
         };
         List<ChatMessage> messages = new List<ChatMessage>
             {

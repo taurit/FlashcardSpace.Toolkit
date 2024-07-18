@@ -6,13 +6,13 @@ Example of input data:
 
 [{"FrontSide": "la hemosttasia","BackSide": "hemostaza"},{"FrontSide": "el mancebo","BackSide": "młodzieniec"},{"FrontSide": "ensuciar","BackSide": "brudzić, plamić"}]
 
-You should analyze each flashcard and output a list of evaluations in the same order as in input, never skipping any item. Example of a response:
+You should analyze each flashcard and output a list of evaluations in the same order as in input, never skipping any item. Response must be in JSON format. Example of a response:
 
 ```json
 {"Evaluations":[{"CEFR":"C2","Issues":"FrontSide seems to contain a typo in word 'hemosttasia'. Probably, what was meant is 'hemostasia'.","Meanings":[{"EN": "hemostasis", "PL": "hemostaza","Def":"The process of stopping bleeding."}]},{"CEFR":"C1","Issues":"The word 'mancebo' is archaic. 'joven' is much more common.","Meanings":[{"EN": "young man", "PL": "młodzieniec","Def":"A young male."}]},{"CEFR":"A2","Issues":"The back side unnecessarily contains two definitions for 'ensuciar', which can be confusing. 'Brudzić' is a good equivalent, but 'plamić' would be typically translated to 'manchar' in Spanish","Meanings":[{"EN": "to dirty", "PL": "brudzić","Def":"The action of making something unclean."}]}]}
 ```
 
-Please don't indent the JSON response.
+Please don't indent the JSON in the response.
 
 Specification on how to fill the fields in output:
 - "CEFR" should be one of "A1", "A2", "B1", "B2", "C1", "C2", "Unclear". Use "Unclear" if the term on the front side is not recognized, or the content is confusing and it's not clear what is the word or term being taught.

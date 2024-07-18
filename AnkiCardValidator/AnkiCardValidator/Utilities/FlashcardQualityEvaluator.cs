@@ -2,6 +2,7 @@
 using Scriban;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -35,35 +36,53 @@ internal static class FlashcardQualityEvaluator
 {
     internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<FlashcardToEvaluateSpanishToPolish> noteBatch)
     {
-        // generate prompt
-        var templateContent = await File.ReadAllTextAsync(Settings.EvaluateCardQualityBatchPromptPath);
-        var template = Template.Parse(templateContent, Settings.EvaluateCardQualityBatchPromptPath);
-        var jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-        var noteBatchSerialized = JsonSerializer.Serialize(noteBatch, jsonSerializerOptions);
-        var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
-        var prompt = await template.RenderAsync(templateInput, x => x.Name);
-
-        // get response
-        var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(prompt);
-        var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
-
-        // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
-        var options = new JsonSerializerOptions
+        const int allowedNumAttempts = 2;
+        int attempt = 0;
+        while (true)
         {
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-            PropertyNameCaseInsensitive = true
-        };
-        var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluationBatch>(chatGptResponse, options);
+            attempt++;
 
-        if (evaluation is null)
-        {
-            throw new InvalidOperationException($"Failed to deserialize ChatGPT response. Response is cached in {responseFileName}.");
+            try
+            {
+                // generate prompt
+                var templateContent = await File.ReadAllTextAsync(Settings.EvaluateCardQualityBatchPromptPath);
+                var template = Template.Parse(templateContent, Settings.EvaluateCardQualityBatchPromptPath);
+                var jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var noteBatchSerialized = JsonSerializer.Serialize(noteBatch, jsonSerializerOptions);
+                var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
+                var prompt = await template.RenderAsync(templateInput, x => x.Name);
+
+                // get response
+                var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(prompt, attempt);
+                var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
+
+                // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
+                var options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+                    PropertyNameCaseInsensitive = true
+                };
+                var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluationBatch>(chatGptResponse, options);
+
+                if (evaluation is null)
+                {
+                    throw new SerializationException($"Failed to deserialize ChatGPT response. Response is cached in {responseFileName}.");
+                }
+                if (evaluation.Evaluations.Count != noteBatch.Count)
+                {
+                    throw new ArgumentOutOfRangeException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Response is cached in {responseFileName}.");
+                }
+
+                return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"ChatGPT API call failed (attempt {attempt} / {allowedNumAttempts})");
+                if (attempt >= allowedNumAttempts)
+                {
+                    throw;
+                }
+            }
         }
-        if (evaluation.Evaluations.Count != noteBatch.Count)
-        {
-            throw new InvalidOperationException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Response is cached in {responseFileName}.");
-        }
-
-        return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);
     }
 }

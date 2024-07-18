@@ -111,7 +111,7 @@ public partial class MainWindow : Window
         var vmsForWhichCacheExists = ViewModel.Flashcards.Where(x => File.Exists(GenerateCacheFilePath(x))).ToList();
 
         // Sort the rest by the most promising ones (lowest penalty score)
-        var allFlashcardsWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists);
+        var allFlashcardsWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists).ToList();
         var flashcardsToEvaluateThisTime = allFlashcardsWithEvaluationMissing
             .Where(x => !x.IsQuestionInPolish) // todo currently my ChatGpt query only works for the Spanish->Polish direction
             .OrderBy(x => x.Penalty)
