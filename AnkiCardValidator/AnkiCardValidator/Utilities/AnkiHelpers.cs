@@ -5,9 +5,6 @@ using System.Diagnostics;
 
 namespace AnkiCardValidator.Utilities;
 
-/// <remarks>
-/// When renaming properties, remember to rename in Scriban template(s), too!
-/// </remarks>
 [AddINotifyPropertyChangedInterface]
 [DebuggerDisplay("{FrontText} -> {BackText}")]
 public record AnkiNote(

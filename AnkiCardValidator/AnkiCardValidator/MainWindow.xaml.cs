@@ -102,9 +102,6 @@ public partial class MainWindow : Window
 
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Not implemented (updated) yet");
-        return; // adjust; stop serializing Note directly; use different prompts for ES->PL and PL->ES
-
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
         const int chunkSize = 29;
 
@@ -116,6 +113,7 @@ public partial class MainWindow : Window
         // Sort the rest by the most promising ones (lowest penalty score)
         var allFlashcardsWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists);
         var flashcardsToEvaluateThisTime = allFlashcardsWithEvaluationMissing
+            .Where(x => !x.IsQuestionInPolish) // todo currently my ChatGpt query only works for the Spanish->Polish direction
             .OrderBy(x => x.Penalty)
             .Take(numCardsToEvaluate)
             .ToList();
@@ -130,7 +128,13 @@ public partial class MainWindow : Window
 
         foreach (var chunk in chunksToEvaluate)
         {
-            var chunkOfNotes = chunk.Select(x => x.Note).ToList();
+            // sanity check 
+            if (chunk.Any(x => x.IsQuestionInPolish))
+            {
+                throw new InvalidOperationException("All cards in the chunk must be in Spanish->Polish direction.");
+            }
+
+            var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluateSpanishToPolish(x.Question, x.Answer)).ToList();
             var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes);
 
             int i = 0;
@@ -160,15 +164,20 @@ public partial class MainWindow : Window
         }
 
         var cardsByBestQuality = ViewModel.Flashcards
-            //.OrderBy(x => x.Penalty) // todo uncomment when dev testing done
-            //.ThenBy(x => x.Note.FrontSide)
+            .OrderBy(x => x.Penalty)
+            .ThenBy(x => x.Question)
             ;
         ViewModel.Flashcards = new ObservableCollection<CardViewModel>(cardsByBestQuality);
     }
 
     private static string GenerateCacheFilePath(CardViewModel cardVm)
     {
-        var cacheFileName = $"eval-{Settings.OpenAiModelId}_{cardVm.Note.Id}.txt";
+        var cardId = cardVm.IsQuestionInPolish
+            ? $"pl{cardVm.Note.Id}"
+            : $"{cardVm.Note.Id}"  // for Spanish, just use the note ID to not discard existing cache which used note id only
+            ;
+
+        var cacheFileName = $"eval-{Settings.OpenAiModelId}_{cardId}.txt";
         var cacheFilePath = Path.Combine(Settings.GptResponseCacheDirectory, cacheFileName);
         return cacheFilePath;
     }

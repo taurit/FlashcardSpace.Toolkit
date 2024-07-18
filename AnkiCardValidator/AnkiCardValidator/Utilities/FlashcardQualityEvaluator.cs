@@ -26,9 +26,15 @@ internal record FlashcardQualityEvaluationBatch(List<FlashcardQualityEvaluation>
 
 internal record FlashcardQualityEvaluationBatchResult(List<FlashcardQualityEvaluation> Evaluations, string RawChatGptResponse);
 
+/// <remarks>
+/// When renaming properties, remember to rename in Scriban template(s), too!
+/// </remarks>
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
+internal record FlashcardToEvaluateSpanishToPolish(string FrontSide, string BackSide);
+
 internal static class FlashcardQualityEvaluator
 {
-    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<AnkiNote> noteBatch)
+    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<FlashcardToEvaluateSpanishToPolish> noteBatch)
     {
         var jsonSerializerOptions = new JsonSerializerOptions
         {
