@@ -12,9 +12,9 @@ public class DuplicateDetectorTests
     public void WhenNoSideIsDuplicated_ExpectEmptyResult()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "front1", "back1", " tagA ", "OneDirection");
-        var note2 = new AnkiNote(1, "front2", "back2", " tagA ", "OneDirection");
-        var note3 = new AnkiNote(1, "front3", "back3", " tagB ", "OneDirection");
+        var note1 = new AnkiNote(0, "OneDirection", " tagA ", "front1", "back1", "", "", "", "");
+        var note2 = new AnkiNote(1, "OneDirection", " tagA ", "front2", "back2", "", "", "", "");
+        var note3 = new AnkiNote(1, "OneDirection", " tagB ", "front3", "back3", "", "", "", "");
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
@@ -58,8 +58,8 @@ public class DuplicateDetectorTests
     public void SimilarEnough_AreDuplicates(string s1, string s2)
     {
         // Arrange
-        var note1 = new AnkiNote(0, s1, "back1", " tag1 ", "OneDirection");
-        var note2 = new AnkiNote(1, s2, "back2", " tag1 ", "OneDirection");
+        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", s1, "back1", "", "", "", "");
+        var note2 = new AnkiNote(1, "OneDirection", " tag1 ", s2, "back2", "", "", "", "");
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
@@ -86,8 +86,8 @@ public class DuplicateDetectorTests
     public void DuplicatesAreDetectedInBothDirectionsCardsToo()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "kot", "el gato", " tag1 ", "OneDirection");
-        var note2 = new AnkiNote(1, "el gato *", "kot *", " tag1 ", "BothDirections");
+        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", "kot", "el gato", "", "", "", "");
+        var note2 = new AnkiNote(1, "BothDirections", " tag1 ", "el gato *", "kot *", "", "", "", "");
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
 

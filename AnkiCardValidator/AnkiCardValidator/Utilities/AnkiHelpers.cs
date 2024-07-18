@@ -9,10 +9,15 @@ namespace AnkiCardValidator.Utilities;
 [DebuggerDisplay("{FrontText} -> {BackText}")]
 public record AnkiNote(
     long Id,
+    string NoteTemplateName,
+    string Tags,
     string FrontText,
     string BackText,
-    string Tags,
-    string NoteTemplateName)
+    string FrontAudio,
+    string BackAudio,
+    string Image,
+    string Comments
+    )
 {
     public string Tags { get; set; } = Tags;
 
@@ -76,7 +81,7 @@ public static class AnkiHelpers
             var image = fields[4];
             var comments = fields[5];
 
-            var ankiNote = new AnkiNote(noteId, frontText, backText, tags, templateName);
+            var ankiNote = new AnkiNote(noteId, templateName, tags, frontText, backText, frontAudio, backAudio, image, comments);
             flashcards.Add(ankiNote);
         }
 

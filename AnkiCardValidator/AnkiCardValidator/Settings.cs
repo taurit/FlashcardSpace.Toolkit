@@ -7,8 +7,10 @@ public class Settings
     public const string OpenAiModelId = "gpt-4o";
 
     // hardcoded for simplicity in the proof-of-concept phase
-    public const string AnkiDatabaseFilePath = "d:\\Projekty\\AnkiStoryGenerator\\LocalDevData\\collection.anki2";
-    public const string AnkiDatabaseFilePathProd = "c:\\Users\\windo\\AppData\\Roaming\\Anki2\\Usuario 1\\collection.anki2";
+    public const string AnkiDatabaseFilePathDev = "d:\\Projekty\\AnkiStoryGenerator\\LocalDevData\\collection.anki2";
+    public const string AnkiDatabaseFilePath = "c:\\Users\\windo\\AppData\\Roaming\\Anki2\\Usuario 1\\collection.anki2";
+
+    public const string AnkiMediaFolderPath = "c:\\Users\\windo\\AppData\\Roaming\\Anki2\\Usuario 1\\collection.media\\";
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string EvaluateCardQualityPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQuality.sbn";
