@@ -47,7 +47,7 @@ public partial class ResolveDuplicatesTool : Window
     {
         // todo Doesn't work, requires serving images via HTTP ... 
         var imagePart = !String.IsNullOrWhiteSpace(card.Note.Image)
-            ? $"<br />{card.Note.Image.Replace("src=\"", $"src=\"file:///{Settings.AnkiMediaFolderPath.Replace("\\", "/")}")}"
+            ? $"<br />{card.Note.Image.Replace("src=\"", $"src=\"http://localhost:3000/")}"
             : string.Empty;
 
         var commentsPart = !String.IsNullOrWhiteSpace(card.Note.Comments)
