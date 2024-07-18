@@ -5,7 +5,7 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
 {
     public FlashcardDirection DetectDirectionOfACard(AnkiNote note)
     {
-        var detectedDirectionOfACard = TryDetermineDirectionBasedOnAlphabet(note) ??
+        var detectedDirectionOfACard = TryDetermineDirectionBasedOnAlphabetAndCommonWords(note) ??
                                        TryDetermineDirectionBasedOnFrequencyDictionaryPresence(note) ??
                                        TryDetermineDirectionBasedOnFrequencyDictionaryPresenceOfWords(note)
                                        ;
@@ -15,7 +15,7 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
         throw new NotImplementedException($"Could not decide. Front={note.FrontText}. Back={note.BackText}");
     }
 
-    private static FlashcardDirection? TryDetermineDirectionBasedOnAlphabet(AnkiNote note)
+    private static FlashcardDirection? TryDetermineDirectionBasedOnAlphabetAndCommonWords(AnkiNote note)
     {
         var isQuestionLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.FrontText);
         var isAnswerLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.BackText);

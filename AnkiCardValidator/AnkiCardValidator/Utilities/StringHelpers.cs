@@ -10,13 +10,18 @@ public static class StringHelpers
         // "Óó" is shared by Polish and Spanish, so let's try heuristics
         // "kroplówka" still was Spanish... I'll change to be more conservative and treat "ó" as non-decisive letter
         var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
+
+        // this and further are performance optimization to not run costly functions unless necessary - this was a bottleneck
+        if (containsPolishCharacters) return false;
+
         var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
+        var containsSpanishCharactersOrWords = containsSpanishCharacters;
+        if (!containsSpanishCharactersOrWords)
+        {
+            containsSpanishCharactersOrWords = ContainsCommonSpanishWords(query);
+        }
 
-        // performance optimization to not run function unless necessary
-        var containsFrequentSpanishWords = containsSpanishCharacters || ContainsCommonSpanishWords(query);
-        var containsFrequentPolishWords = ContainsCommonPolishWords(query);
-
-        return (containsSpanishCharacters || containsFrequentSpanishWords) && !containsPolishCharacters && !containsFrequentPolishWords;
+        return (containsSpanishCharactersOrWords) && !ContainsCommonPolishWords(query);
     }
 
     private static bool ContainsCommonSpanishWords(string query) =>
@@ -45,11 +50,16 @@ public static class StringHelpers
 
     public static bool IsStringLikelyInPolishLanguage(string query)
     {
-        var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
         var containsSpanishCharacters = "áéíúüñÁÉÍÚÜÑ¿¡".Any(query.Contains);
-        var containsFrequentSpanishWords = ContainsCommonSpanishWords(query);
-        var containsFrequentPolishWords = containsPolishCharacters || ContainsCommonPolishWords(query);
+        if (containsSpanishCharacters) return false;
 
-        return (containsPolishCharacters || containsFrequentPolishWords) && !containsSpanishCharacters && !containsFrequentSpanishWords;
+        var containsPolishCharacters = "ąćęłńśźżĄĆĘŁŃŚŻŹ".Any(query.Contains);
+        var containsPolishCharactersOrWords = containsPolishCharacters;
+        if (!containsPolishCharactersOrWords)
+        {
+            containsPolishCharactersOrWords = ContainsCommonPolishWords(query);
+        }
+
+        return containsPolishCharactersOrWords && !ContainsCommonSpanishWords(query);
     }
 }
