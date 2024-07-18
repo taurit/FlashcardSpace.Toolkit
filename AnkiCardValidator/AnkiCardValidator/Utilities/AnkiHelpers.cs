@@ -1,6 +1,6 @@
 ﻿using AnkiCardValidator.ViewModels;
+using Microsoft.Data.Sqlite;
 using PropertyChanged;
-using System.Data.SQLite;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 
@@ -10,10 +10,15 @@ namespace AnkiCardValidator.Utilities;
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
 [AddINotifyPropertyChangedInterface]
-public record AnkiNote([property: JsonIgnore] long Id, string FrontSide, string BackSide, string Tags)
+[DebuggerDisplay("{FrontSide} -> {BackSide}")]
+public record AnkiNote(
+    [property: JsonIgnore] long Id,
+    string FrontSide,
+    string BackSide,
+    [property: JsonIgnore] string Tags,
+    [property: JsonIgnore] string NoteTemplateName)
 {
-    [JsonIgnore]
-    public string Tags { get; set; } = Tags;
+    [JsonIgnore] public string Tags { get; set; } = Tags;
 
     /// <summary>
     /// Tagged for removal by the duplicate detection flow.
@@ -35,29 +40,26 @@ public static class AnkiHelpers
     /// <param name="numCardsToFetchLimit">A number of cards to fetch. This is mostly to limit data for development purposes. The subset of cards is not that relevant in testing. `null` means no limit.</param>
     public static List<AnkiNote> GetAllNotesFromSpecificDeck(string databaseFilePath, string deckName, int? numCardsToFetchLimit = null)
     {
-        using var connection = new SQLiteConnection($"Data Source={databaseFilePath};Version=3;");
+        using var connection = new SqliteConnection($"Data Source={databaseFilePath};");
         connection.Open();
+        connection.CreateCollation("unicase", (x, y) => String.Compare(x, y, StringComparison.OrdinalIgnoreCase));
+
+        // Register the custom collation
 
         string limitString = numCardsToFetchLimit is null ? "" : $"LIMIT {numCardsToFetchLimit}";
 
         var query = $@"
-                SELECT DISTINCT
-                    notes.id, notes.flds, notes.tags
-                FROM
-                    cards
-                JOIN
-                    notes
-                ON
-                    cards.nid = notes.id
-                WHERE
-                    cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
-                    
+                SELECT DISTINCT notes.id, notes.flds, notes.tags, notetypes.name
+                FROM cards
+                JOIN notes ON cards.nid = notes.id
+                JOIN notetypes ON notes.mid = notetypes.id
+                WHERE cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
                 {limitString}
             ";
 
         // AND notes.tags LIKE '%hiszpanski-fajowe-znalezione-fiszki-z-audio%'
 
-        using var command = new SQLiteCommand(query, connection);
+        using var command = new SqliteCommand(query, connection);
         using var reader = command.ExecuteReader();
 
         var flashcards = new List<AnkiNote>();
@@ -66,6 +68,7 @@ public static class AnkiHelpers
             var noteId = reader.GetInt64(0);
             var fields = reader.GetString(1).Split('\x1f');
             var tags = reader.GetString(2);
+            var templateName = reader.GetString(3);
 
             // quick and hackish way to recognize fields in the card and what they mean (only in PoC)
 
@@ -73,7 +76,7 @@ public static class AnkiHelpers
             var wordInLearnedLanguage = fields[2];
             var wordInUserNativeLanguage = fields[0];
 
-            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage, tags);
+            var ankiNote = new AnkiNote(noteId, wordInLearnedLanguage, wordInUserNativeLanguage, tags, templateName);
             flashcards.Add(ankiNote);
         }
 
@@ -106,7 +109,7 @@ public static class AnkiHelpers
             var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
 
             // update tags string for the current note in the Anki database
-            using var connection = new SQLiteConnection($"Data Source={ankiDatabasePath};Version=3;");
+            using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};Version=3;");
             connection.Open();
 
             var query = $@"
@@ -114,7 +117,7 @@ public static class AnkiHelpers
                 SET tags = '{tagsAfterAdding}'
                 WHERE id = {note.Id};";
 
-            using var command = new SQLiteCommand(query, connection);
+            using var command = new SqliteCommand(query, connection);
             var numRowsAffected = command.ExecuteNonQuery();
 
             if (numRowsAffected != 1)
@@ -149,8 +152,4 @@ public static class AnkiHelpers
         var newTagsString = $" {string.Join(' ', newTags)} ";
         return newTagsString;
     }
-
 }
-
-
-

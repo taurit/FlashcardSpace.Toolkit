@@ -17,7 +17,7 @@ public class MainWindowViewModel
 public record MeaningViewModel(string EnglishEquivalent, string Definition);
 
 [AddINotifyPropertyChangedInterface]
-[DebuggerDisplay("{FrontSide} -> {BackSide}")]
+[DebuggerDisplay("{Note}")]
 public sealed class CardViewModel(
     // raw source data
     AnkiNote note,

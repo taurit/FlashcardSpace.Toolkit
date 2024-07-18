@@ -10,9 +10,9 @@ public class DuplicateDetectorTests
     public void WhenNoSideIsDuplicated_ExpectEmptyResult()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "front1", "back1", " tagA ");
-        var note2 = new AnkiNote(1, "front2", "back2", " tagA ");
-        var note3 = new AnkiNote(1, "front3", "back3", " tagB ");
+        var note1 = new AnkiNote(0, "front1", "back1", " tagA ", "OneDirection");
+        var note2 = new AnkiNote(1, "front2", "back2", " tagA ", "OneDirection");
+        var note3 = new AnkiNote(1, "front3", "back3", " tagB ", "OneDirection");
         var ankiNotes = new List<AnkiNote>() { note1, note2, note3 };
         var sut = new DuplicateDetector(new NormalFormProvider());
 
@@ -60,12 +60,12 @@ public class DuplicateDetectorTests
     public void SimilarEnough_AreDuplicates(string s1, string s2)
     {
         // Arrange
-        var note1F = new AnkiNote(0, s1, "back1", " tag1 ");
-        var note2F = new AnkiNote(1, s2, "back2", " tag1 ");
+        var note1F = new AnkiNote(0, s1, "back1", " tag1 ", "OneDirection");
+        var note2F = new AnkiNote(1, s2, "back2", " tag1 ", "OneDirection");
         var ankiNotesForTestingFront = new List<AnkiNote>() { note1F, note2F, };
 
-        var note1B = new AnkiNote(0, "front1", s1, " tag1 ");
-        var note2B = new AnkiNote(1, "front2", s2, " tag1 ");
+        var note1B = new AnkiNote(0, "front1", s1, " tag1 ", "OneDirection");
+        var note2B = new AnkiNote(1, "front2", s2, " tag1 ", "OneDirection");
         var ankiNotesForTestingBack = new List<AnkiNote>() { note1B, note2B, };
 
         var sut = new DuplicateDetector(new NormalFormProvider());

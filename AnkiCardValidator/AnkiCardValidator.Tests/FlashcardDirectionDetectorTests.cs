@@ -43,7 +43,7 @@ public class FlashcardDirectionDetectorTests
     public void DetectDirectionOfACard(string frontSide, string backSide, FlashcardDirection expectedDirection)
     {
         // Arrange
-        var note = new AnkiNote(0, frontSide, backSide, "");
+        var note = new AnkiNote(0, frontSide, backSide, "", "OneDirection");
 
         // Act
         var direction = _sut.DetectDirectionOfACard(note);
