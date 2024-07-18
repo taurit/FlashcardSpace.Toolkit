@@ -103,7 +103,7 @@ public partial class MainWindow : Window
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
-        const int chunkSize = 29;
+        const int chunkSize = 40;
 
         var numCardsToEvaluate = Int32.Parse(NumCardsToEvaluate.Text);
 
