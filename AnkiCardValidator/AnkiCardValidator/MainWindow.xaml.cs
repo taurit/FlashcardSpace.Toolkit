@@ -53,13 +53,7 @@ public partial class MainWindow : Window
         }
 
         // handle duplicates
-        foreach (var card in ViewModel.Flashcards)
-        {
-            var duplicatesOfQuestion = _duplicateDetector.DetectDuplicatesInQuestion(card, ViewModel.Flashcards);
-            card.DuplicatesOfQuestion.Clear();
-            foreach (var duplicate in duplicatesOfQuestion) { card.DuplicatesOfQuestion.Add(duplicate); }
-        }
-
+        _duplicateDetector.DetectDuplicatesInQuestion(ViewModel.Flashcards);
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
 
