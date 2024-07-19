@@ -45,6 +45,8 @@ public partial class ResolveDuplicatesTool : Window
     {
         _currentConflict = GetNextUnresolvedConflict();
 
+        if (_currentConflict is null) return;
+
         await SetPreviewWindowHtml(this.LeftPreview, GenerateHtmlPreviewForNote(_currentConflict.Left));
         await SetPreviewWindowHtml(this.RightPreview, GenerateHtmlPreviewForNote(_currentConflict.Right));
     }
@@ -68,11 +70,21 @@ public partial class ResolveDuplicatesTool : Window
             ? $"<br />{card.Note.Comments}"
             : string.Empty;
 
+        var issuesPart = !String.IsNullOrWhiteSpace(card.QualityIssues)
+            ? $"<br /><span style='font-weight: bold; color: #ff0000;'><b>Issues</b>: {card.QualityIssues}</span>"
+            : string.Empty;
+
         var tagsPart = $"<br />" +
                        $"<span style='font-weight: bold; color: #0000aa;'>{card.Note.NoteTemplateName}</span>" +
-                       $"<span style='font-weight: bold; color: #00aa00;'>{card.Note.Tags}</span>";
+                       issuesPart +
+                       $"<span style='font-weight: bold; color: #00aa00;'>{card.Note.Tags}</span>" +
+                       $"<br /><span style='font-weight: bold; color: #eeaa00;'>answer's position in frequency dictionary: {card.FrequencyPositionAnswer}</span>";
 
-        return $"<body style='text-align: center; font-size: x-large;'>{card.Question}{questionAudioPart}<hr />{card.Answer}{answerAudioPart}<br />{imagePart}{commentsPart}{tagsPart}</body>";
+        var styles = "<style type='text/css'>" +
+                     "img { max-height: 400px; max-width: 600px; }" +
+                     "</style>";
+
+        return $"<head>{styles}</head><body style='text-align: center; font-size: x-large;'>{card.Question}{questionAudioPart}<hr />{card.Answer}{answerAudioPart}<br />{imagePart}{commentsPart}{tagsPart}</body>";
 
     }
 
@@ -93,16 +105,25 @@ public partial class ResolveDuplicatesTool : Window
 
     private readonly List<FlashcardConflict> _transientlySkippedConflicts = new();
 
-    private FlashcardConflict GetNextUnresolvedConflict()
+    private FlashcardConflict? GetNextUnresolvedConflict()
     {
         var flashcardsWithConflictOnFront = _flashcards.Where(x =>
             // skip conflict that are already resolved
             !x.Note.IsScheduledForRemoval &&
+            !x.Note.IsScheduledForManualResolution &&
             _transientlySkippedConflicts.All(t => t.Left != x && t.Right != x) &&
             x.DuplicatesOfQuestion.Count(dup => !dup.Note.IsScheduledForRemoval) > 0
          ).ToList();
 
-        var flashcard = flashcardsWithConflictOnFront.First();
+        StatusBarText.Text = $"Conflicts left to resolve: {flashcardsWithConflictOnFront.Count / 2}";
+
+        var flashcard = flashcardsWithConflictOnFront.FirstOrDefault();
+        if (flashcard is null)
+        {
+            MessageBox.Show("No more conflicts to resolve.");
+            Close();
+            return null;
+        }
         var conflictingFlashcards = flashcard.DuplicatesOfQuestion.Where(dup => !dup.Note.IsScheduledForRemoval);
         var firstConflictingFlashcard = conflictingFlashcards.First();
 
@@ -135,6 +156,12 @@ public partial class ResolveDuplicatesTool : Window
             throw new InvalidOperationException("Start the review flow first; no conflict to resolve yet");
 
         _transientlySkippedConflicts.Add(_currentConflict);
+        await ProgressToNextUnresolvedConflict();
+    }
+
+    private async void ResolveManually_OnClick(object sender, RoutedEventArgs e)
+    {
+        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, [_currentConflict!.Left, _currentConflict.Right], "toResolveManually");
         await ProgressToNextUnresolvedConflict();
     }
 }

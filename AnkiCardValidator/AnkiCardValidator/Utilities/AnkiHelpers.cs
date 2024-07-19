@@ -25,6 +25,11 @@ public record AnkiNote(
     /// Tagged for removal by the duplicate detection flow.
     /// </summary>
     public bool IsScheduledForRemoval => Tags.Contains(" toDelete ");
+
+    /// <summary>
+    /// Tagged for manual resolution by the user in Anki, outside the flow (e.g., both cards present correct, different meanings of word and need clarification)
+    /// </summary>
+    public bool IsScheduledForManualResolution => Tags.Contains(" toResolveManually ");
 }
 
 /// <summary>

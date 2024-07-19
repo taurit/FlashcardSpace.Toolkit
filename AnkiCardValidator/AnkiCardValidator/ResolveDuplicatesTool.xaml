@@ -14,18 +14,25 @@
         <ToolBar DockPanel.Dock="Top">
             <Button Name="StartReviewFlow" Click="StartReviewFlow_OnClick">Start!</Button>
         </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusBarText" />
+            </StatusBarItem>
+        </StatusBar>
         <Button
             Padding="15"
             Click="DecideLater_OnClick"
             DockPanel.Dock="Bottom">
             Decide later (skip)
         </Button>
-        <!--<Button
+        <Button
             Margin="0,2,0,2"
             Padding="15"
+            Click="ResolveManually_OnClick"
             DockPanel.Dock="Bottom">
-            False positive (keep both and don't show again)
-        </Button>-->
+            Mark for manual resolution in Anki
+        </Button>
+
 
         <UniformGrid Columns="2" Rows="1">
             <Border
