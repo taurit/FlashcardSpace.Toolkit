@@ -14,13 +14,18 @@
         <ToolBar DockPanel.Dock="Top">
             <Button Name="StartReviewFlow" Click="StartReviewFlow_OnClick">Start!</Button>
         </ToolBar>
-        <Button Padding="15" DockPanel.Dock="Bottom">Decide later (skip)</Button>
         <Button
+            Padding="15"
+            Click="DecideLater_OnClick"
+            DockPanel.Dock="Bottom">
+            Decide later (skip)
+        </Button>
+        <!--<Button
             Margin="0,2,0,2"
             Padding="15"
             DockPanel.Dock="Bottom">
             False positive (keep both and don't show again)
-        </Button>
+        </Button>-->
 
         <UniformGrid Columns="2" Rows="1">
             <Border
@@ -28,7 +33,12 @@
                 BorderBrush="Gray"
                 BorderThickness="0,0,0,0">
                 <DockPanel>
-                    <Button Padding="15" DockPanel.Dock="Bottom">Keep left</Button>
+                    <Button
+                        Padding="15"
+                        Click="KeepLeft_OnClick"
+                        DockPanel.Dock="Bottom">
+                        Keep left
+                    </Button>
                     <wpf:WebView2 Name="LeftPreview" />
 
                 </DockPanel>
@@ -38,7 +48,12 @@
                 BorderBrush="Gray"
                 BorderThickness="1,0,0,0">
                 <DockPanel>
-                    <Button Padding="15" DockPanel.Dock="Bottom">Keep right</Button>
+                    <Button
+                        Padding="15"
+                        Click="KeepRight_OnClick"
+                        DockPanel.Dock="Bottom">
+                        Keep right
+                    </Button>
 
                     <wpf:WebView2 Name="RightPreview" />
                 </DockPanel>

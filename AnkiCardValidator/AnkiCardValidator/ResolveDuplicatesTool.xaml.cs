@@ -1,4 +1,5 @@
-﻿using AnkiCardValidator.ViewModels;
+﻿using AnkiCardValidator.Utilities;
+using AnkiCardValidator.ViewModels;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System.Windows;
@@ -34,13 +35,18 @@ public partial class ResolveDuplicatesTool : Window
         webViewControl.NavigateToString(htmlContentToSet);
     }
 
+    FlashcardConflict? _currentConflict = null;
     private async void StartReviewFlow_OnClick(object sender, RoutedEventArgs e)
     {
-        var conflict = GetNextUnresolvedConflict();
+        await ProgressToNextUnresolvedConflict();
+    }
 
-        await SetPreviewWindowHtml(this.LeftPreview, GenerateHtmlPreviewForNote(conflict.Left));
-        await SetPreviewWindowHtml(this.RightPreview, GenerateHtmlPreviewForNote(conflict.Right));
+    private async Task ProgressToNextUnresolvedConflict()
+    {
+        _currentConflict = GetNextUnresolvedConflict();
 
+        await SetPreviewWindowHtml(this.LeftPreview, GenerateHtmlPreviewForNote(_currentConflict.Left));
+        await SetPreviewWindowHtml(this.RightPreview, GenerateHtmlPreviewForNote(_currentConflict.Right));
     }
 
     private static string GenerateHtmlPreviewForNote(CardViewModel card)
@@ -50,6 +56,14 @@ public partial class ResolveDuplicatesTool : Window
             ? $"<br />{card.Note.Image.Replace("src=\"", $"src=\"http://localhost:3000/")}"
             : string.Empty;
 
+        var questionAudioPart = !String.IsNullOrWhiteSpace(card.QuestionAudio)
+            ? ConvertAnkiAudioTagToHtmlAudioTag(card.QuestionAudio)
+            : "";
+
+        var answerAudioPart = !String.IsNullOrWhiteSpace(card.AnswerAudio)
+            ? ConvertAnkiAudioTagToHtmlAudioTag(card.AnswerAudio)
+            : "";
+
         var commentsPart = !String.IsNullOrWhiteSpace(card.Note.Comments)
             ? $"<br />{card.Note.Comments}"
             : string.Empty;
@@ -58,15 +72,33 @@ public partial class ResolveDuplicatesTool : Window
                        $"<span style='font-weight: bold; color: #0000aa;'>{card.Note.NoteTemplateName}</span>" +
                        $"<span style='font-weight: bold; color: #00aa00;'>{card.Note.Tags}</span>";
 
-        return $"<body style='text-align: center; font-size: x-large;'>{card.Question}<hr />{card.Answer}<br /><br />{imagePart}{commentsPart}{tagsPart}</body>";
+        return $"<body style='text-align: center; font-size: x-large;'>{card.Question}{questionAudioPart}<hr />{card.Answer}{answerAudioPart}<br />{imagePart}{commentsPart}{tagsPart}</body>";
 
     }
+
+    /// <summary>
+    /// Converts Anki audio tag (example: `[sound:file.mp3]`) to HTML audio tag allowing to play the mp3 file.
+    /// 
+    /// </summary>
+    /// <param name="ankiAudioTag"></param>
+    private static string ConvertAnkiAudioTagToHtmlAudioTag(string ankiAudioTag)
+    {
+        string audioPlayerHtmlCodeFragment = "<audio controls>" +
+                                             "<source src=\"http://localhost:3000/" + ankiAudioTag.Replace("[sound:", "").Replace("]", "") + "\" type=\"audio/mpeg\">" +
+                                             "</audio>";
+
+
+        return $"<br />{audioPlayerHtmlCodeFragment}";
+    }
+
+    private readonly List<FlashcardConflict> _transientlySkippedConflicts = new();
 
     private FlashcardConflict GetNextUnresolvedConflict()
     {
         var flashcardsWithConflictOnFront = _flashcards.Where(x =>
             // skip conflict that are already resolved
             !x.Note.IsScheduledForRemoval &&
+            _transientlySkippedConflicts.All(t => t.Left != x && t.Right != x) &&
             x.DuplicatesOfQuestion.Count(dup => !dup.Note.IsScheduledForRemoval) > 0
          ).ToList();
 
@@ -76,6 +108,36 @@ public partial class ResolveDuplicatesTool : Window
 
         return new FlashcardConflict(flashcard, firstConflictingFlashcard);
     }
+
+    private async void KeepLeft_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_currentConflict is null)
+            throw new InvalidOperationException("Start the review flow first; no conflict to resolve yet");
+
+        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, [_currentConflict.Right], "toDelete");
+
+        await ProgressToNextUnresolvedConflict();
+    }
+
+    private async void KeepRight_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_currentConflict is null)
+            throw new InvalidOperationException("Start the review flow first; no conflict to resolve yet");
+
+        AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, [_currentConflict.Left], "toDelete");
+
+        await ProgressToNextUnresolvedConflict();
+    }
+
+    private async void DecideLater_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_currentConflict is null)
+            throw new InvalidOperationException("Start the review flow first; no conflict to resolve yet");
+
+        _transientlySkippedConflicts.Add(_currentConflict);
+        await ProgressToNextUnresolvedConflict();
+    }
 }
 
 internal record FlashcardConflict(CardViewModel Left, CardViewModel Right);
+

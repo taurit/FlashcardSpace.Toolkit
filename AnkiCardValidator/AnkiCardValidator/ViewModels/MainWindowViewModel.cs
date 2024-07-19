@@ -56,7 +56,13 @@ public sealed class CardViewModel(
     public string Question => isReverseCard ? Note.BackText : Note.FrontText;
 
     [DependsOn(nameof(Note))]
+    public string QuestionAudio => isReverseCard ? Note.BackAudio : Note.FrontAudio;
+
+    [DependsOn(nameof(Note))]
     public string Answer => isReverseCard ? Note.FrontText : Note.BackText;
+
+    [DependsOn(nameof(Note))]
+    public string AnswerAudio => isReverseCard ? Note.FrontAudio : Note.BackAudio;
 
     public int? FrequencyPositionQuestion { get; } = frequencyPositionQuestion;
     public int? FrequencyPositionAnswer { get; } = frequencyPositionAnswer;

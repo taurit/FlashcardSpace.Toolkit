@@ -203,7 +203,13 @@ public partial class MainWindow : Window
         var cardsWithAcceptablePenalty = ViewModel.Flashcards
             .Where(x => x.Penalty <= 1) // change to 0 for perfect cards
             .ToList();
-        var numModifiedNotes = AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, cardsWithAcceptablePenalty, "modified");
+
+        var cardsThatNeedTagging = cardsWithAcceptablePenalty
+            .Where(x => !x.Note.Tags.Contains($" qa ")) // my convention for marking cards as fit for learning feed
+            .Where(x => !x.Note.Tags.Contains($" opportunity")) // hack: legacy convention of tagging with opportunity[NUMBER_OF_BATCH]
+            .ToList();
+
+        var numModifiedNotes = AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, cardsThatNeedTagging, "modified");
         ViewModel.StatusMessage = $"Tagged {numModifiedNotes} cards.";
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();

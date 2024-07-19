@@ -24,7 +24,7 @@ public record AnkiNote(
     /// <summary>
     /// Tagged for removal by the duplicate detection flow.
     /// </summary>
-    public bool IsScheduledForRemoval => Tags.Contains(" remove ");
+    public bool IsScheduledForRemoval => Tags.Contains(" toDelete ");
 }
 
 /// <summary>
@@ -75,7 +75,7 @@ public static class AnkiHelpers
 
             // works for BothDirections and OneDirection in my collection:
             var frontText = fields[0];
-            var frontAudio = fields[2];
+            var frontAudio = fields[1];
             var backText = fields[2];
             var backAudio = fields[3];
             var image = fields[4];
@@ -97,7 +97,7 @@ public static class AnkiHelpers
         return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
     }
 
-    public static int AddTagToNotes(string ankiDatabasePath, List<CardViewModel> cardsWithNoPenalty, string tagToAdd)
+    public static int AddTagToNotes(string ankiDatabasePath, List<CardViewModel> cardsToTag, string tagToAdd)
     {
         // tradeoff for simplicity: it's enough that one card has no penalty to add the tag to the note
         // (even though the reverse of the card might have some penalty)
@@ -106,17 +106,11 @@ public static class AnkiHelpers
 
         int numTaggedCards = 0;
 
-        foreach (var noteVm in cardsWithNoPenalty)
+        foreach (var cardVm in cardsToTag)
         {
-            var note = noteVm.Note;
+            var note = cardVm.Note;
 
             if (note.Tags.Contains($" {tagToAdd} ")) continue; // already has the tag
-
-            // my convention for marking cards as fit for learning feed
-            if (note.Tags.Contains($" qa ")) continue;
-
-            // a hack to support my convention of renaming tags in Anki and adding suffixes for subsequent batches 
-            if (note.Tags.Contains($" opportunity")) continue; // hack: legacy convention of tagging with opportunity[NUMBER_OF_BATCH]
 
             var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
 
@@ -135,7 +129,7 @@ public static class AnkiHelpers
             }
             numTaggedCards++;
 
-            noteVm.Note.Tags = tagsAfterAdding;
+            cardVm.Note.Tags = tagsAfterAdding;
         }
 
         return numTaggedCards;
