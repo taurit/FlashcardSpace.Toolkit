@@ -13,8 +13,6 @@ Each element in the output array should have the following fields:
 1) CEFR: The level of the flashcard content, which should be one of "A1", "A2", "B1", "B2", "C1", "C2", or "Unclear". Use "Unclear" if the term on the front side is not recognized, or if the content is confusing and it is not clear what is being taught.
 2) Issues: Important warnings in English about errors in the flashcards, with suggestions on how to correct them. If there are no warnings, this field must be an empty string (""). Do NOT fill out this field if the field is fine.
 
-3) Meanings: This should always be an empty array ([]), as it is a legacy field.
-
 ## Error Categories
 
 - Incorrect spelling: Detect and inform about spelling mistakes.
@@ -32,7 +30,7 @@ Each element in the output array should have the following fields:
 ### Output
 
 ```json
-{"Evaluations":[{"Id": "1", "CEFR":"A1","Issues":"'środekk' seems to contain a typo, should be 'środek'. Also, it's vague whether the question on the front asks about the center of something (like 'środek boiska') or it's about środek translated as a 'mean', as in 'środek bezpieczeństwa', or any other meaning. Consider clarification, e.g. change question to 'środek (punkt centralny)' to best match the answer ('el centro').","Meanings":[]},{"Id": "2", "CEFR":"A2","Issues":"The question unnecessarily contains two words 'brudzić, plamić'. 'Brudzić' matches the answer ('ensuciar') best, but 'plamić' would be typically translated to 'manchar' in Spanish","Meanings":[]},{"Id": "3", "CEFR":"A1","Issues":"","Meanings":[]}]}
+{"Evaluations":[{"Id": "1", "CEFR":"A1","Issues":"'środekk' seems to contain a typo, should be 'środek'. Also, it's vague whether the question on the front asks about the center of something (like 'środek boiska') or it's about środek translated as a 'mean', as in 'środek bezpieczeństwa', or any other meaning. Consider clarification, e.g. change question to 'środek (punkt centralny)' to best match the answer ('el centro')."},{"Id": "2", "CEFR":"A2","Issues":"The question unnecessarily contains two words 'brudzić, plamić'. 'Brudzić' matches the answer ('ensuciar') best, but 'plamić' would be typically translated to 'manchar' in Spanish"},{"Id": "3", "CEFR":"A1","Issues":""}]}
 ```
 
 ## Input to process:

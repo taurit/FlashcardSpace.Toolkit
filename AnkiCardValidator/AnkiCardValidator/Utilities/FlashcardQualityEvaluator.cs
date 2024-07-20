@@ -18,7 +18,8 @@ internal record FlashcardQualityEvaluationInput(string FlashcardModelSerialized)
 public record Meaning(string EN, string PL, string Def);
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Used in ChatGPT response deserialization")]
-internal record FlashcardQualityEvaluation(CefrClassification CEFR, string Issues, List<Meaning> Meanings);
+// "Meanings" is deprecated because it was too vague - I no longer ask the API to provide it and it's null in new responses
+internal record FlashcardQualityEvaluation(CefrClassification CEFR, string Issues, List<Meaning>? Meanings);
 
 /// <summary>
 /// Model for ChatGPT JSON response (must be an object, not an array)
