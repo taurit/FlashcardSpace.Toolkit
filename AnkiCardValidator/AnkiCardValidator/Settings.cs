@@ -11,7 +11,7 @@ public class Settings
     public const string AnkiDatabaseFilePath = "c:\\Users\\windo\\AppData\\Roaming\\Anki2\\Usuario 1\\collection.anki2";
 
     // hardcoded for simplicity in the proof-of-concept phase
-    public const string EvaluateQualitySpanishToPolishPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatch.sbn";
+    public const string EvaluateQualitySpanishToPolishPromptPath = "D:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatchSpanishToPolish.sbn";
     public const string EvaluateQualityPolishToSpanishPromptPath = "D:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatchPolishToSpanish.sbn";
 
     // hardcoded for simplicity in the proof-of-concept phase
