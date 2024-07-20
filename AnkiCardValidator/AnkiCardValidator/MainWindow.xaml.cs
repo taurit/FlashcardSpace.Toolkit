@@ -89,7 +89,7 @@ public partial class MainWindow : Window
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
-        int chunkSize = 20;
+        int chunkSize = 40;
 
         var numCardsToEvaluate = Int32.Parse(NumCardsToEvaluate.Text);
 
@@ -125,7 +125,8 @@ public partial class MainWindow : Window
 
                 if (direction == FlashcardDirection.FrontTextInPolish)
                 {
-                    var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluatePolishToSpanish(x.Question, x.Answer)).ToList();
+                    int uniqueId = 1;
+                    var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluatePolishToSpanish($"{uniqueId++}", x.Question, x.Answer)).ToList();
                     evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes, direction);
                 }
                 else

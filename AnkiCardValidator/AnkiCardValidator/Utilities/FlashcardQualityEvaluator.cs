@@ -30,14 +30,14 @@ internal record FlashcardQualityEvaluationBatchResult(List<FlashcardQualityEvalu
 /// <remarks>
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
-internal record FlashcardToEvaluatePolishToSpanish(string QuestionInPolish, string AnswerInSpanish);
+internal record FlashcardToEvaluatePolishToSpanish(string Id, string QuestionInPolish, string AnswerInSpanish);
 internal record FlashcardToEvaluateSpanishToPolish(string QuestionInSpanish, string AnswerInPolish);
 
 internal static class FlashcardQualityEvaluator
 {
     internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality<T>(List<T> noteBatch, FlashcardDirection direction)
     {
-        const int allowedNumAttempts = 3;
+        const int allowedNumAttempts = 1;
         int attempt = 0;
         while (true)
         {

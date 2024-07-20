@@ -1,7 +1,7 @@
 ﻿Your input will be an array of flashcards in the following format:
 
 ```json
-[{"QuestionInPolish":"front side of a flashcard which contains the question (cue) for a student. Typically in Polish, but it might contain comments in English too. Might contain HTML markup which is fine.","AnswerInSpanish":"back side of a flashcard, which contains the answer expected of student. It's in Spanish, but might contain helpful comments in English or Polish too. Might contain HTML markup."}]
+[{"Id": "UniqueId", "QuestionInPolish":"front side of a flashcard which contains the question (cue) for a student. Typically in Polish, but it might contain comments in English too. Might contain HTML markup which is fine.","AnswerInSpanish":"back side of a flashcard, which contains the answer expected of student. It's in Spanish, but might contain helpful comments in English or Polish too. Might contain HTML markup."}]
 ```
 
 You should analyze each flashcard and output a list of their evaluations in the same order as in input. Never skip any item (even if duplicated), the number of elements in "Evaluations" array must be the same as number of elements in the input array. The response must be in JSON format without any indentation.
@@ -26,13 +26,13 @@ Each element in the output array should have the following fields:
 ### Input
 
 ```json
-[{"QuestionInPolish": "środekk","AnswerInSpanish": "<strong>el centro</strong>"},{"QuestionInPolish": "brudzić, plamić","AnswerInSpanish": "ensuciar"},{"QuestionInPolish": "kot<b></b><br />","AnswerInSpanish": "<span>el gato</span><br><br />"}]
+[{"Id": "1", "QuestionInPolish": "środekk","AnswerInSpanish": "<strong>el centro</strong>"},{"Id": "2", "QuestionInPolish": "brudzić, plamić","AnswerInSpanish": "ensuciar"},{"Id": "3", "QuestionInPolish": "kot<b></b><br />","AnswerInSpanish": "<span>el gato</span><br><br />"}]
 ```
 
 ### Output
 
 ```json
-{"Evaluations":[{"CEFR":"A1","Issues":"'środekk' seems to contain a typo, should be 'środek'. Also, it's vague whether the question on the front asks about the center of something (like 'środek boiska') or it's about środek translated as a 'mean', as in 'środek bezpieczeństwa', or any other meaning. Consider clarification, e.g. change question to 'środek (punkt centralny)' to best match the answer ('el centro').","Meanings":[]},{"CEFR":"A2","Issues":"The question unnecessarily contains two words 'brudzić, plamić'. 'Brudzić' matches the answer ('ensuciar') best, but 'plamić' would be typically translated to 'manchar' in Spanish","Meanings":[]},{"CEFR":"A1","Issues":"","Meanings":[]}]}
+{"Evaluations":[{"Id": "1", "CEFR":"A1","Issues":"'środekk' seems to contain a typo, should be 'środek'. Also, it's vague whether the question on the front asks about the center of something (like 'środek boiska') or it's about środek translated as a 'mean', as in 'środek bezpieczeństwa', or any other meaning. Consider clarification, e.g. change question to 'środek (punkt centralny)' to best match the answer ('el centro').","Meanings":[]},{"Id": "2", "CEFR":"A2","Issues":"The question unnecessarily contains two words 'brudzić, plamić'. 'Brudzić' matches the answer ('ensuciar') best, but 'plamić' would be typically translated to 'manchar' in Spanish","Meanings":[]},{"Id": "3", "CEFR":"A1","Issues":"","Meanings":[]}]}
 ```
 
 ## Input to process:
