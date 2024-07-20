@@ -30,13 +30,14 @@ internal record FlashcardQualityEvaluationBatchResult(List<FlashcardQualityEvalu
 /// <remarks>
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
-internal record FlashcardToEvaluate(string FrontSide, string BackSide);
+internal record FlashcardToEvaluatePolishToSpanish(string QuestionInPolish, string AnswerInSpanish);
+internal record FlashcardToEvaluateSpanishToPolish(string QuestionInSpanish, string AnswerInPolish);
 
 internal static class FlashcardQualityEvaluator
 {
-    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<FlashcardToEvaluate> noteBatch, FlashcardDirection direction)
+    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality<T>(List<T> noteBatch, FlashcardDirection direction)
     {
-        const int allowedNumAttempts = 2;
+        const int allowedNumAttempts = 3;
         int attempt = 0;
         while (true)
         {
@@ -77,7 +78,11 @@ internal static class FlashcardQualityEvaluator
                 }
                 if (evaluation.Evaluations.Count != noteBatch.Count)
                 {
-                    throw new ArgumentOutOfRangeException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Response is cached in {responseFileName}.");
+                    // happens from time to time
+                    var capturedPromptFileName = $"{responseFileName}.prompt.md";
+                    await File.WriteAllTextAsync(capturedPromptFileName, prompt);
+
+                    throw new ArgumentOutOfRangeException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Prompt captured in {capturedPromptFileName}; response is cached in {responseFileName}.");
                 }
 
                 return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);

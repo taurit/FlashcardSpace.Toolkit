@@ -28,12 +28,11 @@ internal static class ChatGptHelper
             Debug.WriteLine("Cached response from ChatGPT is used.");
             return responseToPromptFileName;
         }
-        Debug.WriteLine("Cache miss, querying ChatGPT API...");
+        Debug.WriteLine($"Cache miss, querying ChatGPT API ({Settings.OpenAiModelId})...");
 
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
-            ResponseFormat = ChatResponseFormat.JsonObject,
-            MaxTokens = 3000
+            ResponseFormat = ChatResponseFormat.JsonObject
         };
         List<ChatMessage> messages = new List<ChatMessage>
             {

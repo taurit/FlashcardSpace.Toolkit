@@ -4,7 +4,7 @@
 [{"QuestionInPolish":"front side of a flashcard which contains the question (cue) for a student. Typically in Polish, but it might contain comments in English too. Might contain HTML markup which is fine.","AnswerInSpanish":"back side of a flashcard, which contains the answer expected of student. It's in Spanish, but might contain helpful comments in English or Polish too. Might contain HTML markup."}]
 ```
 
-You should analyze each flashcard and output a list of their evaluations in the same order as in input. Never skip any item. The response must be in JSON format without any indentation.
+You should analyze each flashcard and output a list of their evaluations in the same order as in input. Never skip any item (even if duplicated), the number of elements in "Evaluations" array must be the same as number of elements in the input array. The response must be in JSON format without any indentation.
 
 ## Output Specification
 

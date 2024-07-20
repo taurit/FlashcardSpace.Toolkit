@@ -89,7 +89,7 @@ public partial class MainWindow : Window
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
-        const int chunkSize = 30;
+        int chunkSize = 20;
 
         var numCardsToEvaluate = Int32.Parse(NumCardsToEvaluate.Text);
 
@@ -121,8 +121,18 @@ public partial class MainWindow : Window
             int numEvaluatedChunks = 0;
             foreach (var chunk in chunksToEvaluate)
             {
-                var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluate(x.Question, x.Answer)).ToList();
-                var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes, direction);
+                FlashcardQualityEvaluationBatchResult? evaluationResult = null;
+
+                if (direction == FlashcardDirection.FrontTextInPolish)
+                {
+                    var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluatePolishToSpanish(x.Question, x.Answer)).ToList();
+                    evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes, direction);
+                }
+                else
+                {
+                    var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluateSpanishToPolish(x.Question, x.Answer)).ToList();
+                    evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes, direction);
+                }
 
                 int i = 0;
 
@@ -195,9 +205,13 @@ public partial class MainWindow : Window
         cardVm.RawResponseFromChatGptApi = cached.RawChatGptResponse;
 
         cardVm.Meanings.Clear();
-        foreach (var meaning in cached.Evaluation.Meanings)
+        if (cached.Evaluation.Meanings is not null)
         {
-            cardVm.Meanings.Add(meaning);
+            // ChatGPT rarely returns null here, but it's possible
+            foreach (var meaning in cached.Evaluation.Meanings)
+            {
+                cardVm.Meanings.Add(meaning);
+            }
         }
     }
 
