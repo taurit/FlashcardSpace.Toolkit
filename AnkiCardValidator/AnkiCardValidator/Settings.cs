@@ -3,18 +3,16 @@
 namespace AnkiCardValidator;
 public class Settings
 {
-    //public const string OpenAiModelId = "gpt-4o-mini"; // cheap and simplified model for dev purposes
-    public const string OpenAiModelId = "gpt-4o"; // best quality model available
+    public const string OpenAiModelId = "gpt-4o"; // cheap and simplified model for dev purposes
+    //public const string OpenAiModelId = "gpt-4o"; // best quality model available
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string AnkiDatabaseFilePathDev = "d:\\Projekty\\AnkiStoryGenerator\\LocalDevData\\collection.anki2";
     public const string AnkiDatabaseFilePath = "c:\\Users\\windo\\AppData\\Roaming\\Anki2\\Usuario 1\\collection.anki2";
 
-    public const string AnkiMediaFolderPath = "c:\\Users\\windo\\AppData\\Roaming\\Anki2\\Usuario 1\\collection.media\\";
-
     // hardcoded for simplicity in the proof-of-concept phase
-    public const string EvaluateCardQualityPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQuality.sbn";
-    public const string EvaluateCardQualityBatchPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatch.sbn";
+    public const string EvaluateQualitySpanishToPolishPromptPath = "d:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatch.sbn";
+    public const string EvaluateQualityPolishToSpanishPromptPath = "D:\\Projekty\\AnkiCardValidator\\AnkiCardValidator\\AnkiCardValidator\\Prompts\\EvaluateCardQualityBatchPolishToSpanish.sbn";
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string GptResponseCacheDirectory = "s:\\Caches\\AnkiCardValidatorGptResponseCache\\";

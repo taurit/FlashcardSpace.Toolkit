@@ -1,0 +1,42 @@
+﻿Your input will be an array of flashcards in the following format:
+
+```json
+[{"QuestionInPolish":"front side of a flashcard which contains the question (cue) for a student. Typically in Polish, but it might contain comments in English too. Might contain HTML markup which is fine.","AnswerInSpanish":"back side of a flashcard, which contains the answer expected of student. It's in Spanish, but might contain helpful comments in English or Polish too. Might contain HTML markup."}]
+```
+
+You should analyze each flashcard and output a list of their evaluations in the same order as in input. Never skip any item. The response must be in JSON format without any indentation.
+
+## Output Specification
+
+Each element in the output array should have the following fields:
+
+1) CEFR: The level of the flashcard content, which should be one of "A1", "A2", "B1", "B2", "C1", "C2", or "Unclear". Use "Unclear" if the term on the front side is not recognized, or if the content is confusing and it is not clear what is being taught.
+2) Issues: Important warnings in English about errors in the flashcards, with suggestions on how to correct them. If there are no warnings, this field must be an empty string (""). Do NOT fill out this field if the field is fine.
+
+3) Meanings: This should always be an empty array ([]), as it is a legacy field.
+
+## Error Categories
+
+- Incorrect spelling: Detect and inform about spelling mistakes.
+- Overly vague cue: Identify if the question on the QuestionInPolish field is too vague and has more than one good answer, suggesting clarification.
+- Incorrect answer: Check if the answer in the AnswerInSpanish field does not match the question.
+
+## Example
+
+### Input
+
+```json
+[{"QuestionInPolish": "środekk","AnswerInSpanish": "<strong>el centro</strong>"},{"QuestionInPolish": "brudzić, plamić","AnswerInSpanish": "ensuciar"},{"QuestionInPolish": "kot<b></b><br />","AnswerInSpanish": "<span>el gato</span><br><br />"}]
+```
+
+### Output
+
+```json
+{"Evaluations":[{"CEFR":"A1","Issues":"'środekk' seems to contain a typo, should be 'środek'. Also, it's vague whether the question on the front asks about the center of something (like 'środek boiska') or it's about środek translated as a 'mean', as in 'środek bezpieczeństwa', or any other meaning. Consider clarification, e.g. change question to 'środek (punkt centralny)' to best match the answer ('el centro').","Meanings":[]},{"CEFR":"A2","Issues":"The question unnecessarily contains two words 'brudzić, plamić'. 'Brudzić' matches the answer ('ensuciar') best, but 'plamić' would be typically translated to 'manchar' in Spanish","Meanings":[]},{"CEFR":"A1","Issues":"","Meanings":[]}]}
+```
+
+## Input to process:
+
+```json
+{{FlashcardModelSerialized}}
+```

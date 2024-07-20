@@ -89,7 +89,7 @@ public partial class MainWindow : Window
     private async void EvaluateFewMoreCards_OnClick(object sender, RoutedEventArgs e)
     {
         // should be large enough to reduce cost overhead of long prompt, but not too big to avoid timeouts
-        const int chunkSize = 40;
+        const int chunkSize = 30;
 
         var numCardsToEvaluate = Int32.Parse(NumCardsToEvaluate.Text);
 
@@ -99,12 +99,10 @@ public partial class MainWindow : Window
         // Sort the rest by the most promising ones (lowest penalty score)
         var allFlashcardsWithEvaluationMissing = ViewModel.Flashcards.Except(vmsForWhichCacheExists).ToList();
         var flashcardsToEvaluateThisTime = allFlashcardsWithEvaluationMissing
-            .Where(x => !x.IsQuestionInPolish) // todo currently my ChatGpt query only works for the Spanish->Polish direction
             .OrderBy(x => x.Penalty)
             .Take(numCardsToEvaluate)
+            .GroupBy(x => x.IsQuestionInPolish)
             .ToList();
-
-        var chunksToEvaluate = flashcardsToEvaluateThisTime.Chunk(chunkSize).ToList();
 
         var jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -112,36 +110,41 @@ public partial class MainWindow : Window
             WriteIndented = true
         };
 
-        int numEvaluatedChunks = 0;
-        foreach (var chunk in chunksToEvaluate)
+        foreach (var languageGroup in flashcardsToEvaluateThisTime)
         {
-            // sanity check 
-            if (chunk.Any(x => x.IsQuestionInPolish))
+            var direction = languageGroup.Key
+                ? FlashcardDirection.FrontTextInPolish
+                : FlashcardDirection.FrontTextInSpanish;
+
+            var chunksToEvaluate = languageGroup.Chunk(chunkSize).ToList();
+
+            int numEvaluatedChunks = 0;
+            foreach (var chunk in chunksToEvaluate)
             {
-                throw new InvalidOperationException("All cards in the chunk must be in Spanish->Polish direction.");
+                var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluate(x.Question, x.Answer)).ToList();
+                var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes, direction);
+
+                int i = 0;
+
+                foreach (var vm in chunk)
+                {
+                    var evaluation = evaluationResult.Evaluations[i];
+
+                    // save to cache
+                    var cacheFilePath = GenerateCacheFilePath(vm);
+                    var cacheContent = new FlashcardQualityEvaluationCacheModel(evaluation, evaluationResult.RawChatGptResponse);
+                    var cacheContentSerialized = JsonSerializer.Serialize(cacheContent, jsonSerializerOptions);
+                    await File.WriteAllTextAsync(cacheFilePath, cacheContentSerialized);
+
+                    i++;
+                }
+
+                numEvaluatedChunks++;
+                ViewModel.StatusMessage = $"Evaluated {numEvaluatedChunks} of {chunksToEvaluate.Count} chunks of cards in the {direction} group.";
             }
 
-            var chunkOfNotes = chunk.Select(x => new FlashcardToEvaluateSpanishToPolish(x.Question, x.Answer)).ToList();
-            var evaluationResult = await FlashcardQualityEvaluator.EvaluateFlashcardsQuality(chunkOfNotes);
-
-            int i = 0;
-
-            foreach (var vm in chunk)
-            {
-                var evaluation = evaluationResult.Evaluations[i];
-
-                // save to cache
-                var cacheFilePath = GenerateCacheFilePath(vm);
-                var cacheContent = new FlashcardQualityEvaluationCacheModel(evaluation, evaluationResult.RawChatGptResponse);
-                var cacheContentSerialized = JsonSerializer.Serialize(cacheContent, jsonSerializerOptions);
-                await File.WriteAllTextAsync(cacheFilePath, cacheContentSerialized);
-
-                i++;
-            }
-
-            numEvaluatedChunks++;
-            ViewModel.StatusMessage = $"Evaluated {numEvaluatedChunks} of {chunksToEvaluate.Count} chunks of cards.";
         }
+
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
         ViewModel.StatusMessage = $"Evaluated quality of all requested cards.";

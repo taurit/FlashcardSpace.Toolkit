@@ -30,11 +30,11 @@ internal record FlashcardQualityEvaluationBatchResult(List<FlashcardQualityEvalu
 /// <remarks>
 /// When renaming properties, remember to rename in Scriban template(s), too!
 /// </remarks>
-internal record FlashcardToEvaluateSpanishToPolish(string FrontSide, string BackSide);
+internal record FlashcardToEvaluate(string FrontSide, string BackSide);
 
 internal static class FlashcardQualityEvaluator
 {
-    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<FlashcardToEvaluateSpanishToPolish> noteBatch)
+    internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality(List<FlashcardToEvaluate> noteBatch, FlashcardDirection direction)
     {
         const int allowedNumAttempts = 2;
         int attempt = 0;
@@ -44,9 +44,16 @@ internal static class FlashcardQualityEvaluator
 
             try
             {
+                var promptTemplatePath = direction switch
+                {
+                    FlashcardDirection.FrontTextInPolish => Settings.EvaluateQualityPolishToSpanishPromptPath,
+                    FlashcardDirection.FrontTextInSpanish => Settings.EvaluateQualitySpanishToPolishPromptPath,
+                    _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, "Unknown flashcard direction")
+                };
+
                 // generate prompt
-                var templateContent = await File.ReadAllTextAsync(Settings.EvaluateCardQualityBatchPromptPath);
-                var template = Template.Parse(templateContent, Settings.EvaluateCardQualityBatchPromptPath);
+                var templateContent = await File.ReadAllTextAsync(promptTemplatePath);
+                var template = Template.Parse(templateContent, promptTemplatePath);
                 var jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
                 var noteBatchSerialized = JsonSerializer.Serialize(noteBatch, jsonSerializerOptions);
                 var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
