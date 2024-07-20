@@ -201,7 +201,7 @@ public partial class MainWindow : Window
         }
 
         cardVm.CefrLevelQuestion = cached.Evaluation.CEFR;
-        cardVm.QualityIssues = cached.Evaluation.Issues;
+        cardVm.QualityIssuesRaw = cached.Evaluation.Issues;
         cardVm.RawResponseFromChatGptApi = cached.RawChatGptResponse;
 
         cardVm.Meanings.Clear();

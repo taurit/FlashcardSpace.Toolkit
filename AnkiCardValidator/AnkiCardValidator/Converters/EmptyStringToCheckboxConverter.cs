@@ -7,7 +7,7 @@ public class EmptyStringToCheckboxConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is null) return "N/A";
+        if (value is null) return "Not evaluated yet.";
 
         if (value is string str)
         {

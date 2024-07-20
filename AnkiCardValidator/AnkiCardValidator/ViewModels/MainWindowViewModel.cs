@@ -11,7 +11,7 @@ public class MainWindowViewModel
 {
     public ObservableCollection<CardViewModel> Flashcards { get; set; } = [];
     public CardViewModel? SelectedCard { get; set; } = null;
-    public string StatusMessage { get; set; }
+    public string? StatusMessage { get; set; }
 }
 
 [AddINotifyPropertyChangedInterface]
@@ -77,29 +77,63 @@ public sealed class CardViewModel(
 
     public CefrClassification CefrLevelQuestion { get; set; } = cefrLevelQuestion;
 
-    public string? QualityIssues { get; set; } =
-        (qualityIssues is not null &&
+    public string? QualityIssuesRaw = qualityIssues;
+
+    // Refined value of `QualityIssuesRaw` to be displayed in the UI.
+    [DependsOn(nameof(QualityIssuesRaw))]
+    public string? QualityIssues =>
+        (QualityIssuesRaw is not null &&
          (
-             qualityIssues.StartsWith("None") ||
-             qualityIssues.StartsWith("Fine") ||
-             qualityIssues.StartsWith("No issues") ||
-             qualityIssues.StartsWith("No notable issues") ||
-             qualityIssues.StartsWith("No significant issues") ||
-             qualityIssues.StartsWith("All good") ||
-             qualityIssues.StartsWith("No need for extra notes") ||
-             qualityIssues.StartsWith("Duplicate flashcard") ||
-             qualityIssues.StartsWith("Duplicate entry")
+             QualityIssuesRaw.StartsWith("None") ||
+             QualityIssuesRaw.StartsWith("Fine") ||
+             QualityIssuesRaw.StartsWith("No issues") ||
+             QualityIssuesRaw.StartsWith("No notable issues") ||
+             QualityIssuesRaw.StartsWith("No significant issues") ||
+             QualityIssuesRaw.StartsWith("All good") ||
+             QualityIssuesRaw.StartsWith("No need for extra notes") ||
+             QualityIssuesRaw.StartsWith("Duplicate flashcard") ||
+             QualityIssuesRaw.StartsWith("Duplicate entry") ||
+
+             // my old ChatGPT query was raising issues about HTML tags being used; try to filter them out (at a risk I'll skip some other issues)
+             QualityIssuesRaw.Contains("HTML") ||
+             QualityIssuesRaw.Contains(" tags ") ||
+             QualityIssuesRaw.Contains(" markup ") ||
+             QualityIssuesRaw.Contains("Formatting issues") ||
+             QualityIssuesRaw.Contains("Formatting should be") ||
+
+             // also this, before I had proper detection of the card direction:
+             QualityIssuesRaw.Contains("Polish instead of ") ||
+             QualityIssuesRaw.Contains("instead of a Spanish") ||
+             QualityIssuesRaw.Contains("Polish, not ") ||
+             QualityIssuesRaw.Contains("should be in Spanish") ||
+             QualityIssuesRaw.Contains("should be Spanish") ||
+             QualityIssuesRaw.Contains("contains Polish") ||
+             QualityIssuesRaw.Contains("mostly Polish") ||
+
+             // some of my imported cards contain * at the end, but it's a task for duplicate detection
+             QualityIssuesRaw.Contains("asterisk") ||
+             QualityIssuesRaw.Contains("*") ||
+             QualityIssuesRaw.Contains("multi-word phrase") ||
+
+             // some suggestions are that term is suitable for B1/B2, but I have this handled with another mechanism
+             QualityIssuesRaw.Contains(" B1") ||
+             QualityIssuesRaw.Contains(" B2") ||
+             QualityIssuesRaw.Contains(" valid for basic ") ||
+             QualityIssuesRaw.Contains("no issues") ||
+             QualityIssuesRaw.Contains("seems accurate") ||
+             QualityIssuesRaw.Contains("accurately represents") ||
+
+             // I have a separate mechanism to reliably detect duplicates in entire Anki collection, so skip such issues
+             QualityIssuesRaw.Contains("duplicate")
          )
         )
-            ? null
-            : qualityIssues;
+            ? ""
+            : QualityIssuesRaw;
 
     public ObservableCollection<Meaning> Meanings { get; init; } = [];
 
     // data derived from ChatGPT response
     [DependsOn(nameof(QualityIssues))] private bool HasQualityIssues => !String.IsNullOrWhiteSpace(QualityIssues);
-
-
 
     [DependsOn(nameof(CefrLevelQuestion), nameof(HasQualityIssues), nameof(Meanings), nameof(NumDefinitionsForQuestion), nameof(NumDefinitionsForAnswer))]
     public int Penalty =>
@@ -128,8 +162,10 @@ public sealed class CardViewModel(
 
         // no frequency data - this can be false negative, if term is a sentence, or HTML tags weren't sanitized.
         // I can improve false alarms with heuristics
-        (FrequencyPositionQuestion.HasValue ? 0 : 2) +
-        (FrequencyPositionAnswer.HasValue ? 0 : 2) +
+        //(FrequencyPositionQuestion.HasValue ? 0 : 2) +
+        //(FrequencyPositionAnswer.HasValue ? 0 : 2) +
+        // I decided to no longer punish for missing frequency data, as plenty flashcards consist of multiple words ("de nada", "por favor", ...)
+        // and they are fine. 
 
         // frequency data exists and suggests that Spanish word is used very infrequently
         (FrequencyPositionQuestion.HasValue ? CalculateFrequencyPenalty(FrequencyPositionQuestion.Value) : 0) +
