@@ -14,6 +14,7 @@
     mc:Ignorable="d">
     <Window.Resources>
         <converters:PenaltyToColorConverter x:Key="PenaltyToColorConverter" />
+        <converters:TodoCommentPresenceToColorConverter x:Key="TodoCommentPresenceToColorConverter" />
         <converters:NumMeaningsPenaltyToColorConverter x:Key="NumMeaningsPenaltyToColorConverter" />
         <converters:NumTermsPenaltyToColorConverter x:Key="NumTermsPenaltyToColorConverter" />
         <converters:NumDuplicatesPenaltyToColorConverter x:Key="NumDuplicatesPenaltyToColorConverter" />
@@ -160,6 +161,18 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Background" Value="{Binding CefrLevelQuestion, Converter={StaticResource CefrPenaltyToColorConverter}}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        MinWidth="100"
+                        Binding="{Binding ContainsTodoAnnotation, Mode=OneWay}"
+                        Header="Contains TODO comment">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{Binding ContainsTodoAnnotation, Converter={StaticResource TodoCommentPresenceToColorConverter}}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

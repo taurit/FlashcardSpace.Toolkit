@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Windows.Data;
-
 namespace AnkiCardValidator.Converters;
 
 public class EmptyStringToCheckboxConverter : IValueConverter
