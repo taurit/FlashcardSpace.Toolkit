@@ -1,0 +1,16 @@
+Your job is to provide the closest translation of a flashcard content from Ukrainian to Polish.
+Since flashcards often lack enough context to understand which meaning of the word of phrase I want to focus on, I'll also provide a translation or comment in English to clarify the context.
+
+If you encounter Anki tags like <img ... /> or [sound ...], just ignore them as if they weren't present in input.
+
+Output the best translation of the provided content to Polish language. Output should be ready to put onto the flashcard reverse side, so don't be verbose (just provide a brief translation), and don't use any formatting (stick to plain text).
+
+The flashcard content to translate is:
+```
+{{FrontText}}
+```
+
+The context of the usage (English translation) is:
+```
+{{BackText}}
+```

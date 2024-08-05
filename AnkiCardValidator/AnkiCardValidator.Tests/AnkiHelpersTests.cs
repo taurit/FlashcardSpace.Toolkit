@@ -13,7 +13,7 @@ public class AnkiHelpersTests
         var tags = " tag1 tag2 tag3 tag4 tag5 ";
 
         // Act
-        var result = AnkiHelpers.ParseTags(tags);
+        var result = AnkiTagHelpers.ParseTags(tags);
 
         // Assert
         result.Should().HaveCount(5);
@@ -31,7 +31,7 @@ public class AnkiHelpersTests
         var tags = " tag1 tag2 tag3 tag1 tag2 tag3 ";
 
         // Act
-        var result = AnkiHelpers.ParseTags(tags);
+        var result = AnkiTagHelpers.ParseTags(tags);
 
         // Assert
         result.Should().HaveCount(3);
@@ -47,7 +47,7 @@ public class AnkiHelpersTests
         var tags = "tag1 tag2";
 
         // Act
-        var result = AnkiHelpers.ParseTags(tags);
+        var result = AnkiTagHelpers.ParseTags(tags);
 
         // Assert
         result.Should().HaveCount(2);
@@ -63,7 +63,7 @@ public class AnkiHelpersTests
     {
         // Arrange
         // Act
-        var result = AnkiHelpers.ParseTags(tags);
+        var result = AnkiTagHelpers.ParseTags(tags);
 
         // Assert
         result.Should().NotBeNull();
@@ -82,7 +82,7 @@ public class AnkiHelpersTests
         // Arrange
 
         // Act
-        var result = AnkiHelpers.ParseTags(tags);
+        var result = AnkiTagHelpers.ParseTags(tags);
 
         // Assert
         result.Should().HaveCount(2);
@@ -104,7 +104,7 @@ public class AnkiHelpersTests
     {
         // Arrange
         // Act
-        var result = AnkiHelpers.AddTagToAnkiTagsString(tagToAdd, existingTags);
+        var result = AnkiTagHelpers.AddTagToAnkiTagsString(tagToAdd, existingTags);
 
         // Assert
         result.Should().Be(expectedResult);
@@ -118,7 +118,7 @@ public class AnkiHelpersTests
         var tagsString = "tag1 tag2 tag3";
 
         // Act
-        Action act = () => AnkiHelpers.AddTagToAnkiTagsString(tagToAdd, tagsString);
+        Action act = () => AnkiTagHelpers.AddTagToAnkiTagsString(tagToAdd, tagsString);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Tag must not contain spaces or special characters.");
@@ -132,7 +132,7 @@ public class AnkiHelpersTests
         var tagsString = "tag1 tag2 tag3";
 
         // Act
-        Action act = () => AnkiHelpers.AddTagToAnkiTagsString(tagToAdd, tagsString);
+        Action act = () => AnkiTagHelpers.AddTagToAnkiTagsString(tagToAdd, tagsString);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Tag must not contain spaces or special characters.");

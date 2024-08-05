@@ -13,9 +13,9 @@ public class DuplicateDetectorTests
     public void WhenNoSideIsDuplicated_ExpectEmptyResult()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "OneDirection", " tagA ", "front1", "back1", "", "", "", "");
-        var note2 = new AnkiNote(1, "OneDirection", " tagA ", "front2", "back2", "", "", "", "");
-        var note3 = new AnkiNote(1, "OneDirection", " tagB ", "front3", "back3", "", "", "", "");
+        var note1 = new AnkiNote(0, "OneDirection", " tagA ", AnkiNote.SerializeFields("front1", "back1", "", "", "", ""));
+        var note2 = new AnkiNote(1, "OneDirection", " tagA ", AnkiNote.SerializeFields("front2", "back2", "", "", "", ""));
+        var note3 = new AnkiNote(1, "OneDirection", " tagB ", AnkiNote.SerializeFields("front3", "back3", "", "", "", ""));
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
@@ -57,8 +57,8 @@ public class DuplicateDetectorTests
     public void SimilarEnough_AreDuplicates(string s1, string s2)
     {
         // Arrange
-        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", s1, "back1", "", "", "", "");
-        var note2 = new AnkiNote(1, "OneDirection", " tag1 ", s2, "back2", "", "", "", "");
+        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", AnkiNote.SerializeFields(s1, "back1", "", "", "", ""));
+        var note2 = new AnkiNote(1, "OneDirection", " tag1 ", AnkiNote.SerializeFields(s2, "back2", "", "", "", ""));
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
@@ -84,8 +84,8 @@ public class DuplicateDetectorTests
     public void DuplicatesAreDetectedInBothDirectionsCardsToo()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", "kot", "el gato", "", "", "", "");
-        var note2 = new AnkiNote(1, "BothDirections", " tag1 ", "el gato *", "kot *", "", "", "", "");
+        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", AnkiNote.SerializeFields("kot", "el gato", "", "", "", ""));
+        var note2 = new AnkiNote(1, "BothDirections", " tag1 ", AnkiNote.SerializeFields("el gato *", "kot *", "", "", "", ""));
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
 
@@ -118,8 +118,8 @@ public class DuplicateDetectorTests
     public void WhenContentDiffersOnlyWithArticle_ExpectNotMarkedAsDuplicate()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "OneDirection", " tagA ", "el artista", "back1", "", "", "", "");
-        var note2 = new AnkiNote(1, "OneDirection", " tagA ", "la artista", "back2", "", "", "", "");
+        var note1 = new AnkiNote(0, "OneDirection", " tagA ", AnkiNote.SerializeFields("el artista", "back1", "", "", "", ""));
+        var note2 = new AnkiNote(1, "OneDirection", " tagA ", AnkiNote.SerializeFields("la artista", "back2", "", "", "", ""));
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);

@@ -1,5 +1,6 @@
 using AnkiCardValidator.Models;
 using AnkiCardValidator.Utilities;
+using AnkiCardValidator.ViewModels;
 using FluentAssertions;
 
 namespace AnkiCardValidator.Tests;
@@ -43,7 +44,8 @@ public class FlashcardDirectionDetectorTests
     public void DetectDirectionOfACard(string frontSide, string backSide, FlashcardDirection expectedDirection)
     {
         // Arrange
-        var note = new AnkiNote(0, "OneDirection", "", frontSide, backSide, "", "", "", "");
+        var fieldsRawOriginal = AnkiNote.SerializeFields(frontSide, backSide, "", "", "", "");
+        var note = new AnkiNote(0, "OneDirection", "", fieldsRawOriginal);
 
         // Act
         var direction = _sut.DetectDirectionOfACard(note);

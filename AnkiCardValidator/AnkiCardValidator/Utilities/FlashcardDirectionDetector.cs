@@ -1,4 +1,5 @@
 ﻿using AnkiCardValidator.Models;
+using AnkiCardValidator.ViewModels;
 
 namespace AnkiCardValidator.Utilities;
 public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, FrequencyDataProvider polishFrequencyDataProvider, FrequencyDataProvider spanishFrequencyDataProvider)

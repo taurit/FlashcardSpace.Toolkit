@@ -1,36 +1,7 @@
 ﻿using AnkiCardValidator.ViewModels;
 using Microsoft.Data.Sqlite;
-using PropertyChanged;
-using System.Diagnostics;
 
 namespace AnkiCardValidator.Utilities;
-
-[AddINotifyPropertyChangedInterface]
-[DebuggerDisplay("{FrontText} -> {BackText}")]
-public record AnkiNote(
-    long Id,
-    string NoteTemplateName,
-    string Tags,
-    string FrontText,
-    string BackText,
-    string FrontAudio,
-    string BackAudio,
-    string Image,
-    string Comments
-    )
-{
-    public string Tags { get; set; } = Tags;
-
-    /// <summary>
-    /// Tagged for removal by the duplicate detection flow.
-    /// </summary>
-    public bool IsScheduledForRemoval => Tags.Contains(" toDelete ");
-
-    /// <summary>
-    /// Tagged for manual resolution by the user in Anki, outside the flow (e.g., both cards present correct, different meanings of word and need clarification)
-    /// </summary>
-    public bool IsScheduledForManualResolution => Tags.Contains(" toResolveManually ");
-}
 
 /// <summary>
 /// Allows to read relevant data from Anki's SQLite database and returns them as .NET objects.
@@ -40,18 +11,13 @@ public static class AnkiHelpers
     /// <summary>
     /// Returns Anki notes which have at least one card in specified Anki deck.
     /// </summary>
-    /// <param name="databaseFilePath">A filesystem path to a SQL database of Anki (typically named `collection.anki2`)</param>
+    /// <param name="ankiDatabasePath">A filesystem path to a SQL database of Anki (typically named `collection.anki2`)</param>
     /// <param name="deckName">Name of the deck serving as a filter for which flashcards to retrieve.</param>
-    /// <param name="numCardsToFetchLimit">A number of cards to fetch. This is mostly to limit data for development purposes. The subset of cards is not that relevant in testing. `null` means no limit.</param>
-    public static List<AnkiNote> GetAllNotesFromSpecificDeck(string databaseFilePath, string deckName, int? numCardsToFetchLimit = null)
+    public static List<AnkiNote> GetAllNotesFromSpecificDeck(string ankiDatabasePath, string deckName)
     {
-        using var connection = new SqliteConnection($"Data Source={databaseFilePath};");
+        using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};");
         connection.Open();
-        connection.CreateCollation("unicase", (x, y) => String.Compare(x, y, StringComparison.OrdinalIgnoreCase));
-
-        // Register the custom collation
-
-        string limitString = numCardsToFetchLimit is null ? "" : $"LIMIT {numCardsToFetchLimit}";
+        connection.CreateCollation("unicase", (x, y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase));
 
         var query = $@"
                 SELECT DISTINCT notes.id, notes.flds, notes.tags, notetypes.name
@@ -59,7 +25,6 @@ public static class AnkiHelpers
                 JOIN notes ON cards.nid = notes.id
                 JOIN notetypes ON notes.mid = notetypes.id
                 WHERE cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
-                {limitString}
             ";
 
         // AND notes.tags LIKE '%hiszpanski-fajowe-znalezione-fiszki-z-audio%'
@@ -75,32 +40,14 @@ public static class AnkiHelpers
             var tags = reader.GetString(2);
             var templateName = reader.GetString(3);
 
-            // My typical deck, including Spanish
-            var fields = reader.GetString(1).Split('\x1f');
-
-            // works for BothDirections and OneDirection in my collection:
-            var frontText = fields[0];
-            var frontAudio = fields[1];
-            var backText = fields[2];
-            var backAudio = fields[3];
-            var image = fields[4];
-            var comments = fields[5];
-
-            var ankiNote = new AnkiNote(noteId, templateName, tags, frontText, backText, frontAudio, backAudio, image, comments);
+            var fieldsRaw = reader.GetString(1);
+            var ankiNote = new AnkiNote(noteId, templateName, tags, fieldsRaw);
             flashcards.Add(ankiNote);
         }
 
         return flashcards;
     }
 
-
-    /// <summary>
-    /// Parses tags from a string residing in `notes.tags`. Tags are separated by a space. Also, there is a leading space at the beginning, and a trailing space at the end of the string (most likely to simplify SQL queries, so they can use LIKE `%tag%` syntax).
-    /// </summary>
-    public static HashSet<string> ParseTags(string tagsString)
-    {
-        return tagsString.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
-    }
 
     public static int AddTagToNotes(string ankiDatabasePath, List<CardViewModel> cardsToTag, string tagToAdd)
     {
@@ -109,7 +56,7 @@ public static class AnkiHelpers
         using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};");
         connection.Open();
 
-        int numTaggedCards = 0;
+        var numTaggedCards = 0;
 
         foreach (var cardVm in cardsToTag)
         {
@@ -117,7 +64,7 @@ public static class AnkiHelpers
 
             if (note.Tags.Contains($" {tagToAdd} ")) continue; // already has the tag
 
-            var tagsAfterAdding = AddTagToAnkiTagsString(tagToAdd, note.Tags);
+            var tagsAfterAdding = AnkiTagHelpers.AddTagToAnkiTagsString(tagToAdd, note.Tags);
 
             // update tags string for the current note in the Anki database
             var query = $@"
@@ -141,24 +88,36 @@ public static class AnkiHelpers
     }
 
     /// <summary>
-    /// Adds a tag to a string of tags. The tag is added only if it's not already there.
-    /// Anki's tags are separated by a space. Also, there is a leading space at the beginning, and a trailing space at the end of the string (most likely to simplify SQL queries, so they can use LIKE `%tag%` syntax).
-    /// Tags itself must not contain spaces and special characters, this method should throw exception if they do.
+    /// Carefully updates the "Comments" field (named "Examples" in Anki) in Anki database.
+    /// I'm not implementing a generic method for updating fields yet because I want to test it on a small use case first.
+    /// Anki stores values of fields in a single string, separated by ASCII 0x1f (Unit Separator) character, which requires
+    /// being careful and escaping such character.
     /// </summary>
-    /// <param name="tagToAdd">A tag to validate and add</param>
-    /// <param name="tagsString">Existing tags</param>
-    /// <returns></returns>
-    public static string AddTagToAnkiTagsString(string tagToAdd, string tagsString)
+    public static void UpdateFields(string ankiDatabasePath, List<AnkiNote> notesToUpdate)
     {
-        if (tagToAdd.Contains(' ') || tagToAdd.Contains('%'))
+        using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};");
+        connection.Open();
+        connection.CreateCollation("unicase", (x, y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase));
+
+
+        foreach (var noteToUpdate in notesToUpdate)
         {
-            throw new ArgumentException("Tag must not contain spaces or special characters.");
+            // Update the field in the Anki database
+            var query = $@"
+                UPDATE notes
+                SET flds = '{noteToUpdate.FieldsRawCurrent}'
+                WHERE id = {noteToUpdate.Id};";
+            // Execute the query
+            using var command = new SqliteCommand(query, connection);
+            var numRowsAffected = command.ExecuteNonQuery();
+            if (numRowsAffected != 1)
+            {
+                throw new InvalidOperationException($"Expected to update exactly one row, but updated {numRowsAffected} rows.");
+            }
         }
 
-        if (tagsString.Contains($" {tagToAdd} ")) return tagsString; // already has the tag
 
-        var newTags = ParseTags(tagsString).Append(tagToAdd).Distinct();
-        var newTagsString = $" {string.Join(' ', newTags)} ";
-        return newTagsString;
+
     }
+
 }
