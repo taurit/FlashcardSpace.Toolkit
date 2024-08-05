@@ -41,6 +41,10 @@ public static class AnkiHelpers
             var templateName = reader.GetString(3);
 
             var fieldsRaw = reader.GetString(1);
+
+            if (templateName != "BothDirections" && templateName != "OneDirection")
+                continue;
+
             var ankiNote = new AnkiNote(noteId, templateName, tags, fieldsRaw);
             flashcards.Add(ankiNote);
         }
@@ -99,7 +103,6 @@ public static class AnkiHelpers
         connection.Open();
         connection.CreateCollation("unicase", (x, y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase));
 
-
         foreach (var noteToUpdate in notesToUpdate)
         {
             // Update the field in the Anki database
@@ -115,8 +118,6 @@ public static class AnkiHelpers
                 throw new InvalidOperationException($"Expected to update exactly one row, but updated {numRowsAffected} rows.");
             }
         }
-
-
 
     }
 
