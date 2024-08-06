@@ -1,13 +1,25 @@
-﻿using AnkiCardValidator.Utilities;
+﻿using AnkiCardValidator;
+using AnkiCardValidator.Utilities;
 using AnkiCardValidator.ViewModels;
 using Spectre.Console;
 
 namespace UpdateField.Mutations;
 internal static class AddPolishTranslationToRemarks
 {
+    const string RemarkId = "pl";
     const string SystemChatMessage = "You are an assistant who helps students of Ukrainian language improve their flashcards. Students already know Polish and English.";
 
-    public static async Task AddPolishTranslation(List<AnkiNote> notes, string remarkId)
+    public static List<AnkiNote> LoadNotesThatRequireAdjustment()
+    {
+        // Load notes that need adjustment
+        var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "addSmartExampleUkr")
+            .Where(x => !x.Remarks.HasRemark(RemarkId))
+            .ToList();
+        ;
+        return notes;
+    }
+
+    public static async Task AddPolishTranslation(List<AnkiNote> notes)
     {
         await AnsiConsole.Progress()
             .StartAsync(async ctx =>
@@ -17,12 +29,11 @@ internal static class AddPolishTranslationToRemarks
 
                 foreach (var note in notes)
                 {
-                    var prompt = $@"Your job is to provide the closest translation of a flashcard content from Ukrainian to Polish.
-Since flashcards often lack enough context to understand which meaning of the word of phrase I want to focus on, I'll also provide a translation or comment in English to clarify the context. But try use Ukrainian content as input whenever possible (and not English) because languages are closer.
+                    var prompt = $@"Provide closest translation of a flashcard content from Ukrainian to Polish.
+English translation or comment is provided to clarify the context. But try use Ukrainian content as input whenever possible because it's closer to Polish.
+If you encounter Anki tags like <img/> or [sound], ignore them as if they weren't present in input.
 
-If you encounter Anki tags like <img ... /> or [sound ...], just ignore them as if they weren't present in input.
-
-Output the best translation of the provided content to Polish language. Output should be ready to put onto the flashcard reverse side, so don't be verbose (just provide a brief translation), and don't use any formatting (stick to plain text). Also, do NOT wrap output in backticks.
+Output the best translation of the provided content to Polish language. Output should be ready to put onto the flashcard reverse side, so don't be verbose (just provide a brief translation). Don't use any formatting, stick to plain text. Do NOT wrap output in backticks.
 
 The flashcard content to translate is:
 ```
@@ -37,7 +48,7 @@ The context of the usage (English translation) is:
                     var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, 1, false);
                     var response = await File.ReadAllTextAsync(responseFileName);
                     var responseUnwrapped = StringHelpers.RemoveBackticksBlockWrapper(response);
-                    var updatedRemarks = note.Remarks.AddOrUpdateRemark(remarkId, responseUnwrapped);
+                    var updatedRemarks = note.Remarks.AddOrUpdateRemark(RemarkId, responseUnwrapped);
                     note.Remarks = updatedRemarks;
 
                     fetchTranslationsTask.Increment(1);

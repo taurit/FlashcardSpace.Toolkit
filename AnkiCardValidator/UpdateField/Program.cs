@@ -1,5 +1,6 @@
 ﻿using AnkiCardValidator;
 using AnkiCardValidator.Utilities;
+using AnkiCardValidator.ViewModels;
 using Spectre.Console;
 using UpdateField.Mutations;
 using UpdateField.Utilities;
@@ -14,19 +15,15 @@ internal class Program
     /// <param name="args"></param>
     static async Task Main(string[] args)
     {
-        const string remarkId = "pl";
+        var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
+        await AddPolishTranslationToRemarks.AddPolishTranslation(notes);
 
-        // Load notes that need adjustment
-        var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "addSmartExampleUkr")
-                .Where(x => !x.Remarks.HasRemark(remarkId))
-                //.Take(30) // debug
-                .ToList();
-        ;
+        // Display modified notes to allow user confirm/reject changes (should work for all types of mutations!)
+        ConfirmAndUpdateNotesInDatabase(notes);
+    }
 
-        // ACTION: perform mutations on the flashcard notes
-        await AddPolishTranslationToRemarks.AddPolishTranslation(notes, remarkId);
-
-        // Display modified notes to allow user confirm/reject changes
+    private static void ConfirmAndUpdateNotesInDatabase(List<AnkiNote> notes)
+    {
         var modifiedNotes = notes.Where(x => x.FieldsRawCurrent != x.FieldsRawOriginal).ToList();
         UiHelper.DisplayModifiedNotesDiff(modifiedNotes);
 
@@ -35,6 +32,5 @@ internal class Program
         {
             AnkiHelpers.UpdateFields(Settings.AnkiDatabaseFilePath, notes);
         }
-
     }
 }
