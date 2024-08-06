@@ -39,7 +39,7 @@ public partial class MainWindow : Window
     {
         var sw = Stopwatch.StartNew();
 
-        var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, "1. Spanish");
+        var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, deckName: "1. Spanish");
 
         ViewModel.Flashcards.Clear();
         foreach (var note in notes)

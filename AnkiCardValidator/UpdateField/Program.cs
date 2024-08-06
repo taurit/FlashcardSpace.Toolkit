@@ -17,9 +17,9 @@ internal class Program
         const string remarkId = "pl";
 
         // Load notes that need adjustment
-        var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, "2. Ukrainian", "addSmartExampleUkr")
+        var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "addSmartExampleUkr")
                 .Where(x => !x.Remarks.HasRemark(remarkId))
-                .Take(30) // debug
+                //.Take(30) // debug
                 .ToList();
         ;
 
