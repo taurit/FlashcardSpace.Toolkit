@@ -66,8 +66,8 @@ public partial class ResolveDuplicatesTool : Window
             ? ConvertAnkiAudioTagToHtmlAudioTag(card.AnswerAudio)
             : "";
 
-        var commentsPart = !String.IsNullOrWhiteSpace(card.Note.Comments)
-            ? $"<br />{card.Note.Comments}"
+        var commentsPart = !String.IsNullOrWhiteSpace(card.Note.Remarks)
+            ? $"<br />{card.Note.Remarks}"
             : string.Empty;
 
         var issuesPart = !String.IsNullOrWhiteSpace(card.QualityIssues)

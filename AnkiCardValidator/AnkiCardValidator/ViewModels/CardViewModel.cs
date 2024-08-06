@@ -59,7 +59,7 @@ public sealed class CardViewModel(
     /// annotation to the cards in Anki if they require clarification (usually I add it in the Examples field).
     /// </summary>
     [DependsOn(nameof(Note))]
-    public bool ContainsTodoAnnotation => note.Comments.StartsWith("todo", StringComparison.InvariantCultureIgnoreCase);
+    public bool ContainsTodoAnnotation => note.Remarks.StartsWith("todo", StringComparison.InvariantCultureIgnoreCase);
     // todo improve detection - both false positives and negatives
 
     public int? FrequencyPositionQuestion { get; } = frequencyPositionQuestion;

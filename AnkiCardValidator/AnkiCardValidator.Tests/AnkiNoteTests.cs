@@ -52,6 +52,6 @@ public class AnkiNoteTests
         ankiNote2.BackText.Should().Be("backText");
         ankiNote2.BackAudio.Should().Be("backAudio");
         ankiNote2.Image.Should().Be("image");
-        ankiNote2.Comments.Should().Be("comments");
+        ankiNote2.Remarks.Should().Be("comments");
     }
 }

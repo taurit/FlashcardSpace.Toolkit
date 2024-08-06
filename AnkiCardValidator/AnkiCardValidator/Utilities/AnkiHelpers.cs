@@ -13,11 +13,13 @@ public static class AnkiHelpers
     /// </summary>
     /// <param name="ankiDatabasePath">A filesystem path to a SQL database of Anki (typically named `collection.anki2`)</param>
     /// <param name="deckName">Name of the deck serving as a filter for which flashcards to retrieve.</param>
-    public static List<AnkiNote> GetAllNotesFromSpecificDeck(string ankiDatabasePath, string deckName)
+    public static List<AnkiNote> GetAllNotesFromSpecificDeck(string ankiDatabasePath, string deckName, string limitToTag = null)
     {
         using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};");
         connection.Open();
         connection.CreateCollation("unicase", (x, y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase));
+
+        var tagPart = string.IsNullOrWhiteSpace(limitToTag) ? "" : $"AND notes.tags LIKE '%{limitToTag}%'";
 
         var query = $@"
                 SELECT DISTINCT notes.id, notes.flds, notes.tags, notetypes.name
@@ -25,9 +27,8 @@ public static class AnkiHelpers
                 JOIN notes ON cards.nid = notes.id
                 JOIN notetypes ON notes.mid = notetypes.id
                 WHERE cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
+                {tagPart}
             ";
-
-        // AND notes.tags LIKE '%hiszpanski-fajowe-znalezione-fiszki-z-audio%'
 
         using var command = new SqliteCommand(query, connection);
         using var reader = command.ExecuteReader();
@@ -92,8 +93,7 @@ public static class AnkiHelpers
     }
 
     /// <summary>
-    /// Carefully updates the "Comments" field (named "Examples" in Anki) in Anki database.
-    /// I'm not implementing a generic method for updating fields yet because I want to test it on a small use case first.
+    /// Updates the fields of the notes in the Anki database.
     /// Anki stores values of fields in a single string, separated by ASCII 0x1f (Unit Separator) character, which requires
     /// being careful and escaping such character.
     /// </summary>
@@ -105,11 +105,17 @@ public static class AnkiHelpers
 
         foreach (var noteToUpdate in notesToUpdate)
         {
+            // Add a tag to indicate that the note was updated outside Anki
+            // This allows one-click removal of the tag later in Anki, which will update timestamps and allow syncing the change
+            noteToUpdate.Tags = AnkiTagHelpers.AddTagToAnkiTagsString("updatedOutsideAnki", noteToUpdate.Tags);
+
             // Update the field in the Anki database
             var query = $@"
                 UPDATE notes
-                SET flds = '{noteToUpdate.FieldsRawCurrent}'
+                SET flds = '{noteToUpdate.FieldsRawCurrent}',
+                    tags = '{noteToUpdate.Tags}'
                 WHERE id = {noteToUpdate.Id};";
+
             // Execute the query
             using var command = new SqliteCommand(query, connection);
             var numRowsAffected = command.ExecuteNonQuery();

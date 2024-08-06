@@ -23,14 +23,14 @@ public class AnkiNote
         var backText = fields[2];
         var backAudio = fields[3];
         var image = fields[4];
-        var comments = fields[5];
+        var remarks = fields[5];
 
         FrontText = frontText;
         BackText = backText;
         FrontAudio = frontAudio;
         BackAudio = backAudio;
         Image = image;
-        Comments = comments;
+        Remarks = remarks;
     }
 
 
@@ -51,24 +51,24 @@ public class AnkiNote
         get
         {
             // Throw exception if any of the fields contains the Unit Separator character
-            var newFieldValueRaw = SerializeFields(FrontText, FrontAudio, BackText, BackAudio, Image, Comments);
+            var newFieldValueRaw = SerializeFields(FrontText, FrontAudio, BackText, BackAudio, Image, Remarks);
             return newFieldValueRaw;
         }
     }
 
-    public static string SerializeFields(string frontText, string frontAudio, string backText, string backAudio, string image, string comments)
+    public static string SerializeFields(string frontText, string frontAudio, string backText, string backAudio, string image, string remarks)
     {
         if (frontText.Contains('\x1f') ||
             frontAudio.Contains('\x1f') ||
             backText.Contains('\x1f') ||
             backAudio.Contains('\x1f') ||
             image.Contains('\x1f') ||
-            comments.Contains('\x1f'))
+            remarks.Contains('\x1f'))
         {
             throw new ArgumentException("Field value must not contain the Unit Separator character.");
         }
 
-        var newFieldValueRaw = $"{frontText}\x1f{frontAudio}\x1f{backText}\x1f{backAudio}\x1f{image}\x1f{comments}";
+        var newFieldValueRaw = $"{frontText}\x1f{frontAudio}\x1f{backText}\x1f{backAudio}\x1f{image}\x1f{remarks}";
         return newFieldValueRaw;
     }
 
@@ -82,6 +82,6 @@ public class AnkiNote
     public string FrontAudio { get; set; }
     public string BackAudio { get; set; }
     public string Image { get; set; }
-    public string Comments { get; set; }
+    public string Remarks { get; set; }
 
 }
