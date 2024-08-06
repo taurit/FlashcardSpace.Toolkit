@@ -13,22 +13,32 @@ public static class AnkiHelpers
     /// </summary>
     /// <param name="ankiDatabasePath">A filesystem path to a SQL database of Anki (typically named `collection.anki2`)</param>
     /// <param name="deckName">Name of the deck serving as a filter for which flashcards to retrieve.</param>
-    public static List<AnkiNote> GetAllNotesFromSpecificDeck(string ankiDatabasePath, string deckName, string limitToTag = null)
+    /// <param name="limitToTag">Optional tag to filter notes by.</param>
+    /// <remarks>
+    /// Filtering by deck will NOT return the cards currently assigned to filtered decks!
+    /// </remarks>
+    public static List<AnkiNote> GetNotes(string ankiDatabasePath, string? deckName = null, string? limitToTag = null)
     {
         using var connection = new SqliteConnection($"Data Source={ankiDatabasePath};");
         connection.Open();
         connection.CreateCollation("unicase", (x, y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase));
 
-        var tagPart = string.IsNullOrWhiteSpace(limitToTag) ? "" : $"AND notes.tags LIKE '%{limitToTag}%'";
+        // beware: filtered decks temporarily remove card from original deck!
+        var deckPart = string.IsNullOrWhiteSpace(deckName) ? "" : $"cards.did = (SELECT id FROM decks WHERE name = '{deckName}')";
+        var andPart = string.IsNullOrWhiteSpace(deckPart) ? "" : "AND";
+        var tagPart = string.IsNullOrWhiteSpace(limitToTag) ? "" : $"notes.tags LIKE '%{limitToTag}%'";
 
         var query = $@"
                 SELECT DISTINCT notes.id, notes.flds, notes.tags, notetypes.name
                 FROM cards
                 JOIN notes ON cards.nid = notes.id
                 JOIN notetypes ON notes.mid = notetypes.id
-                WHERE cards.did = (SELECT id FROM decks WHERE name COLLATE NOCASE = '{deckName}')
+                WHERE
+                {deckPart}
+                {andPart}
                 {tagPart}
             ";
+
 
         using var command = new SqliteCommand(query, connection);
         using var reader = command.ExecuteReader();
@@ -111,13 +121,16 @@ public static class AnkiHelpers
 
             // Update the field in the Anki database
             var query = $@"
-                UPDATE notes
-                SET flds = '{noteToUpdate.FieldsRawCurrent}',
-                    tags = '{noteToUpdate.Tags}'
-                WHERE id = {noteToUpdate.Id};";
+        UPDATE notes
+        SET flds = @fields,
+            tags = @tags
+        WHERE id = {noteToUpdate.Id}; ";
 
             // Execute the query
             using var command = new SqliteCommand(query, connection);
+            command.Parameters.AddWithValue("@fields", noteToUpdate.FieldsRawCurrent);
+            command.Parameters.AddWithValue("@tags", noteToUpdate.Tags);
+
             var numRowsAffected = command.ExecuteNonQuery();
             if (numRowsAffected != 1)
             {

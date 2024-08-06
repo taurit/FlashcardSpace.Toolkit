@@ -111,11 +111,11 @@ public class AnkiHelpersTests
     }
 
     [TestMethod]
-    public void WhenAddingTagToAnkiTagsString_TagMustNotContainSpaces()
+    public void WhenAddingTagToAnkiTagsString_TagMustNotContainSpecialCharacters()
     {
         // Arrange
-        var tagToAdd = "tag with spaces";
         var tagsString = "tag1 tag2 tag3";
+        var tagToAdd = "tag%with$special@characters";
 
         // Act
         Action act = () => AnkiTagHelpers.AddTagToAnkiTagsString(tagToAdd, tagsString);
@@ -125,11 +125,11 @@ public class AnkiHelpersTests
     }
 
     [TestMethod]
-    public void WhenAddingTagToAnkiTagsString_TagMustNotContainSpecialCharacters()
+    public void WhenAddingTagToAnkiTagsString_TagMustNotContainSpaces()
     {
         // Arrange
-        var tagToAdd = "tag%with$special@characters";
         var tagsString = "tag1 tag2 tag3";
+        var tagToAdd = "tag with spaces";
 
         // Act
         Action act = () => AnkiTagHelpers.AddTagToAnkiTagsString(tagToAdd, tagsString);
@@ -137,4 +137,5 @@ public class AnkiHelpersTests
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("Tag must not contain spaces or special characters.");
     }
+
 }
