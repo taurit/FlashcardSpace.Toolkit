@@ -65,7 +65,7 @@ internal static class FlashcardQualityEvaluator
 
                 // get response
 
-                var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, attempt);
+                var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, attempt, true);
                 var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
 
                 // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)

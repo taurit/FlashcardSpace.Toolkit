@@ -10,7 +10,7 @@ namespace AnkiCardValidator.Utilities;
 
 public static class ChatGptHelper
 {
-    public static async Task<string> GetAnswerToPromptUsingChatGptApi(string systemChatMessage, string prompt, int attempt)
+    public static async Task<string> GetAnswerToPromptUsingChatGptApi(string systemChatMessage, string prompt, int attempt, bool jsonMode)
     {
         var appSettings = new Settings();
         var openAiClientOptions = new OpenAIClientOptions() { OrganizationId = appSettings.OpenAiOrganization };
@@ -32,13 +32,13 @@ public static class ChatGptHelper
 
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
-            ResponseFormat = ChatResponseFormat.JsonObject
+            ResponseFormat = jsonMode ? ChatResponseFormat.JsonObject : ChatResponseFormat.Text
         };
-        List<ChatMessage> messages = new List<ChatMessage>
-            {
-                new SystemChatMessage(systemChatMessage),
-                new UserChatMessage(prompt)
-            };
+        List<ChatMessage> messages =
+        [
+            new SystemChatMessage(systemChatMessage),
+            new UserChatMessage(prompt)
+        ];
 
         ChatCompletion completion = await client.CompleteChatAsync(messages, options);
         var responseToPrompt = completion.Content[0].Text;

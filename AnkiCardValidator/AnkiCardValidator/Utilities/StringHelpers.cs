@@ -1,5 +1,7 @@
-﻿namespace AnkiCardValidator.Utilities;
-public static class StringHelpers
+﻿using System.Text.RegularExpressions;
+
+namespace AnkiCardValidator.Utilities;
+public static partial class StringHelpers
 {
     // https://en.wikipedia.org/wiki/Most_common_words_in_Spanish + own experience of words common in language learning like nuestro
     private static readonly string[] CommonSpanishWords = ["de", "la", "se", "los", "las", "con", "el", "en", "le", "que", "y", "del", "un", "por", "con", "una", "su", "para", "es", "al", "lo", "como", "pero", "mi", "si", "me", "fue", "era", "han", "hay", "yo", "nuestro", "vuestro", "vosotros", "nosotros", "ellos", "ella", "te"];
@@ -62,4 +64,35 @@ public static class StringHelpers
 
         return containsPolishCharactersOrWords && !ContainsCommonSpanishWords(query);
     }
+
+    [GeneratedRegex(@"```(.*)```\Z", RegexOptions.Singleline)]
+    private static partial Regex BackticksRegex();
+
+    /// <summary>
+    ///     Removes the triple backticks and the content type from the string (both at the beginning and at the end of a
+    ///     string) if it exists.
+    /// 
+    ///     Input example:
+    ///     ```html
+    ///     <p>Content</p>
+    ///     ```
+    /// 
+    ///     Output example:
+    ///     <p>Content</p>
+    /// </summary>
+    public static string RemoveBackticksBlockWrapper(string input)
+    {
+        // Use regular expression to find matches
+        var match = BackticksRegex().Match(input);
+
+        // Return the first group of the match if it's successful
+
+        if (match.Success)
+        {
+            return match.Groups[1].Value.Trim('`', '\n', '\r', '\t', ' ').Trim();
+        }
+
+        return input;
+    }
+
 }
