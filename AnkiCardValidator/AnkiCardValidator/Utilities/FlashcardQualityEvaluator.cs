@@ -36,6 +36,8 @@ internal record FlashcardToEvaluateSpanishToPolish(string QuestionInSpanish, str
 
 internal static class FlashcardQualityEvaluator
 {
+    const string SystemChatMessage = "You are an assistant to help students of Spanish language evaluate the quality of flashcards. Students already know Polish and English.";
+
     internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality<T>(List<T> noteBatch, FlashcardDirection direction)
     {
         const int allowedNumAttempts = 1;
@@ -62,7 +64,8 @@ internal static class FlashcardQualityEvaluator
                 var prompt = await template.RenderAsync(templateInput, x => x.Name);
 
                 // get response
-                var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(prompt, attempt);
+
+                var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, attempt);
                 var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
 
                 // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)

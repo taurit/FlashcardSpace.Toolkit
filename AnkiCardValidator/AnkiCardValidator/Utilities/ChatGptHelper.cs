@@ -8,9 +8,9 @@ using System.Text;
 
 namespace AnkiCardValidator.Utilities;
 
-internal static class ChatGptHelper
+public static class ChatGptHelper
 {
-    internal static async Task<string> GetAnswerToPromptUsingChatGptApi(string prompt, int attempt)
+    public static async Task<string> GetAnswerToPromptUsingChatGptApi(string systemChatMessage, string prompt, int attempt)
     {
         var appSettings = new Settings();
         var openAiClientOptions = new OpenAIClientOptions() { OrganizationId = appSettings.OpenAiOrganization };
@@ -20,8 +20,8 @@ internal static class ChatGptHelper
         var stableHash = BitConverter.ToString(stableHashBytes).Replace("-", string.Empty);
 
         var attemptNumberFileNameSuffix = attempt > 1 ? $"_attempt{attempt}" : string.Empty;
-        var storyCacheFileName = $"{Settings.OpenAiModelId}_{stableHash}{attemptNumberFileNameSuffix}.txt";
-        var responseToPromptFileName = Path.Combine(Settings.GptResponseCacheDirectory, storyCacheFileName);
+        var responseCacheFileName = $"{Settings.OpenAiModelId}_{stableHash}{attemptNumberFileNameSuffix}.txt";
+        var responseToPromptFileName = Path.Combine(Settings.GptResponseCacheDirectory, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
         {
@@ -36,7 +36,7 @@ internal static class ChatGptHelper
         };
         List<ChatMessage> messages = new List<ChatMessage>
             {
-                new SystemChatMessage("You are an assistant to help students of Spanish language evaluate the quality of flashcards. Students already know Polish and English."),
+                new SystemChatMessage(systemChatMessage),
                 new UserChatMessage(prompt)
             };
 

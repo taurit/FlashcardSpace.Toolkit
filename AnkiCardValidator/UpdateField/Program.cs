@@ -12,13 +12,13 @@ internal class Program
     /// A tool (maybe for one-time use) to batch modify Anki note fields outside Anki context
     /// </summary>
     /// <param name="args"></param>
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         // Load notes that need adjustment
         var notes = AnkiHelpers.GetAllNotesFromSpecificDeck(Settings.AnkiDatabaseFilePath, "2. Ukrainian", "addSmartExampleUkr");
 
         // ACTION: perform mutations on the flashcard notes
-        AddPolishTranslationToRemarks.AddPolishTranslation(notes);
+        await AddPolishTranslationToRemarks.AddPolishTranslation(notes);
 
         // Display modified notes to allow user confirm/reject changes
         var modifiedNotes = notes.Where(x => x.FieldsRawCurrent != x.FieldsRawOriginal).ToList();
