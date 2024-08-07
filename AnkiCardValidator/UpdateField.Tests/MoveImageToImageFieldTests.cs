@@ -42,6 +42,24 @@ public class MoveImageToImageFieldTests
     }
 
     [TestMethod]
+    public void MigrateImageToImageField_ShouldMoveImageToImageField_AndRemoveLeadingDivWithLineBreakInside()
+    {
+        // Arrange
+        var frontText = "<div><img src=\"parcel-map.webp\"><br></div>to track a parcel";
+        var backText = "This is the back text";
+        var fields = AnkiNote.SerializeFields(frontText, "", backText, "", "", "");
+        var note = new AnkiNote(0, "template", "", fields);
+
+        // Act
+        MoveImageToImageField.MigrateImageToImageField(note);
+
+        // Assert
+        note.Image.Should().Be("<img src=\"parcel-map.webp\">");
+        note.FrontText.Should().Be("to track a parcel");
+    }
+
+
+    [TestMethod]
     public void MigrateImageToImageField_ShouldMoveImageToImageField_WhenImageInBackText()
     {
         // Arrange

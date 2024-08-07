@@ -85,8 +85,13 @@ public static class MoveImageToImageField
             var firstNodeIsLineBreak = firstNode.Name == "br";
             var firstNodeIsWhitespace = firstNode.Name == "#text" && String.IsNullOrWhiteSpace(firstNode.InnerText);
             var firstNodeIsEmptyDiv = firstNode.Name == "div" && !firstNode.HasChildNodes && String.IsNullOrWhiteSpace(firstNode.InnerText);
+            var firstNodeIsDivWithOnlyLineBreakOrWhitespace = firstNode.Name == "div" &&
+                                                              firstNode.ChildNodes.All(cn =>
+                                                                cn.Name == "br" ||
+                                                                (cn.Name == "#text" && String.IsNullOrWhiteSpace(cn.InnerText))
+                                                              );
 
-            if (!firstNodeIsLineBreak && !firstNodeIsWhitespace && !firstNodeIsEmptyDiv) break;
+            if (!firstNodeIsLineBreak && !firstNodeIsWhitespace && !firstNodeIsEmptyDiv && !firstNodeIsDivWithOnlyLineBreakOrWhitespace) break;
             frontTextHtml.DocumentNode.RemoveChild(firstNode);
         } while (true);
 
@@ -97,8 +102,13 @@ public static class MoveImageToImageField
             var lastNodeIsLineBreak = lastNode.Name == "br";
             var lastNodeIsWhitespace = lastNode.Name == "#text" && String.IsNullOrWhiteSpace(lastNode.InnerText);
             var lastNodeIsEmptyDiv = lastNode.Name == "div" && !lastNode.HasChildNodes && String.IsNullOrWhiteSpace(lastNode.InnerText);
+            var lastNodeIsDivWithOnlyLineBreakOrWhitespace = lastNode.Name == "div" &&
+                                                             lastNode.ChildNodes.All(cn =>
+                                                                  cn.Name == "br" ||
+                                                                  (cn.Name == "#text" && String.IsNullOrWhiteSpace(cn.InnerText))
+                                                              );
 
-            if (!lastNodeIsLineBreak && !lastNodeIsWhitespace && !lastNodeIsEmptyDiv) break;
+            if (!lastNodeIsLineBreak && !lastNodeIsWhitespace && !lastNodeIsEmptyDiv && !lastNodeIsDivWithOnlyLineBreakOrWhitespace) break;
             frontTextHtml.DocumentNode.RemoveChild(lastNode);
         } while (true);
     }
