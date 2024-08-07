@@ -84,8 +84,8 @@ public class DuplicateDetectorTests
     public void DuplicatesAreDetectedInBothDirectionsCardsToo()
     {
         // Arrange
-        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", AnkiNote.SerializeFields("kot", "el gato", "", "", "", ""));
-        var note2 = new AnkiNote(1, "BothDirections", " tag1 ", AnkiNote.SerializeFields("el gato *", "kot *", "", "", "", ""));
+        var note1 = new AnkiNote(0, "OneDirection", " tag1 ", AnkiNote.SerializeFields("kot", "", "el gato", "", "", ""));
+        var note2 = new AnkiNote(1, "BothDirections", " tag1 ", AnkiNote.SerializeFields("el gato *", "", "kot *", "", "", ""));
 
         var card1 = new CardViewModel(note1, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
 

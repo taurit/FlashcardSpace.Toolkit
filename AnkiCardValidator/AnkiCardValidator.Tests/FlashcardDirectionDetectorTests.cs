@@ -44,7 +44,7 @@ public class FlashcardDirectionDetectorTests
     public void DetectDirectionOfACard(string frontSide, string backSide, FlashcardDirection expectedDirection)
     {
         // Arrange
-        var fieldsRawOriginal = AnkiNote.SerializeFields(frontSide, backSide, "", "", "", "");
+        var fieldsRawOriginal = AnkiNote.SerializeFields(frontSide, "", backSide, "", "", "");
         var note = new AnkiNote(0, "OneDirection", "", fieldsRawOriginal);
 
         // Act

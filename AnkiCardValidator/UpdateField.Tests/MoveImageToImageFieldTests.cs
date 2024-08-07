@@ -122,7 +122,7 @@ public class MoveImageToImageFieldTests
     public void MigrateImageToImageField_ShouldNotRemoveLineBreak_IfItIsBetweenTextFragments()
     {
         // Arrange
-        var frontText = "<img src=\"a.jpg\">to fear<br>to be afraid";
+        var frontText = "<img src=\"a.jpg\"><br>to fear<br>to be afraid";
         var fields = AnkiNote.SerializeFields(frontText, "", "", "", "", "");
         var note = new AnkiNote(0, "template", "", fields);
 
@@ -132,7 +132,22 @@ public class MoveImageToImageFieldTests
         // Assert
         note.Image.Should().Be("<img src=\"a.jpg\">");
         note.FrontText.Should().Be("to fear<br>to be afraid");
+    }
 
+    [TestMethod]
+    public void MigrateImageToImageField_ShouldNotRemoveLineBreakInBackText_IfItIsBetweenTextFragments()
+    {
+        // Arrange
+        var backText = "<img src=\"a.jpg\"><br>to fear<br>to be afraid";
+        var fields = AnkiNote.SerializeFields("", "", backText, "", "", "");
+        var note = new AnkiNote(0, "template", "", fields);
+
+        // Act
+        MoveImageToImageField.MigrateImageToImageField(note);
+
+        // Assert
+        note.Image.Should().Be("<img src=\"a.jpg\">");
+        note.BackText.Should().Be("to fear<br>to be afraid");
     }
 
     [DataTestMethod]

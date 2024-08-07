@@ -57,26 +57,45 @@ public static class MoveImageToImageField
         {
             note.Image = frontTextImage.OuterHtml;
             frontTextHtml.DocumentNode.RemoveChild(frontTextImage);
-            note.FrontText = frontTextHtml.DocumentNode.InnerHtml;
-            note.FrontText = note.FrontText.Trim();
 
-            // if FrontText starts or ends with HTML break tag (e.g. <br>, <br />, <BR/>, <BR />) remove it using HtmlAgilityPack
-            // todo implement manually, xpath not needed
-            var frontTextBreakTag = frontTextHtml.DocumentNode.SelectSingleNode("//br[1]"); // Select the first <br> element
-            if (frontTextBreakTag != null)
-            {
-                frontTextHtml.DocumentNode.RemoveChild(frontTextBreakTag);
-                note.FrontText = frontTextHtml.DocumentNode.InnerHtml;
-                note.FrontText = note.FrontText.Trim();
-            }
+            TrimLeadingAndTrailingLineBreaks(frontTextHtml);
+            note.FrontText = frontTextHtml.DocumentNode.InnerHtml.Trim();
         }
 
         if (backTextImage != null)
         {
             note.Image = backTextImage.OuterHtml;
             backTextHtml.DocumentNode.RemoveChild(backTextImage);
-            note.BackText = backTextHtml.DocumentNode.InnerHtml;
-            note.BackText = note.BackText.Trim();
+            TrimLeadingAndTrailingLineBreaks(backTextHtml);
+            note.BackText = backTextHtml.DocumentNode.InnerHtml.Trim();
         }
+    }
+
+    /// <summary>
+    /// If given HTML starts or ends with HTML break tag (e.g. <br>, <br />, <BR/>, <BR />) remove it using HtmlAgilityPack.
+    /// </summary>
+    private static void TrimLeadingAndTrailingLineBreaks(HtmlDocument frontTextHtml)
+    {
+        // remove leading newlines/whitespace
+        do
+        {
+            var firstNode = frontTextHtml.DocumentNode.ChildNodes.First();
+            var firstNodeIsLineBreak = firstNode.Name == "br";
+            var firstNodeIsWhitespace = firstNode.Name == "#text" && String.IsNullOrWhiteSpace(firstNode.InnerText);
+
+            if (!firstNodeIsLineBreak && !firstNodeIsWhitespace) break;
+            frontTextHtml.DocumentNode.RemoveChild(firstNode);
+        } while (true);
+
+        // remove trailing newlines/whitespace
+        do
+        {
+            var lastNode = frontTextHtml.DocumentNode.ChildNodes.Last();
+            var lastNodeIsLineBreak = lastNode.Name == "br";
+            var lastNodeIsWhitespace = lastNode.Name == "#text" && String.IsNullOrWhiteSpace(lastNode.InnerText);
+
+            if (!lastNodeIsLineBreak && !lastNodeIsWhitespace) break;
+            frontTextHtml.DocumentNode.RemoveChild(lastNode);
+        } while (true);
     }
 }
