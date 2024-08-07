@@ -28,6 +28,7 @@ internal static class UiHelper
         DisplayDiff(table, nameof(note.FrontAudio), note.FrontAudio, originalNote.FrontAudio);
         DisplayDiff(table, nameof(note.BackText), note.BackText, originalNote.BackText);
         DisplayDiff(table, nameof(note.BackAudio), note.BackAudio, originalNote.BackAudio);
+        DisplayDiff(table, nameof(note.Image), note.Image, originalNote.Image);
         DisplayDiff(table, nameof(note.Remarks), note.Remarks, originalNote.Remarks);
 
         AnsiConsole.Write(table);

@@ -25,6 +25,23 @@ public class MoveImageToImageFieldTests
     }
 
     [TestMethod]
+    public void MigrateImageToImageField_ShouldMoveImageToImageField_WhenImageInFrontTextIsNestedInDiv()
+    {
+        // Arrange
+        var frontText = "<div><img src=\"paste-8731668512769_1526937749246.webp\"></div><div>to fear, to be afraid (of)</div>";
+        var backText = "This is the back text";
+        var fields = AnkiNote.SerializeFields(frontText, "", backText, "", "", "");
+        var note = new AnkiNote(0, "template", "", fields);
+
+        // Act
+        MoveImageToImageField.MigrateImageToImageField(note);
+
+        // Assert
+        note.Image.Should().Be("<img src=\"paste-8731668512769_1526937749246.webp\">");
+        note.FrontText.Should().Be("<div>to fear, to be afraid (of)</div>");
+    }
+
+    [TestMethod]
     public void MigrateImageToImageField_ShouldMoveImageToImageField_WhenImageInBackText()
     {
         // Arrange

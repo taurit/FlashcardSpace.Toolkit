@@ -25,8 +25,8 @@ public static class AnkiHelpers
 
         // beware: filtered decks temporarily remove card from original deck!
         var deckPart = string.IsNullOrWhiteSpace(deckName) ? "" : $"cards.did = (SELECT id FROM decks WHERE name = '{deckName}')";
-        var andPart = string.IsNullOrWhiteSpace(deckPart) ? "" : "AND";
         var tagPart = string.IsNullOrWhiteSpace(limitToTag) ? "" : $"notes.tags LIKE '%{limitToTag}%'";
+        var andPart = !string.IsNullOrWhiteSpace(deckPart) && !string.IsNullOrWhiteSpace(tagPart) ? "AND" : "";
 
         var query = $@"
                 SELECT DISTINCT notes.id, notes.flds, notes.tags, notetypes.name

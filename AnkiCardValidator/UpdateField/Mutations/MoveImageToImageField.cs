@@ -8,7 +8,9 @@ namespace UpdateField.Mutations;
 public static class MoveImageToImageField
 {
     public static List<AnkiNote> LoadNotesThatRequireAdjustment() =>
-        AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, deckName: "2. Ukrainian").ToList();
+        AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, deckName: "2. Ukrainian")
+            .Take(30) // debug
+            .ToList();
 
     public static void RunMigration(List<AnkiNote> notes)
     {
@@ -56,7 +58,7 @@ public static class MoveImageToImageField
         if (frontTextImage != null)
         {
             note.Image = frontTextImage.OuterHtml;
-            frontTextHtml.DocumentNode.RemoveChild(frontTextImage);
+            frontTextImage.Remove();
 
             TrimLeadingAndTrailingLineBreaks(frontTextHtml);
             note.FrontText = frontTextHtml.DocumentNode.InnerHtml.Trim();
@@ -65,7 +67,7 @@ public static class MoveImageToImageField
         if (backTextImage != null)
         {
             note.Image = backTextImage.OuterHtml;
-            backTextHtml.DocumentNode.RemoveChild(backTextImage);
+            backTextImage.Remove();
             TrimLeadingAndTrailingLineBreaks(backTextHtml);
             note.BackText = backTextHtml.DocumentNode.InnerHtml.Trim();
         }
@@ -82,8 +84,9 @@ public static class MoveImageToImageField
             var firstNode = frontTextHtml.DocumentNode.ChildNodes.First();
             var firstNodeIsLineBreak = firstNode.Name == "br";
             var firstNodeIsWhitespace = firstNode.Name == "#text" && String.IsNullOrWhiteSpace(firstNode.InnerText);
+            var firstNodeIsEmptyDiv = firstNode.Name == "div" && !firstNode.HasChildNodes && String.IsNullOrWhiteSpace(firstNode.InnerText);
 
-            if (!firstNodeIsLineBreak && !firstNodeIsWhitespace) break;
+            if (!firstNodeIsLineBreak && !firstNodeIsWhitespace && !firstNodeIsEmptyDiv) break;
             frontTextHtml.DocumentNode.RemoveChild(firstNode);
         } while (true);
 
@@ -93,8 +96,9 @@ public static class MoveImageToImageField
             var lastNode = frontTextHtml.DocumentNode.ChildNodes.Last();
             var lastNodeIsLineBreak = lastNode.Name == "br";
             var lastNodeIsWhitespace = lastNode.Name == "#text" && String.IsNullOrWhiteSpace(lastNode.InnerText);
+            var lastNodeIsEmptyDiv = lastNode.Name == "div" && !lastNode.HasChildNodes && String.IsNullOrWhiteSpace(lastNode.InnerText);
 
-            if (!lastNodeIsLineBreak && !lastNodeIsWhitespace) break;
+            if (!lastNodeIsLineBreak && !lastNodeIsWhitespace && !lastNodeIsEmptyDiv) break;
             frontTextHtml.DocumentNode.RemoveChild(lastNode);
         } while (true);
     }
