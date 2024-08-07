@@ -2,6 +2,7 @@
 using AnkiCardValidator.Utilities;
 using AnkiCardValidator.ViewModels;
 using HtmlAgilityPack;
+using UpdateField.Utilities;
 
 namespace UpdateField.Mutations;
 public static class MoveImageToImageField
@@ -55,7 +56,7 @@ public static class MoveImageToImageField
             note.Image = frontTextImage.OuterHtml;
             frontTextImage.Remove();
 
-            TrimLeadingAndTrailingLineBreaks(frontTextHtml);
+            MutationHelpers.TrimLeadingAndTrailingLineBreaks(frontTextHtml);
             note.FrontText = frontTextHtml.DocumentNode.InnerHtml.Trim();
         }
 
@@ -63,48 +64,8 @@ public static class MoveImageToImageField
         {
             note.Image = backTextImage.OuterHtml;
             backTextImage.Remove();
-            TrimLeadingAndTrailingLineBreaks(backTextHtml);
+            MutationHelpers.TrimLeadingAndTrailingLineBreaks(backTextHtml);
             note.BackText = backTextHtml.DocumentNode.InnerHtml.Trim();
         }
-    }
-
-    /// <summary>
-    /// If given HTML starts or ends with HTML break tag (e.g. <br>, <br />, <BR/>, <BR />) remove it using HtmlAgilityPack.
-    /// </summary>
-    private static void TrimLeadingAndTrailingLineBreaks(HtmlDocument frontTextHtml)
-    {
-        // remove leading newlines/whitespace
-        do
-        {
-            var firstNode = frontTextHtml.DocumentNode.ChildNodes.First();
-            var firstNodeIsLineBreak = firstNode.Name == "br";
-            var firstNodeIsWhitespace = firstNode.Name == "#text" && String.IsNullOrWhiteSpace(firstNode.InnerText);
-            var firstNodeIsEmptyDiv = firstNode.Name == "div" && !firstNode.HasChildNodes && String.IsNullOrWhiteSpace(firstNode.InnerText);
-            var firstNodeIsDivWithOnlyLineBreakOrWhitespace = firstNode.Name == "div" &&
-                                                              firstNode.ChildNodes.All(cn =>
-                                                                cn.Name == "br" ||
-                                                                (cn.Name == "#text" && String.IsNullOrWhiteSpace(cn.InnerText))
-                                                              );
-
-            if (!firstNodeIsLineBreak && !firstNodeIsWhitespace && !firstNodeIsEmptyDiv && !firstNodeIsDivWithOnlyLineBreakOrWhitespace) break;
-            frontTextHtml.DocumentNode.RemoveChild(firstNode);
-        } while (true);
-
-        // remove trailing newlines/whitespace
-        do
-        {
-            var lastNode = frontTextHtml.DocumentNode.ChildNodes.Last();
-            var lastNodeIsLineBreak = lastNode.Name == "br";
-            var lastNodeIsWhitespace = lastNode.Name == "#text" && String.IsNullOrWhiteSpace(lastNode.InnerText);
-            var lastNodeIsEmptyDiv = lastNode.Name == "div" && !lastNode.HasChildNodes && String.IsNullOrWhiteSpace(lastNode.InnerText);
-            var lastNodeIsDivWithOnlyLineBreakOrWhitespace = lastNode.Name == "div" &&
-                                                             lastNode.ChildNodes.All(cn =>
-                                                                  cn.Name == "br" ||
-                                                                  (cn.Name == "#text" && String.IsNullOrWhiteSpace(cn.InnerText))
-                                                              );
-
-            if (!lastNodeIsLineBreak && !lastNodeIsWhitespace && !lastNodeIsEmptyDiv && !lastNodeIsDivWithOnlyLineBreakOrWhitespace) break;
-            frontTextHtml.DocumentNode.RemoveChild(lastNode);
-        } while (true);
     }
 }

@@ -18,11 +18,8 @@ internal class Program
         //var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
         //await AddPolishTranslationToRemarks.AddPolishTranslation(notes);
 
-        //var notes = MoveImageToImageField.LoadNotesThatRequireAdjustment();
-        //MoveImageToImageField.RunMigration(notes);
-
-        var notes = CleanLongmanSet.LoadNotesThatRequireAdjustment();
-        CleanLongmanSet.RunMigration(notes);
+        var notes = MoveImageToImageField.LoadNotesThatRequireAdjustment();
+        MoveImageToImageField.RunMigration(notes);
 
         // Display modified notes to allow user confirm/reject changes (should work for all types of mutations!)
         ConfirmAndUpdateNotesInDatabase(notes);
