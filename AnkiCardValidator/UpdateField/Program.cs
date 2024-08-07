@@ -15,8 +15,11 @@ internal class Program
     /// <param name="args"></param>
     static async Task Main(string[] args)
     {
-        var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
-        await AddPolishTranslationToRemarks.AddPolishTranslation(notes);
+        //var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
+        //await AddPolishTranslationToRemarks.AddPolishTranslation(notes);
+
+        var notes = MoveImageToImageField.LoadNotesThatRequireAdjustment();
+        MoveImageToImageField.RunMigration(notes);
 
         // Display modified notes to allow user confirm/reject changes (should work for all types of mutations!)
         ConfirmAndUpdateNotesInDatabase(notes);
