@@ -7,7 +7,7 @@ namespace UpdateField.Mutations;
 public static class MoveImageToImageField
 {
     public static List<AnkiNote> LoadNotesThatRequireAdjustment() =>
-        AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, deckName: "2. Ukrainian")
+        AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, deckName: "2a. Ukrainian podcast S03")
             //.Take(30) // debug
             .ToList();
 
