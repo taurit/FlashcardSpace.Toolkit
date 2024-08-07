@@ -2,31 +2,21 @@
 using AnkiCardValidator.Utilities;
 using AnkiCardValidator.ViewModels;
 using HtmlAgilityPack;
-using Spectre.Console;
 
 namespace UpdateField.Mutations;
 public static class MoveImageToImageField
 {
     public static List<AnkiNote> LoadNotesThatRequireAdjustment() =>
         AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, deckName: "2. Ukrainian")
-            .Take(30) // debug
+            //.Take(30) // debug
             .ToList();
 
     public static void RunMigration(List<AnkiNote> notes)
     {
-        AnsiConsole.Progress()
-            .Start(ctx =>
-            {
-                var progress = ctx.AddTask("Migrating images to the Image field...");
-                progress.MaxValue = notes.Count;
-
-                foreach (var note in notes)
-                {
-                    MigrateImageToImageField(note);
-                    progress.Increment(1);
-                }
-            });
-
+        foreach (var note in notes)
+        {
+            MigrateImageToImageField(note);
+        }
     }
 
     /// <summary>
@@ -54,6 +44,11 @@ public static class MoveImageToImageField
         // If there are images in both question and answer, the card was likely modified manually by me and
         // does not follow a typical pattern
         if (frontTextImage != null && backTextImage != null) return;
+
+        // If frontTextHtml contains only image tag, don't modify the card
+        if (frontTextHtml.DocumentNode.ChildNodes.Count == 1 && frontTextHtml.DocumentNode.FirstChild.Name == "img") return;
+        // If backTextHtml contains only image tag, don't modify the card
+        if (backTextHtml.DocumentNode.ChildNodes.Count == 1 && backTextHtml.DocumentNode.FirstChild.Name == "img") return;
 
         if (frontTextImage != null)
         {

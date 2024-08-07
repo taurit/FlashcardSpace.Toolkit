@@ -94,6 +94,43 @@ public class MoveImageToImageFieldTests
         note.BackText.Should().Be("This is the back text");
     }
 
+    // In some flashcards, I use a cropped photo taken while studying as a question; in such case don't move the image!
+    [TestMethod]
+    public void MigrateImageToImageField_ShouldNotMoveImageToImageField_WhenImageIsTheOnlyContentInTheField()
+    {
+        // Arrange
+        var frontText = "<img src=\"a.jpg\">";
+        var backText = "This is the back text";
+        var fields = AnkiNote.SerializeFields(frontText, "", backText, "", "", "");
+        var note = new AnkiNote(0, "template", "", fields);
+
+        // Act
+        MoveImageToImageField.MigrateImageToImageField(note);
+
+        // Assert
+        note.Image.Should().Be("");
+        note.FrontText.Should().Be("<img src=\"a.jpg\">");
+        note.BackText.Should().Be("This is the back text");
+    }
+
+    [TestMethod]
+    public void MigrateImageToImageField_ShouldNotMoveImageToImageFieldFromBackText_WhenImageIsTheOnlyContentInTheField()
+    {
+        // Arrange
+        var frontText = "This is the front text";
+        var backText = "<img src=\"a.jpg\">";
+        var fields = AnkiNote.SerializeFields(frontText, "", backText, "", "", "");
+        var note = new AnkiNote(0, "template", "", fields);
+
+        // Act
+        MoveImageToImageField.MigrateImageToImageField(note);
+
+        // Assert
+        note.Image.Should().Be("");
+        note.FrontText.Should().Be("This is the front text");
+        note.BackText.Should().Be("<img src=\"a.jpg\">");
+    }
+
     [TestMethod]
     public void MigrateImageToImageField_ShouldNotMoveImageToImageField_WhenBothFrontTextAndBackTextContainImage()
     {
