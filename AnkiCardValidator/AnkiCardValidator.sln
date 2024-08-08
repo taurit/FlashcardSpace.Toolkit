@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnkiCardValidator.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateField", "UpdateField\UpdateField.csproj", "{4CC4BFB9-BCCF-453F-9EA4-2C9141777D1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateField.Tests", "UpdateField.Tests\UpdateField.Tests.csproj", "{51FE90D5-0E1D-4F95-B19B-7768B3545297}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateField.Tests", "UpdateField.Tests\UpdateField.Tests.csproj", "{51FE90D5-0E1D-4F95-B19B-7768B3545297}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheapGpt", "CheapGpt\CheapGpt.csproj", "{24A8DF78-304F-4B89-9747-0DD280277154}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheapGpt.ManualTest", "CheapGpt.ManualTest\CheapGpt.ManualTest.csproj", "{165E4737-367A-4F4F-B669-C765574A8018}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{51FE90D5-0E1D-4F95-B19B-7768B3545297}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51FE90D5-0E1D-4F95-B19B-7768B3545297}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51FE90D5-0E1D-4F95-B19B-7768B3545297}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24A8DF78-304F-4B89-9747-0DD280277154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A8DF78-304F-4B89-9747-0DD280277154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A8DF78-304F-4B89-9747-0DD280277154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A8DF78-304F-4B89-9747-0DD280277154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{165E4737-367A-4F4F-B669-C765574A8018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{165E4737-367A-4F4F-B669-C765574A8018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{165E4737-367A-4F4F-B669-C765574A8018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{165E4737-367A-4F4F-B669-C765574A8018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
