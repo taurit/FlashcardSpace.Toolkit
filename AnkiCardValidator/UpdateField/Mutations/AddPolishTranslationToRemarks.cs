@@ -29,18 +29,17 @@ internal static class AddPolishTranslationToRemarks
 
                 foreach (var note in notes)
                 {
-                    var prompt = $@"Provide closest translation of a flashcard content from Ukrainian to Polish.
-English translation or comment is provided to clarify the context. But try use Ukrainian content as input whenever possible because it's closer to Polish.
-If you encounter Anki tags like <img/> or [sound], ignore them as if they weren't present in input.
+                    var prompt = $@"Given input in Ukrainian, provide the closest equivalent in Polish. Be as accurate as possible.
+English translation or comment is provided to clarify the context.
+If you encounter Anki tags like <img/> or [sound:...], ignore them as if they weren't in the input.
 
-Output the best translation of the provided content to Polish language. Output should be ready to put onto the flashcard reverse side, so don't be verbose (just provide a brief translation). Don't use any formatting, stick to plain text. Do NOT wrap output in backticks.
+The output should be ready to put onto the reverse side of the flashcard, so don't be verbose (provide a brief translation). Stick to plain text. Do NOT wrap output in backticks.
 
 The flashcard content to translate is:
 ```
 {note.FrontText}
 ```
-
-The context of the usage (English translation) is:
+The context of the usage (English equivalent) is:
 ```
 {note.BackText}
 ```";
