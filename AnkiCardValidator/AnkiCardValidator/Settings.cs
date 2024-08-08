@@ -23,6 +23,7 @@ public class Settings
 
     public readonly string OpenAiDeveloperKey;
     public readonly string OpenAiOrganization;
+    public readonly string GeminiApiKey;
 
     public Settings()
     {
@@ -32,6 +33,8 @@ public class Settings
                              throw new InvalidOperationException("OpenAiDeveloperKey is missing in User Secrets configuration");
         OpenAiOrganization = configuration["OpenAiOrganization"] ??
                              throw new InvalidOperationException("OpenAiOrganization is missing in User Secrets configuration");
+        GeminiApiKey = configuration["GeminiApiKey"] ??
+                       throw new InvalidOperationException("GeminiApiKey is missing in User Secrets configuration");
     }
 
 
