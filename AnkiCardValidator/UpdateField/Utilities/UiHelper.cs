@@ -1,4 +1,5 @@
-﻿using AnkiCardValidator.ViewModels;
+﻿using AnkiCardValidator.Utilities;
+using AnkiCardValidator.ViewModels;
 using Spectre.Console;
 
 namespace UpdateField.Utilities;
@@ -51,7 +52,8 @@ internal static class UiHelper
             if (fieldName == nameof(AnkiNote.BackAudio)) return;
             if (fieldName == nameof(AnkiNote.Image)) return;
 
-            table.AddRow(fieldName, Markup.Escape(current));
+            var stringWithoutAccentMarksUnsupportedByCmd = current.RemoveUkrainianFlashcardsAccentMark();
+            table.AddRow(fieldName, Markup.Escape(stringWithoutAccentMarksUnsupportedByCmd));
         }
     }
 

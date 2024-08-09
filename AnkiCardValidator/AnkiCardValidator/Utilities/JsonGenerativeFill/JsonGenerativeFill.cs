@@ -50,7 +50,7 @@ public static class JsonGenerativeFill
                      $"```\n" +
                      $"\n" +
                      $"For each input item you should generate one output item, using the `id` property as a key linking input and output.\n" +
-                     $"Your job is to replace the null values with content. Hints on how to best fill the missing data:\n" +
+                     $"Your job is to replace the null values with content. Hints on how to best fill the missing data in each item:\n" +
                      $"{hints}";
 
 
