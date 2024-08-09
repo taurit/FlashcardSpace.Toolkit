@@ -11,9 +11,8 @@ public static class JsonGenerativeFill
 {
     public static async Task<List<T>> FillMissingProperties<T>(
         List<T> inputElements,
-        string hints,
         string systemChatMessage = "You are a helpful assistant"
-        ) where T : ItemWithId
+        ) where T : ObjectWithId
     {
         // assign consecutive IDs to input elements
         for (var i = 0; i < inputElements.Count; i++)
@@ -37,6 +36,8 @@ public static class JsonGenerativeFill
         var outputExampleAsObject = new ArrayOfItemsWithIds<T>(outputExample);
         var outputFormatExample = JsonSerializer.Serialize(outputExampleAsObject, outputSerializationOptions);
 
+        var hints = GenerateHintsPart(typeof(T));
+
         var prompt = $"Input contains array of items to process (in the `items` property):\n" +
                      $"\n" +
                      $"```json\n" +
@@ -50,7 +51,8 @@ public static class JsonGenerativeFill
                      $"```\n" +
                      $"\n" +
                      $"For each input item you should generate one output item, using the `id` property as a key linking input and output.\n" +
-                     $"Your job is to replace the null values with content. Hints on how to best fill the missing data in each item:\n" +
+                     $"Your job is to replace the null values with content.\n" +
+                     $"\n" +
                      $"{hints}";
 
 
@@ -75,7 +77,37 @@ public static class JsonGenerativeFill
         return resultItems;
     }
 
-    private static void RewriteInputPropertiesIntoOutput<T>(List<T> inputElements, List<T> outputElements) where T : ItemWithId
+    private static string GenerateHintsPart(Type type)
+    {
+        // scan all properties of the type given as argument and collect all instances of [FillWithAIRuleAttribute] in a list
+        var properties = type.GetProperties();
+        var rulesSpecifiedInAttributes = new List<string>();
+
+        foreach (var property in properties)
+        {
+            var rulesForProperty = property.GetCustomAttributes<FillWithAIRuleAttribute>();
+            foreach (var rule in rulesForProperty)
+            {
+                var ruleForPrompt = $"For `{property.Name}` property: {rule.RuleText}";
+                rulesSpecifiedInAttributes.Add(ruleForPrompt);
+            }
+
+        }
+
+        string rulesString = "Try deduce the meaning of properties to fill without any hints.";
+
+        if (rulesSpecifiedInAttributes.Any())
+        {
+            var rulesPrecededByBulletPoint = rulesSpecifiedInAttributes.Select(rule => $"- {rule}");
+            var rulesAsSingleString = String.Join("\n", rulesPrecededByBulletPoint);
+            rulesString = $"Use the following rules when filling values of properties:\n" +
+                          $"{rulesAsSingleString}";
+        }
+        return rulesString;
+
+    }
+
+    private static void RewriteInputPropertiesIntoOutput<T>(List<T> inputElements, List<T> outputElements) where T : ObjectWithId
     {
         var properties = typeof(T).GetProperties();
 
@@ -87,7 +119,7 @@ public static class JsonGenerativeFill
             foreach (var outputProperty in properties)
             {
                 // leave alone properties that don't have Fill attribute; they were filled by AI model already
-                var filledByAi = outputProperty.GetCustomAttribute<FilledByAIAttribute>() != null;
+                var filledByAi = outputProperty.GetCustomAttribute<FillWithAIAttribute>() != null;
                 if (filledByAi)
                     continue;
 

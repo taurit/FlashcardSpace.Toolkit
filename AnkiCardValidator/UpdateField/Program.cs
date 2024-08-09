@@ -15,7 +15,10 @@ internal class Program
     /// <param name="args"></param>
     static async Task Main(string[] args)
     {
-        //var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "s06").ToList();
+        await new TestGenerativeFill().DoTestGenerativeFill();
+        return;
+
+        //var notes = AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "5-minute-ukrainian").ToList();
         //MoveSoundToSoundField.RunMigration(notes);
         //UpdateNotesInDatabase(notes, userConfirmationRequired: true);
 
