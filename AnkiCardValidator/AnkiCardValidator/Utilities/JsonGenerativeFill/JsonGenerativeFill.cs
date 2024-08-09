@@ -9,9 +9,9 @@ namespace AnkiCardValidator.Utilities.JsonGenerativeFill;
 /// </summary>
 public static class JsonGenerativeFill
 {
-    public static async Task<List<T>> GetAnswersToPromptsUsingChatGptApi<T>(
-        string hintsOnHowToTransformSingleItem,
+    public static async Task<List<T>> FillMissingProperties<T>(
         List<T> inputElements,
+        string hints,
         string systemChatMessage = "You are a helpful assistant"
         ) where T : ItemWithId
     {
@@ -51,7 +51,7 @@ public static class JsonGenerativeFill
                      $"\n" +
                      $"For each input item you should generate one output item, using the `id` property as a key linking input and output.\n" +
                      $"Your job is to replace the null values with content. Hints on how to best fill the missing data:\n" +
-                     $"{hintsOnHowToTransformSingleItem}";
+                     $"{hints}";
 
 
         // execute query
@@ -87,7 +87,7 @@ public static class JsonGenerativeFill
             foreach (var outputProperty in properties)
             {
                 // leave alone properties that don't have Fill attribute; they were filled by AI model already
-                var filledByAi = outputProperty.GetCustomAttribute<FillAttribute>() != null;
+                var filledByAi = outputProperty.GetCustomAttribute<FilledByAIAttribute>() != null;
                 if (filledByAi)
                     continue;
 

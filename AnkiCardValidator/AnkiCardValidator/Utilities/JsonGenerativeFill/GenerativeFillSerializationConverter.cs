@@ -24,7 +24,7 @@ public class GenerativeFillSerializationConverter<T>(SerializationSetting serial
         writer.WriteStartObject();
         foreach (var prop in typeof(T).GetProperties())
         {
-            var propertyHasFillAttribute = prop.IsDefined(typeof(FillAttribute), false);
+            var propertyHasFillAttribute = prop.IsDefined(typeof(FilledByAIAttribute), false);
 
             if (
                 (propertyHasFillAttribute && serializePropertiesWithFillAttribute) ||
