@@ -4,7 +4,9 @@ namespace AnkiCardValidator;
 public class Settings
 {
     //public const string OpenAiModelId = "gpt-4o-mini"; // cheap and simplified model for dev purposes
-    public const string OpenAiModelId = "gpt-4o"; // best quality model available
+
+    // https://openai.com/api/pricing/
+    public const string OpenAiModelId = "gpt-4o-2024-08-06"; // best quality model available
 
     // hardcoded for simplicity in the proof-of-concept phase
     public const string AnkiDatabaseFilePathDev = "d:\\Projekty\\AnkiStoryGenerator\\LocalDevData\\collection.anki2";
