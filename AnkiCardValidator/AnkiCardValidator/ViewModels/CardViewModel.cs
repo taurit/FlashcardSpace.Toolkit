@@ -75,7 +75,7 @@ public sealed class CardViewModel(
 
     public CefrClassification CefrLevelQuestion { get; set; } = cefrLevelQuestion;
 
-    public string? QualityIssuesRaw = qualityIssues;
+    public string? QualityIssuesRaw { get; set; } = qualityIssues;
 
     // Refined value of `QualityIssuesRaw` to be displayed in the UI.
     [DependsOn(nameof(QualityIssuesRaw))]

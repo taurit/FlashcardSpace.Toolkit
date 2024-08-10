@@ -21,6 +21,7 @@ public partial class MainWindow : Window
     readonly DuplicateDetector _duplicateDetector;
     readonly DefinitionCounter _definitionCounter;
     readonly FlashcardDirectionDetector _directionDetector;
+    private readonly QualityIssuesIgnoreList _qualityIssuesIgnoreList;
 
     public MainWindow()
     {
@@ -33,6 +34,7 @@ public partial class MainWindow : Window
         _spanishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionarySpanish);
         _polishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionaryPolish);
         _directionDetector = new(_normalFormProvider, _polishFrequencyDataProvider, _spanishFrequencyDataProvider);
+        _qualityIssuesIgnoreList = new QualityIssuesIgnoreList(Settings.QualityIssuesIgnoreListFilePath);
     }
 
     private async void LoadFlashcards_OnClick(object sender, RoutedEventArgs e)
@@ -182,12 +184,12 @@ public partial class MainWindow : Window
             : $"{cardVm.Note.Id}"  // for Spanish, just use the note ID to not discard existing cache which used note id only
             ;
 
-        var cacheFileName = $"eval-{Settings.OpenAiModelId}_{cardId}.txt";
+        var cacheFileName = $"eval-{Settings.OpenAiModelGenerationId}_{cardId}.txt";
         var cacheFilePath = Path.Combine(Settings.GptResponseCacheDirectory, cacheFileName);
         return cacheFilePath;
     }
 
-    private static async Task TryUpdateViewModelWithEvaluationData(CardViewModel cardVm)
+    private async Task TryUpdateViewModelWithEvaluationData(CardViewModel cardVm)
     {
         var cacheFilePath = GenerateCacheFilePath(cardVm);
         if (!File.Exists(cacheFilePath)) return;
@@ -202,7 +204,11 @@ public partial class MainWindow : Window
         }
 
         cardVm.CefrLevelQuestion = cached.Evaluation.CEFR;
+
         cardVm.QualityIssuesRaw = cached.Evaluation.Issues;
+        if (_qualityIssuesIgnoreList.IsInIgnoreList(cardVm.Question, cardVm.Answer, cached.Evaluation.Issues))
+            cardVm.QualityIssuesRaw = String.Empty;
+
         cardVm.RawResponseFromChatGptApi = cached.RawChatGptResponse;
 
         cardVm.Meanings.Clear();
@@ -244,6 +250,16 @@ public partial class MainWindow : Window
         resolveDuplicatesTool.ShowDialog();
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
+    }
+
+
+    private void MarkAsIrrelevant_OnClick(object sender, RoutedEventArgs e)
+    {
+        var row = ViewModel.SelectedCard;
+        if (row is null) return;
+
+        _qualityIssuesIgnoreList.Add(row.Question, row.Answer, row.QualityIssuesRaw);
+        row.QualityIssuesRaw = "";
     }
 }
 

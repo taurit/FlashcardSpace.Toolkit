@@ -40,6 +40,7 @@
             <Separator />
 
             <Button Padding="5" Click="ResolveDuplicates_OnClick">Resolve duplicates...</Button>
+            <Button Padding="5" Click="MarkAsIrrelevant_OnClick">Mark warning as irrelevant</Button>
         </ToolBar>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>

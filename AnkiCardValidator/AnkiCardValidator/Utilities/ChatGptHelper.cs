@@ -20,7 +20,7 @@ public static class ChatGptHelper
         var stableHash = BitConverter.ToString(stableHashBytes).Replace("-", string.Empty);
 
         var attemptNumberFileNameSuffix = attempt > 1 ? $"_attempt{attempt}" : string.Empty;
-        var responseCacheFileName = $"{Settings.OpenAiModelId}_{stableHash}{attemptNumberFileNameSuffix}.txt";
+        var responseCacheFileName = $"{Settings.OpenAiModelGenerationId}_{stableHash}{attemptNumberFileNameSuffix}.txt";
         var responseToPromptFileName = Path.Combine(Settings.GptResponseCacheDirectory, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
@@ -28,7 +28,7 @@ public static class ChatGptHelper
             Debug.WriteLine("Cached response from ChatGPT is used.");
             return responseToPromptFileName;
         }
-        Debug.WriteLine($"Cache miss, querying ChatGPT API ({Settings.OpenAiModelId})...");
+        Debug.WriteLine($"Cache miss, querying ChatGPT API (model: {Settings.OpenAiModelId}, generation:  {Settings.OpenAiModelGenerationId})...");
 
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
