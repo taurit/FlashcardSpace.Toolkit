@@ -7,17 +7,27 @@ namespace AnkiCardValidator.Utilities.JsonGenerativeFill;
 /// <summary>
 /// Helps process arrays of items instead of single item, to save on input tokens
 /// </summary>
-public static class JsonGenerativeFill
+public static class GenerativeFill
 {
+    public static async Task<T> FillMissingProperties<T>(T inputElement, string systemChatMessage = "You are a helpful assistant")
+        where T : ObjectWithId
+    {
+        var inputElements = new List<T>() { inputElement };
+        var response = await FillMissingProperties<T>(inputElements, systemChatMessage);
+        return response.Single();
+    }
+
     public static async Task<List<T>> FillMissingProperties<T>(
-        List<T> inputElements,
+        IEnumerable<T> inputItems,
         string systemChatMessage = "You are a helpful assistant"
         ) where T : ObjectWithId
     {
+        var inputObjects = inputItems.ToList();
+
         // assign consecutive IDs to input elements
-        for (var i = 0; i < inputElements.Count; i++)
+        for (var i = 0; i < inputObjects.Count; i++)
         {
-            inputElements[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
+            inputObjects[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
         }
 
         // build prompt
@@ -26,11 +36,11 @@ public static class JsonGenerativeFill
         var inputSerializationOptions = new JsonSerializerOptions();
         inputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndInputs));
         // wrapping array with an object because OpenAI API doesn't like JSON arrays as root element
-        var inputArrayAsObject = new ArrayOfItemsWithIds<T>(inputElements);
+        var inputArrayAsObject = new ArrayOfItemsWithIds<T>(inputObjects);
         var inputSerialized = JsonSerializer.Serialize(inputArrayAsObject, inputSerializationOptions);
 
         // serialize output example
-        var outputExample = new List<T> { inputElements[0] };
+        var outputExample = new List<T> { inputObjects[0] };
         var outputSerializationOptions = new JsonSerializerOptions();
         outputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndOutputsPlaceholders));
         var outputExampleAsObject = new ArrayOfItemsWithIds<T>(outputExample);
@@ -38,7 +48,7 @@ public static class JsonGenerativeFill
 
         var hints = GenerateHintsPart(typeof(T));
 
-        var prompt = $"Input contains array of items to process (in the `items` property):\n" +
+        var prompt = $"Input contains array of items to process (in the `Items` property):\n" +
                      $"\n" +
                      $"```json\n" +
                      $"{inputSerialized}\n" +
@@ -65,13 +75,13 @@ public static class JsonGenerativeFill
         var resultObject = JsonSerializer.Deserialize<ArrayOfItemsWithIds<T>>(response);
         var resultItems = resultObject.Items;
 
-        if (resultItems.Count != inputElements.Count)
+        if (resultItems.Count != inputObjects.Count)
         {
             throw new InvalidOperationException("Number of items in response doesn't match number of items in input.");
         }
 
         // for each output element, rewrite values of properties without the `Fill` attribute from input elements. Match items by Id.
-        RewriteInputPropertiesIntoOutput(inputElements, resultItems);
+        RewriteInputPropertiesIntoOutput(inputObjects, resultItems);
 
         // return output
         return resultItems;

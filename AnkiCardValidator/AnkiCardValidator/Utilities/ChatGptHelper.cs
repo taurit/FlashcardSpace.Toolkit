@@ -33,6 +33,7 @@ public static class ChatGptHelper
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
             ResponseFormat = jsonMode ? ChatResponseFormat.JsonObject : ChatResponseFormat.Text
+
         };
         List<ChatMessage> messages =
         [

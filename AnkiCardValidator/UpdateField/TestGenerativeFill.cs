@@ -2,37 +2,36 @@
 
 namespace UpdateField;
 
-class CountriesModel(string country) : ObjectWithId
+class Country(string countryName) : ObjectWithId
 {
-    public string Country { get; init; } = country;
+    public string CountryName { get; init; } = countryName;
 
     [FillWithAI]
-    [FillWithAIRule("Fill with the first historically known capital of the country, not the current one.")]
-    public string? Capital { get; set; }
+    [FillWithAIRule("Fill with the first historically known capital of the country, not the current one!")]
+    public string? FirstCapital { get; set; } = null;
 
     [FillWithAI]
     [FillWithAIRule("Fill the value with name of the current president of the country")]
-    [FillWithAIRule("Fill the value in CAPITAL LETTERS")]
-    [FillWithAIRule("After the name, add a year when the person first became president (format: `BARRACK OBAMA (2009)`)")]
-    public string? President { get; set; }
+    [FillWithAIRule("Use CAPITAL LETTERS for this value")]
+    public string? President { get; set; } = null;
 }
 
 internal class TestGenerativeFill
 {
     public async Task DoTestGenerativeFill()
     {
-        List<CountriesModel> inputs =
-        [
-            new CountriesModel("Poland"),
-            new CountriesModel("Ukraine"),
-            new CountriesModel("Germany")
-        ];
+        //var partiallyCompleteCountry = new Country("Poland");
+        //Country country = await GenerativeFill.FillMissingProperties(partiallyCompleteCountry);
+        //return;
 
-        var response = await JsonGenerativeFill.FillMissingProperties(inputs);
+        var countries = await GenerativeFill.FillMissingProperties(new Country[] { new("USA"), new("Poland"), new("France") });
 
-        foreach (var job in response)
+
+
+
+        foreach (var job in countries)
         {
-            Console.WriteLine($"{job.Country} capital is {job.Capital}, president is {job.President}");
+            Console.WriteLine($"{job.CountryName}: first capital was {job.FirstCapital}, the current president is {job.President}.");
         }
     }
 }
