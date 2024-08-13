@@ -34,6 +34,9 @@ public class FrequencyDataProvider
     /// The file is sorted by the number of occurrences in descending order. This service should allow look up the position of a word in the dataset.
     /// We are not interested in the actual number of occurrences, only the position of the word in the dataset.
     /// </summary>
+    /// <remarks>
+    /// Todo big performance hit; I can use my favorite fast binary deserializer to improve performance probably
+    /// </remarks>
     private void LoadFrequencyData()
     {
         if (_frequencyData.Any()) return;
