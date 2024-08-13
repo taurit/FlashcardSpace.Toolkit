@@ -1,7 +1,7 @@
 version: 2
 updates:
     - package-ecosystem: "nuget"
-      directory: "/AnkiCardValidator"
+      directory: "/src"
       schedule:
           interval: "monthly"
       groups:
