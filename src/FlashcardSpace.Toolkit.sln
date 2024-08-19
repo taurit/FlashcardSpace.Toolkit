@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFlashcards", "Gener
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFlashcards.Tests", "GenerateFlashcards.Tests\GenerateFlashcards.Tests.csproj", "{DE167111-5A1A-4E2D-86E0-1A4A65E17616}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProofOfConceptProjects", "ProofOfConceptProjects", "{215B0A0F-6AA7-4F53-AFC0-6948C460E53B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{55013C4B-9A06-4D59-80AD-FBB144524C14} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{45E2FAC6-0D7E-4C95-B6EC-63BA799765FF} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{4CC4BFB9-BCCF-453F-9EA4-2C9141777D1B} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{51FE90D5-0E1D-4F95-B19B-7768B3545297} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{24A8DF78-304F-4B89-9747-0DD280277154} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{165E4737-367A-4F4F-B669-C765574A8018} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {377AA7C7-D8BF-49A6-AE30-CD15A27EDD4A}
