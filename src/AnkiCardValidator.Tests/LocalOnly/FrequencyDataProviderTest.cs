@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace AnkiCardValidator.Tests.LocalOnly;
 
-[TestClass]
+[TestClass, TestCategory("SkipInGitHubActions")]
 public class FrequencyDataProviderTest
 {
     private static FrequencyDataProvider _sut = null!;

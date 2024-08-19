@@ -21,8 +21,8 @@ public class Settings
     public const string GptResponseCacheDirectory = "s:\\Caches\\AnkiCardValidatorGptResponseCache\\";
 
     // hardcoded for simplicity in the proof-of-concept phase
-    public const string FrequencyDictionarySpanish = "d:\\Projekty\\AnkiCardValidator\\LocalDevData\\es_full.txt";
-    public const string FrequencyDictionaryPolish = "d:\\Projekty\\AnkiCardValidator\\LocalDevData\\pl_full.txt";
+    public const string FrequencyDictionarySpanish = "d:\\Projekty\\FlashcardSpace.Toolkit\\LocalDevData\\es_full.txt";
+    public const string FrequencyDictionaryPolish = "d:\\Projekty\\FlashcardSpace.Toolkit\\LocalDevData\\pl_full.txt";
 
     public readonly string OpenAiDeveloperKey;
     public readonly string OpenAiOrganization;
