@@ -21,11 +21,12 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    # Run tests for AnkiValidator PoC
     - name: Restore dependencies
-      run: dotnet restore src/AnkiCardValidator.sln
+      run: dotnet restore src/FlashcardSpace.Toolkit.sln
 
     - name: Build solution
-      run: dotnet build src/AnkiCardValidator.sln --configuration Debug --no-restore
+      run: dotnet build src/FlashcardSpace.Toolkit.sln --configuration Debug --no-restore
 
     - name: Run unit tests
-      run: dotnet test src/AnkiCardValidator.sln --configuration Debug --no-build --no-restore --filter FullyQualifiedName\!~AnkiCardValidator.Tests.LocalOnly
+      run: dotnet test src/FlashcardSpace.Toolkit.sln --configuration Debug --no-build --no-restore --filter FullyQualifiedName\!~AnkiCardValidator.Tests.LocalOnly

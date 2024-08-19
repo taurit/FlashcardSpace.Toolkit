@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheapGpt.ManualTest", "Chea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFlashcards", "GenerateFlashcards\GenerateFlashcards.csproj", "{D6B04758-2620-4750-87F2-56CE9A582B51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFlashcards.Tests", "GenerateFlashcards.Tests\GenerateFlashcards.Tests.csproj", "{DE167111-5A1A-4E2D-86E0-1A4A65E17616}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{D6B04758-2620-4750-87F2-56CE9A582B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6B04758-2620-4750-87F2-56CE9A582B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6B04758-2620-4750-87F2-56CE9A582B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE167111-5A1A-4E2D-86E0-1A4A65E17616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE167111-5A1A-4E2D-86E0-1A4A65E17616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE167111-5A1A-4E2D-86E0-1A4A65E17616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE167111-5A1A-4E2D-86E0-1A4A65E17616}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
