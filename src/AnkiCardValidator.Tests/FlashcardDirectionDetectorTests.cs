@@ -5,7 +5,7 @@ using FluentAssertions;
 
 namespace AnkiCardValidator.Tests;
 
-[TestClass]
+[TestClass, TestCategory("SkipInGitHubActions")] // skipped for now to avoid committing large frequency dictionaries with unclear license
 public class FlashcardDirectionDetectorTests
 {
     private static FlashcardDirectionDetector _sut = null!;
