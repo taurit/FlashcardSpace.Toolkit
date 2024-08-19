@@ -1,6 +1,7 @@
 ﻿using AnkiCardValidator.Utilities;
 using FluentAssertions;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AnkiCardValidator.Tests.LocalOnly;
 
@@ -9,8 +10,9 @@ public class FrequencyDataProviderTest
 {
     private static FrequencyDataProvider _sut = null!;
 
+    [SuppressMessage("VS", "IDE0060", Justification = "TestContext is needed for signature match, even when unused")]
     [ClassInitialize]
-    public static void ClassInitialize(TestContext context)
+    public static void ClassInitialize(TestContext testContext)
     {
         // Time-consuming operation, so it's done only once for all tests
         var sw = Stopwatch.StartNew();

@@ -7,7 +7,7 @@ namespace GenerateFlashcards.Tests.EndToEnd;
 [TestClass]
 public class ArgumentHandlingTests
 {
-    private string GetPathToExecutable()
+    private static string GetPathToExecutable()
     {
         var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         return Path.Combine(currentDirectory!, "GenerateFlashcards.exe");

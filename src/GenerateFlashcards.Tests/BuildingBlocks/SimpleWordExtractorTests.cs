@@ -4,13 +4,13 @@ using SimpleWordExtractor;
 namespace GenerateFlashcards.Tests.BuildingBlocks;
 
 [TestClass]
-public class SimpleTextFileWordExtractorTests
+public class SimpleWordExtractorTests
 {
     [TestMethod]
     public async Task When_SimpleSentenceInEnglishIsProcessed_Expect_AllWordsAppearInOutput()
     {
         // Arrange
-        var sut = new SimpleTextFileWordExtractor();
+        var sut = new SimpleWordExtractor.SimpleWordExtractor();
         var input = "This is a simple sentence.";
         var inputFileName = Path.GetTempFileName();
         await File.WriteAllTextAsync(inputFileName, input);
@@ -32,7 +32,7 @@ public class SimpleTextFileWordExtractorTests
     public async Task When_TwoSentencesInEnglishAreProcessed_Expect_AllWordsAppearInOutputWithCorrectParentSentenceLinked()
     {
         // Arrange
-        var sut = new SimpleTextFileWordExtractor();
+        var sut = new SimpleWordExtractor.SimpleWordExtractor();
         var input = "Is this the first sentence? No, it's the second!";
         var inputFileName = Path.GetTempFileName();
         await File.WriteAllTextAsync(inputFileName, input);

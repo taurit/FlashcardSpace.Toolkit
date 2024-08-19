@@ -102,7 +102,7 @@ public class RemarksUpdaterTests
 
         var result = "".AddOrUpdateRemark("scope1", "test remark 1");
         var result2 = result.AddOrUpdateRemark("scope2", "test remark 2");
-        var result3 = result.AddOrUpdateRemark("scope3", "test remark 3");
+        var result3 = result2.AddOrUpdateRemark("scope3", "test remark 3");
 
 
         // Act
@@ -118,7 +118,7 @@ public class RemarksUpdaterTests
     public void RemoveRemark_WhenRemarkIsRemovedFromNullString_DoNotCrash()
     {
         // Act
-        var afterRemoval = ((string)null).RemoveRemark("scope");
+        var afterRemoval = ((string)null!).RemoveRemark("scope");
 
         // Assert
         afterRemoval.Should().BeEmpty();
