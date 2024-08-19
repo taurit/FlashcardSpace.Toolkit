@@ -12,6 +12,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
+	  
+	  
+	<!-- Refactoring to consider:
+	
+			Change relation between GenerateFlashcards and Building Blocks projects
+			from compile-time dependency to runtime dependency (and remove references below).
+	
+			This will be a natural step if we want an architecture that allows plugins developed
+			in other repositories.
+			
+			I start with tightly coupled projects for simplicity, though.
+			
+	-->  
+    <ProjectReference Include="..\SimpleWordExtractor\SimpleWordExtractor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Resources\InputExample.Spanish.PlainText.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
