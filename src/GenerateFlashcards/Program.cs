@@ -11,7 +11,7 @@ internal class Program
         {
             config.AddCommand<GenerateFlashcardsCommand>("generate")
                 .WithDescription("Generates language-learning flashcards from an input file.")
-                .WithExample("generate", "--input", "input.txt")
+                .WithExample("generate", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
                 ;
         });
 

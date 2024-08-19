@@ -35,7 +35,10 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
         var inputAndOutputLanguageIsTheSame = inputLanguageName == outputLanguageName;
 
         if (inputAndOutputLanguageIsTheSame)
-            ValidationResult.Error("The `--outputLanguage` must be different from the `--inputLanguage`.");
+            return ValidationResult.Error("The `--outputLanguage` must be different from the `--inputLanguage`.");
+
+        if (!File.Exists(InputFilePath))
+            return ValidationResult.Error($"The input file `{InputFilePath}` cannot be found.");
 
         return ValidationResult.Success();
     }

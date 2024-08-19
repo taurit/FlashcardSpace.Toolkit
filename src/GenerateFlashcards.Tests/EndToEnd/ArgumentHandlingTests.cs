@@ -50,11 +50,28 @@ public class ArgumentHandlingTests
         var executablePath = GetPathToExecutable();
 
         // Act
-        var result = await ProcessRunner.Run(executablePath, arguments: "generate --inputLanguage klingon --outputLanguage English input.txt");
+        var result = await ProcessRunner.Run(executablePath,
+            arguments: "generate --inputLanguage klingon --outputLanguage English Resources/InputExample.Spanish.PlainText.txt");
 
         // Assert
         result.StatusCode.Should().NotBe(0);
         result.StandardOutput.Should().Contain("klingon");
+        result.StandardError.Should().BeNullOrEmpty();
+    }
+
+    [TestMethod]
+    public async Task When_GenerateCommandIsRanWithNonExistingInputFileParameter_Expect_StatusCodeIsNonZeroAndErrorMessageIsDisplayed()
+    {
+        // Arrange
+        var executablePath = GetPathToExecutable();
+
+        // Act
+        var result = await ProcessRunner.Run(executablePath,
+            arguments: "generate --inputLanguage Spanish --outputLanguage English ThisFileDoesNotExist.txt");
+
+        // Assert
+        result.StatusCode.Should().NotBe(0);
+        result.StandardOutput.Should().Contain("ThisFileDoesNotExist.txt");
         result.StandardError.Should().BeNullOrEmpty();
     }
 }
