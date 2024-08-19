@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GenerateFlashcards": {
+      "commandName": "Project",
+      "commandLineArgs": "generate Resources/InputExample.Spanish.PlainText.txt --outputLanguage English"
+    }
+  }
+}
