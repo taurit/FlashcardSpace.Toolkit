@@ -1,11 +1,17 @@
-﻿using GenerateFlashcards.Commands;
+﻿using CoreLibrary.Interfaces;
+using GenerateFlashcards.Commands;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
+using Vertical.SpectreLogger;
+using Vertical.SpectreLogger.Options;
 
 internal class Program
 {
     public static async Task<int> Main(string[] args)
     {
-        var app = new CommandApp();
+        var typeRegistrar = SetUpDependencyInjection();
+        var app = new CommandApp(typeRegistrar);
 
         app.Configure(config =>
         {
@@ -17,5 +23,28 @@ internal class Program
 
         var exitCode = await app.RunAsync(args);
         return exitCode;
+    }
+
+    private static ServiceCollectionRegistrar SetUpDependencyInjection()
+    {
+        var services = new ServiceCollection();
+
+        services.AddLogging(loggingBuilder =>
+            loggingBuilder
+                .AddSpectreConsole(spectreLoggingBuilder =>
+                    spectreLoggingBuilder
+                        .ConfigureProfiles(profile =>
+                        {
+                            profile.ConfigureOptions<DestructuringOptions>(ds => ds.WriteIndented = true);
+                        })
+                        // by default Trace and Debug are not logged; enable them
+                        .SetMinimumLevel(LogLevel.Trace)
+                )
+                // also needed at this level to enable Trace and Debug
+                .SetMinimumLevel(LogLevel.Trace)
+        );
+        services.AddSingleton<IExtractWords, SimpleWordExtractor.SimpleWordExtractor>();
+
+        return new ServiceCollectionRegistrar(services);
     }
 }
