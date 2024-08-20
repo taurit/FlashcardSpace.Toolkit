@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AdvancedSentenceExtractor\AdvancedSentenceExtractor.csproj" />
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
     
 	<!-- Refactoring to consider:

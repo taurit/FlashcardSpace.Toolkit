@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceImplementations", "ReferenceImplementations\ReferenceImplementations.csproj", "{396B09C4-C99B-456A-A4FB-3CED0662AC2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSentenceExtractor", "AdvancedSentenceExtractor\AdvancedSentenceExtractor.csproj", "{90CE03CF-7EC1-4CB6-8E79-3C4027230262}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{396B09C4-C99B-456A-A4FB-3CED0662AC2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{396B09C4-C99B-456A-A4FB-3CED0662AC2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{396B09C4-C99B-456A-A4FB-3CED0662AC2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90CE03CF-7EC1-4CB6-8E79-3C4027230262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90CE03CF-7EC1-4CB6-8E79-3C4027230262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90CE03CF-7EC1-4CB6-8E79-3C4027230262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90CE03CF-7EC1-4CB6-8E79-3C4027230262}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{24A8DF78-304F-4B89-9747-0DD280277154} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 		{165E4737-367A-4F4F-B669-C765574A8018} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 		{396B09C4-C99B-456A-A4FB-3CED0662AC2C} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
+		{90CE03CF-7EC1-4CB6-8E79-3C4027230262} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {377AA7C7-D8BF-49A6-AE30-CD15A27EDD4A}

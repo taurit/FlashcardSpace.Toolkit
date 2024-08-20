@@ -16,7 +16,10 @@ namespace GenerateFlashcards.Services;
 /// while others might be fine using the most generic one.
 /// </summary>
 internal class BuildingBlocksProvider(
-    ReferenceSentenceExtractor referenceWordExtractor,
+    // Sentence extractors
+    ReferenceSentenceExtractor referenceSentenceExtractor,
+    AdvancedSentenceExtractor.AdvancedSentenceExtractor advancedSentenceExtractor,
+
     ReferenceTermExtractor referenceTermExtractor,
     ReferenceTranslator referenceTranslator
 )
@@ -24,7 +27,7 @@ internal class BuildingBlocksProvider(
 
     internal IExtractSentences SelectBestSentenceExtractor(GenerateFlashcardsCommandSettings settings)
     {
-        return referenceWordExtractor;
+        return advancedSentenceExtractor;
     }
 
     public IExtractTerms SelectBestTermExtractor(GenerateFlashcardsCommandSettings settings)

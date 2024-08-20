@@ -16,6 +16,7 @@ internal class Program
 
         app.Configure(config =>
         {
+            config.PropagateExceptions();
             config.AddCommand<GenerateFlashcardsCommand>("generate")
                 .WithDescription("Generates language-learning flashcards from an input file.")
                 .WithExample("generate", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
@@ -45,10 +46,15 @@ internal class Program
                 // also needed at this level to enable Trace and Debug
                 .SetMinimumLevel(LogLevel.Debug)
         );
-        services.AddSingleton<BuildingBlocksProvider>();
+
+
         services.AddTransient<ReferenceSentenceExtractor>();
         services.AddTransient<ReferenceTermExtractor>();
         services.AddTransient<ReferenceTranslator>();
+
+        services.AddTransient<AdvancedSentenceExtractor.AdvancedSentenceExtractor>();
+
+        services.AddTransient<BuildingBlocksProvider>();
 
         return new ServiceCollectionRegistrar(services);
     }
