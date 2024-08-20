@@ -21,7 +21,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    # Run tests for AnkiValidator PoC
     - name: Restore dependencies
       run: dotnet restore src/FlashcardSpace.Toolkit.sln
 
@@ -30,5 +29,3 @@ jobs:
 
     - name: Run unit tests
       run: dotnet test src/FlashcardSpace.Toolkit.sln --configuration Debug --no-build --no-restore --filter TestCategory!=SkipInGitHubActions --logger "console;verbosity=detailed"
-
-       

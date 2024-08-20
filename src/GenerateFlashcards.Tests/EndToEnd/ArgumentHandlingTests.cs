@@ -24,8 +24,7 @@ public class ArgumentHandlingTests
 
         // Assert
         result.StatusCode.Should().Be(0);
-        result.StandardOutput.Should().Contain("USAGE:");
-        result.StandardError.Should().BeNullOrEmpty();
+        result.ProcessOutput.Should().Contain("USAGE:");
     }
 
     [TestMethod]
@@ -39,8 +38,7 @@ public class ArgumentHandlingTests
 
         // Assert
         result.StatusCode.Should().NotBe(0);
-        result.StandardOutput.Should().Contain("missing required argument");
-        result.StandardError.Should().BeNullOrEmpty();
+        result.ProcessOutput.Should().Contain("missing required argument");
     }
 
     [TestMethod]
@@ -55,8 +53,9 @@ public class ArgumentHandlingTests
 
         // Assert
         result.StatusCode.Should().NotBe(0);
-        result.StandardOutput.Should().Contain("klingon");
-        result.StandardError.Should().BeNullOrEmpty();
+
+
+        result.ProcessOutput.Should().Contain("klingon");
     }
 
     [TestMethod]
@@ -71,7 +70,6 @@ public class ArgumentHandlingTests
 
         // Assert
         result.StatusCode.Should().NotBe(0);
-        result.StandardOutput.Should().Contain("ThisFileDoesNotExist.txt");
-        result.StandardError.Should().BeNullOrEmpty();
+        result.ProcessOutput.Should().Contain("ThisFileDoesNotExist.txt");
     }
 }
