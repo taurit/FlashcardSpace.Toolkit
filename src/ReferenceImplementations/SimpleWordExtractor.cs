@@ -1,6 +1,6 @@
 ﻿using CoreLibrary.Interfaces;
 
-namespace SimpleWordExtractor;
+namespace ReferenceWordExtractor;
 
 /// <summary>
 /// An oversimplified implementation of the IExtractWords interface.

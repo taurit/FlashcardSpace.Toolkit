@@ -1,7 +1,8 @@
-﻿using CoreLibrary.Interfaces;
-using GenerateFlashcards.Commands;
+﻿using GenerateFlashcards.Commands;
+using GenerateFlashcards.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ReferenceWordExtractor;
 using Spectre.Console.Cli;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
@@ -43,7 +44,8 @@ internal class Program
                 // also needed at this level to enable Trace and Debug
                 .SetMinimumLevel(LogLevel.Trace)
         );
-        services.AddSingleton<IExtractWords, SimpleWordExtractor.SimpleWordExtractor>();
+        services.AddSingleton<BuildingBlocksProvider>();
+        services.AddSingleton<SimpleWordExtractor>();
 
         return new ServiceCollectionRegistrar(services);
     }

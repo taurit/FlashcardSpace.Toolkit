@@ -16,8 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
-	  
-	  
+    
 	<!-- Refactoring to consider:
 	
 			Change relation between GenerateFlashcards and Building Blocks projects
@@ -29,7 +28,7 @@
 			I start with tightly coupled projects for simplicity, though.
 			
 	-->  
-    <ProjectReference Include="..\SimpleWordExtractor\SimpleWordExtractor.csproj" />
+    <ProjectReference Include="..\ReferenceImplementations\ReferenceImplementations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

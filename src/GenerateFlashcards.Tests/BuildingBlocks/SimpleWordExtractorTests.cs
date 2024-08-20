@@ -1,5 +1,5 @@
 using FluentAssertions;
-using SimpleWordExtractor;
+using ReferenceWordExtractor;
 
 namespace GenerateFlashcards.Tests.BuildingBlocks;
 
@@ -10,7 +10,7 @@ public class SimpleWordExtractorTests
     public async Task When_SimpleSentenceInEnglishIsProcessed_Expect_AllWordsAppearInOutput()
     {
         // Arrange
-        var sut = new SimpleWordExtractor.SimpleWordExtractor();
+        var sut = new SimpleWordExtractor();
         var input = "This is a simple sentence.";
         var inputFileName = Path.GetTempFileName();
         await File.WriteAllTextAsync(inputFileName, input);
@@ -32,7 +32,7 @@ public class SimpleWordExtractorTests
     public async Task When_TwoSentencesInEnglishAreProcessed_Expect_AllWordsAppearInOutputWithCorrectParentSentenceLinked()
     {
         // Arrange
-        var sut = new SimpleWordExtractor.SimpleWordExtractor();
+        var sut = new SimpleWordExtractor();
         var input = "Is this the first sentence? No, it's the second!";
         var inputFileName = Path.GetTempFileName();
         await File.WriteAllTextAsync(inputFileName, input);

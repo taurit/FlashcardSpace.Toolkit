@@ -15,13 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheapGpt", "CheapGpt\CheapG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheapGpt.ManualTest", "CheapGpt.ManualTest\CheapGpt.ManualTest.csproj", "{165E4737-367A-4F4F-B669-C765574A8018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFlashcards", "GenerateFlashcards\GenerateFlashcards.csproj", "{D6B04758-2620-4750-87F2-56CE9A582B51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateFlashcards", "GenerateFlashcards\GenerateFlashcards.csproj", "{D6B04758-2620-4750-87F2-56CE9A582B51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFlashcards.Tests", "GenerateFlashcards.Tests\GenerateFlashcards.Tests.csproj", "{DE167111-5A1A-4E2D-86E0-1A4A65E17616}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateFlashcards.Tests", "GenerateFlashcards.Tests\GenerateFlashcards.Tests.csproj", "{DE167111-5A1A-4E2D-86E0-1A4A65E17616}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProofOfConceptProjects", "ProofOfConceptProjects", "{215B0A0F-6AA7-4F53-AFC0-6948C460E53B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLibrary", "CoreLibrary\CoreLibrary.csproj", "{268A1932-D2B0-4500-9C88-19D917286DCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLibrary", "CoreLibrary\CoreLibrary.csproj", "{268A1932-D2B0-4500-9C88-19D917286DCD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{C66A7E81-A23D-4502-B184-B11FB72D37E0}"
 EndProject
@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FlashcardValidators", "Flas
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutputGenerators", "OutputGenerators", "{BC438ECB-99A4-4724-B4BB-4C5BD1147A19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWordExtractor", "SimpleWordExtractor\SimpleWordExtractor.csproj", "{396B09C4-C99B-456A-A4FB-3CED0662AC2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceImplementations", "ReferenceImplementations\ReferenceImplementations.csproj", "{396B09C4-C99B-456A-A4FB-3CED0662AC2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,7 +96,7 @@ Global
 		{BCC7B43C-CE6A-4E72-A97A-5D897E241C09} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
 		{849C9552-9608-426E-84E9-C045DF01E756} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
 		{BC438ECB-99A4-4724-B4BB-4C5BD1147A19} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
-		{396B09C4-C99B-456A-A4FB-3CED0662AC2C} = {0FD7DB02-2506-478D-94DA-BDCE77FFA165}
+		{396B09C4-C99B-456A-A4FB-3CED0662AC2C} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {377AA7C7-D8BF-49A6-AE30-CD15A27EDD4A}
