@@ -15,19 +15,21 @@ internal sealed class GenerateFlashcardsCommand(
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
     {
         logger.LogInformation("Generating flashcards...");
-        logger.LogInformation("Settings:\n\n{@Settings}\n", settings);
+        logger.LogInformation("Settings:\n{@Settings}\n", settings);
 
         logger.LogInformation("Extracting words from input file...");
 
-        IExtractWords wordsExtractor = buildingBlocksProvider.SelectBestWordExtractor(settings);
-        var extractedWords = await wordsExtractor.ExtractWords(settings.InputFilePath);
-        logger.LogInformation("Extracted {ExtractedWordsCount} words", extractedWords.Count);
-        logger.LogDebug("Sample of extracted words:\n\n{@FewWords}", extractedWords.Take(3));
+        IExtractSentences sentencesExtractor = buildingBlocksProvider.SelectBestSentenceExtractor(settings);
+        var extractedSentences = await sentencesExtractor.ExtractSentences(settings.InputFilePath);
+        logger.LogInformation("Extracted {ExtractedSentencesCount} sentences", extractedSentences.Count);
+        logger.LogDebug("Sample of extracted sentences:\n{@SampleOfSentences}", extractedSentences.Take(3));
 
-        logger.LogInformation("Determining parts of speech for the extracted words...");
-        IExtendNotes partOfSpeechClassifier = buildingBlocksProvider.SelectBestPartOfSpeechClassifier(settings);
-        //partOfSpeechClassifier.
+        logger.LogInformation("Extracting terms from the sentences...");
+        IExtractTerms termExtractor = buildingBlocksProvider.SelectBestTermExtractor(settings);
+        var extractedTerms = await termExtractor.ExtractTerms(extractedSentences);
+        logger.LogDebug("Sample of extracted terms:\n{@SampleOfTerms}", extractedTerms.Take(3));
 
+        logger.LogInformation("Translating terms...");
         return 0;
     }
 

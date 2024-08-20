@@ -6,7 +6,7 @@ namespace GenerateFlashcards.Services;
 
 /// <summary>
 /// Provides instances of building blocks like:
-/// - <see cref="IExtractWords"/>
+/// - <see cref="IExtractSentences"/>
 /// - <see cref="IExtendNotes"/>
 /// - <see cref="IGenerateOutput"/>
 ///
@@ -16,18 +16,18 @@ namespace GenerateFlashcards.Services;
 /// while others might be fine using the most generic one.
 /// </summary>
 internal class BuildingBlocksProvider(
-    ReferenceWordExtractor referenceWordExtractor,
-    ReferencePartOfSpeechClassifier referencePartOfSpeechClassifier
+    ReferenceSentenceExtractor referenceWordExtractor,
+    ReferenceTermExtractor referenceTermExtractor
 )
 {
 
-    internal IExtractWords SelectBestWordExtractor(GenerateFlashcardsCommandSettings settings)
+    internal IExtractSentences SelectBestSentenceExtractor(GenerateFlashcardsCommandSettings settings)
     {
         return referenceWordExtractor;
     }
 
-    public IExtendNotes SelectBestPartOfSpeechClassifier(GenerateFlashcardsCommandSettings settings)
+    public IExtractTerms SelectBestTermExtractor(GenerateFlashcardsCommandSettings settings)
     {
-        return referencePartOfSpeechClassifier;
+        return referenceTermExtractor;
     }
 }

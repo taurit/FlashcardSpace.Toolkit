@@ -45,8 +45,8 @@ internal class Program
                 .SetMinimumLevel(LogLevel.Trace)
         );
         services.AddSingleton<BuildingBlocksProvider>();
-        services.AddSingleton<ReferenceWordExtractor>();
-        services.AddSingleton<ReferencePartOfSpeechClassifier>();
+        services.AddSingleton<ReferenceSentenceExtractor>();
+        services.AddSingleton<ReferenceTermExtractor>();
 
         return new ServiceCollectionRegistrar(services);
     }
