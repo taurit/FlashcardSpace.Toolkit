@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace BookToAnki.Models;
+namespace AdvancedSentenceExtractor.Models;
 
 [DebuggerDisplay("{Text}")]
 public class Sentence

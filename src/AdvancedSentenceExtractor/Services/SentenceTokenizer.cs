@@ -1,8 +1,8 @@
-using BookToAnki.Models;
+using AdvancedSentenceExtractor.Models;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace BookToAnki.Services;
+namespace AdvancedSentenceExtractor.Services;
 
 public class SentenceTokenizer
 {

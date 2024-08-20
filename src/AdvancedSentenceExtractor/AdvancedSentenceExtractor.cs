@@ -1,5 +1,6 @@
-﻿using BookToAnki.Services;
+﻿using AdvancedSentenceExtractor.Services;
 using CoreLibrary.Interfaces;
+using WordTokenizer = AdvancedSentenceExtractor.Services.WordTokenizer;
 
 namespace AdvancedSentenceExtractor;
 public class AdvancedSentenceExtractor() : IExtractSentences

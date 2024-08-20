@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace BookToAnki.Services;
+namespace AdvancedSentenceExtractor.Services;
 
 public partial class WordTokenizer : IWordTokenizer
 {

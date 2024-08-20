@@ -1,6 +1,6 @@
-using BookToAnki.Models;
+using AdvancedSentenceExtractor.Models;
 
-namespace BookToAnki.Services;
+namespace AdvancedSentenceExtractor.Services;
 public class SentenceFactory
 {
     public SentenceFactory(IWordTokenizer wordTokenizer)

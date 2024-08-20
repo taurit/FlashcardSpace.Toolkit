@@ -1,4 +1,4 @@
-namespace BookToAnki.Services;
+namespace AdvancedSentenceExtractor.Services;
 
 public interface  IWordTokenizer
 {
