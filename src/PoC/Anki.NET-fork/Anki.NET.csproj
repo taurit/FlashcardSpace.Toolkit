@@ -1,36 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
 
-		<!-- I added this to significantly reduce output size, but can be removed or updated when needed-->
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- I added this to significantly reduce output size, but can be removed or updated when needed-->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
-		<!--<Nullable>enable</Nullable>-->
-		<ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+    <ImplicitUsings>enable</ImplicitUsings>
 
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	</PropertyGroup>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
 
-	<ItemGroup>
+  <ItemGroup>
 
-		<EmbeddedResource Include="AnkiData\*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</EmbeddedResource>
+    <EmbeddedResource Include="AnkiData\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
 
-		<EmbeddedResource Include="SqLiteCommands\*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</EmbeddedResource>
+    <EmbeddedResource Include="SqLiteCommands\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
 
-	</ItemGroup>
-	
-	<ItemGroup>
-		<!-- x64 version of ImageMagick is selected to avoid generating large outputs for other CPU platforms, but it can be switched to AnyCPU if needed -->
-		<!--<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />-->
+  </ItemGroup>
 
-		<PackageReference Include="Magick.NET-Q16-x64" Version="13.10.0" />
-		<PackageReference Include="Scriban" Version="5.10.0" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- x64 version of ImageMagick is selected to avoid generating large outputs for other CPU platforms, but it can be switched to AnyCPU if needed -->
+    <!--<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />-->
+
+    <PackageReference Include="Magick.NET-Q16-x64" Version="13.10.0" />
+    <PackageReference Include="Scriban" Version="5.10.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
+  </ItemGroup>
 
 
 </Project>
