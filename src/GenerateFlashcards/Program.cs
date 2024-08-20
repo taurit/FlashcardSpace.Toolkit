@@ -2,7 +2,7 @@
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ReferenceWordExtractor;
+using ReferenceImplementations;
 using Spectre.Console.Cli;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
@@ -45,7 +45,8 @@ internal class Program
                 .SetMinimumLevel(LogLevel.Trace)
         );
         services.AddSingleton<BuildingBlocksProvider>();
-        services.AddSingleton<SimpleWordExtractor>();
+        services.AddSingleton<ReferenceWordExtractor>();
+        services.AddSingleton<ReferencePartOfSpeechClassifier>();
 
         return new ServiceCollectionRegistrar(services);
     }

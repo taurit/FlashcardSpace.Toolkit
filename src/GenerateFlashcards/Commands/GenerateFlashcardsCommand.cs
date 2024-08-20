@@ -14,12 +14,21 @@ internal sealed class GenerateFlashcardsCommand(
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
     {
-        logger.LogInformation("Generating flashcards");
+        logger.LogInformation("Generating flashcards...");
         logger.LogInformation("Settings:\n\n{@Settings}\n", settings);
 
-        logger.LogInformation("Extracting words from input file");
+        logger.LogInformation("Extracting words from input file...");
+
         IExtractWords wordsExtractor = buildingBlocksProvider.SelectBestWordExtractor(settings);
+        var extractedWords = await wordsExtractor.ExtractWords(settings.InputFilePath);
+        logger.LogInformation("Extracted {ExtractedWordsCount} words", extractedWords.Count);
+        logger.LogDebug("Sample of extracted words:\n\n{@FewWords}", extractedWords.Take(3));
+
+        logger.LogInformation("Determining parts of speech for the extracted words...");
+        IExtendNotes partOfSpeechClassifier = buildingBlocksProvider.SelectBestPartOfSpeechClassifier(settings);
+        //partOfSpeechClassifier.
 
         return 0;
     }
+
 }

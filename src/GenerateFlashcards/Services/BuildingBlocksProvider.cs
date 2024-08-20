@@ -1,13 +1,13 @@
 ﻿using CoreLibrary.Interfaces;
 using GenerateFlashcards.Commands;
-using ReferenceWordExtractor;
+using ReferenceImplementations;
 
 namespace GenerateFlashcards.Services;
 
 /// <summary>
 /// Provides instances of building blocks like:
 /// - <see cref="IExtractWords"/>
-/// - <see cref="IExtendFlashcards"/>
+/// - <see cref="IExtendNotes"/>
 /// - <see cref="IGenerateOutput"/>
 ///
 /// ... that best fit user-provided parameters (like input and output languages).
@@ -16,12 +16,18 @@ namespace GenerateFlashcards.Services;
 /// while others might be fine using the most generic one.
 /// </summary>
 internal class BuildingBlocksProvider(
-    SimpleWordExtractor simpleWordExtractor
+    ReferenceWordExtractor referenceWordExtractor,
+    ReferencePartOfSpeechClassifier referencePartOfSpeechClassifier
 )
 {
 
     internal IExtractWords SelectBestWordExtractor(GenerateFlashcardsCommandSettings settings)
     {
-        return simpleWordExtractor;
+        return referenceWordExtractor;
+    }
+
+    public IExtendNotes SelectBestPartOfSpeechClassifier(GenerateFlashcardsCommandSettings settings)
+    {
+        return referencePartOfSpeechClassifier;
     }
 }
