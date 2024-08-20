@@ -1,0 +1,30 @@
+{
+    "{{ DeckId }}": {
+        "desc": "",
+        "name": "{{ Name }}",
+        "extendRev": 50,
+        "usn": -1,
+        "collapsed": false,
+        "newToday": [
+            365,
+            0
+        ],
+        "timeToday": [
+            365,
+            0
+        ],
+        "dyn": 0,
+        "extendNew": 10,
+        "conf": 1,
+        "revToday": [
+            365,
+            0
+        ],
+        "lrnToday": [
+            365,
+            0
+        ],
+        "id": {{ DeckId }},
+        "mod": {{ LastModificationTimestampMilliseconds }}
+    }
+}

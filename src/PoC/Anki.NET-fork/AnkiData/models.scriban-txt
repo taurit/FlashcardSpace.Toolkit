@@ -1,0 +1,27 @@
+{
+    "{{ModelId}}": {
+      "vers": [],
+      "name": "{{ModelName}}",
+      "tags": [],
+      "did": {{ DeckId }},
+      "usn": -1,
+      "req": [
+        [
+          0,
+          "all",
+          [
+            0
+          ]
+        ]
+      ],
+      "flds": [{{FieldListJson}}],
+      "sortf": 0,
+      "latexPre": "\\documentclass[12pt]{article}\n\\special{papersize=3in,5in}\n\\usepackage{amssymb,amsmath}\n\\pagestyle{empty}\n\\setlength{\\parindent}{0in}\n\\begin{document}\n",
+      "tmpls": {{CardTemplatesJsonArray}},
+      "latexPost": "\\end{document}",
+      "type": 0,
+      "id": {{ModelId}},
+      "css": "{{Css}}",
+      "mod": {{ModificationTimeSeconds}}
+    }
+}
