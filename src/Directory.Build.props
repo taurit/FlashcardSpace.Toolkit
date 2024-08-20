@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <WarningsAsErrors>$(WarningsAsErrors);CS4014</WarningsAsErrors>
+	
+    <!-- I added this to significantly reduce output size, but can be removed or updated when problematic -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+</Project>

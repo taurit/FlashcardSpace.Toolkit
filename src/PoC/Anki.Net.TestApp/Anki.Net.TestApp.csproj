@@ -4,9 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <!-- I added this to significantly reduce output size, but can be removed or updated when needed-->
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anki.NET-fork\Anki.NET.csproj" />
