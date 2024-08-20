@@ -2,7 +2,7 @@
   "profiles": {
     "GenerateFlashcards": {
       "commandName": "Project",
-      "commandLineArgs": "generate --inputLanguage Spanish --outputLanguage EnGLIsH Resources/InputExample.Spanish.PlainText.txt"
+      "commandLineArgs": "generate --inputLanguage EnGLIsH --outputLanguage Polish Resources/InputExample.English.PlainText.txt"
     }
   }
 }

@@ -3,5 +3,6 @@ enum SupportedOutputLanguage
 {
     Unknown,
     English,
-    Spanish
+    Spanish,
+    Polish
 }
