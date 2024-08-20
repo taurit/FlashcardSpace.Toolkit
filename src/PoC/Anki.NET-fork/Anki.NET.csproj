@@ -59,7 +59,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />
+	<!-- x64 version of ImageMagick is selected to avoid generating large outputs for other CPU platforms, but it can be switched to AnyCPU if needed -->
+	<!--<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />-->
+	  
+    <PackageReference Include="Magick.NET-Q16-x64" Version="13.10.0" />
     <PackageReference Include="Scriban" Version="5.10.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
   </ItemGroup>
