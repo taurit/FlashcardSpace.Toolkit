@@ -19,19 +19,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateFlashcards", "Gener
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateFlashcards.Tests", "GenerateFlashcards.Tests\GenerateFlashcards.Tests.csproj", "{DE167111-5A1A-4E2D-86E0-1A4A65E17616}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProofOfConceptProjects", "ProofOfConceptProjects", "{215B0A0F-6AA7-4F53-AFC0-6948C460E53B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PoC applications", "PoC applications", "{215B0A0F-6AA7-4F53-AFC0-6948C460E53B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLibrary", "CoreLibrary\CoreLibrary.csproj", "{268A1932-D2B0-4500-9C88-19D917286DCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLibrary", "Libraries\CoreLibrary\CoreLibrary.csproj", "{268A1932-D2B0-4500-9C88-19D917286DCD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{C66A7E81-A23D-4502-B184-B11FB72D37E0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Building blocks", "Building blocks", "{C66A7E81-A23D-4502-B184-B11FB72D37E0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceImplementations", "ReferenceImplementations\ReferenceImplementations.csproj", "{396B09C4-C99B-456A-A4FB-3CED0662AC2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReferenceImplementations", "BuildingBlocks\ReferenceImplementations\ReferenceImplementations.csproj", "{396B09C4-C99B-456A-A4FB-3CED0662AC2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSentenceExtractor", "AdvancedSentenceExtractor\AdvancedSentenceExtractor.csproj", "{90CE03CF-7EC1-4CB6-8E79-3C4027230262}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedSentenceExtractor", "BuildingBlocks\AdvancedSentenceExtractor\AdvancedSentenceExtractor.csproj", "{90CE03CF-7EC1-4CB6-8E79-3C4027230262}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSentenceExtractor.Tests", "AdvancedSentenceExtractor.Tests\AdvancedSentenceExtractor.Tests.csproj", "{D21B791E-569F-48E6-BD4D-871277CA41A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedSentenceExtractor.Tests", "BuildingBlocks\AdvancedSentenceExtractor.Tests\AdvancedSentenceExtractor.Tests.csproj", "{D21B791E-569F-48E6-BD4D-871277CA41A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLibrary.Tests", "CoreLibrary.Tests\CoreLibrary.Tests.csproj", "{059BD0C6-CFB5-4A36-B633-39B9B7B5E449}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{E0761BB4-585B-4A7B-8EF8-6CACBBFBA07C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,10 +87,6 @@ Global
 		{D21B791E-569F-48E6-BD4D-871277CA41A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D21B791E-569F-48E6-BD4D-871277CA41A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D21B791E-569F-48E6-BD4D-871277CA41A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{059BD0C6-CFB5-4A36-B633-39B9B7B5E449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{059BD0C6-CFB5-4A36-B633-39B9B7B5E449}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{059BD0C6-CFB5-4A36-B633-39B9B7B5E449}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{059BD0C6-CFB5-4A36-B633-39B9B7B5E449}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +98,7 @@ Global
 		{51FE90D5-0E1D-4F95-B19B-7768B3545297} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 		{24A8DF78-304F-4B89-9747-0DD280277154} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 		{165E4737-367A-4F4F-B669-C765574A8018} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{268A1932-D2B0-4500-9C88-19D917286DCD} = {E0761BB4-585B-4A7B-8EF8-6CACBBFBA07C}
 		{396B09C4-C99B-456A-A4FB-3CED0662AC2C} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
 		{90CE03CF-7EC1-4CB6-8E79-3C4027230262} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}
 		{D21B791E-569F-48E6-BD4D-871277CA41A7} = {C66A7E81-A23D-4502-B184-B11FB72D37E0}

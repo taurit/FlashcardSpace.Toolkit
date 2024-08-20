@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdvancedSentenceExtractor\AdvancedSentenceExtractor.csproj" />
-    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
+    
+    <ProjectReference Include="..\Libraries\CoreLibrary\CoreLibrary.csproj" />
     
 	<!-- Refactoring to consider:
 	
@@ -29,7 +29,8 @@
 			I start with tightly coupled projects for simplicity, though.
 			
 	-->  
-    <ProjectReference Include="..\ReferenceImplementations\ReferenceImplementations.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\ReferenceImplementations\ReferenceImplementations.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\AdvancedSentenceExtractor\AdvancedSentenceExtractor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
