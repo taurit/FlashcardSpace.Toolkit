@@ -5,5 +5,8 @@
 	
     <!-- I added this to significantly reduce output size, but can be removed or updated when problematic -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	
+    <!-- Avoid generating sub-folders with DLLs for all supported cultures (happens in test projects). en-US is enough. -->
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 </Project>
