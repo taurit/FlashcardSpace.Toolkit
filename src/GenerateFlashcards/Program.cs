@@ -37,16 +37,18 @@ internal class Program
                         .ConfigureProfiles(profile =>
                         {
                             profile.ConfigureOptions<DestructuringOptions>(ds => ds.WriteIndented = true);
+                            //profile.OutputTemplate = "{Message}{NewLine}{Exception}";
                         })
                         // by default Trace and Debug are not logged; enable them
-                        .SetMinimumLevel(LogLevel.Trace)
+                        .SetMinimumLevel(LogLevel.Debug)
                 )
                 // also needed at this level to enable Trace and Debug
-                .SetMinimumLevel(LogLevel.Trace)
+                .SetMinimumLevel(LogLevel.Debug)
         );
         services.AddSingleton<BuildingBlocksProvider>();
-        services.AddSingleton<ReferenceSentenceExtractor>();
-        services.AddSingleton<ReferenceTermExtractor>();
+        services.AddTransient<ReferenceSentenceExtractor>();
+        services.AddTransient<ReferenceTermExtractor>();
+        services.AddTransient<ReferenceTranslator>();
 
         return new ServiceCollectionRegistrar(services);
     }

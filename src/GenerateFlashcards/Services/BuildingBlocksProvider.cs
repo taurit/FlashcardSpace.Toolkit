@@ -17,7 +17,8 @@ namespace GenerateFlashcards.Services;
 /// </summary>
 internal class BuildingBlocksProvider(
     ReferenceSentenceExtractor referenceWordExtractor,
-    ReferenceTermExtractor referenceTermExtractor
+    ReferenceTermExtractor referenceTermExtractor,
+    ReferenceTranslator referenceTranslator
 )
 {
 
@@ -29,5 +30,10 @@ internal class BuildingBlocksProvider(
     public IExtractTerms SelectBestTermExtractor(GenerateFlashcardsCommandSettings settings)
     {
         return referenceTermExtractor;
+    }
+
+    public IProvideFieldValues SelectBestTranslator(GenerateFlashcardsCommandSettings settings)
+    {
+        return referenceTranslator;
     }
 }

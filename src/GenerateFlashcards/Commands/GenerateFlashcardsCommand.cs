@@ -1,4 +1,5 @@
-﻿using CoreLibrary.Interfaces;
+﻿using CoreLibrary;
+using CoreLibrary.Interfaces;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
@@ -14,23 +15,45 @@ internal sealed class GenerateFlashcardsCommand(
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
     {
-        logger.LogInformation("Generating flashcards...");
-        logger.LogInformation("Settings:\n{@Settings}\n", settings);
+        var sentences = await ExtractSentences(settings);
+        var terms = await ExtractTerms(settings, sentences);
+        var termsWithTranslations = await TranslateTerms(settings, terms);
 
-        logger.LogInformation("Extracting words from input file...");
 
-        IExtractSentences sentencesExtractor = buildingBlocksProvider.SelectBestSentenceExtractor(settings);
-        var extractedSentences = await sentencesExtractor.ExtractSentences(settings.InputFilePath);
-        logger.LogInformation("Extracted {ExtractedSentencesCount} sentences", extractedSentences.Count);
-        logger.LogDebug("Sample of extracted sentences:\n{@SampleOfSentences}", extractedSentences.Take(3));
-
-        logger.LogInformation("Extracting terms from the sentences...");
-        IExtractTerms termExtractor = buildingBlocksProvider.SelectBestTermExtractor(settings);
-        var extractedTerms = await termExtractor.ExtractTerms(extractedSentences);
-        logger.LogDebug("Sample of extracted terms:\n{@SampleOfTerms}", extractedTerms.Take(3));
-
-        logger.LogInformation("Translating terms...");
         return 0;
     }
 
+    private async Task<List<string>> ExtractSentences(GenerateFlashcardsCommandSettings settings)
+    {
+        logger.LogInformation("Extracting sentences from input file {InputFileName}...", settings.InputFilePath);
+
+        IExtractSentences sentencesExtractor = buildingBlocksProvider.SelectBestSentenceExtractor(settings);
+        var extractedSentences = await sentencesExtractor.ExtractSentences(settings.InputFilePath);
+
+        logger.LogInformation("Extracted {ExtractedSentencesCount} sentences", extractedSentences.Count);
+        return extractedSentences;
+    }
+
+    private async Task<List<Note>> ExtractTerms(GenerateFlashcardsCommandSettings settings, List<string> extractedSentences)
+    {
+        logger.LogInformation("Extracting terms from the sentences...");
+
+        IExtractTerms termExtractor = buildingBlocksProvider.SelectBestTermExtractor(settings);
+        var extractedTerms = await termExtractor.ExtractTerms(extractedSentences);
+
+        logger.LogInformation("Extracted {ExtractedTermsCount} terms", extractedTerms.Count);
+        return extractedTerms;
+    }
+
+
+    private async Task<List<Note>> TranslateTerms(GenerateFlashcardsCommandSettings settings, List<Note> terms)
+    {
+        logger.LogInformation("Translating terms from {InputLanguage} to {OutputLanguage}...", settings.InputLanguage, settings.OutputLanguage);
+
+        IProvideFieldValues translator = buildingBlocksProvider.SelectBestTranslator(settings);
+        var translatedTerms = await translator.ProcessNotes(terms);
+
+        logger.LogDebug("Sample of terms after translation:\n\n{@TranslatedTermsSample}", translatedTerms.Take(3));
+        return translatedTerms;
+    }
 }

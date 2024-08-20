@@ -1,6 +1,6 @@
 ﻿namespace CoreLibrary.Interfaces;
 
-public interface IExtendNotes
+public interface IProvideFieldValues
 {
-    //List<Note> ProcessNotes(List<Note> input);
+    Task<List<Note>> ProcessNotes(List<Note> notes);
 }
