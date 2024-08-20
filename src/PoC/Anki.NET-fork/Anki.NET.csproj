@@ -1,75 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-	  
-	<!-- I added this to significantly reduce output size, but can be removed or updated when needed-->
-	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-	  
-    <AssemblyName>Anki.NET</AssemblyName>
-    <RootNamespace>AnkiNet</RootNamespace>
-    <LangVersion>latest</LangVersion>
-    <!--<Nullable>enable</Nullable>-->
-    <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PackageId>Anki.NET</PackageId>
-    <PackageVersion>0.1.2</PackageVersion>
-    <Authors>Lysrt,Clement-Jean</Authors>
-    <Description>Anki.NET allows you to create Anki decks and cards from your C# application.</Description>
-    <PackageTags>anki deck decks card cards</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageProjectUrl>https://github.com/lysrt/Anki.NET</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/lysrt/Anki.NET</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="AnkiData\decks.scriban-txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="AnkiData\CardStyle.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AnkiData\conf.scriban-txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AnkiData\dconf.scriban-txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AnkiData\decks.scriban-txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AnkiData\models.scriban-txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqLiteCommands\CardsTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqLiteCommands\ColumnTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqLiteCommands\GravesTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqLiteCommands\Indexes.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqLiteCommands\NotesTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqLiteCommands\RevLogTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-	<!-- x64 version of ImageMagick is selected to avoid generating large outputs for other CPU platforms, but it can be switched to AnyCPU if needed -->
-	<!--<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />-->
-	  
-    <PackageReference Include="Magick.NET-Q16-x64" Version="13.10.0" />
-    <PackageReference Include="Scriban" Version="5.10.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+
+		<!-- I added this to significantly reduce output size, but can be removed or updated when needed-->
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+		<!--<Nullable>enable</Nullable>-->
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+
+		<EmbeddedResource Include="AnkiData\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+
+		<EmbeddedResource Include="SqLiteCommands\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+
+	</ItemGroup>
 	
-	
+	<ItemGroup>
+		<!-- x64 version of ImageMagick is selected to avoid generating large outputs for other CPU platforms, but it can be switched to AnyCPU if needed -->
+		<!--<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />-->
+
+		<PackageReference Include="Magick.NET-Q16-x64" Version="13.10.0" />
+		<PackageReference Include="Scriban" Version="5.10.0" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
+	</ItemGroup>
+
+
 </Project>
