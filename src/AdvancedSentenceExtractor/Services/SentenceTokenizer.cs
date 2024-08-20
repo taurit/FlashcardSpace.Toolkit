@@ -4,16 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace AdvancedSentenceExtractor.Services;
 
-public class SentenceTokenizer
+public class SentenceTokenizer(SentenceFactory sentenceBuilder)
 {
-    private static Regex _numberPattern = new Regex("^\\d+\\.?$", RegexOptions.Compiled);
-    private static Regex _uselessSentencePattern = new Regex("^[\\d\\.—]+\\.$", RegexOptions.Compiled);
-    private readonly SentenceFactory _sentenceFactory;
-
-    public SentenceTokenizer(SentenceFactory sentenceBuilder)
-    {
-        _sentenceFactory = sentenceBuilder;
-    }
+    private static readonly Regex NumberPattern = new("^\\d+\\.?$", RegexOptions.Compiled);
+    private static readonly Regex UselessSentencePattern = new("^[\\d\\.—]+\\.$", RegexOptions.Compiled);
 
     public List<Sentence> TokenizeBook(string bookContent)
     {
@@ -37,7 +31,7 @@ public class SentenceTokenizer
                 var currentSentenceCandidate = currentSentence.ToString().Trim().Trim(new char[] { '‘', '’' });
                 if (currentSentenceCandidate.Length > 1 &&
                     !string.IsNullOrWhiteSpace(currentSentenceCandidate) &&
-                    !_uselessSentencePattern.IsMatch(currentSentenceCandidate)
+                    !UselessSentencePattern.IsMatch(currentSentenceCandidate)
                     )
                 {
                     var sanitizedSentence = currentSentenceCandidate
@@ -54,7 +48,7 @@ public class SentenceTokenizer
                         ;
 
                     sanitizedSentence = KnownAbbreviationsHandler.ReplaceFullWidthDotWithDotInAbbreviations(sanitizedSentence);
-                    var sentence = _sentenceFactory.BuildSentence(sanitizedSentence, previousSentence);
+                    var sentence = sentenceBuilder.BuildSentence(sanitizedSentence, previousSentence);
                     if (sentence.HasAnyWords)
                     {
                         sentences.Add(sentence);
@@ -92,7 +86,7 @@ public class SentenceTokenizer
         foreach (var line in lines)
         {
             // assuming calibre artifact - empty line with just a page number
-            if (_numberPattern.IsMatch(line))
+            if (NumberPattern.IsMatch(line))
             {
                 continue;
             }

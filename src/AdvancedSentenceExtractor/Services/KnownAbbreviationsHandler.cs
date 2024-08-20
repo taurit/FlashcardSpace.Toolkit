@@ -1,26 +1,15 @@
 namespace AdvancedSentenceExtractor.Services;
-public static class KnownAbbreviationsHandler
+internal static class KnownAbbreviationsHandler
 {
-    private class Replacement
+    private class Replacement(string withDot, string withFullWidthDot)
     {
-        public Replacement(string withDot, string withFullWidthDot)
-        {
-            WithDot = withDot;
-            WithFullWidthDot = withFullWidthDot;
+        public readonly string WithDot = withDot;
+        public readonly string WithFullWidthDot = withFullWidthDot;
 
-            SpaceWithDot = $" {withDot}";
-            SpaceWithFullWidthDot = $" {withFullWidthDot}";
-            NewlineWithDot = $"\n{withDot}";
-            NewlineWithFullWidthDot = $"\n{withFullWidthDot}";
-        }
-
-        public readonly string WithDot;
-        public readonly string WithFullWidthDot;
-
-        public readonly string SpaceWithDot;
-        public readonly string SpaceWithFullWidthDot;
-        public readonly string NewlineWithDot;
-        public readonly string NewlineWithFullWidthDot;
+        public readonly string SpaceWithDot = $" {withDot}";
+        public readonly string SpaceWithFullWidthDot = $" {withFullWidthDot}";
+        public readonly string NewlineWithDot = $"\n{withDot}";
+        public readonly string NewlineWithFullWidthDot = $"\n{withFullWidthDot}";
     }
 
     private static readonly string[] KnownAbbreviationsWithDot = new string[] {

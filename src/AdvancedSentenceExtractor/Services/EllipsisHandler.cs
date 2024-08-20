@@ -1,5 +1,5 @@
 namespace AdvancedSentenceExtractor.Services;
-public static class EllipsisHandler
+internal static class EllipsisHandler
 {
     /// <summary>
     /// We don't want to lose ellipsis ("...") while tokenizing book into sentences, as it adds meaning to a sentence.
