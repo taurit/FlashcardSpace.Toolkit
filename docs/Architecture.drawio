@@ -295,11 +295,11 @@
     </mxGraphModel>
   </diagram>
   <diagram id="iw58xH25SqpDmjGU-3w6" name="Project dependency">
-    <mxGraphModel dx="989" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="mP3ZragaEiIwLCBIrJcA-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="mHY_Yms3feS8LVCVRZh7-2" target="mHY_Yms3feS8LVCVRZh7-3">
+        <mxCell id="mP3ZragaEiIwLCBIrJcA-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="mHY_Yms3feS8LVCVRZh7-2" target="mHY_Yms3feS8LVCVRZh7-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="260" y="280" />
@@ -307,9 +307,9 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="mP3ZragaEiIwLCBIrJcA-9" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="mP3ZragaEiIwLCBIrJcA-8">
+        <mxCell id="mP3ZragaEiIwLCBIrJcA-9" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="mP3ZragaEiIwLCBIrJcA-8" vertex="1" connectable="0">
           <mxGeometry x="0.1083" y="-2" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="-73" y="58" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="mHY_Yms3feS8LVCVRZh7-2" value="GenerateFlashcards" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" parent="1" vertex="1">
@@ -318,13 +318,13 @@
         <mxCell id="mHY_Yms3feS8LVCVRZh7-3" value="CoreLibrary" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="360" y="200" width="160" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="mP3ZragaEiIwLCBIrJcA-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="mP3ZragaEiIwLCBIrJcA-4" target="mHY_Yms3feS8LVCVRZh7-3">
+        <mxCell id="mP3ZragaEiIwLCBIrJcA-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" parent="1" source="mP3ZragaEiIwLCBIrJcA-4" target="mHY_Yms3feS8LVCVRZh7-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="mP3ZragaEiIwLCBIrJcA-4" value="PoC app 1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <mxCell id="mP3ZragaEiIwLCBIrJcA-4" value="PoC app 1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="360" y="390" width="160" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="mP3ZragaEiIwLCBIrJcA-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="mP3ZragaEiIwLCBIrJcA-5" target="mHY_Yms3feS8LVCVRZh7-3">
+        <mxCell id="mP3ZragaEiIwLCBIrJcA-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" parent="1" source="mP3ZragaEiIwLCBIrJcA-5" target="mHY_Yms3feS8LVCVRZh7-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="620" y="280" />
@@ -332,16 +332,21 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="mP3ZragaEiIwLCBIrJcA-5" value="PoC app N" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <mxCell id="WHXenji4UJzwxa-77jIR-1" value="might depend on&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="mP3ZragaEiIwLCBIrJcA-7">
+          <mxGeometry x="-0.7152" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mP3ZragaEiIwLCBIrJcA-5" value="PoC app N" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="540" y="390" width="160" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="VJE1WY1KQI2Ib9UZ6tmk-2" value="A project for utilities which are re-usable in the context of flashcard generation/manipulation tools. E.g., &#xa;- Abstractions over AI/Chatbot APIs&#xa;- String manipulation helpers&#xa;- HTML markup helpers" style="text;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;spacing=7;" vertex="1" parent="1">
+        <mxCell id="VJE1WY1KQI2Ib9UZ6tmk-2" value="A project for utilities which are re-usable in the context of flashcard generation/manipulation tools. E.g., &#xa;- Abstractions over AI/Chatbot APIs&#xa;- String manipulation helpers&#xa;- HTML markup helpers" style="text;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;spacing=7;" parent="1" vertex="1">
           <mxGeometry x="530" y="160" width="210" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="VJE1WY1KQI2Ib9UZ6tmk-3" value="A project implementing end-to-end flashcard generation flow, taking input file to process, and outputting a set of quality flashcards." style="text;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;spacing=7;" vertex="1" parent="1">
+        <mxCell id="VJE1WY1KQI2Ib9UZ6tmk-3" value="A project implementing end-to-end flashcard generation flow, taking input file to process, and outputting a set of quality flashcards." style="text;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;spacing=7;" parent="1" vertex="1">
           <mxGeometry x="170" y="440" width="180" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="VJE1WY1KQI2Ib9UZ6tmk-4" value="The repository also contains several proof-of-concept apps to test ideas.&#xa;&#xa;Those are very experimental and have low quality bar. I want to ultimately either remove them out of this public repository or raise the quality to make them useful to wider audience, but at this stage I just need them in the solution to be able to efficiently refactor out the parts I want to keep ;)" style="text;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;spacing=7;" vertex="1" parent="1">
+        <mxCell id="VJE1WY1KQI2Ib9UZ6tmk-4" value="The repository also contains several proof-of-concept apps to test ideas.&#xa;&#xa;Those are very experimental and have low quality bar. I want to ultimately either remove them out of this public repository or raise the quality to make them useful to wider audience, but at this stage I just need them in the solution to be able to efficiently refactor out the parts I want to keep ;)" style="text;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;spacing=7;" parent="1" vertex="1">
           <mxGeometry x="360" y="440" width="340" height="100" as="geometry" />
         </mxCell>
       </root>

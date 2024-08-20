@@ -1,5 +1,4 @@
-﻿using CoreLibrary;
-using CoreLibrary.Interfaces;
+﻿using CoreLibrary.Interfaces;
 
 namespace ReferenceImplementations;
 

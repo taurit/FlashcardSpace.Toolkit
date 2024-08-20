@@ -1,5 +1,4 @@
-﻿using CoreLibrary;
-using CoreLibrary.Interfaces;
+﻿using CoreLibrary.Interfaces;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
