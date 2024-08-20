@@ -1,5 +1,6 @@
 namespace AdvancedSentenceExtractor.Services;
-internal static class KnownAbbreviationsHandler
+
+public static class KnownAbbreviationsHandler
 {
     private class Replacement(string withDot, string withFullWidthDot)
     {
