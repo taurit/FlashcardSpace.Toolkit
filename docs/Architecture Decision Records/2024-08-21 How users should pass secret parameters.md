@@ -28,9 +28,9 @@ For developers who launch the application from Visual Studio, the most convenien
 
 Secret manager allows managing secrets needed by application in the IDE, and mitigates the risk that they would be accidentally committed to the git repository or backed up to an untrusted location along with the code. 
 
-### Accepting a path to an external file with secrets 
+### An external file with secrets 
 
-Another option is to accept parameter like:
+Another option is to accept parameter like `--secretsFile` or introduce a convention that app looks for secrets in a specific file:
 
 ```cmd
 GenerateFlashcards.exe --secretsFile secrets.json ... input.txt
@@ -40,7 +40,7 @@ The risk here is lower than if we accepted secrets directly because the access t
 
 Also, it seems much more convenient and readable to not pass long secret strings every time we run the tool.
 
-### Accepting secrets from environment variables
+### Secrets in environment variables
 
 Another common place where an app can look for secret values is environment variables.
 
@@ -57,8 +57,8 @@ The app will enable multiple ways of passing secrets (motivated mainly by conven
 
 The order of precedence will be:
 
-1) Environment variables (override any other source)
-2) The file declared via `--secretsFile` parameter
-3) Visual Studio Secret Manager
+1) Visual Studio Secret Manager (overrides any other source)
+2) Environment variables
+3) The file named `secrets.json`
 
-See the ["Secrets"](../Secrets.md) article in the user documentation for the concrete names of secrets accepted by the application. 
+See the ["Secrets"](../Secrets.md) article in the user documentation for the concrete format of secret parameters accepted by the application. 
