@@ -61,26 +61,4 @@ The order of precedence will be:
 2) The file declared via `--secretsFile` parameter
 3) Visual Studio Secret Manager
 
-### Setting secrets via Environment Variables
-
-The application accepts secrets via the following environment variables:
-
-```.env
-OPENAI_ORGANIZATION_ID=...
-OPENAI_DEVELOPER_KEY=...
-```
-
-### Secrets File
-
-If you use the `--secretsFile` parameter to declare the secrets to use, the file should have the following structure:
-
-```json
-{
-  "OPENAI_ORGANIZATION_ID": "...",
-  "OPENAI_DEVELOPER_KEY": "..."
-}
-```
-
-### Visual Studio Secret Manager
-
-In the case of VS Secret Manager, right-click on the project in Solution Explorer, select "Manage User Secrets," and use the JSON structure described above in the **Secrets File** section.
+See the ["Secrets"](../Secrets.md) article in the user documentation for the concrete names of secrets accepted by the application. 
