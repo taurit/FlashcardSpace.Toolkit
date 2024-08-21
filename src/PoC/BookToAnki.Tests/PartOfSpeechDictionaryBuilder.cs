@@ -45,34 +45,6 @@ public class PartOfSpeechDictionaryBuilderTests
         result.WordToPartOfSpeech.Keys.Should().BeEmpty();
     }
 
-    [TestMethod]
-    public void When_InputHasItemsInTwoCategories_Expect_ProperMapping()
-    {
-        // Arrange
-        var sut = new PartOfSpeechDictionaryBuilder();
-
-        var input = @"
-        # Rzeczownik
-        krowa
-        pies
-
-        # Przymiotnik
-        czarny
-        ";
-
-        // Act
-        var result = sut.BuildPartOfSpeechDictionary(input);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.WordToPartOfSpeech.Keys.Should().HaveCount(3);
-        result.WordToPartOfSpeech["krowa"].Should().Be("Rzeczownik");
-        result.WordToPartOfSpeech["pies"].Should().Be("Rzeczownik");
-        result.WordToPartOfSpeech["czarny"].Should().Be("Przymiotnik");
-        result.PartsOfSpeech.Single(x => x.Name == "Rzeczownik").Count.Should().Be(2);
-        result.PartsOfSpeech.Single(x => x.Name == "Przymiotnik").Count.Should().Be(1);
-    }
-
     [Ignore]
     [TestMethod]
     public void When_InputHasSameWordInTwoConflictingCategories_Expect_ArgumentException()

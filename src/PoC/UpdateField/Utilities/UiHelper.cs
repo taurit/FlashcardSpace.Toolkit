@@ -1,5 +1,5 @@
-﻿using AnkiCardValidator.Utilities;
-using AnkiCardValidator.ViewModels;
+﻿using AnkiCardValidator.ViewModels;
+using CoreLibrary.Utilities;
 using Spectre.Console;
 
 namespace UpdateField.Utilities;

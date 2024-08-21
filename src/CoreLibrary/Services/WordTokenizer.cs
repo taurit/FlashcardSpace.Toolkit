@@ -2,6 +2,11 @@ using System.Text.RegularExpressions;
 
 namespace CoreLibrary.Services;
 
+public interface IWordTokenizer
+{
+    List<string> GetWords(string sentence);
+}
+
 public partial class WordTokenizer : IWordTokenizer
 {
     [GeneratedRegex(@"[0-9\p{L}'’．]+")]

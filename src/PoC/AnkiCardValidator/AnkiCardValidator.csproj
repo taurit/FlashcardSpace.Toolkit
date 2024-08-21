@@ -22,4 +22,8 @@
     <PackageReference Include="Scriban" Version="5.10.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreLibrary\CoreLibrary.csproj" />
+  </ItemGroup>
+
 </Project>

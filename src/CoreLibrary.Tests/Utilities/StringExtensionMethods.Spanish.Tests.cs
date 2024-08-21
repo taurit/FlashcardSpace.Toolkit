@@ -1,10 +1,10 @@
-using AnkiCardValidator.Utilities;
+using CoreLibrary.Utilities;
 using FluentAssertions;
 
-namespace AnkiCardValidator.Tests;
+namespace CoreLibrary.Tests.Utilities;
 
 [TestClass]
-public class StringHelpersTests
+public class StringExtensionMethodsSpanishTests
 {
     [DataTestMethod]
     [DataRow("Hola, ¿cómo estás?")]
@@ -23,7 +23,7 @@ public class StringHelpersTests
     {
         // Arrange
         // Act
-        bool result = StringHelpers.IsStringLikelyInSpanishLanguage(query);
+        var result = query.IsStringLikelyInSpanishLanguage();
 
         // Assert
         result.Should().BeTrue();
@@ -45,7 +45,7 @@ public class StringHelpersTests
     {
         // Arrange
         // Act
-        bool result = StringHelpers.IsStringLikelyInSpanishLanguage(query);
+        var result = query.IsStringLikelyInSpanishLanguage();
 
         // Assert
         result.Should().BeFalse();

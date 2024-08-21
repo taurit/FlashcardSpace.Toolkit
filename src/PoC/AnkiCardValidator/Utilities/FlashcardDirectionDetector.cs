@@ -1,5 +1,6 @@
 ﻿using AnkiCardValidator.Models;
 using AnkiCardValidator.ViewModels;
+using CoreLibrary.Utilities;
 
 namespace AnkiCardValidator.Utilities;
 public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, FrequencyDataProvider polishFrequencyDataProvider, FrequencyDataProvider spanishFrequencyDataProvider)
@@ -18,12 +19,12 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
 
     private static FlashcardDirection? TryDetermineDirectionBasedOnAlphabetAndCommonWords(AnkiNote note)
     {
-        var isQuestionLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.FrontText);
-        var isAnswerLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.BackText);
+        var isQuestionLikelyInPolish = note.FrontText.IsStringLikelyInPolishLanguage();
+        var isAnswerLikelyInSpanish = note.BackText.IsStringLikelyInSpanishLanguage();
         if (isQuestionLikelyInPolish && isAnswerLikelyInSpanish) return FlashcardDirection.FrontTextInPolish;
 
-        var isQuestionLikelyInSpanish = StringHelpers.IsStringLikelyInSpanishLanguage(note.FrontText);
-        var isAnswerLikelyInPolish = StringHelpers.IsStringLikelyInPolishLanguage(note.BackText);
+        var isQuestionLikelyInSpanish = note.FrontText.IsStringLikelyInSpanishLanguage();
+        var isAnswerLikelyInPolish = note.BackText.IsStringLikelyInPolishLanguage();
 
         if (isQuestionLikelyInSpanish && isAnswerLikelyInPolish) return FlashcardDirection.FrontTextInSpanish;
         if (isQuestionLikelyInPolish) return FlashcardDirection.FrontTextInPolish;

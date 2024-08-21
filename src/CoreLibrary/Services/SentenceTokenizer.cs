@@ -1,4 +1,5 @@
 using CoreLibrary.Interfaces;
+using CoreLibrary.Utilities;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,7 +13,7 @@ public class SentenceTokenizer(SentenceFactory sentenceBuilder)
     public List<Sentence> TokenizeBook(string bookContent)
     {
         bookContent = KnownAbbreviationsHandler.ReplaceDotWithFullWidthDotInAbbreviations(bookContent);
-        bookContent = EllipsisHandler.ReplaceEllipsisWithSingleCharacter(bookContent);
+        bookContent = bookContent.ReplaceEllipsisWithSingleCharacter();
         bookContent = AddMissingPunctuationMarksBeforeNewLines(bookContent);
 
         Sentence? previousSentence = null;

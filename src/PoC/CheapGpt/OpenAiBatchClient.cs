@@ -1,5 +1,5 @@
 ﻿using CheapGpt.Models;
-using CheapGpt.Utilities;
+using CoreLibrary.Utilities;
 using OpenAI.Batch;
 using OpenAI.Files;
 using System.ClientModel;
