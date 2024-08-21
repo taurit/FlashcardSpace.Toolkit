@@ -1,5 +1,4 @@
-﻿using CoreLibrary.Interfaces;
-using GenerateFlashcards.Services;
+﻿using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 using System.Diagnostics.CodeAnalysis;
@@ -17,7 +16,6 @@ internal sealed class GenerateFlashcardsCommand(
         var sentences = await ExtractSentences(settings);
         var terms = await ExtractTerms(settings, sentences);
         var termsWithTranslations = await TranslateTerms(settings, terms);
-
 
         return 0;
     }

@@ -1,6 +1,4 @@
-﻿using CoreLibrary.Interfaces;
-
-namespace GenerateFlashcards.Services;
+﻿namespace GenerateFlashcards.Services;
 
 public class ReferenceTranslator : IProvideFieldValues
 {

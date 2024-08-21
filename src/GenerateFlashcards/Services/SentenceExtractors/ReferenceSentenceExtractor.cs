@@ -1,6 +1,4 @@
-﻿using CoreLibrary.Interfaces;
-
-namespace GenerateFlashcards.Services;
+﻿namespace GenerateFlashcards.Services.SentenceExtractors;
 
 /// <summary>
 /// An oversimplified implementation of the IExtractSentences interface.

@@ -1,5 +1,7 @@
-﻿using CoreLibrary.Interfaces;
-using GenerateFlashcards.Commands;
+﻿using GenerateFlashcards.Commands;
+using GenerateFlashcards.Models;
+using GenerateFlashcards.Services.SentenceExtractors;
+using GenerateFlashcards.Services.TermExtractors;
 
 namespace GenerateFlashcards.Services;
 
@@ -17,20 +19,29 @@ namespace GenerateFlashcards.Services;
 internal class BuildingBlocksProvider(
     // Sentence extractors
     ReferenceSentenceExtractor referenceSentenceExtractor,
+    FrequencyDictionarySentenceExtractor frequencyDictionarySentenceExtractor,
     AdvancedSentenceExtractor advancedSentenceExtractor,
 
     ReferenceTermExtractor referenceTermExtractor,
+    FrequencyDictionaryTermExtractor frequencyDictionaryTermExtractor,
+
     ReferenceTranslator referenceTranslator
 )
 {
 
     internal IExtractSentences SelectBestSentenceExtractor(GenerateFlashcardsCommandSettings settings)
     {
+        if (settings.InputFileFormat == InputFileFormat.FrequencyDictionary)
+            return frequencyDictionarySentenceExtractor;
+
         return advancedSentenceExtractor;
     }
 
     public IExtractTerms SelectBestTermExtractor(GenerateFlashcardsCommandSettings settings)
     {
+        if (settings.InputFileFormat == InputFileFormat.FrequencyDictionary)
+            return frequencyDictionaryTermExtractor;
+
         return referenceTermExtractor;
     }
 

@@ -13,6 +13,10 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
     [CommandArgument(0, "<inputFile>")] // <angleBrackets> mean required, [squareBrackets] mean optional
     public required string InputFilePath { get; init; }
 
+    [CommandOption("--inputFileFormat")]
+    [DefaultValue(InputFileFormat.Unknown)]
+    public InputFileFormat InputFileFormat { get; init; }
+
     [CommandOption("--inputLanguage")]
     [DefaultValue(SupportedInputLanguage.Autodetect)]
     public SupportedInputLanguage InputLanguage { get; init; }
@@ -39,6 +43,10 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
 
         if (!File.Exists(InputFilePath))
             return ValidationResult.Error($"The input file `{InputFilePath}` cannot be found.");
+
+        // ensure the input file format is set
+        if (InputFileFormat == InputFileFormat.Unknown)
+            return ValidationResult.Error("The `--inputFileFormat` must be set.");
 
         return ValidationResult.Success();
     }

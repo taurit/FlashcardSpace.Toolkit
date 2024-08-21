@@ -1,11 +1,13 @@
 ﻿using GenerateFlashcards.Commands;
 using GenerateFlashcards.Services;
+using GenerateFlashcards.Services.SentenceExtractors;
+using GenerateFlashcards.Services.TermExtractors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
-using AdvancedSentenceExtractor = GenerateFlashcards.Services.AdvancedSentenceExtractor;
+using AdvancedSentenceExtractor = GenerateFlashcards.Services.SentenceExtractors.AdvancedSentenceExtractor;
 
 namespace GenerateFlashcards;
 
@@ -21,7 +23,7 @@ internal class Program
             config.PropagateExceptions();
             config.AddCommand<GenerateFlashcardsCommand>("generate")
                 .WithDescription("Generates language-learning flashcards from an input file.")
-                .WithExample("generate", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
+                .WithExample("generate", "--inputLanguage", "Spanish", "--outputLanguage", "English", "--inputFileFormat", "FrequencyDictionary", "input.txt")
                 ;
         });
 
@@ -54,7 +56,10 @@ internal class Program
         services.AddTransient<ReferenceTermExtractor>();
         services.AddTransient<ReferenceTranslator>();
 
+        services.AddTransient<FrequencyDictionarySentenceExtractor>();
         services.AddTransient<AdvancedSentenceExtractor>();
+
+        services.AddTransient<FrequencyDictionaryTermExtractor>();
 
         services.AddTransient<BuildingBlocksProvider>();
 
