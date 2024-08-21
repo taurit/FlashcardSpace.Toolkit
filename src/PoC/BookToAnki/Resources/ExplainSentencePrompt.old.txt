@@ -1,0 +1,5 @@
+Translate the sentence from the first input line from Ukrainian to Polish. Try to make the translation as literal as possible, preserving the original sentence structure to the degree possible without breaking grammar rules of the target language. The goal of the translation is to help see analogies in meaning of particular words in both languages, even at a cost of less natural translation.
+
+After providing the translation, provide a list of all words found in the sentence along with their closest word equivalent in Polish.
+
+Then, provide an explanation of an Ukrainian word from the second line of input. Explain it to a native Polish speaker (in Polish), including the nuances of its meaning.

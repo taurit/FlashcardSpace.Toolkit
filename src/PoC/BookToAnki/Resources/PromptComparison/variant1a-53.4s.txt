@@ -1,0 +1,72 @@
+[
+  {
+    "NominativeForm":"мантія",
+    "PolishTranslation":"peleryna",
+    "EnglishTranslation":"cloak",
+    "ExplanationInPolish":"rodzaj luźnej zewnętrznej odzieży bez rękawów, zakładanej na ramiona",
+    "ExplanationInEnglish":"a type of loose outer garment without sleeves, worn over the shoulders"
+  },
+  {
+    "NominativeForm":"який",
+    "PolishTranslation":"jaki",
+    "EnglishTranslation":"which",
+    "ExplanationInPolish":"zaimki pytające używane do zapytania o cechy lub właściwości czegoś",
+    "ExplanationInEnglish":"questioning pronouns used to ask about the characteristics or properties of something"
+  },
+  {
+    "NominativeForm":"стати",
+    "PolishTranslation":"stać się",
+    "EnglishTranslation":"become",
+    "ExplanationInPolish":"osiągnąć lub przyjąć pewien stan lub kondycję",
+    "ExplanationInEnglish":"to achieve or take on a certain state or condition"
+  },
+  {
+    "NominativeForm":"встигнути",
+    "PolishTranslation":"zdążyć",
+    "EnglishTranslation":"manage",
+    "ExplanationInPolish":"zdołać zrealizować coś w określonym czasie",
+    "ExplanationInEnglish":"to accomplish something within a specified time"
+  },
+  {
+    "NominativeForm":"доки",
+    "PolishTranslation":"dopóki",
+    "EnglishTranslation":"until",
+    "ExplanationInPolish":"łącznik oznaczający koniec określonego okresu czasu",
+    "ExplanationInEnglish":"a conjunction indicating the end of a specific period of time"
+  },
+  {
+    "NominativeForm":"який",
+    "PolishTranslation":"jaki",
+    "EnglishTranslation":"which",
+    "ExplanationInPolish":"zaimki pytające używane do zapytania o cechy lub właściwości czegoś",
+    "ExplanationInEnglish":"questioning pronouns used to ask about the characteristics or properties of something"
+  },
+  {
+    "NominativeForm":"стіна",
+    "PolishTranslation":"ściana",
+    "EnglishTranslation":"wall",
+    "ExplanationInPolish":"pionowa struktura służąca do oddzielenia jednego obszaru od drugiego, zwykle wewnątrz budynku",
+    "ExplanationInEnglish":"vertical structure that separates one area from another, typically inside a building"
+  },
+  {
+    "NominativeForm":"коліно",
+    "PolishTranslation":"kolano",
+    "EnglishTranslation":"knee",
+    "ExplanationInPolish":"staw łączący górną i dolną część nogi u człowieka",
+    "ExplanationInEnglish":"the joint connecting the upper and lower parts of the human leg"
+  },
+  {
+    "NominativeForm":"нього",
+    "PolishTranslation":"go",
+    "EnglishTranslation":"him",
+    "ExplanationInPolish":"zaimkiem używany do odniesienia się do mężczyzny, chłopca lub męskiego zwierzęcia, do którego wcześniej się odniesiono",
+    "ExplanationInEnglish":"a pronoun used to refer to a man, boy, or male animal previously mentioned or easily identified"
+  },
+  {
+    "NominativeForm":"сила",
+    "PolishTranslation":"siła",
+    "EnglishTranslation":"strength",
+    "ExplanationInPolish":"zdolność do wykonywania czynności wymagających wysiłku, energii lub wytrzymałości",
+    "ExplanationInEnglish":"the ability to perform actions that require effort, energy, or endurance"
+  }
+]

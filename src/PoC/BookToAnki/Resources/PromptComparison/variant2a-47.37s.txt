@@ -1,0 +1,72 @@
+[
+    {
+        "n": "мантія",
+        "pl": "mantia",
+        "en": "mantle",
+        "plE": "rodzaj okrycia wierzchniego, długiego płaszcza bez rękawów",
+        "enE": "a kind of loose garment, a long cloak without sleeves"
+    },
+    {
+        "n": "який",
+        "pl": "jaki",
+        "en": "which",
+        "plE": "słowo pytające używane do identyfikacji lub określania cechy",
+        "enE": "a questioning word used to identify or specify characteristics"
+    },
+    {
+        "n": "стати",
+        "pl": "stać się",
+        "en": "become",
+        "plE": "zmienić się, nabrać nowego stanu lub cechy",
+        "enE": "to change or develop into a new state or quality"
+    },
+    {
+        "n": "встигнути",
+        "pl": "zdążyć",
+        "en": "manage",
+        "plE": "zdołać coś zrobić w określonym czasie",
+        "enE": "to succeed in doing something in a specified time"
+    },
+    {
+        "n": "доки",
+        "pl": "dopóki",
+        "en": "until",
+        "plE": "wyraża czas do pewnego punktu lub zdarzenia",
+        "enE": "expressing time up to a certain point or event"
+    },
+    {
+        "n": "який",
+        "pl": "jaki",
+        "en": "what kind of",
+        "plE": "słowo pytające używane do identyfikacji lub określania cechy",
+        "enE": "a questioning word used to identify or specify characteristics"
+    },
+    {
+        "n": "стіна",
+        "pl": "ściana",
+        "en": "wall",
+        "plE": "pionowa struktura używana do wsparcia lub oddzielenia pomieszczeń",
+        "enE": "a vertical structure used for support or to separate spaces"
+    },
+    {
+        "n": "коліно",
+        "pl": "kolano",
+        "en": "knee",
+        "plE": "zgięcie w środku nogi umożliwiające ruch",
+        "enE": "the joint in the middle of the leg that allows movement"
+    },
+    {
+        "n": "ньому",
+        "pl": "w nim",
+        "en": "in him",
+        "plE": "wskazujące na konkretną osobę męską lub rzecz",
+        "enE": "referring to a specific male person or thing"
+    },
+    {
+        "n": "сила",
+        "pl": "siła",
+        "en": "strength",
+        "plE": "zdolność do wykonywania fizycznej lub mentalnej aktywności",
+        "enE": "the ability to perform physical or mental activity"
+    }
+]

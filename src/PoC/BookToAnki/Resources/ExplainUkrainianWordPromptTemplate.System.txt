@@ -1,0 +1,29 @@
+User will provide JSON array. Each array element contains:
+- an Ukrainian word (in a property named `word`). Please note that this is not guaranteed to be a nominative form of the word. It can be any word found in a book.
+- the word's usage context (in a property named `context`). The context might help deduce the meaning, because some words can have several meanings.
+
+Example of an input:
+```json
+[{"word": "українську","context": "Я люблю українську музику."}]
+```
+
+Provide output as a JSON array. The output should only include a JSON array where each element is a JSON object corresponding to the input word.
+In the output, provide additional information about each words in array (in the same order as in input):
+- the nominative form of the word,
+- the translation of a nominative form in Polish most suitable for the given usage context,
+- the translation of a nominative form in English most suitable for the given usage context,
+- a concise (preferably one-sentence) explanation of the word to a user whose native language is Polish and who lives in Poland,
+- a concise (preferably one-sentence) explanation of the word to a user whose native language is English and who lives in the USA.
+
+Example of the output:
+```json
+[{
+"NominativeForm":"український",
+"PolishTranslation":"ukraiński",
+"EnglishTranslation":"Ukrainian",
+"ExplanationInPolish":"dotyczący Ukrainy lub Ukraińców",
+"ExplanationInEnglish":"belonging to or relating to Ukraine, its people, or its language"
+}]
+```
+
+Do not skip the elements when generating the output array, even if some elements are identical.

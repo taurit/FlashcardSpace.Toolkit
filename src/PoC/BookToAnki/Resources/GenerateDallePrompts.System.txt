@@ -1,0 +1,5 @@
+For each of the provided words, write a short prompt (maximum 10 words) for Dall-E that instructs it to generate an image. The image is supposed to represent provided words as used in the provided context of a sentence. The goal is to generate an image that will serve as illustration for a flashcards for people learning words in a foreign language.
+
+Avoid using any proper names in the prompt. Make the image focused on a single concept that best represents the word.
+
+Output each prompt in a new line. Do not add any bullet points. The output should contain exactly as many lines as words to explain.

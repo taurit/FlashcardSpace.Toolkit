@@ -1,0 +1,118 @@
+Typical usage to explain 10 words in both PL and EN:
+{UsageResponse { PromptTokens = 771, CompletionTokens = 743, TotalTokens = 1514 }}
+
+Cost: 
+0.06771 USD
+0.06915
+
+of which
+prompt: 0.02313
+response: 0.04458
+
+
+---
+so, to explain: 9542 words
+i'd need: 955 queries
+which would cost 955*0.06915 USD = 66.03825 USD = 263.53948 PLN
+or take... 50 queries per 3 hours => 20 hours or about 16 hours of attention to manually type in queries
+
+Example output to parse:
+
+Here's the corresponding output:
+
+```json
+[
+  {
+    "NominativeForm": "чарівний",
+    "PolishTranslation": "czarodziejski",
+    "EnglishTranslation": "magical",
+    "ExplanationInPolish": "posiadający lub odnoszący się do magii lub czarów",
+    "ExplanationInEnglish": "possessing or relating to magic or sorcery"
+  },
+  {
+    "NominativeForm": "вогонь",
+    "PolishTranslation": "ogień",
+    "EnglishTranslation": "fire",
+    "ExplanationInPolish": "gorąca jasna substancja pochodząca z reakcji chemicznych",
+    "ExplanationInEnglish": "hot glowing matter that can produce flames"
+  },
+  {
+    "NominativeForm": "окрім",
+    "PolishTranslation": "poza",
+    "EnglishTranslation": "besides",
+    "ExplanationInPolish": "w dodatku do czegoś innego",
+    "ExplanationInEnglish": "in addition to something else"
+  },
+  {
+    "NominativeForm": "світло",
+    "PolishTranslation": "światło",
+    "EnglishTranslation": "light",
+    "ExplanationInPolish": "promieniowanie, które umożliwia widzenie",
+    "ExplanationInEnglish": "radiation that enables vision"
+  },
+  {
+    "NominativeForm": "вона",
+    "PolishTranslation": "ona",
+    "EnglishTranslation": "she",
+    "ExplanationInPolish": "kobieta lub dziewczyna, o której mowa",
+    "ExplanationInEnglish": "the woman or girl in question"
+  },
+  {
+    "NominativeForm": "небо",
+    "PolishTranslation": "niebo",
+    "EnglishTranslation": "sky",
+    "ExplanationInPolish": "widoczna część atmosfery wokół Ziemi",
+    "ExplanationInEnglish": "the visible part of the Earth's atmosphere"
+  },
+  {
+    "NominativeForm": "принаймні",
+    "PolishTranslation": "przynajmniej",
+    "EnglishTranslation": "at least",
+    "ExplanationInPolish": "nie mniej niż, minimum",
+    "ExplanationInEnglish": "not less than, minimum"
+  },
+  {
+    "NominativeForm": "Скеберс",
+    "PolishTranslation": "Skeber",
+    "EnglishTranslation": "Skeber",
+    "ExplanationInPolish": "imię postaci lub osoby o nazwisku Skeber",
+    "ExplanationInEnglish": "name of a character or a person with the surname Skeber"
+  },
+  {
+    "NominativeForm": "Отже",
+    "PolishTranslation": "Zatem",
+    "EnglishTranslation": "Therefore",
+    "ExplanationInPolish": "używane do wprowadzenia logicznego wniosku",
+    "ExplanationInEnglish": "used to introduce a logical conclusion"
+  },
+  {
+    "NominativeForm": "Скеберс",
+    "PolishTranslation": "Skeber",
+    "EnglishTranslation": "Skeber",
+    "ExplanationInPolish": "imię postaci lub osoby o nazwisku Skeber",
+    "ExplanationInEnglish": "name of a character or a person with the surname Skeber"
+  }
+]
+```
+
+optimization
+
+# BEFORE optimizations
+{UsageResponse { PromptTokens = 782, CompletionTokens = 754, TotalTokens = 1536 }}
+
+prompt: 0.02346
+response: 0.04524
+total: 0.06870 USD
+
+# No indentation requested:
+Fails to comply; TotalCost: 0.07872M
+
+# No indentation in request:
+0.0639M, no significant difference
+
+# Limit response to polish language
+prompt 0.02097
+response 0.0366
+total 0.05757
+
+also not so great

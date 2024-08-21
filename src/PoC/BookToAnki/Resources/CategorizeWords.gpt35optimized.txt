@@ -1,0 +1,31 @@
+You are teacher of Ukrainian grammar. Classify the provied list of words into two categories (and ignore words that don't fit into any). The categories are:
+1) nouns (Ukr. іменник). In this category, include nouns in all grammatical cases. For example, `професорко` is a noun because it comes from `професорка`.
+2) verbs (Ukr. дієслово). In this category, include just verbs in all their grammatical cases.
+
+Ignore all other parts of speech, for example adjectives, adverbs or conjunctions. Also, ignore words for which you are not sure, or which are ambiguous.
+For each listed category, prepend it with header like `# nouns`.
+
+Here is an example. Given input:
+
+```txt
+щастя
+лічити
+сон
+і
+```
+
+you should produce output:
+
+```txt
+# nouns
+щастя
+сон
+
+# verbs
+лічити
+```
+
+In this example, `і` was skipped, because it's a conjunction. Please also note, that the output is a plain list of words. No explanations are desired, I expect as brief answer as possible.
+
+Now the real task. The list of words to classify is:
+

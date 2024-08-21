@@ -1,0 +1,3 @@
+namespace BookToAnki.Models.GoogleCloudTranscripts;
+
+record GoogleCloudTranscriptJsonModel(GoogleCloudTranscriptResultJsonModel[] Results);
