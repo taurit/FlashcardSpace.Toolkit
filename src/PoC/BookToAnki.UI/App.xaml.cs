@@ -51,7 +51,7 @@ public partial class App : Application
         services.AddTransient<Settings>(_ => settings);
 
         var embeddingsCacheManager = new EmbeddingsCacheManager(Settings.UkrainianEmbeddingsDatabaseFilePath);
-        var embeddingsServiceWrapper = new EmbeddingsServiceWrapper(settings.OpenAiDeveloperKey, settings.OpenAiOrganization, embeddingsCacheManager);
+        var embeddingsServiceWrapper = new EmbeddingsServiceWrapper(settings.OpenAiDeveloperKey, settings.OpenAiOrganizationId, embeddingsCacheManager);
         services.AddSingleton(embeddingsServiceWrapper);
 
         services.AddTransient<UkrainianWordSimilarityEvaluator>();
@@ -59,7 +59,7 @@ public partial class App : Application
 
         var openAiService = new OpenAiServiceWrapper(
             settings.OpenAiDeveloperKey,
-            settings.OpenAiOrganization,
+            settings.OpenAiOrganizationId,
             Settings.OpenAiResponsesDatabase,
             new FallbackManualOpenAiServiceWrapper()
         );
@@ -68,7 +68,7 @@ public partial class App : Application
         var selectedWordHighlighter = new SelectedWordHighlighter();
         services.AddSingleton(_ => selectedWordHighlighter);
 
-        var dalleService = new DalleServiceWrapper(settings.OpenAiDeveloperKey, settings.OpenAiOrganization);
+        var dalleService = new DalleServiceWrapper(settings.OpenAiDeveloperKey, settings.OpenAiOrganizationId);
         services.AddSingleton(_ => dalleService);
 
         var noteProperties = new NoteProperties(Settings.NotePropertiesDatabaseFileName);

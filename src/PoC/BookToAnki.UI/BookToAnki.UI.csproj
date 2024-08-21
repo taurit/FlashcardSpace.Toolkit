@@ -4,7 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <UserSecretsId>458ed261-09ce-4d78-b472-0d7ef69d6913</UserSecretsId>
+    <UserSecretsId>FlashcardSpace.Toolkit</UserSecretsId>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ApplicationIcon>icon-new.ico</ApplicationIcon>
   </PropertyGroup>

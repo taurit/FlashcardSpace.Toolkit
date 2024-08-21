@@ -18,7 +18,7 @@ public class ManualTests
     public async Task GenerateImageUsingDalleApi()
     {
         var userSecrets = UserSecretsRetriever.GetUserSecrets();
-        var sut = new DalleServiceWrapper(userSecrets.OpenAiDeveloperKey, userSecrets.OpenAiOrganization);
+        var sut = new DalleServiceWrapper(userSecrets.OpenAiDeveloperKey, userSecrets.OpenAiOrganizationId);
 
         // Act
         var prompt = "A portrait of a woman with long hair, outdoor, in elegant dress, posing in blooming garden, golden hour";
@@ -58,7 +58,7 @@ public class ManualTests
     {
         var userSecrets = UserSecretsRetriever.GetUserSecrets();
         var embeddingsCacheManager = new EmbeddingsCacheManager("d:\\Flashcards\\Words\\ukrainian_sentences_embeddings.bin");
-        var sut = new EmbeddingsServiceWrapper(userSecrets.OpenAiDeveloperKey, userSecrets.OpenAiOrganization, embeddingsCacheManager);
+        var sut = new EmbeddingsServiceWrapper(userSecrets.OpenAiDeveloperKey, userSecrets.OpenAiOrganizationId, embeddingsCacheManager);
 
         // Act
         var examplesEn = new[] {

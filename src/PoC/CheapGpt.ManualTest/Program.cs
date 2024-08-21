@@ -8,7 +8,7 @@ internal class Program
     {
         // Read API Key from User Secrets (Visual Studio: right-click on project -> Manage User Secrets)
         var configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-        var apiKey = configuration["OpenAiDeveloperKey"] ?? throw new ArgumentException("OpenAPI Key is missing in User Secrets configuration");
+        var apiKey = configuration["OPENAI_DEVELOPER_KEY"] ?? throw new ArgumentException("OpenAPI Key is missing in User Secrets configuration");
 
         // Prepare prompts
         var prompt1 = "What is the capital of Poland?";

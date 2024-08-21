@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <UserSecretsId>458ed261-09ce-4d78-b472-0d7ef69d6913</UserSecretsId>
+    <UserSecretsId>FlashcardSpace.Toolkit</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />

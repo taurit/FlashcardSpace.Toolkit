@@ -7,7 +7,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<UserSecretsId>91483aa8-e1ab-440c-810c-62faae8d37c6</UserSecretsId>
+		<UserSecretsId>FlashcardSpace.Toolkit</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>

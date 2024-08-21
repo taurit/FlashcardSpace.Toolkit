@@ -30,18 +30,18 @@ public class Settings
     public const int NumPerfectExamplesToConsiderCardDone = 2;
 
     public readonly string OpenAiDeveloperKey;
-    public readonly string OpenAiOrganization;
+    public readonly string OpenAiOrganizationId;
 
     public Settings()
     {
         var builder = new ConfigurationBuilder().AddUserSecrets<Settings>();
         var configuration = builder.Build();
-        OpenAiDeveloperKey = configuration["OpenAiDeveloperKey"] ??
+        OpenAiDeveloperKey = configuration["OPENAI_DEVELOPER_KEY"] ??
                              throw new InvalidOperationException(
-                                 "OpenAiDeveloperKey is missing in User Secrets configuration");
-        OpenAiOrganization = configuration["OpenAiOrganization"] ??
+                                 "OPENAI_DEVELOPER_KEY is missing in User Secrets configuration");
+        OpenAiOrganizationId = configuration["OPENAI_ORGANIZATION_ID"] ??
                              throw new InvalidOperationException(
-                                 "OpenAiOrganization is missing in User Secrets configuration");
+                                 "OPENAI_ORGANIZATION_ID is missing in User Secrets configuration");
 
         if (!Directory.Exists(AudioFilesCacheFolder))
         {

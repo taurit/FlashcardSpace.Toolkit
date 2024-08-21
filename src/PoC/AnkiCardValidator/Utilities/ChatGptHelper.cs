@@ -13,7 +13,7 @@ public static class ChatGptHelper
     public static async Task<string> GetAnswerToPromptUsingChatGptApi(string systemChatMessage, string prompt, int attempt, bool jsonMode)
     {
         var appSettings = new Settings();
-        var openAiClientOptions = new OpenAIClientOptions { OrganizationId = appSettings.OpenAiOrganization };
+        var openAiClientOptions = new OpenAIClientOptions { OrganizationId = appSettings.OpenAiOrganizationId };
         ChatClient client = new(model: Settings.OpenAiModelId, new ApiKeyCredential(appSettings.OpenAiDeveloperKey), openAiClientOptions);
 
         var stableHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(prompt));

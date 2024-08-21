@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BookToAnki.Tests;
 
-internal record UserSecrets(string OpenAiDeveloperKey, string OpenAiOrganization);
+internal record UserSecrets(string OpenAiDeveloperKey, string OpenAiOrganizationId);
 
 internal static class UserSecretsRetriever
 {
@@ -11,13 +11,13 @@ internal static class UserSecretsRetriever
         var builder = new ConfigurationBuilder().AddUserSecrets<UserSecrets>();
         var configuration = builder.Build();
 
-        var devKey = configuration["OpenAiDeveloperKey"] ??
+        var devKey = configuration["OPENAI_DEVELOPER_KEY"] ??
                              throw new InvalidOperationException(
-                                 "OpenAiDeveloperKey is missing in User Secrets configuration");
-        var organization = configuration["OpenAiOrganization"] ??
+                                 "OPENAI_DEVELOPER_KEY is missing in User Secrets configuration");
+        var organizationId = configuration["OPENAI_ORGANIZATION_ID"] ??
                              throw new InvalidOperationException(
-                                 "OpenAiOrganization is missing in User Secrets configuration");
+                                 "OPENAI_ORGANIZATION_ID is missing in User Secrets configuration");
 
-        return new UserSecrets(devKey, organization);
+        return new UserSecrets(devKey, organizationId);
     }
 }

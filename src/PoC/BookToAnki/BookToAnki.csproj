@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UserSecretsId>9310f081-68f6-41ed-b475-c20c677b4dc6</UserSecretsId>
+    <UserSecretsId>FlashcardSpace.Toolkit</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Betalgo.OpenAI" Version="8.6.1" />
