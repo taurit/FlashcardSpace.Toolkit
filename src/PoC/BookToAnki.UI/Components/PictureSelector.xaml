@@ -12,12 +12,6 @@
     mc:Ignorable="d">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
         <StackPanel>
-            <Button Click="GenerateImageWithDalle3_OnClick">Generate using Dall-e 3 (0,20 PLN)</Button>
-            <TextBox
-                IsReadOnly="True"
-                MinLines="8"
-                Text="{Binding Prompt, Mode=OneWay}"
-                TextWrapping="Wrap" />
             <TextBlock
                 Grid.Row="1"
                 FontSize="20"

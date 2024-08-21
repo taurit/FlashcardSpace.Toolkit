@@ -1,7 +1,5 @@
 using BookToAnki.Models;
-using BookToAnki.Services;
 using BookToAnki.UI.Components;
-using BookToAnki.UI.ViewModels;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
@@ -12,28 +10,6 @@ namespace BookToAnki.UI;
 
 public partial class MainWindow
 {
-    private async void GenerateDalleImages_OnClick(object sender, RoutedEventArgs e)
-    {
-        var wordsWithoutImages = Enumerable
-            .OfType<WordDataViewModel>(WordsDataGrid.Items)
-            .Where(x => !x.HasPicture)
-            .Where(x => x.Word.Word.ToLowerInvariant().First() == x.Word.Word.First())
-            .Where(x => x.Word.Word.Length > 4)
-            .Take(15)
-            .ToList();
-
-        var wordToExplains = wordsWithoutImages
-            .Select(x =>
-                new WordToExplain(x.Word.Word, x.Word.UsageExamples.MinBy(z => z.QualityPenalty).Sentence.Text))
-            .ToList();
-
-        var dalleImageGenerator =
-            new ExplanatoryImageGenerator(_openAiService, _dalleService, Settings.ImagesRepositoryFolder);
-        await dalleImageGenerator.BatchGenerateImages(wordToExplains);
-
-        MessageBox.Show($"Finished generating images for {wordsWithoutImages.Count} words!");
-    }
-
     private async void StartWordLinkingFlow_OnClick(object sender, RoutedEventArgs e)
     {
         Stopwatch s = Stopwatch.StartNew();
