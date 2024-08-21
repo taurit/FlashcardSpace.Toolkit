@@ -15,7 +15,7 @@ public class WordStatisticCounterTests
         var sentence = new Sentence("", new List<string>());
 
         // Act
-        var wordGroups = sut.GetWordGroups(sentence, 1);
+        var wordGroups = sut.GetWordGroups(sentence);
 
         // Assert
         Assert.IsNotNull(wordGroups);
@@ -31,7 +31,7 @@ public class WordStatisticCounterTests
         var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2" });
 
         // Act
-        var wordGroups = sut.GetWordGroups(sentence, 1);
+        var wordGroups = sut.GetWordGroups(sentence);
 
         // Assert
         Assert.IsNotNull(wordGroups);
@@ -39,26 +39,9 @@ public class WordStatisticCounterTests
         Assert.AreEqual("word2", wordGroups[1]);
     }
 
-    [TestMethod]
-    public void When_WordPairsAreRequested_Expect_AllPairsOfWordsConcatenatedBySpaceCharacter()
-    {
-        // Arrange
-        var sut = new WordStatisticCounter(null);
-
-        var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2", "word3" });
-
-        // Act
-        var wordGroups = sut.GetWordGroups(sentence, 2);
-
-        // Assert
-        Assert.IsNotNull(wordGroups);
-        Assert.AreEqual("Word1 word2", wordGroups[0]);
-        Assert.AreEqual("word2 word3", wordGroups[1]);
-    }
-
 
     [TestMethod]
-    public void When_TwoSubsequestRequestAreDone_Expect_NoInterferenceBetweenThem()
+    public void When_TwoSubsequentRequestAreDone_Expect_NoInterferenceBetweenThem()
     {
         // Arrange
         var sut = new WordStatisticCounter(null);
@@ -67,8 +50,8 @@ public class WordStatisticCounterTests
         var sentence2 = new Sentence("irrelevant", new List<string> { "word3", "word4" });
 
         // Act
-        var wordGroups1 = sut.GetWordGroups(sentence1, 1);
-        var wordGroups2 = sut.GetWordGroups(sentence2, 1);
+        var wordGroups1 = sut.GetWordGroups(sentence1);
+        var wordGroups2 = sut.GetWordGroups(sentence2);
 
         // Assert
         Assert.IsNotNull(wordGroups1);
@@ -82,37 +65,4 @@ public class WordStatisticCounterTests
         wordGroups2.Should().Contain("word4");
     }
 
-
-    [TestMethod]
-    public void When_WordTriplesAreRequested_Expect_CorrectTriples()
-    {
-        // Arrange
-        var sut = new WordStatisticCounter(null);
-
-        var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2", "word3", "word4" });
-
-        // Act
-        var wordGroups = sut.GetWordGroups(sentence, 3);
-
-        // Assert
-        Assert.IsNotNull(wordGroups);
-        Assert.AreEqual("Word1 word2 word3", wordGroups[0]);
-        Assert.AreEqual("word2 word3 word4", wordGroups[1]);
-    }
-
-    [TestMethod]
-    public void When_WordPairsAreRequestedWhenThereIsJustOneWord_Expect_EmptyListOnOutput()
-    {
-        // Arrange
-        var sut = new WordStatisticCounter(null);
-
-        var sentence = new Sentence("irrelevant", new List<string> { "Word1" });
-
-        // Act
-        var wordGroups = sut.GetWordGroups(sentence, 2);
-
-        // Assert
-        wordGroups.Should().NotBeNull();
-        wordGroups.Should().BeEmpty();
-    }
 }

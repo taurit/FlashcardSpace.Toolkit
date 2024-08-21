@@ -43,7 +43,6 @@
                 <MenuItem Click="PrimeStressCachesButton_OnClick" Header="Prime stress caches" />
                 <MenuItem Click="PrimeAudioCachesButton_OnClick" Header="Prime audio caches" />
                 <MenuItem Click="PrimeGptCacheButton_OnClick" Header="Prime ChatGPT4 answer cache" />
-                <MenuItem Click="GenerateDalleImages_OnClick" Header="Generate a few missing images with Dall-E" />
                 <MenuItem Click="ClassifyWordsIntoPartsOfSpeech_OnClick" Header="Classify words into categories (GPT 4 API)" />
             </MenuItem>
             <MenuItem Header="Anki deck preparation" IsEnabled="{Binding IsBusy, Converter={StaticResource 'BoolInverter'}}">
@@ -57,19 +56,6 @@
             Grid.Column="0"
             Grid.ColumnSpan="3">
             <ToolBar>
-                <ComboBox
-                    Name="NumWordsInGroup"
-                    SelectedIndex="0"
-                    SelectionChanged="NumWordsInGroup_SelectionChanged">
-                    <ComboBoxItem Tag="1">1-word group</ComboBoxItem>
-                    <ComboBoxItem Tag="2">2-word group</ComboBoxItem>
-                    <ComboBoxItem Tag="3">3-word group</ComboBoxItem>
-                    <ComboBoxItem Tag="4">4-word group</ComboBoxItem>
-                    <ComboBoxItem Tag="5">5-word group</ComboBoxItem>
-                    <ComboBoxItem Tag="6">6-word group</ComboBoxItem>
-                    <ComboBoxItem Tag="7">7-word group</ComboBoxItem>
-                </ComboBox>
-
                 <!--  Parts of speech filter  -->
                 <Grid>
                     <ToggleButton

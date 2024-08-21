@@ -9,7 +9,6 @@ public class WordStatisticCounter(UkrainianWordExplainer ukrainianWordExplainer)
 
     public Task<List<WordOccurrences>> GetWordsByFrequency(List<Sentence> sentences,
         List<SentenceWithSound> allSentencesWithSound,
-        int numWords,
         (BilingualSentenceMatchingResult enUk, BilingualSentenceMatchingResult enPl) sentenceMatches,
         ILookup<string, BilingualSentence> machineTranslationsUkPl,
         ILookup<string, BilingualSentence> machineTranslationsUkEn)
@@ -19,7 +18,7 @@ public class WordStatisticCounter(UkrainianWordExplainer ukrainianWordExplainer)
 
         foreach (var sentence in sentences)
         {
-            var wordGroups = GetWordGroups(sentence, numWords);
+            var wordGroups = GetWordGroups(sentence);
 
             var sentenceEquivalentEn = sentenceMatches.enUk.MatchedSentencesLookupReverse[sentence.Text].FirstOrDefault();
             var sentenceEquivalentPl = sentenceEquivalentEn is null ? null : sentenceMatches.enPl.MatchedSentencesLookup[sentenceEquivalentEn].FirstOrDefault();
@@ -64,16 +63,5 @@ public class WordStatisticCounter(UkrainianWordExplainer ukrainianWordExplainer)
     }
 
 
-
-    public List<string> GetWordGroups(Sentence sentence, int groupSize)
-    {
-        var wordGroups = new List<string>();
-        for (int i = 0; i <= sentence.Words.Count - groupSize; i++)
-        {
-            var group = string.Join(" ", sentence.Words.GetRange(i, groupSize));
-            wordGroups.Add(group);
-        }
-
-        return wordGroups;
-    }
+    public List<string> GetWordGroups(Sentence sentence) => sentence.Words;
 }

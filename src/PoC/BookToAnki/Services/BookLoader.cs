@@ -23,7 +23,7 @@ public class BookLoader
         _bilingualSentenceMatcher = new BilingualSentenceMatcher(_wordTokenizer);
     }
 
-    public async Task<(List<WordOccurrences> wordsData, (BilingualSentenceMatchingResult enUk, BilingualSentenceMatchingResult enPl) sentenceMatches)> LoadWordsFromBook(SingleBookMetadata selectedBook, int numWordsInAGroup, string sentenceMatchesCacheFolder)
+    public async Task<(List<WordOccurrences> wordsData, (BilingualSentenceMatchingResult enUk, BilingualSentenceMatchingResult enPl) sentenceMatches)> LoadWordsFromBook(SingleBookMetadata selectedBook, string sentenceMatchesCacheFolder)
     {
         var allSentences = new List<Sentence>();
         var allSentencesWithSound = new List<SentenceWithSound>();
@@ -54,7 +54,7 @@ public class BookLoader
         var sentenceEquivalentsInDifferentLanguages = GetSentenceEquivalentsInDifferentLanguages(selectedBook, sentenceMatchesCacheFolder);
 
         var wordsData = await _wordStatisticCounter
-            .GetWordsByFrequency(allSentences, allSentencesWithSound, numWordsInAGroup, sentenceEquivalentsInDifferentLanguages, machineTranslationsUkPl, machineTranslationsUkEn);
+            .GetWordsByFrequency(allSentences, allSentencesWithSound, sentenceEquivalentsInDifferentLanguages, machineTranslationsUkPl, machineTranslationsUkEn);
 
         return (wordsData, sentenceEquivalentsInDifferentLanguages);
     }

@@ -96,21 +96,13 @@ public partial class MainWindow : Window
 
     private async void LoadWordsFromBooks(List<SingleBookMetadata> books)
     {
-        if (NumWordsInGroup.SelectedItem is not ComboBoxItem numWordsInAGroupItem) return;
-
-        var numWordsInAGroupString = numWordsInAGroupItem.Tag as string ??
-                                     throw new InvalidOperationException(
-                                         "Invalid value for number of words in a group");
-        var numWordsInAGroup = int.Parse(numWordsInAGroupString);
-
-
         var wordListsFromAllBooks = new ConcurrentBag<List<WordData>>();
         await Parallel.ForEachAsync(books, async (book, ct) =>
         {
             var bookLoader =
                 new BookLoader(_ukrainianWordExplainer); // not thread safe, so each thread gets a new instance
             var wordsFromBook =
-                await bookLoader.LoadWordsFromBook(book, numWordsInAGroup, Settings.SentenceMatchesCacheFolder);
+                await bookLoader.LoadWordsFromBook(book, Settings.SentenceMatchesCacheFolder);
             var wordFromThisParticularBook = wordsFromBook.wordsData
                 .Select(x => new WordData(x.Word, x.NumOccurrences, x.UsageExamples))
                 .ToList();
