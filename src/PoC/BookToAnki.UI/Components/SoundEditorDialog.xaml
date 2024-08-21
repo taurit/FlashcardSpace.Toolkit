@@ -1,0 +1,43 @@
+<Window
+    x:Class="BookToAnki.UI.Components.SoundEditorDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:BookToAnki.UI.Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:soundEditorControl="clr-namespace:SoundEditorControl;assembly=SoundEditorControl"
+    Title="SoundEditorDialog"
+    Width="1000"
+    Height="550"
+    mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <soundEditorControl:SoundEditor x:Name="soundEditor" />
+
+        <StackPanel
+            Grid.Row="1"
+            Height="30"
+            Margin="0,10,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+
+            <Button
+                Width="95"
+                Margin="0,0,5,0"
+                Content="Cancel"
+                IsCancel="True" />
+            <Button
+                x:Name="OkButton"
+                Width="95"
+                Click="OkButton_Click"
+                Content="OK"
+                FontWeight="Bold"
+                IsDefault="True" />
+        </StackPanel>
+    </Grid>
+
+</Window>

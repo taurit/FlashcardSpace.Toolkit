@@ -1,0 +1,41 @@
+<Window
+    x:Class="BookToAnki.UI.Components.ChatGptHumanInterface"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:components="clr-namespace:BookToAnki.UI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:BookToAnki.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="ChatGptHumanInterface"
+    Width="1200"
+    Height="800"
+    d:DataContext="{d:DesignInstance components:ChatGptHumanInterfaceViewModel}"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+
+        <TextBox
+            Grid.Row="0"
+            AcceptsReturn="True"
+            IsReadOnly="True"
+            Text="{Binding Prompt}" />
+        <TextBlock
+            Grid.Row="1"
+            FontSize="20"
+            TextAlignment="Center">
+            <Hyperlink NavigateUri="https://chat.openai.com/?model=gpt-4" RequestNavigate="Hyperlink_RequestNavigate">
+                Open AI Chat
+            </Hyperlink>
+        </TextBlock>
+
+        <TextBox
+            Grid.Row="2"
+            AcceptsReturn="True"
+            IsReadOnly="False"
+            Text="{Binding Response}" />
+    </Grid>
+</Window>

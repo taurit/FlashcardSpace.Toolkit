@@ -1,0 +1,59 @@
+<Window
+    x:Class="BookToAnki.UI.Components.WordLinkingFlow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:BookToAnki.UI.Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Are those strings variants of the same word that can share picture?"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance local:WordLinkingFlow}"
+    mc:Ignorable="d">
+    <DockPanel LastChildFill="True">
+
+        <UniformGrid
+            Height="100"
+            Columns="2"
+            DockPanel.Dock="Bottom"
+            Rows="1">
+            <Button Background="IndianRed" Click="NoNotSimilar_OnClick">No</Button>
+            <Button Background="MediumSeaGreen" Click="YesSimilar_OnClick">Yes</Button>
+        </UniformGrid>
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock>#1:</TextBlock>
+            <TextBlock
+                FontWeight="Bold"
+                Foreground="MediumSeaGreen"
+                Text="{Binding CurrentCandidate.Word1}" />
+            <TextBlock Foreground="BlueViolet" Text="{Binding CurrentCandidate.Word1Translation}" />
+            <TextBlock Foreground="LightSlateGray" Text="{Binding CurrentCandidate.Word1Example}" />
+            <TextBlock
+                Margin="0,0,0,30"
+                Foreground="LightSlateGray"
+                Text="{Binding CurrentCandidate.Word1ExamplePl}" />
+
+
+            <TextBlock>#2:</TextBlock>
+            <TextBlock
+                FontWeight="Bold"
+                Foreground="MediumSeaGreen"
+                Text="{Binding CurrentCandidate.Word2}" />
+            <TextBlock Foreground="BlueViolet" Text="{Binding CurrentCandidate.Word2Translation}" />
+            <TextBlock Foreground="LightSlateGray" Text="{Binding CurrentCandidate.Word2Example}" />
+            <TextBlock
+                Margin="0,0,0,30"
+                Foreground="LightSlateGray"
+                Text="{Binding CurrentCandidate.Word2ExamplePl}" />
+
+            <!--<TextBlock>
+                Similarity:<Run Text="{Binding CurrentCandidate.Similarity, StringFormat=F4}" /></TextBlock>-->
+            <TextBlock>
+                <Run>Progress:</Run>
+                <Run Text="{Binding ProgressPercent, StringFormat=F4, Mode=OneWay}" />
+                %</TextBlock>
+
+
+        </StackPanel>
+    </DockPanel>
+</Window>

@@ -1,0 +1,110 @@
+<Window
+    x:Class="BookToAnki.UI.Components.SentenceTranslationDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:components="clr-namespace:BookToAnki.UI.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SentenceTranslationDialog"
+    Width="900"
+    Height="950"
+    d:DataContext="{d:DesignInstance components:SentenceTranslationDialog}"
+    mc:Ignorable="d">
+    <StackPanel Margin="10">
+        <Label>Original sentence to translate:</Label>
+        <TextBox
+            Padding="5"
+            Background="BlanchedAlmond"
+            BorderBrush="Bisque"
+            IsReadOnly="True"
+            Text="{Binding OriginalSentence, Mode=OneWay}"
+            TextWrapping="Wrap" />
+
+        <!--  Translation I decide to use:  -->
+        <Label>Chosen translation:</Label>
+        <TextBox
+            x:Name="InputTextBox"
+            Padding="5"
+            Background="PaleGreen"
+            BorderBrush="LawnGreen"
+            BorderThickness="2"
+            FontSize="14"
+            FontWeight="Bold"
+            MinLines="1"
+            Text="{Binding UserProvidedSentenceTranslation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            TextWrapping="Wrap" />
+
+        <!--  Human translation  -->
+        <Label>Human translation:</Label>
+        <TextBox
+            Margin="0,0,0,10"
+            IsReadOnly="True"
+            Text="{Binding HumanTranslation, Mode=OneWay}"
+            TextWrapping="Wrap" />
+
+        <!--  Google translation  -->
+        <Label>Google translation:</Label>
+        <TextBox
+            Margin="0,0,0,10"
+            IsReadOnly="True"
+            Text="{Binding GoogleTranslation, Mode=OneWay}"
+            TextWrapping="Wrap" />
+
+        <!--  ChatGPT 3 translation  -->
+        <Label>ChatGPT 3 translation and explanation:</Label>
+        <TextBox
+            Name="ChatGpt4oMiniExplanation"
+            IsReadOnly="True"
+            MinLines="7"
+            TextWrapping="Wrap" />
+
+        <!--  ChatGPT 4 translation  -->
+        <Label>ChatGPT 4 translation and explanation:</Label>
+        <TextBox
+            Name="ChatGpt4oExplanation"
+            Margin="0,0,0,10"
+            IsReadOnly="True"
+            MinLines="7"
+            TextWrapping="Wrap" />
+
+        <Button
+            Height="30"
+            Click="ExplainWithChatGPT4Mini_Click"
+            Content="Translate to Polish using ChatGPT4-mini (0 groszy)"
+            DockPanel.Dock="Top" />
+        <Button
+            Height="30"
+            Margin="0,3,0,3"
+            Click="ExplainWithChatGPT4o_Click"
+            Content="Translate to Polish using ChatGPT4o (4 grosze)"
+            DockPanel.Dock="Top" />
+
+        <!--  ChatGPT 4 translation  -->
+        <Label>Sentence in context:</Label>
+        <TextBox
+            Margin="0,10,0,10"
+            IsReadOnly="True"
+            MinLines="3"
+            Text="{Binding WiderContext, Mode=OneWay}"
+            TextWrapping="Wrap" />
+
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                x:Name="OkButton"
+                Width="75"
+                Margin="0,0,10,0"
+                Click="OkButton_Click"
+                Content="OK"
+                IsDefault="True" />
+            <Button
+                Width="75"
+                Content="Cancel"
+                IsCancel="True" />
+        </StackPanel>
+
+
+    </StackPanel>
+</Window>

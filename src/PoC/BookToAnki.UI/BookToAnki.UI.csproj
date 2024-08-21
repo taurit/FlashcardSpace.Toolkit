@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UserSecretsId>458ed261-09ce-4d78-b472-0d7ef69d6913</UserSecretsId>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationIcon>icon-new.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+    <PackageReference Include="NickBuhro.Translit" Version="1.4.5" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+    <PackageReference Include="ValueConverters" Version="3.0.26" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BookToAnki\BookToAnki.csproj" />
+    <ProjectReference Include="..\Anki.NET-fork\Anki.NET.csproj" />
+    <ProjectReference Include="..\SoundEditorControl\SoundEditorControl.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Components\NoteRatingFlow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\SentenceTranslationDIalog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon-new.ico" Visible="false" />
+    <None Include="FodyWeavers.xml" Visible="false" />
+    <None Include="AssemblyInfo.cs" Visible="false" />
+  </ItemGroup>
+</Project>

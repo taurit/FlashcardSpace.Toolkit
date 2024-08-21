@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BookToAnki.UI": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
