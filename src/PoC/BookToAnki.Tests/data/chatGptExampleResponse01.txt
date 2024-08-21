@@ -1,0 +1,12 @@
+Here's your output:
+```json
+[
+  {
+    "NominativeForm":"книжка",
+    "PolishTranslation":"książka",
+    "EnglishTranslation":"book",
+    "ExplanationInPolish":"Obiekt związany z literaturą lub zapisem, składający się z kartek zebranych i połączonych razem",
+    "ExplanationInEnglish":"An item associated with literature or writing, consisting of collected and bound together pages"
+  }
+]
+```
