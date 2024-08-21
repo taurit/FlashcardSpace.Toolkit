@@ -1,24 +1,8 @@
 namespace BookToAnki.Services;
 
-public record PartOfSpeech(string Name, int Count)
+public class PartOfSpeechDictionary(Dictionary<string, string> wordToPartOfSpeech)
 {
-    public string DisplayText => $"{Name} ({Count})";
-}
-
-public class PartOfSpeechDictionary
-{
-    public IReadOnlyDictionary<string, string> WordToPartOfSpeech { get; }
-    public IReadOnlyList<PartOfSpeech> PartsOfSpeech { get; }
-
-    public PartOfSpeechDictionary(Dictionary<string, string> wordToPartOfSpeech)
-    {
-        WordToPartOfSpeech = wordToPartOfSpeech.AsReadOnly();
-        PartsOfSpeech = wordToPartOfSpeech
-            .GroupBy(x => x.Value)
-            .Select(x => new PartOfSpeech(x.Key, x.Count()))
-            .ToList()
-            .AsReadOnly();
-    }
+    public IReadOnlyDictionary<string, string> WordToPartOfSpeech { get; } = wordToPartOfSpeech.AsReadOnly();
 }
 
 public class PartOfSpeechDictionaryBuilder
@@ -48,7 +32,7 @@ public class PartOfSpeechDictionaryBuilder
                 if (wordToPartOfSpeech.ContainsKey(line) && wordToPartOfSpeech[line] != currentLabel)
                 {
                     Console.WriteLine($"The word '{line}' has more than 1 part of speech assigned: {wordToPartOfSpeech[line]}, {currentLabel}. Correct your input data.");
-                    // throw exception if I want it perfect, but most of the times I don't are - it's just a rough filter for convenience
+                    // throw exception if I want it perfect, but most of the time I don't care - it's just a rough filter for convenience
                 }
                 else
                 {

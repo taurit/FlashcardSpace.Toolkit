@@ -79,7 +79,6 @@ public partial class MainWindow : Window
         DragEnter += MainWindow_DragEnter;
         Drop += MainWindow_Drop;
         localWebServer.StartLocalServer(Settings.RootServerFolder);
-        MultiSelectListBox.ItemsSource = _partsOfSpeech.PartsOfSpeech;
 
         _discoveredBooks = bookListLoader.GetBookList(Settings.BooksRootFolder).ToList();
 
@@ -131,7 +130,7 @@ public partial class MainWindow : Window
                 ? _partsOfSpeech.WordToPartOfSpeech[wordData.Word]
                 : null;
 
-            if (partOfSpeech == "nouns" /*|| partOfSpeech == "verbs"*/ && wordData.Word.ToLower() == wordData.Word)
+            if (partOfSpeech == "nouns" /*|| partOfSpeech == "verbs"/**/ && wordData.Word.ToLower() == wordData.Word)
             {
                 // only nouns because that's what I focus on in my product now
                 // skip own names
@@ -143,7 +142,6 @@ public partial class MainWindow : Window
             }
         }
 
-        //ViewModel.Words = new ObservableCollection<WordDataViewModel>(wordsList.OrderByDescending(x => x.Occurrences));
         ViewModel.Words = new ObservableCollection<WordDataViewModel>(wordsList.OrderByDescending(x =>
             _wordsLinker.GetAllLinkedWords(x.Word.Word).Count() - (x.HasPicture ? 100 : 0)));
         ViewModel.NumberUniqueWordsInAllProcessedBooks = wordsFromAllBooks.Count;
@@ -536,14 +534,6 @@ public partial class MainWindow : Window
                 "If this exception occurred, some code tried to release the lock twice, which is suspicious.");
         ViewModel.IsBusy = false;
     }
-
-    private void SortByPicture_OnClick(object sender, RoutedEventArgs e)
-    {
-        var newOrder = ViewModel.Words.OrderByDescending(x =>
-            _wordsLinker.GetAllLinkedWords(x.Word.Word).Count() - (x.HasPicture ? 100 : 0));
-        ViewModel.Words = new ObservableCollection<WordDataViewModel>(newOrder);
-    }
-
 
     private void PreventSelectionChangeOnAccidentalRightClicks(object sender, MouseButtonEventArgs e)
     {

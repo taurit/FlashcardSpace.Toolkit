@@ -17,8 +17,8 @@ public partial class MainWindow
     private async void ExportToAnkiDeckAuto_OnClick(object sender, RoutedEventArgs e)
     {
         // Select examples to export to a deck
-        var words = Enumerable
-            .OfType<WordDataViewModel>(WordsDataGrid.Items)
+        var words = WordsDataGrid.Items
+            .OfType<WordDataViewModel>()
             .Select(x => x.Word)
             .Take(3000)
             .ToList();
@@ -30,10 +30,9 @@ public partial class MainWindow
             var usageExamplesToUse = word
                     .UsageExamples
                     .Where(x => x.QualityPenalty <= 1)
-                    .Where(x => x
-                        .SentenceHumanTranslationPolish is not null) // covered by quality penalty, but just in case
+                    .Where(x => x.SentenceHumanTranslationPolish is not null) // covered by quality penalty, but just in case
                     .OrderBy(x => x.QualityPenalty)
-                    .Take(5) // for some words I might have 1000s example sentences, but it seems reasonable to include only a few to the deck
+                    .Take(3) // for some words I might have 1000s example sentences, but it seems reasonable to include only a few to the deck
                     .ToList()
                 ;
 

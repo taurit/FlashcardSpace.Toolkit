@@ -27,7 +27,6 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="22" />
         </Grid.RowDefinitions>
@@ -51,47 +50,9 @@
                 <MenuItem Click="RateNotes_OnClick" Header="Review and rate card candidates" />
             </MenuItem>
         </Menu>
-        <ToolBarTray
-            Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="3">
-            <ToolBar>
-                <!--  Parts of speech filter  -->
-                <Grid>
-                    <ToggleButton
-                        x:Name="PartsOfSpeechDropdown"
-                        Height="30"
-                        Content="Select parts of speech" />
-
-                    <Popup
-                        AllowsTransparency="True"
-                        IsOpen="{Binding IsChecked, ElementName=PartsOfSpeechDropdown, Mode=TwoWay}"
-                        Placement="Bottom"
-                        PlacementTarget="{Binding ElementName=PartsOfSpeechDropdown}"
-                        PopupAnimation="Slide"
-                        StaysOpen="False"
-                        VerticalOffset="5">
-                        <Border
-                            Background="White"
-                            BorderBrush="Black"
-                            BorderThickness="1">
-                            <ListBox
-                                x:Name="MultiSelectListBox"
-                                Width="200"
-                                Height="200"
-                                DisplayMemberPath="DisplayText"
-                                SelectionChanged="MultiSelectListBox_OnSelectionChanged"
-                                SelectionMode="Multiple" />
-                        </Border>
-                    </Popup>
-                </Grid>
-
-                <Button Click="SortByPicture_OnClick">Sort by needing picture the most</Button>
-            </ToolBar>
-        </ToolBarTray>
 
         <!--  Left Side  -->
-        <Grid Grid.Row="2" Grid.Column="0">
+        <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25" />
                 <RowDefinition Height="*" />
@@ -217,13 +178,13 @@
 
         <!--  Grid Splitter  -->
         <GridSplitter
-            Grid.Row="2"
+            Grid.Row="1"
             Grid.Column="1"
             Width="5"
             HorizontalAlignment="Stretch" />
 
         <!--  Right Side  -->
-        <Grid Grid.Row="2" Grid.Column="2">
+        <Grid Grid.Row="1" Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="5" />
@@ -324,7 +285,7 @@
 
         <StatusBar
             Name="MainWindowStatusBar"
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="3"
             d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}">
