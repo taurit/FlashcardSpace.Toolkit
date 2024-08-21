@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anki.Net.TestApp", "PoC\Ank
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FfmpegHelper", "PoC\FfmpegHelper\FfmpegHelper.csproj", "{F7FE4948-0A5E-4909-8066-42F7D18F8349}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundEditorControl", "PoC\SoundEditorControl\SoundEditorControl.csproj", "{F301F783-FC4E-4199-BCE1-D59BC4BCB08F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{F7FE4948-0A5E-4909-8066-42F7D18F8349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7FE4948-0A5E-4909-8066-42F7D18F8349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7FE4948-0A5E-4909-8066-42F7D18F8349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F301F783-FC4E-4199-BCE1-D59BC4BCB08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F301F783-FC4E-4199-BCE1-D59BC4BCB08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F301F783-FC4E-4199-BCE1-D59BC4BCB08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F301F783-FC4E-4199-BCE1-D59BC4BCB08F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{A15C1723-DED5-4351-A081-CACECA57FC21} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 		{FD622D83-B08C-45BD-9395-F784080B453B} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 		{F7FE4948-0A5E-4909-8066-42F7D18F8349} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
+		{F301F783-FC4E-4199-BCE1-D59BC4BCB08F} = {215B0A0F-6AA7-4F53-AFC0-6948C460E53B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {377AA7C7-D8BF-49A6-AE30-CD15A27EDD4A}
