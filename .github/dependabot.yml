@@ -8,6 +8,11 @@ updates:
           nuget-dependencies:
               patterns:
                   - "*"
+      ignore:
+        # Pinning to v7.* because in 8.0.0 (most recent one) unit tests fail with:
+        # System.TypeInitializationException: The type initializer for 'Microsoft.Data.Sqlite.SqliteConnection' threw an exception. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.TypeLoadException: Method 'sqlite3_malloc' in type 'SQLitePCL.SQLite3Provider_e_sqlite3' from assembly 'SQLitePCLRaw.provider.e_sqlite3, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=9c301db686d0bd12' does not have an implementation.
+        - dependency-name: "NeoSmart.Caching.Sqlite"
+              
 
     - package-ecosystem: "github-actions"
       directory: "/"
