@@ -1,7 +1,10 @@
-﻿using GenerateFlashcards.Commands;
+﻿using CoreLibrary.Services.ChatGpt;
+using GenerateFlashcards.Commands;
+using GenerateFlashcards.Models;
 using GenerateFlashcards.Services;
 using GenerateFlashcards.Services.SentenceExtractors;
 using GenerateFlashcards.Services.TermExtractors;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
@@ -27,14 +30,30 @@ internal class Program
                 ;
         });
 
+
         var exitCode = await app.RunAsync(args);
         return exitCode;
     }
+
 
     private static ServiceCollectionRegistrar SetUpDependencyInjection()
     {
         var services = new ServiceCollection();
 
+        // Add configuration
+        var configuration = new ConfigurationBuilder()
+            .AddUserSecrets<Program>()
+            .AddJsonFile("secrets.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        // Bind the configuration values to the strongly typed class
+        var secretsConfiguration = new SecretsConfiguration();
+        configuration.Bind(secretsConfiguration);
+        secretsConfiguration.EnsureValid();
+        services.AddSingleton(secretsConfiguration);
+
+        // Add logging
         services.AddLogging(loggingBuilder =>
             loggingBuilder
                 .AddSpectreConsole(spectreLoggingBuilder =>
@@ -51,7 +70,7 @@ internal class Program
                 .SetMinimumLevel(LogLevel.Debug)
         );
 
-
+        // Add other services
         services.AddTransient<ReferenceSentenceExtractor>();
         services.AddTransient<ReferenceTermExtractor>();
         services.AddTransient<ReferenceTranslator>();
@@ -62,6 +81,13 @@ internal class Program
         services.AddTransient<FrequencyDictionaryTermExtractor>();
 
         services.AddTransient<BuildingBlocksProvider>();
+
+        ChatGptClient chatGptClient = new ChatGptClient(
+                secretsConfiguration.OPENAI_ORGANIZATION_ID!,
+                secretsConfiguration.OPENAI_DEVELOPER_KEY!,
+                Parameters.RootAppDataFolderPath
+            );
+        services.AddSingleton(chatGptClient);
 
         return new ServiceCollectionRegistrar(services);
     }

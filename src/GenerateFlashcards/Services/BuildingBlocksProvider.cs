@@ -8,7 +8,7 @@ namespace GenerateFlashcards.Services;
 /// <summary>
 /// Provides instances of building blocks like:
 /// - <see cref="IExtractSentences"/>
-/// - <see cref="IExtendNotes"/>
+/// - <see cref="IProvideFieldValues"/>
 /// - <see cref="IGenerateOutput"/>
 ///
 /// ... that best fit user-provided parameters (like input and output languages).

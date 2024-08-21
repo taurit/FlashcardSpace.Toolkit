@@ -1,4 +1,5 @@
-﻿using GenerateFlashcards.Services;
+﻿using CoreLibrary.Services.ChatGpt;
+using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +9,8 @@ namespace GenerateFlashcards.Commands;
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Instantiated by Spectre.Console.Cli when needed")]
 internal sealed class GenerateFlashcardsCommand(
         ILogger<GenerateFlashcardsCommand> logger,
-        BuildingBlocksProvider buildingBlocksProvider
+        BuildingBlocksProvider buildingBlocksProvider,
+        ChatGptClient chatGptClient
     ) : AsyncCommand<GenerateFlashcardsCommandSettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
@@ -16,6 +18,11 @@ internal sealed class GenerateFlashcardsCommand(
         var sentences = await ExtractSentences(settings);
         var terms = await ExtractTerms(settings, sentences);
         var termsWithTranslations = await TranslateTerms(settings, terms);
+
+        // chatgpt test
+        var response = await chatGptClient.FetchAnswerToPrompt("gpt-4o-mini", "gpt-4o-mini", "You are a helpful assistant", "What is the capital of Ostrołęka?", false);
+        var responseContent = await response.GetContent();
+        logger.LogInformation($"ChatGPT response: {responseContent}");
 
         return 0;
     }

@@ -2,7 +2,7 @@
 
 enum InputFileFormat
 {
-    Unknown,
+    Autodetect,
     FrequencyDictionary,
     PlainText
 }

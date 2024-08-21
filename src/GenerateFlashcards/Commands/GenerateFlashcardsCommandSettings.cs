@@ -13,17 +13,24 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
     [CommandArgument(0, "<inputFile>")] // <angleBrackets> mean required, [squareBrackets] mean optional
     public required string InputFilePath { get; init; }
 
+    [Description("Declares the format of an input file's content. If not specified, app will try autodetect the file format.")]
     [CommandOption("--inputFileFormat")]
-    [DefaultValue(InputFileFormat.Unknown)]
+    [DefaultValue(InputFileFormat.Autodetect)]
     public InputFileFormat InputFileFormat { get; init; }
 
+    [Description("Name of the language of the content in the input file (typically, a foreign language we learn).")]
     [CommandOption("--inputLanguage")]
     [DefaultValue(SupportedInputLanguage.Autodetect)]
     public SupportedInputLanguage InputLanguage { get; init; }
 
+    [Description("Name of the language to use for translation and explanations (typically, our native language).")]
     [CommandOption("--outputLanguage")]
     [DefaultValue(SupportedOutputLanguage.Unknown)]
     public required SupportedOutputLanguage OutputLanguage { get; init; }
+
+    [Description($"Path to an .env file containing secrets required by the application. Read more: https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md")]
+    [CommandOption("--secretsFile")]
+    public required string SecretsFileName { get; init; }
 
     public override ValidationResult Validate()
     {
@@ -45,8 +52,8 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
             return ValidationResult.Error($"The input file `{InputFilePath}` cannot be found.");
 
         // ensure the input file format is set
-        if (InputFileFormat == InputFileFormat.Unknown)
-            return ValidationResult.Error("The `--inputFileFormat` must be set.");
+        if (InputFileFormat == InputFileFormat.Autodetect)
+            return ValidationResult.Error("The `--inputFileFormat` must be set explicitly (the auto-detection is not implemented yet).");
 
         return ValidationResult.Success();
     }

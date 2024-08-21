@@ -3,6 +3,11 @@
 namespace GenerateFlashcards.Services.TermExtractors;
 public class FrequencyDictionaryTermExtractor : IExtractTerms
 {
+    public FrequencyDictionaryTermExtractor()
+    {
+
+    }
+
     public Task<List<Note>> ExtractTerms(List<string> extractedSentences)
     {
         // when working with a frequency dictionary, the sentences are just a list of words without a context.
