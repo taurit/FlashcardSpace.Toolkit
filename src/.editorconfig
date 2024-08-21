@@ -231,6 +231,9 @@ dotnet_naming_style.begins_with_i.required_suffix =
 dotnet_naming_style.begins_with_i.word_separator = 
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
 
+# disallow calling async method without awaiting them - common error that leads to race conditions
+dotnet_diagnostic.CS4014.severity = error
+
 # .csproj files
 [*.csproj]
 
@@ -238,3 +241,4 @@ dotnet_naming_style.begins_with_i.capitalization = pascal_case
 indent_size = 2
 indent_style = space
 tab_width = 2
+

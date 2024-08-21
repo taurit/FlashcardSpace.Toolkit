@@ -1,5 +1,5 @@
-using AdvancedSentenceExtractor.Services;
 using BookToAnki.Services;
+using CoreLibrary.Services;
 
 namespace BookToAnki.Tests;
 [TestClass]
@@ -45,7 +45,7 @@ public class EndToEndMatchingAccuracyTestsEnglish
             decimal chapterSuccessRatePercent = 100m * matchedSentencesInChapterText.Count / allSentencesInChapter;
             Console.WriteLine($"Sentence matching success rate, chapter {chapterNumber}: {chapterSuccessRatePercent:#.##}%");
             Assert.IsTrue(chapterSuccessRatePercent >= 65, $"Expected matching success rate > 65%, but got {chapterSuccessRatePercent:#.##}% for chapter {chapterNumber}");
-            Assert.IsTrue(chapterSuccessRatePercent <= 100, $"Success rate above 100%, something is wrong with the metric.");
+            Assert.IsTrue(chapterSuccessRatePercent <= 100, "Success rate above 100%, something is wrong with the metric.");
 
             numSentencesInEbook += allSentencesInChapter;
             numMatchedSentencesInEbook += matchedSentencesInChapterText.Count;
@@ -53,9 +53,9 @@ public class EndToEndMatchingAccuracyTestsEnglish
 
 
         // Assert whole ebook success rate
-        decimal totalSuccessRatePercent = 100m * numMatchedSentencesInEbook / (decimal)numSentencesInEbook;
+        decimal totalSuccessRatePercent = 100m * numMatchedSentencesInEbook / numSentencesInEbook;
         Console.WriteLine($"Sentence matching success rate, whole ebook: {totalSuccessRatePercent:#.##}%");
-        Assert.IsTrue(totalSuccessRatePercent <= 100, $"Success rate above 100%, something is wrong with the metric.");
+        Assert.IsTrue(totalSuccessRatePercent <= 100, "Success rate above 100%, something is wrong with the metric.");
         Assert.IsTrue(totalSuccessRatePercent > 70m, $"Expected matching success rate > 70%, but got {totalSuccessRatePercent:#.##}%");
     }
 

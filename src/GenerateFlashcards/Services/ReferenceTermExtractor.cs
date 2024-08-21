@@ -1,7 +1,7 @@
 ﻿using CoreLibrary;
 using CoreLibrary.Interfaces;
 
-namespace ReferenceImplementations;
+namespace GenerateFlashcards.Services;
 
 /// <summary>
 /// An oversimplified implementation of the IExtractTerms interface.

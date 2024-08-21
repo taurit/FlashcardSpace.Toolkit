@@ -9,7 +9,7 @@ public class LinkingExceptionsStore
 
     private readonly HashSet<LinkingException> _exceptions;
     private readonly string _fileName;
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     public LinkingExceptionsStore(string fileName)
     {

@@ -1,6 +1,6 @@
-using AdvancedSentenceExtractor.Models;
-using AdvancedSentenceExtractor.Services;
 using BookToAnki.Models;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Services;
 
 namespace BookToAnki.Services;
 
@@ -57,7 +57,8 @@ public class BilingualSentenceMatcher(IWordTokenizer wordTokenizer)
         return result;
     }
 
-    private static List<string> _ignoredWords = new List<string>() {
+    private static List<string> _ignoredWords = new List<string>
+    {
         "the", "a", "to", "me"
     };
 

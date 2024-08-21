@@ -22,7 +22,7 @@ public class NoteProperties
     }
 
     public Rating? GetNoteRating(PrefKey key) => GetEnum<Rating>(key, "Rating");
-    public void SetNoteRating(PrefKey key, Rating? value) => SetEnum<Rating>(key, "Rating", value);
+    public void SetNoteRating(PrefKey key, Rating? value) => SetEnum(key, "Rating", value);
 
     public string? GetWordNominativeOriginal(PrefKey key) => GetString(key, "WordNominativeOriginal");
     public void SetWordNominativeOriginal(PrefKey key, string? value) => SetString(key, "WordNominativeOriginal", value, true);
@@ -46,7 +46,7 @@ public class NoteProperties
     public void SetSentenceTranslationEn(PrefKey key, string? value) => SetString(key, "SentenceTranslationEn", value);
 
     public AudioSample? GetAudioSample(PrefKey key) => GetSerializedJson<AudioSample>(key, "AudioSample");
-    public void SetAudioSample(PrefKey key, AudioSample? value) => SetSerializedJson<AudioSample>(key, "AudioSample", value);
+    public void SetAudioSample(PrefKey key, AudioSample? value) => SetSerializedJson(key, "AudioSample", value);
 
     public string? GetImageFileName(PrefKey key) => GetString(key, "ImageFileName");
     public void SetImageFileName(PrefKey key, string? value) => SetString(key, "ImageFileName", value);
@@ -105,7 +105,7 @@ public class NoteProperties
     {
         using var dbContext = new NoteContext(_databaseFileName);
         var entity = GetExistingEntityOrDefault(dbContext, notePreferencesKey, propertyName, false);
-        if (Enum.TryParse<TEnum>(entity.PropertyValue, out TEnum result)) return result;
+        if (Enum.TryParse(entity.PropertyValue, out TEnum result)) return result;
         return null;
     }
 

@@ -42,11 +42,8 @@ public static class StringHelpers
         // Return the first group of the match if it's successful
 
         if (match.Success)
-            return match.Groups[1].Value.Trim(new char[] { '`', '\n', '\r', '\t', ' ' }).Trim();
-        else
-        {
-            throw new Exception($"Couldn't parse JSON fragment from the response: {response}");
-        }
+            return match.Groups[1].Value.Trim('`', '\n', '\r', '\t', ' ').Trim();
+        throw new Exception($"Couldn't parse JSON fragment from the response: {response}");
     }
 
 }

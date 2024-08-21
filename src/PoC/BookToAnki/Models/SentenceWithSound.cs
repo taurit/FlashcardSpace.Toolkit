@@ -1,7 +1,7 @@
 using BookToAnki.Models.GoogleCloudTranscripts;
 using BookToAnki.Services;
+using CoreLibrary.Interfaces;
 using System.Diagnostics;
-using AdvancedSentenceExtractor.Models;
 
 namespace BookToAnki.Models;
 
@@ -12,7 +12,7 @@ namespace BookToAnki.Models;
 public record SentenceWithSound(Sentence Sentence, List<GoogleCloudTranscriptWord> WordsFromTranscript, string PathToAudioFile)
 {
     public bool Matches(AudioSample sample) =>
-        this.PathToAudioFile == sample.PathToAudioFile &&
-        this.WordsFromTranscript.First().StartTimeSeconds == sample.FirstWordStartTime &&
-        this.WordsFromTranscript.Last().EndTimeSeconds == sample.LastWordEndTime;
+        PathToAudioFile == sample.PathToAudioFile &&
+        WordsFromTranscript.First().StartTimeSeconds == sample.FirstWordStartTime &&
+        WordsFromTranscript.Last().EndTimeSeconds == sample.LastWordEndTime;
 }

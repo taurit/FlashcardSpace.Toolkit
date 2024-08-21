@@ -3,7 +3,7 @@ using MemoryPack;
 
 namespace BookToAnki.Services;
 
-enum TranscriptFlavor { GoogleCloud, Azure };
+enum TranscriptFlavor { GoogleCloud, Azure }
 
 public class TranscriptReader
 {

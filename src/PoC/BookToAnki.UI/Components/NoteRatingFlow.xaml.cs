@@ -2,7 +2,6 @@ using BookToAnki.Models;
 using BookToAnki.NotePropertiesDatabase;
 using BookToAnki.Services;
 using BookToAnki.Services.OpenAi;
-using BookToAnki.UI.Features;
 using BookToAnki.UI.ViewModels;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -135,7 +134,7 @@ public partial class NoteRatingFlow : Window
             var note = await _ankiNoteGenerator.GenerateAnkiNote(CurrentUsage, Settings.ImagesRepositoryFolder);
             var ankiCardPreviewWindowContext = new AnkiCardPreviewWindowContext(this, note);
             await CardPreviewRating.SetPreviewWindowHtml(note.UkrainianToPolishCard.PreviewHtml,
-                ankiCardPreviewWindowContext, this._openAiService, this._noteProperties, this._audioExampleProvider);
+                ankiCardPreviewWindowContext, _openAiService, _noteProperties, _audioExampleProvider);
             ViewModel.CurrentRating = note.Rating;
         }
         catch (Exception ex)

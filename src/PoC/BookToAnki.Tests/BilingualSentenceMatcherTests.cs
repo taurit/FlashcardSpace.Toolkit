@@ -1,6 +1,6 @@
-using AdvancedSentenceExtractor.Services;
 using BookToAnki.Models;
 using BookToAnki.Services;
+using CoreLibrary.Services;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using System.Text;

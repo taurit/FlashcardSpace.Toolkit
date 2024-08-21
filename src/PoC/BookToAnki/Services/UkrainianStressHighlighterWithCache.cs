@@ -5,7 +5,7 @@ namespace BookToAnki.Services;
 public class UkrainianStressHighlighterWithCache : PersistedCacheHostJson<Dictionary<string, string>>, IUkrainianStressHighlighter
 {
     private readonly UkrainianStressHighlighter _highlighter;
-    public Dictionary<string, string> CacheForTestPurposes => this.Cache;
+    public Dictionary<string, string> CacheForTestPurposes => Cache;
 
     public UkrainianStressHighlighterWithCache(string cacheFilePath) : base(cacheFilePath)
     {

@@ -1,5 +1,4 @@
-using AdvancedSentenceExtractor.Services;
-using BookToAnki.Services;
+using CoreLibrary.Services;
 using FluentAssertions;
 
 namespace BookToAnki.Tests;
@@ -17,7 +16,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string> { }, words);
+        CollectionAssert.AreEqual(new List<string>(), words);
     }
 
     [TestMethod]
@@ -30,7 +29,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("Hello");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Hello" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Hello" }, words);
     }
 
     [TestMethod]
@@ -43,7 +42,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("‘Comb your hair!’ he barked");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Comb", "your", "hair", "he", "barked" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Comb", "your", "hair", "he", "barked" }, words);
     }
 
     [TestMethod]
@@ -56,7 +55,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("Hello, world!");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Hello", "world" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Hello", "world" }, words);
     }
 
     [TestMethod]
@@ -69,7 +68,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("I have 2 cats");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "I", "have", "2", "cats" }, words);
+        CollectionAssert.AreEqual(new List<string> { "I", "have", "2", "cats" }, words);
     }
 
     [TestMethod]
@@ -82,7 +81,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("Mother-in-law and son-in-law were arguing");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Mother", "in", "law", "and", "son", "in", "law", "were", "arguing" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Mother", "in", "law", "and", "son", "in", "law", "were", "arguing" }, words);
     }
 
     [TestMethod]
@@ -95,7 +94,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("тільки-но");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "тільки", "но" }, words);
+        CollectionAssert.AreEqual(new List<string> { "тільки", "но" }, words);
     }
 
     [TestMethod]
@@ -108,7 +107,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("I can't believe it's not butter");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "I", "can't", "believe", "it's", "not", "butter" }, words);
+        CollectionAssert.AreEqual(new List<string> { "I", "can't", "believe", "it's", "not", "butter" }, words);
     }
 
     [TestMethod]
@@ -121,7 +120,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("She can’t take him.");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "She", "can't", "take", "him" }, words);
+        CollectionAssert.AreEqual(new List<string> { "She", "can't", "take", "him" }, words);
     }
 
     [DataTestMethod]
@@ -161,7 +160,7 @@ public class WordTokenizerTests
         var words = sut.GetWords($"WordOne {wordWithApostrophe} another.");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "WordOne", wordWithApostropheNormalized, "another" }, words);
+        CollectionAssert.AreEqual(new List<string> { "WordOne", wordWithApostropheNormalized, "another" }, words);
     }
 
     [TestMethod]
@@ -171,10 +170,10 @@ public class WordTokenizerTests
         var sut = new WordTokenizer();
 
         // Act
-        var words = sut.GetWords($"‘Just leave me here,’ he said");
+        var words = sut.GetWords("‘Just leave me here,’ he said");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Just", "leave", "me", "here", "he", "said" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Just", "leave", "me", "here", "he", "said" }, words);
     }
 
     [TestMethod]
@@ -187,7 +186,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("Blackbird and blowfish were playing");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Blackbird", "and", "blowfish", "were", "playing" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Blackbird", "and", "blowfish", "were", "playing" }, words);
     }
 
     [TestMethod]
@@ -200,7 +199,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("Zażółć gęślą jaźń");  // Polish sentence
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Zażółć", "gęślą", "jaźń" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Zażółć", "gęślą", "jaźń" }, words);
     }
 
     [TestMethod]
@@ -213,7 +212,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("Він має дві кішки");  // Ukrainian sentence: "He has two cats"
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Він", "має", "дві", "кішки" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Він", "має", "дві", "кішки" }, words);
     }
 
     [TestMethod]
@@ -226,7 +225,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("— Ви хочете сказати, що він був причетний до...");
 
         // Assert
-        words.Should().BeEquivalentTo(new List<string>() { "Ви", "хочете", "сказати", "що", "він", "був", "причетний", "до" });
+        words.Should().BeEquivalentTo(new List<string> { "Ви", "хочете", "сказати", "що", "він", "був", "причетний", "до" });
     }
 
     [TestMethod]
@@ -239,7 +238,7 @@ public class WordTokenizerTests
         var words = sut.GetWords("— Вони не винні, — лагідно сказав Дамблдор. — Цілих ");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Вони", "не", "винні", "лагідно", "сказав", "Дамблдор", "Цілих" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Вони", "не", "винні", "лагідно", "сказав", "Дамблдор", "Цілих" }, words);
     }
 
     [DataTestMethod]
@@ -309,6 +308,6 @@ public class WordTokenizerTests
         var words = sut.GetWords($"Word1 {abbreviation} word2");
 
         // Assert
-        CollectionAssert.AreEqual(new List<string>() { "Word1", abbreviation, "word2" }, words);
+        CollectionAssert.AreEqual(new List<string> { "Word1", abbreviation, "word2" }, words);
     }
 }

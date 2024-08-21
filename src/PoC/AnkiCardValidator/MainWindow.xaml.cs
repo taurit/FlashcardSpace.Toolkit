@@ -12,7 +12,7 @@ namespace AnkiCardValidator;
 
 public partial class MainWindow : Window
 {
-    MainWindowViewModel ViewModel => (MainWindowViewModel)this.DataContext;
+    MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
 
     readonly NormalFormProvider _normalFormProvider = new();
 
@@ -26,7 +26,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        this.DataContext = new MainWindowViewModel();
+        DataContext = new MainWindowViewModel();
 
         // tech debt: DI container should make it simpler
         _duplicateDetector = new(_normalFormProvider);
@@ -160,7 +160,7 @@ public partial class MainWindow : Window
 
 
         await ReloadFlashcardsEvaluationAndSortByMostPromising();
-        ViewModel.StatusMessage = $"Evaluated quality of all requested cards.";
+        ViewModel.StatusMessage = "Evaluated quality of all requested cards.";
     }
 
     private async Task ReloadFlashcardsEvaluationAndSortByMostPromising()
@@ -229,8 +229,8 @@ public partial class MainWindow : Window
             .ToList();
 
         var cardsThatNeedTagging = cardsWithAcceptablePenalty
-            .Where(x => !x.Note.Tags.Contains($" qa ")) // my convention for marking cards as fit for learning feed
-            .Where(x => !x.Note.Tags.Contains($" opportunity")) // hack: legacy convention of tagging with opportunity[NUMBER_OF_BATCH]
+            .Where(x => !x.Note.Tags.Contains(" qa ")) // my convention for marking cards as fit for learning feed
+            .Where(x => !x.Note.Tags.Contains(" opportunity")) // hack: legacy convention of tagging with opportunity[NUMBER_OF_BATCH]
             .ToList();
 
         var numModifiedNotes = AnkiHelpers.AddTagToNotes(Settings.AnkiDatabaseFilePath, cardsThatNeedTagging, "modified");

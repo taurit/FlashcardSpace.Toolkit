@@ -1,6 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming -> Names must match the specification; avoiding JsonPropertyName for brevity
 
-namespace CheapGpt;
+namespace CheapGpt.Models;
 
 record OpenAiBatchJobLine(string custom_id, OpenAiBatchJobBody body)
 {

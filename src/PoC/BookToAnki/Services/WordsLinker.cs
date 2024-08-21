@@ -6,7 +6,7 @@ public class WordsLinker
 {
     private readonly string? _persistenceFilePath;
     private readonly List<HashSet<string>> _groups;
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     private readonly Dictionary<string, HashSet<string>> quickGroupLookup;
 
@@ -57,7 +57,7 @@ public class WordsLinker
 
         if (group1 is null && group2 is null)
         {
-            var newGroup = new HashSet<string>() { word1, word2 };
+            var newGroup = new HashSet<string> { word1, word2 };
             _groups.Add(newGroup);
             quickGroupLookup[word1] = newGroup;
             quickGroupLookup[word2] = newGroup;

@@ -1,12 +1,12 @@
-using AnkiNet.Helpers;
-using AnkiNet.Models;
+using Anki.NET.Helpers;
+using Anki.NET.Models;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using System.IO.Compression;
 using System.Reflection;
 using System.Text.Json;
 
-namespace AnkiNet;
+namespace Anki.NET;
 
 public class AnkiDeck
 {

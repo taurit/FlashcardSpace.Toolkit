@@ -1,9 +1,9 @@
-﻿using AdvancedSentenceExtractor.Services;
-using CoreLibrary.Interfaces;
-using WordTokenizer = AdvancedSentenceExtractor.Services.WordTokenizer;
+﻿using CoreLibrary.Interfaces;
+using CoreLibrary.Services;
+using WordTokenizer = CoreLibrary.Services.WordTokenizer;
 
-namespace AdvancedSentenceExtractor;
-public class AdvancedSentenceExtractor() : IExtractSentences
+namespace GenerateFlashcards.Services;
+public class AdvancedSentenceExtractor : IExtractSentences
 {
     // instantiated here without DI so the app using this library doesn't have to register all dependencies required by this class
     readonly SentenceTokenizer _sentenceTokenizer = new(new SentenceFactory(new WordTokenizer()));

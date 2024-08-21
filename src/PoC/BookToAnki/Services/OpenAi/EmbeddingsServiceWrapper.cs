@@ -13,7 +13,7 @@ public class EmbeddingsServiceWrapper
     public EmbeddingsServiceWrapper(string developerKey, string organization, EmbeddingsCacheManager embeddingsCacheManager)
     {
         _embeddingsCacheManager = embeddingsCacheManager;
-        _openAiService = new(new OpenAiOptions()
+        _openAiService = new(new OpenAiOptions
         {
             ApiKey = developerKey,
             Organization = organization
@@ -29,7 +29,7 @@ public class EmbeddingsServiceWrapper
         }
 
         // Cache is primed, and it's unexpected if this breakpoint is hit on HP data - debug!
-        var embeddingFromService = await CreateEmbeddingInternal(new List<string>() { inputText });
+        var embeddingFromService = await CreateEmbeddingInternal(new List<string> { inputText });
         var vector = embeddingFromService.Single();
         _embeddingsCacheManager.Cache.Cache.Add(inputText, vector);
         return vector;

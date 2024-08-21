@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AdvancedSentenceExtractor.Services;
+namespace CoreLibrary.Services;
 
 public partial class WordTokenizer : IWordTokenizer
 {
@@ -10,7 +10,7 @@ public partial class WordTokenizer : IWordTokenizer
     [GeneratedRegex(@"^['’．]*$")]
     private static partial Regex _irrelevantWordCandidatePattern();
 
-    private static readonly char[] TrimCharacters = new char[] { '\n', '\r', '.', '’', ' ', '\'' };
+    private static readonly char[] TrimCharacters = { '\n', '\r', '.', '’', ' ', '\'' };
     public List<string> GetWords(string sentence)
     {
         if (string.IsNullOrEmpty(sentence))

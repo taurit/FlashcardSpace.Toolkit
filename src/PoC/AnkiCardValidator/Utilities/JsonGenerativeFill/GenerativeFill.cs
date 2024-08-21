@@ -12,8 +12,8 @@ public static class GenerativeFill
     public static async Task<T> FillMissingProperties<T>(T inputElement, string systemChatMessage = "You are a helpful assistant")
         where T : ObjectWithId
     {
-        var inputElements = new List<T>() { inputElement };
-        var response = await FillMissingProperties<T>(inputElements, systemChatMessage);
+        var inputElements = new List<T> { inputElement };
+        var response = await FillMissingProperties(inputElements, systemChatMessage);
         return response.Single();
     }
 

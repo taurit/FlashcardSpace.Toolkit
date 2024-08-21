@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace BookToAnki.UI.Infrastructure;
 internal static class StartupPerformanceMeasurement
 {
-    static Stopwatch? stopwatch = null;
+    static Stopwatch? stopwatch;
     internal static void StartMeasuring()
     {
         stopwatch = Stopwatch.StartNew();

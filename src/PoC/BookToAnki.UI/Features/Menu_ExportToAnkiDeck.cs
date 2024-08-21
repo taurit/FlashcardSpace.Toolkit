@@ -1,6 +1,6 @@
-using AnkiNet;
-using AnkiNet.Models;
-using AnkiNet.Models.Scriban;
+using Anki.NET;
+using Anki.NET.Models;
+using Anki.NET.Models.Scriban;
 using BookToAnki.Models;
 using BookToAnki.Services;
 using BookToAnki.UI.ViewModels;
@@ -17,8 +17,8 @@ public partial class MainWindow
     private async void ExportToAnkiDeckAuto_OnClick(object sender, RoutedEventArgs e)
     {
         // Select examples to export to a deck
-        var words = WordsDataGrid.Items
-            .OfType<WordDataViewModel>()
+        var words = Enumerable
+            .OfType<WordDataViewModel>(WordsDataGrid.Items)
             .Select(x => x.Word)
             .Take(3000)
             .ToList();

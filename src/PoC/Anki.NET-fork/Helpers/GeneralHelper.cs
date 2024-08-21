@@ -1,9 +1,9 @@
-using AnkiNet.Models;
+using Anki.NET.Models;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AnkiNet.Helpers;
+namespace Anki.NET.Helpers;
 
 internal static class GeneralHelper
 {

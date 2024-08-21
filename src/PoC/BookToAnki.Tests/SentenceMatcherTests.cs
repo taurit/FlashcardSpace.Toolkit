@@ -1,7 +1,7 @@
-using AdvancedSentenceExtractor.Models;
 using BookToAnki.Models;
 using BookToAnki.Models.GoogleCloudTranscripts;
 using BookToAnki.Services;
+using CoreLibrary.Interfaces;
 
 namespace BookToAnki.Tests;
 [TestClass]
@@ -51,8 +51,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainClearlyDifferentWords_Expect_NoMatch()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Hello world", new List<string>() { "Hello", "world" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Hello world", new List<string> { "Hello", "world" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -71,8 +72,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainIdenticalWords_Expect_Match()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Hello world", new List<string>() { "Hello", "world" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Hello world", new List<string> { "Hello", "world" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -95,8 +97,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainIdenticalWordsButDifferentCasing_Expect_Match()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Hello world", new List<string>() { "Hello", "WoRlD" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Hello world", new List<string> { "Hello", "WoRlD" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -119,8 +122,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainIdenticalWordsInCyryllic_Expect_Match()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Коли містер", new List<string>() { "Коли", "містер" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Коли містер", new List<string> { "Коли", "містер" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -143,8 +147,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainLongWordsDifferingInOneLetterOnly_Expect_Match()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Hello worldwide xxx", new List<string>() { "Hello", "worldwide", "xxx" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Hello worldwide xxx", new List<string> { "Hello", "worldwide", "xxx" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -168,8 +173,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainWordDifferingSignificantlyAtTheEnd_Expect_NoMatch()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Hello sgdfgsgsdgsdfgdf", new List<string>() { "Hello", "sgdfgsgsdgsdfgdf" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Hello sgdfgsgsdgsdfgdf", new List<string> { "Hello", "sgdfgsgsdgsdfgdf" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -189,8 +195,9 @@ public class SentenceMatcherTests
     public void When_SentencesContainWordDifferingSignificantlyInTheMiddle_Expect_NoMatch()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Hello sgdfgsgsdgsdfgdf hi", new List<string>() { "Hello", "sgdfgsgsdgsdfgdf", "hi" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Hello sgdfgsgsdgsdfgdf hi", new List<string> { "Hello", "sgdfgsgsdgsdfgdf", "hi" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -211,8 +218,9 @@ public class SentenceMatcherTests
     public void When_TranscriptContainsOneAdditionalWordInsideTheSentence_Expect_Match()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Натомість місіс Дурслі була худорлява", new List<string>() { "Натомість", "місіс", "Дурслі", "була", "худорлява" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Натомість місіс Дурслі була худорлява", new List<string> { "Натомість", "місіс", "Дурслі", "була", "худорлява" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -242,8 +250,9 @@ public class SentenceMatcherTests
     public void When_TranscriptContainsOneAdditionalWordInsideTheSentence2_Expect_Match()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
-            new Sentence("Навпаки, він радісно заусміхався й верескнув.", new List<string>() { "Навпаки", "він", "радісно", "заусміхався", "й", "верескнув" })
+        var sentences = new List<Sentence>
+        {
+            new Sentence("Навпаки, він радісно заусміхався й верескнув.", new List<string> { "Навпаки", "він", "радісно", "заусміхався", "й", "верескнув" })
         };
 
         var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
@@ -278,9 +287,11 @@ public class SentenceMatcherTests
     public void When_TranscriptContainsErrorInLastWord_Expect_NoMatch()
     {
         // Arrange
-        var sentences = new List<Sentence>() {
+        var sentences = new List<Sentence>
+        {
             new Sentence("Той хлопчик був ще однією причиною не знатися з Поттерами",
-            new List<string>() {
+            new List<string>
+            {
                 "Той",
                 "хлопчик",
                 "був",

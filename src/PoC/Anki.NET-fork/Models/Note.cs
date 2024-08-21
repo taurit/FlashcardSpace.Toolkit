@@ -1,6 +1,6 @@
-using AnkiNet.Helpers;
+using Anki.NET.Helpers;
 
-namespace AnkiNet.Models;
+namespace Anki.NET.Models;
 
 internal class Note
 {

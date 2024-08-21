@@ -1,4 +1,4 @@
-namespace AdvancedSentenceExtractor.Services;
+namespace CoreLibrary.Services;
 
 public interface IWordTokenizer
 {

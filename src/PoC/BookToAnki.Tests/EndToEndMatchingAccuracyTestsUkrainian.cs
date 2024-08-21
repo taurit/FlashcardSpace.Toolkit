@@ -1,5 +1,5 @@
-using AdvancedSentenceExtractor.Services;
 using BookToAnki.Services;
+using CoreLibrary.Services;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
@@ -20,7 +20,7 @@ public class EndToEndMatchingAccuracyTestsUkrainian
     {
         get
         {
-            var books = new TestedBook[] {
+            var books = new[] {
                 new TestedBook(1, 17),
                 new TestedBook(2, 2),
                 new TestedBook(3, 22),
@@ -56,7 +56,7 @@ public class EndToEndMatchingAccuracyTestsUkrainian
     }
 
     [TestMethod]
-    [DynamicData(nameof(ChapterToTest), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(ChapterToTest))]
     public void When_HPChapterIsMatchedAgainstTranscript_Expect_Over65PercentMatch(int bookNum, int chapterNumberNum)
     {
         // dependencies
@@ -81,10 +81,10 @@ public class EndToEndMatchingAccuracyTestsUkrainian
         var sentenceBuilder = new SentenceFactory(wordTokenizer);
         var sentenceTokenizer = new SentenceTokenizer(sentenceBuilder);
 
-        var bookPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, $"hp_uk_07_01.txt");
-        var azureTranscriptPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, $"hp_uk_07_01.azure.speechtotext.json");
-        var chirpTranscriptPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, $"hp_uk_07_01.google.chirp.json");
-        var longTranscriptPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, $"hp_uk_07_01.google.long.json");
+        var bookPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, "hp_uk_07_01.txt");
+        var azureTranscriptPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, "hp_uk_07_01.azure.speechtotext.json");
+        var chirpTranscriptPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, "hp_uk_07_01.google.chirp.json");
+        var longTranscriptPath = Path.Combine(LicensedContentGuard.RootFolderForLicensedContent, "hp_uk_07_01.google.long.json");
 
         using var ass = new AssertionScope();
 

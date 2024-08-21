@@ -1,4 +1,4 @@
-namespace AdvancedSentenceExtractor.Services;
+namespace CoreLibrary.Services;
 
 public static class KnownAbbreviationsHandler
 {
@@ -13,7 +13,7 @@ public static class KnownAbbreviationsHandler
         public readonly string NewlineWithFullWidthDot = $"\n{withFullWidthDot}";
     }
 
-    private static readonly string[] KnownAbbreviationsWithDot = new string[] {
+    private static readonly string[] KnownAbbreviationsWithDot = {
         "Mr.",
         "див.",
         "ст.",
@@ -83,10 +83,8 @@ public static class KnownAbbreviationsHandler
         {
             return source.Remove(index, oldValue.Length).Insert(index, newValue);
         }
-        else
-        {
-            return source;
-        }
+
+        return source;
     }
 
     public static string ReplaceDotWithFullWidthDotInAbbreviations(string bookContent)

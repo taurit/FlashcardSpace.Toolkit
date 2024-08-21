@@ -1,6 +1,6 @@
 using ImageMagick;
 
-namespace AnkiNet.Helpers;
+namespace Anki.NET.Helpers;
 public class ImageProcessor
 {
     internal void ConvertToWebpAndResize(string inputPath, string outputPath)

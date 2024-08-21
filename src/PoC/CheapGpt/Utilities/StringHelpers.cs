@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace CheapGpt;
+namespace CheapGpt.Utilities;
 internal static class StringHelpers
 {
     /// <summary>

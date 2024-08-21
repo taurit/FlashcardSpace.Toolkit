@@ -1,4 +1,4 @@
-namespace BookToAnki.UI.OpenAiHumanInterface;
+namespace BookToAnki.Interfaces;
 
 public interface IFallbackManualOpenAiServiceWrapper
 {

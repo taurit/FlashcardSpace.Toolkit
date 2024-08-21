@@ -40,7 +40,7 @@ public partial class MainWindow
         // get list of words that are most likely the same ones
         ConcurrentBag<WordSimilarity> similarities = new ConcurrentBag<WordSimilarity>();
 
-        Parallel.For(0, ViewModel.Words.Count, word1Index =>
+        Parallel.For(0, (int)ViewModel.Words.Count, (int word1Index) =>
         {
             for (var word2Index = word1Index + 1; word2Index < ViewModel.Words.Count; word2Index++)
             {
@@ -55,21 +55,21 @@ public partial class MainWindow
                 var similarityScore = _ukrainianWordSimilarityEvaluator.CalculateSimilarity(word1, word2).Result;
                 if (similarityScore < 0.94) continue; // arbitrary choice to avoid veeery large list NxN here
 
-                var word1Example = word1Vm.Word.UsageExamples.First().Sentence.Text;
-                var word1ExamplePl = word1Vm.Word.UsageExamples.First().SentenceHumanTranslationPolish ??
-                                     word1Vm.Word.UsageExamples.First().SentenceMachineTranslationPolish ??
-                                     word1Vm.Word.UsageExamples.First().SentenceHumanTranslationEnglish ??
-                                     word1Vm.Word.UsageExamples.First().SentenceMachineTranslationEnglish
+                var word1Example = Enumerable.First<WordUsageExample>(word1Vm.Word.UsageExamples).Sentence.Text;
+                var word1ExamplePl = Enumerable.First<WordUsageExample>(word1Vm.Word.UsageExamples).SentenceHumanTranslationPolish ??
+                                     Enumerable.First<WordUsageExample>(word1Vm.Word.UsageExamples).SentenceMachineTranslationPolish ??
+                                     Enumerable.First<WordUsageExample>(word1Vm.Word.UsageExamples).SentenceHumanTranslationEnglish ??
+                                     Enumerable.First<WordUsageExample>(word1Vm.Word.UsageExamples).SentenceMachineTranslationEnglish
                                      ;
 
-                var word2Example = word2Vm.Word.UsageExamples.First().Sentence.Text;
-                var word2ExamplePl = word2Vm.Word.UsageExamples.First().SentenceHumanTranslationPolish ??
-                                     word2Vm.Word.UsageExamples.First().SentenceMachineTranslationPolish ??
-                                     word2Vm.Word.UsageExamples.First().SentenceHumanTranslationEnglish ??
-                                     word2Vm.Word.UsageExamples.First().SentenceMachineTranslationEnglish;
+                var word2Example = Enumerable.First<WordUsageExample>(word2Vm.Word.UsageExamples).Sentence.Text;
+                var word2ExamplePl = Enumerable.First<WordUsageExample>(word2Vm.Word.UsageExamples).SentenceHumanTranslationPolish ??
+                                     Enumerable.First<WordUsageExample>(word2Vm.Word.UsageExamples).SentenceMachineTranslationPolish ??
+                                     Enumerable.First<WordUsageExample>(word2Vm.Word.UsageExamples).SentenceHumanTranslationEnglish ??
+                                     Enumerable.First<WordUsageExample>(word2Vm.Word.UsageExamples).SentenceMachineTranslationEnglish;
 
-                var word1Translation = word1Vm.Word.UsageExamples.First().PolishTranslationOfTheWordNominative;
-                var word2Translation = word2Vm.Word.UsageExamples.First().PolishTranslationOfTheWordNominative;
+                var word1Translation = Enumerable.First<WordUsageExample>(word1Vm.Word.UsageExamples).PolishTranslationOfTheWordNominative;
+                var word2Translation = Enumerable.First<WordUsageExample>(word2Vm.Word.UsageExamples).PolishTranslationOfTheWordNominative;
 
 
                 var similarity = new WordSimilarity(word1, word2, similarityScore, word1Example, word2Example, word1Translation, word2Translation, word1ExamplePl, word2ExamplePl);

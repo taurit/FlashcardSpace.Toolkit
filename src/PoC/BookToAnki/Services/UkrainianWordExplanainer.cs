@@ -19,7 +19,7 @@ public class UkrainianWordExplainer
     public UkrainianWordExplainer(OpenAiServiceWrapper openAiService, NoteProperties noteProperties)
     {
         _openAiService = openAiService;
-        this._noteProperties = noteProperties;
+        _noteProperties = noteProperties;
     }
 
     public async Task BatchPrepareExplanations(IReadOnlyList<WordToExplain> words, int limit, Action updateMoneyCounterInUi)
@@ -36,7 +36,7 @@ public class UkrainianWordExplainer
         var chunks = wordsNotYetExplainedToExplain.Chunk(chunkSize).ToList();
         foreach (var chunk in chunks)
         {
-            var inputSerialized = JsonSerializer.Serialize(chunk, new JsonSerializerOptions() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+            var inputSerialized = JsonSerializer.Serialize(chunk, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
             var userPrompt = $"Here's the input:\n" +
                              $"```json\n" +
                              $"{inputSerialized}\n" +
@@ -51,12 +51,12 @@ public class UkrainianWordExplainer
             {
                 explanations = JsonSerializer.Deserialize<List<UkrainianWordExplanation>>(json);
             }
-            catch (System.Text.Json.JsonException ex)
+            catch (JsonException ex)
             {
                 Debug.WriteLine("Deserialization of a response from OpenAPI API failed.");
                 Debug.WriteLine($"Error message: {ex.Message}, {ex.StackTrace}");
                 Debug.WriteLine($"Content that failed to deserialize: {json}");
-                Debug.WriteLine($"Falling back to a manual resolver");
+                Debug.WriteLine("Falling back to a manual resolver");
 
                 // fallback: sometimes Json contain some syntax error, and the quickest way to fix is to do it manually:
                 var jsonFromFallbackResolver = await _openAiService.CreateChatCompletion(systemPrompt, userPrompt, "manual", true);

@@ -33,7 +33,7 @@ public partial class SentenceTranslationDialog : Window
         _openAi = openAi;
         _wordOriginalForm = wordOriginalForm;
         InitializeComponent();
-        this.DataContext = this;
+        DataContext = this;
 
         Title = question;
 
@@ -61,13 +61,13 @@ public partial class SentenceTranslationDialog : Window
     private async void ExplainWithChatGPT4Mini_Click(object sender, RoutedEventArgs e)
     {
         var prompt = PreparePrompt(OriginalSentence, _wordOriginalForm);
-        this.ChatGpt4oMiniExplanation.Text = await _openAi.CreateChatCompletion(prompt.SystemPrompt, prompt.UserPrompt, OpenAI.ObjectModels.Models.Gpt_4o_mini, false);
+        ChatGpt4oMiniExplanation.Text = await _openAi.CreateChatCompletion(prompt.SystemPrompt, prompt.UserPrompt, OpenAI.ObjectModels.Models.Gpt_4o_mini, false);
     }
 
     private async void ExplainWithChatGPT4o_Click(object sender, RoutedEventArgs e)
     {
         var prompt = PreparePrompt(OriginalSentence, _wordOriginalForm);
-        this.ChatGpt4oExplanation.Text = await _openAi.CreateChatCompletion(prompt.SystemPrompt, prompt.UserPrompt, OpenAI.ObjectModels.Models.Gpt_4o, false);
+        ChatGpt4oExplanation.Text = await _openAi.CreateChatCompletion(prompt.SystemPrompt, prompt.UserPrompt, OpenAI.ObjectModels.Models.Gpt_4o, false);
     }
 
 }

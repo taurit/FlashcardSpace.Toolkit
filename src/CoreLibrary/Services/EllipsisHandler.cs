@@ -1,4 +1,4 @@
-namespace AdvancedSentenceExtractor.Services;
+namespace CoreLibrary.Services;
 internal static class EllipsisHandler
 {
     /// <summary>

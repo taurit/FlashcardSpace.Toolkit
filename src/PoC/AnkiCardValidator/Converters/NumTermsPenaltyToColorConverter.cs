@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Windows.Media;
-
 namespace AnkiCardValidator.Converters;
 
 public class NumTermsPenaltyToColorConverter : OneWayConverter

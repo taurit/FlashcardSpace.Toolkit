@@ -7,7 +7,7 @@ public class GeminiHelper
     public async Task<string> GetAnswer(string prompt)
     {
         var settings = new Settings();
-        var config = new GoogleGeminiConfig()
+        var config = new GoogleGeminiConfig
         {
             ApiKey = settings.GeminiApiKey,
             // default TextBaseUrl is for the "pro" model https://generativelanguage.googleapis.com/v1/models/gemini-pro

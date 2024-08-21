@@ -1,8 +1,8 @@
 using BookToAnki.Models;
 using BookToAnki.NotePropertiesDatabase;
+using CoreLibrary.Interfaces;
 using PropertyChanged;
 using System.Collections.Generic;
-using AdvancedSentenceExtractor.Models;
 
 namespace BookToAnki.UI.ViewModels;
 

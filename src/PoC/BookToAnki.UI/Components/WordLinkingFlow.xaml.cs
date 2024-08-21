@@ -32,7 +32,7 @@ public partial class WordLinkingFlow : Window
         _candidates = similaritiesByScore;
         _wordsLinker = wordsLinker;
 
-        this.DataContext = this;
+        DataContext = this;
         ShowNextCandidate();
 
         InitializeComponent();

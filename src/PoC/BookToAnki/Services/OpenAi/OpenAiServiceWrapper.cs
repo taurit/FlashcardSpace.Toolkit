@@ -1,4 +1,4 @@
-using BookToAnki.UI.OpenAiHumanInterface;
+using BookToAnki.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using NeoSmart.Caching.Sqlite;
 using OpenAI;
@@ -21,11 +21,11 @@ public class OpenAiServiceWrapper
     public OpenAiServiceWrapper(string developerKey, string organization, string cacheFile, IFallbackManualOpenAiServiceWrapper fallbackService)
     {
         _fallbackService = fallbackService;
-        _openAiService = new OpenAIService(new OpenAiOptions()
+        _openAiService = new OpenAIService(new OpenAiOptions
         {
             ApiKey = developerKey,
             Organization = organization
-        }, new HttpClient()
+        }, new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(360)
         });
@@ -60,7 +60,7 @@ public class OpenAiServiceWrapper
                     },
                     Model = model,
                     MaxTokens = 1000, // optional; $0.002 / 1K tokens for gpt-3.5-turbo; $0.03 for GPT4
-                    ResponseFormat = new ResponseFormat()
+                    ResponseFormat = new ResponseFormat
                     {
                         Type = jsonMode
                             ? OpenAI.ObjectModels.StaticValues.CompletionStatics.ResponseFormat.Json

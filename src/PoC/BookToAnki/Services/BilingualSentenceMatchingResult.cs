@@ -12,8 +12,8 @@ public partial record BilingualSentenceMatchingResult
         this.MatchedSentences = MatchedSentences;
         this.SuccessRatePercent = SuccessRatePercent;
 
-        this.MatchedSentencesLookup = MatchedSentences.ToLookup(x => x.PrimaryLanguage, z => z.SecondaryLanguage);
-        this.MatchedSentencesLookupReverse = MatchedSentences.ToLookup(x => x.SecondaryLanguage, z => z.PrimaryLanguage);
+        MatchedSentencesLookup = MatchedSentences.ToLookup(x => x.PrimaryLanguage, z => z.SecondaryLanguage);
+        MatchedSentencesLookupReverse = MatchedSentences.ToLookup(x => x.SecondaryLanguage, z => z.PrimaryLanguage);
     }
 
     [MemoryPackIgnore]

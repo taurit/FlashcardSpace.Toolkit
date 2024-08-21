@@ -1,6 +1,6 @@
-using AdvancedSentenceExtractor.Models;
+using CoreLibrary.Interfaces;
 
-namespace AdvancedSentenceExtractor.Services;
+namespace CoreLibrary.Services;
 
 public class SentenceFactory(IWordTokenizer wordTokenizer)
 {

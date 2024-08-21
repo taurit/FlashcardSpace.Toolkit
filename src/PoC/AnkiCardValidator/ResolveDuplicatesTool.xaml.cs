@@ -35,7 +35,7 @@ public partial class ResolveDuplicatesTool : Window
         webViewControl.NavigateToString(htmlContentToSet);
     }
 
-    FlashcardConflict? _currentConflict = null;
+    FlashcardConflict? _currentConflict;
     private async void StartReviewFlow_OnClick(object sender, RoutedEventArgs e)
     {
         await ProgressToNextUnresolvedConflict();
@@ -47,15 +47,15 @@ public partial class ResolveDuplicatesTool : Window
 
         if (_currentConflict is null) return;
 
-        await SetPreviewWindowHtml(this.LeftPreview, GenerateHtmlPreviewForNote(_currentConflict.Left));
-        await SetPreviewWindowHtml(this.RightPreview, GenerateHtmlPreviewForNote(_currentConflict.Right));
+        await SetPreviewWindowHtml(LeftPreview, GenerateHtmlPreviewForNote(_currentConflict.Left));
+        await SetPreviewWindowHtml(RightPreview, GenerateHtmlPreviewForNote(_currentConflict.Right));
     }
 
     private static string GenerateHtmlPreviewForNote(CardViewModel card)
     {
         // todo Doesn't work, requires serving images via HTTP ... 
         var imagePart = !String.IsNullOrWhiteSpace(card.Note.Image)
-            ? $"<br />{card.Note.Image.Replace("src=\"", $"src=\"http://localhost:3000/")}"
+            ? $"<br />{card.Note.Image.Replace("src=\"", "src=\"http://localhost:3000/")}"
             : string.Empty;
 
         var questionAudioPart = !String.IsNullOrWhiteSpace(card.QuestionAudio)

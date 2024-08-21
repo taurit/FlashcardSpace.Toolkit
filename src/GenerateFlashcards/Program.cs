@@ -2,10 +2,12 @@
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ReferenceImplementations;
 using Spectre.Console.Cli;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
+using AdvancedSentenceExtractor = GenerateFlashcards.Services.AdvancedSentenceExtractor;
+
+namespace GenerateFlashcards;
 
 internal class Program
 {
@@ -52,7 +54,7 @@ internal class Program
         services.AddTransient<ReferenceTermExtractor>();
         services.AddTransient<ReferenceTranslator>();
 
-        services.AddTransient<AdvancedSentenceExtractor.AdvancedSentenceExtractor>();
+        services.AddTransient<AdvancedSentenceExtractor>();
 
         services.AddTransient<BuildingBlocksProvider>();
 

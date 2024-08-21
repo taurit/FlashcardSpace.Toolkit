@@ -21,7 +21,7 @@ public class DuplicateDetectorTests
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
         var card3 = new CardViewModel(note3, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
 
-        var ankiCards = new ObservableCollection<CardViewModel>() { card1, card2, card3, };
+        var ankiCards = new ObservableCollection<CardViewModel> { card1, card2, card3, };
         var sut = new DuplicateDetector(new NormalFormProvider());
 
         // Act

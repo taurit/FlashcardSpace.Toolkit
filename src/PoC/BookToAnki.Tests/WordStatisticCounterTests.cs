@@ -1,6 +1,5 @@
-using AdvancedSentenceExtractor.Models;
-using BookToAnki.Models;
 using BookToAnki.Services;
+using CoreLibrary.Interfaces;
 using FluentAssertions;
 
 namespace BookToAnki.Tests;
@@ -13,7 +12,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("", new List<string>() { });
+        var sentence = new Sentence("", new List<string>());
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence, 1);
@@ -29,7 +28,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("irrelevant", new List<string>() { "Word1", "word2" });
+        var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2" });
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence, 1);
@@ -46,7 +45,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("irrelevant", new List<string>() { "Word1", "word2", "word3" });
+        var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2", "word3" });
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence, 2);
@@ -64,8 +63,8 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence1 = new Sentence("irrelevant", new List<string>() { "word1", "word2" });
-        var sentence2 = new Sentence("irrelevant", new List<string>() { "word3", "word4" });
+        var sentence1 = new Sentence("irrelevant", new List<string> { "word1", "word2" });
+        var sentence2 = new Sentence("irrelevant", new List<string> { "word3", "word4" });
 
         // Act
         var wordGroups1 = sut.GetWordGroups(sentence1, 1);
@@ -90,7 +89,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("irrelevant", new List<string>() { "Word1", "word2", "word3", "word4" });
+        var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2", "word3", "word4" });
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence, 3);
@@ -107,7 +106,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("irrelevant", new List<string>() { "Word1" });
+        var sentence = new Sentence("irrelevant", new List<string> { "Word1" });
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence, 2);

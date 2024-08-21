@@ -1,5 +1,5 @@
 using FluentAssertions;
-using ReferenceImplementations;
+using GenerateFlashcards.Services;
 
 namespace GenerateFlashcards.Tests.BuildingBlocks;
 

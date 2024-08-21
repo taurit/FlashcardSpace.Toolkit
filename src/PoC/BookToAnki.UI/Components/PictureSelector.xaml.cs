@@ -96,7 +96,7 @@ public partial class PictureSelector : UserControl, INotifyPropertyChanged
         var pathPartial = Path.Combine(Settings.ImagesRepositoryFolder, Word.ToLowerInvariant());
         if (!Directory.Exists(pathPartial)) Directory.CreateDirectory(pathPartial);
 
-        string imagePath = Path.Combine(pathPartial, $"dalle3.standard.webp");
+        string imagePath = Path.Combine(pathPartial, "dalle3.standard.webp");
         if (File.Exists(imagePath))
         {
             Debug.WriteLine($"Dalle3 image creation skipped for word {Word} - image already exists");

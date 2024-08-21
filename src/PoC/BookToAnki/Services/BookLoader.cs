@@ -1,6 +1,6 @@
-using AdvancedSentenceExtractor.Models;
-using AdvancedSentenceExtractor.Services;
 using BookToAnki.Models;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Services;
 using MemoryPack;
 
 namespace BookToAnki.Services;

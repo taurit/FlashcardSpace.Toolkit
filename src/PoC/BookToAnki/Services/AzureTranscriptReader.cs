@@ -10,7 +10,7 @@ public static class AzureTranscriptReader
     public static Transcript ReadTranscript(string transcriptFileName, string audioFilePath)
     {
         var content = File.ReadAllText(transcriptFileName);
-        var transcript = JsonSerializer.Deserialize<AzureTranscriptJsonModel>(content, new JsonSerializerOptions()
+        var transcript = JsonSerializer.Deserialize<AzureTranscriptJsonModel>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
         });

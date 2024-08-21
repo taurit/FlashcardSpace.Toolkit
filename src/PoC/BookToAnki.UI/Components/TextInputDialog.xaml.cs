@@ -12,7 +12,7 @@ public partial class TextInputDialog : Window
     public TextInputDialog(string question, string? defaultAnswer)
     {
         InitializeComponent();
-        this.DataContext = this;
+        DataContext = this;
         Title = question;
         ResponseText = defaultAnswer ?? "";
     }

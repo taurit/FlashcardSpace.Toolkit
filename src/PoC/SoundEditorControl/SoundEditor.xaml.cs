@@ -22,9 +22,9 @@ public partial class SoundEditor : UserControl
 
     public void LoadFile(string fileLocation, TimeSpan initialPadding)
     {
-        this.CurrentFileLocation = fileLocation;
-        this.CurrentMp3FileReader = new Mp3FileReader(CurrentFileLocation);
-        this.InitialPadding = initialPadding;
+        CurrentFileLocation = fileLocation;
+        CurrentMp3FileReader = new Mp3FileReader(CurrentFileLocation);
+        InitialPadding = initialPadding;
 
         WaveFormRenderer waveFormRenderer = new();
         using var waveStream = new AudioFileReader(fileLocation);
@@ -129,7 +129,7 @@ public partial class SoundEditor : UserControl
 
     private void PlayTrimmedSamplePreview_OnClick(object sender, RoutedEventArgs e)
     {
-        var trimmedStream = new TrimmedStream(CurrentMp3FileReader, this.BeginningShiftPosition, this.EndShiftPosition);
+        var trimmedStream = new TrimmedStream(CurrentMp3FileReader, BeginningShiftPosition, EndShiftPosition);
 
         var waveOut = new WaveOut();
         waveOut.Init(trimmedStream);

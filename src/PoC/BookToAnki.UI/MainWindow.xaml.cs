@@ -3,7 +3,6 @@ using BookToAnki.NotePropertiesDatabase;
 using BookToAnki.Services;
 using BookToAnki.Services.OpenAi;
 using BookToAnki.UI.Components;
-using BookToAnki.UI.Features;
 using BookToAnki.UI.Infrastructure;
 using BookToAnki.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;

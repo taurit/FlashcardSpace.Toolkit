@@ -1,4 +1,4 @@
-﻿namespace AnkiNet.Helpers;
+﻿namespace Anki.NET.Helpers;
 
 /// <summary>
 /// Represents a globally unique identifier (GUID) with a

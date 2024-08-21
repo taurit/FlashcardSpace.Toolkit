@@ -1,7 +1,6 @@
-using AdvancedSentenceExtractor.Models;
 using BookToAnki.Models;
+using CoreLibrary.Interfaces;
 using FluentAssertions;
-
 
 namespace BookToAnki.Tests;
 
@@ -12,8 +11,8 @@ public class WordDataTests
     public void When_TwoDifferentWordsAreMerged_Expect_Exception()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string>() { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word2 is awesome", new List<string>() { "Word2", "is", "awesome" });
+        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
+        var sentence2 = new Sentence("Word2 is awesome", new List<string> { "Word2", "is", "awesome" });
 
         var word1 = new WordData("Word1", 2, new List<WordUsageExample> {
             new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>(), null, null, null, null, null)
@@ -38,8 +37,8 @@ public class WordDataTests
     public void When_TwoIdenticalWordsAreMerged_Expect_ResultHasASumOfUsageExamples()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string>() { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word1 is awesome two", new List<string>() { "Word1", "is", "awesome", "two" });
+        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
+        var sentence2 = new Sentence("Word1 is awesome two", new List<string> { "Word1", "is", "awesome", "two" });
 
         var word1 = new WordData("Word1", 2, new List<WordUsageExample> {
             new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>(), null, null, null, null, null)
@@ -64,8 +63,8 @@ public class WordDataTests
     public void When_TwoWordsDifferingByCasingAreMerged_Expect_ResultHasASumOfUsageExamples()
     {
         // Arrange
-        var sentence1 = new Sentence("WORD1 is awesome", new List<string>() { "WORD1", "is", "awesome" });
-        var sentence2 = new Sentence("word1 is awesome two", new List<string>() { "word1", "is", "awesome", "two" });
+        var sentence1 = new Sentence("WORD1 is awesome", new List<string> { "WORD1", "is", "awesome" });
+        var sentence2 = new Sentence("word1 is awesome two", new List<string> { "word1", "is", "awesome", "two" });
 
         var word1 = new WordData("WORD1", 2, new List<WordUsageExample> {
             new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>(), null, null, null, null, null)
@@ -90,17 +89,19 @@ public class WordDataTests
     public void When_UsageExamplesFromTwoBooksAreMerged_Expect_AudioSamplesFromBothArePreserved()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string>() { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word1 is awesome", new List<string>() { "Word1", "is", "awesome" });
+        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
+        var sentence2 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
 
         var word1 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>() {
+            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>
+            {
                 new SentenceWithSound(sentence1, null, "BOOK1.mp3")
             }, null, null, null, null, null)
         });
 
         var word2 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>() {
+            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>
+            {
                 new SentenceWithSound(sentence2, null, "BOOK2.mp3")
             }, null, null, null, null, null)
         });
@@ -123,17 +124,19 @@ public class WordDataTests
     public void When_OneBookHasTranslationForUsageExampleButTheOtherDoesnt_Expect_ExistingTranslationIsAlwaysChosen()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string>() { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word1 is awesome", new List<string>() { "Word1", "is", "awesome" });
+        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
+        var sentence2 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
 
         var word1 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>() {
+            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>
+            {
                 new SentenceWithSound(sentence1, null, "BOOK1.mp3")
             }, null, null, "Existing Polish translation", null /* intentionally missing */, null)
         });
 
         var word2 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>() {
+            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>
+            {
                 new SentenceWithSound(sentence2, null, "BOOK2.mp3")
             }, null, null, /* intentionally missing */ null, "Existing English translation", null)
         });

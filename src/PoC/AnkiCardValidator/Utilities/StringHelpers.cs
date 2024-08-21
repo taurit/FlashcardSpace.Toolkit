@@ -127,11 +127,8 @@ public static partial class StringHelpers
             {
                 stringBuilder.Append(c);
             }
-            else
-            {
-                // character is skipped!
-                // good place for a breakpoint
-            }
+            // character is skipped!
+            // good place for a breakpoint
         }
         return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }

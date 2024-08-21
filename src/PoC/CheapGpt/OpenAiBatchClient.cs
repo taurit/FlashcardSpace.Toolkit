@@ -1,4 +1,5 @@
 ﻿using CheapGpt.Models;
+using CheapGpt.Utilities;
 using OpenAI.Batch;
 using OpenAI.Files;
 using System.ClientModel;
@@ -47,7 +48,7 @@ public class OpenAiBatchClient(string openAiDeveloperKey, string modelId, int ma
             await File.WriteAllTextAsync(promptFilePath, promptModelSerialized);
 
             // Create input file for the batch job
-            var bodyModel = new OpenAiBatchJobBody(modelId, maxTokensPerPrompt, new OpenAiBatchJobBodyMessages[] {
+            var bodyModel = new OpenAiBatchJobBody(modelId, maxTokensPerPrompt, new[] {
                 new OpenAiBatchJobBodyMessages("system", "You are a helpful assistant."),
                 new OpenAiBatchJobBodyMessages("user", prompt)
             });

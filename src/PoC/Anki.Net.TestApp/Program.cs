@@ -1,6 +1,6 @@
-using AnkiNet;
-using AnkiNet.Models;
-using AnkiNet.Models.Scriban;
+using Anki.NET;
+using Anki.NET.Models;
+using Anki.NET.Models.Scriban;
 
 namespace Anki.Net.TestApp;
 
@@ -14,7 +14,7 @@ internal class Program
             new Field("ExampleA"),
         };
 
-        var cardTemplates = new CardTemplate[] {
+        var cardTemplates = new[] {
             new CardTemplate(0, "Forward", "{{English}}", "{{FrontSide}}\n<hr id=answer>{{Ukrainian}}\n{{ExampleA}}")
         };
 

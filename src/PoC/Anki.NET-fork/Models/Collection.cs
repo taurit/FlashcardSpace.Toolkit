@@ -1,8 +1,8 @@
-using AnkiNet.Helpers;
-using AnkiNet.Models.Scriban;
+using Anki.NET.Helpers;
+using Anki.NET.Models.Scriban;
 using Scriban;
 
-namespace AnkiNet.Models;
+namespace Anki.NET.Models;
 
 internal class Collection
 {

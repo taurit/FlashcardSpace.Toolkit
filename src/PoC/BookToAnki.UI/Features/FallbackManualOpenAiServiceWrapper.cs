@@ -1,8 +1,8 @@
+using BookToAnki.Interfaces;
 using BookToAnki.UI.Components;
-using BookToAnki.UI.OpenAiHumanInterface;
 using System.Windows;
 
-namespace BookToAnki.UI.Features;
+namespace BookToAnki.UI;
 
 public class FallbackManualOpenAiServiceWrapper : IFallbackManualOpenAiServiceWrapper
 {

@@ -1,6 +1,5 @@
 ﻿using CoreLibrary.Interfaces;
 using GenerateFlashcards.Commands;
-using ReferenceImplementations;
 
 namespace GenerateFlashcards.Services;
 
@@ -18,7 +17,7 @@ namespace GenerateFlashcards.Services;
 internal class BuildingBlocksProvider(
     // Sentence extractors
     ReferenceSentenceExtractor referenceSentenceExtractor,
-    AdvancedSentenceExtractor.AdvancedSentenceExtractor advancedSentenceExtractor,
+    AdvancedSentenceExtractor advancedSentenceExtractor,
 
     ReferenceTermExtractor referenceTermExtractor,
     ReferenceTranslator referenceTranslator

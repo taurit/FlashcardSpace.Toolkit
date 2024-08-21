@@ -8,7 +8,7 @@ using Microsoft.Web.WebView2.Wpf;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace BookToAnki.UI.Features;
+namespace BookToAnki.UI;
 
 public record AnkiCardPreviewWindowContext(Window ParentWindow, UkrainianAnkiNote Note);
 
@@ -24,9 +24,9 @@ public static class WebView2Extensions
         // Ensure that CoreWebView2 is initialized
         if (webViewComponent.Source is null)
         {
-            WebView2Extensions.OpenAiService = openAiService;
-            WebView2Extensions.NoteProperties = noteProperties;
-            WebView2Extensions.AudioExampleProvider = audioExampleProvider;
+            OpenAiService = openAiService;
+            NoteProperties = noteProperties;
+            AudioExampleProvider = audioExampleProvider;
 
             var options =
                 new CoreWebView2EnvironmentOptions(

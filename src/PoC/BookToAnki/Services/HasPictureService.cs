@@ -33,7 +33,7 @@ public class HasPictureService : IDisposable
 
     private void UpdateFoldersCache()
     {
-        this._subfolderListCache = Directory
+        _subfolderListCache = Directory
             .EnumerateDirectories(_imagesRepositoryFolder)
             .Select(Path.GetFileName)
             .Where(x => x is not null)!

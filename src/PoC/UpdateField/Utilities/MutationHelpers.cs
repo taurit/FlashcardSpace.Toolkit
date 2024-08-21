@@ -91,7 +91,7 @@ public static class MutationHelpers
         // trim leading and trailing line breaks that could have been left after removing audio
         var frontTextHtml = new HtmlDocument();
         frontTextHtml.LoadHtml(note.FrontText);
-        MutationHelpers.TrimLeadingAndTrailingLineBreaks(frontTextHtml);
+        TrimLeadingAndTrailingLineBreaks(frontTextHtml);
         note.FrontText = frontTextHtml.DocumentNode.OuterHtml.Trim();
     }
 
@@ -120,7 +120,7 @@ public static class MutationHelpers
         {
             note.Image = backTextImage.OuterHtml;
             backTextImage.Remove();
-            MutationHelpers.TrimLeadingAndTrailingLineBreaks(backTextHtml);
+            TrimLeadingAndTrailingLineBreaks(backTextHtml);
             note.BackText = backTextHtml.DocumentNode.InnerHtml.Trim();
         }
     }

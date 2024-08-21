@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 
-namespace AnkiNet.Helpers;
+namespace Anki.NET.Helpers;
 
 internal static class SqLiteHelper
 {

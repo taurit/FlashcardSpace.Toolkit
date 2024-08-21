@@ -1,4 +1,4 @@
-namespace AnkiNet.Models;
+namespace Anki.NET.Models;
 
 internal class Card
 {

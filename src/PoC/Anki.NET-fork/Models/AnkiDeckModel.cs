@@ -1,7 +1,7 @@
-using AnkiNet.Models.Scriban;
+using Anki.NET.Models.Scriban;
 using System.Text.Json;
 
-namespace AnkiNet.Models;
+namespace Anki.NET.Models;
 
 public class AnkiDeckModel
 {
@@ -18,7 +18,7 @@ public class AnkiDeckModel
         ModelName = modelName;
         FieldList = fieldList;
         ShortUniquePrefixForMediaFiles = shortUniquePrefixForMediaFiles;
-        this.ModelId = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+        ModelId = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
         CardTemplatesJsonArray = JsonSerializer.Serialize(cardTemplates);
     }
 }

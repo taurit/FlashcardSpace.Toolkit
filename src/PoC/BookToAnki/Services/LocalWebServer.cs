@@ -1,6 +1,6 @@
-namespace BookToAnki.Services;
-using System.IO;
 using System.Net;
+
+namespace BookToAnki.Services;
 
 public class LocalWebServer
 {
@@ -17,7 +17,7 @@ public class LocalWebServer
 
     private void BeginListening(HttpListener httpListener, string directory)
     {
-        httpListener.BeginGetContext(async (result) =>
+        httpListener.BeginGetContext(async result =>
         {
             var context = httpListener.EndGetContext(result);
 

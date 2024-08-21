@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 //"tmpls": [
 //{
 //    "name": "Forward",
@@ -20,7 +21,7 @@ using System.Text.Json.Serialization;
 //}
 //],
 
-namespace AnkiNet.Models.Scriban;
+namespace Anki.NET.Models.Scriban;
 
 [Serializable]
 public class CardTemplate

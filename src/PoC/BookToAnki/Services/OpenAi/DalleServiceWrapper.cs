@@ -12,7 +12,7 @@ public class DalleServiceWrapper
 
     public DalleServiceWrapper(string developerKey, string organization)
     {
-        _openAiService = new OpenAIService(new OpenAiOptions()
+        _openAiService = new OpenAIService(new OpenAiOptions
         {
             ApiKey = developerKey,
             Organization = organization

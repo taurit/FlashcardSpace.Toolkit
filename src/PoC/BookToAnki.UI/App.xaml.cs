@@ -2,7 +2,6 @@ using BookToAnki.NotePropertiesDatabase;
 using BookToAnki.Services;
 using BookToAnki.Services.OpenAi;
 using BookToAnki.UI.Components;
-using BookToAnki.UI.Features;
 using BookToAnki.UI.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
@@ -46,7 +45,7 @@ public partial class App : Application
         services.AddTransient<NoteRatingFlow>();
 
         var wordsLinked = new WordsLinker(Settings.LinkedWordsFilePath);
-        services.AddSingleton<WordsLinker>(wordsLinked);
+        services.AddSingleton(wordsLinked);
 
         var settings = new Settings();
         services.AddTransient<Settings>(_ => settings);

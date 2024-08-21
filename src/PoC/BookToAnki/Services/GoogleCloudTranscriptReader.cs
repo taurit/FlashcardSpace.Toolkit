@@ -69,7 +69,7 @@ public static class GoogleCloudTranscriptReader
             .Replace("\"endOffset\"", "\"EndTime\"");
 
 
-        var transcript = JsonSerializer.Deserialize<GoogleCloudTranscriptJsonModel>(content, new JsonSerializerOptions()
+        var transcript = JsonSerializer.Deserialize<GoogleCloudTranscriptJsonModel>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         });

@@ -1,5 +1,5 @@
+using CoreLibrary.Interfaces;
 using System.Diagnostics;
-using AdvancedSentenceExtractor.Models;
 
 namespace BookToAnki.Models;
 

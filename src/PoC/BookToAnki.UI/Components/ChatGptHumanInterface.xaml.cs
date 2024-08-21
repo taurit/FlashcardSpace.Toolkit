@@ -20,7 +20,7 @@ public partial class ChatGptHumanInterface : Window
 {
     public ChatGptHumanInterface(string promptToCopyToChatGpt)
     {
-        this.DataContext = new ChatGptHumanInterfaceViewModel(promptToCopyToChatGpt);
+        DataContext = new ChatGptHumanInterfaceViewModel(promptToCopyToChatGpt);
         InitializeComponent();
     }
 

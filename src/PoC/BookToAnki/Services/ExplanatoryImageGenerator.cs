@@ -49,7 +49,7 @@ public class ExplanatoryImageGenerator
                 if (Directory.Exists(wordImageFolderPath)) continue;
 
                 Directory.CreateDirectory(wordImageFolderPath);
-                var images = await _dalleService.CreateDalle2Image(prompt, StaticValues.ImageStatics.Size.Size1024, 1);
+                var images = await _dalleService.CreateDalle2Image(prompt, StaticValues.ImageStatics.Size.Size1024);
 
                 for (var imageIndex = 0; imageIndex < images.Count; imageIndex++)
                 {

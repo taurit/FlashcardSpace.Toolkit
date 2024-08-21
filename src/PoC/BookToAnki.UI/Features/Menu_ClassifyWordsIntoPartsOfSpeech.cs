@@ -13,8 +13,8 @@ public partial class MainWindow
 
         var lastProcessedWord = "шугав"; // temporary hack if process crashed at some point
 
-        var wordsToClassify = WordsDataGrid.Items
-            .OfType<WordDataViewModel>()
+        var wordsToClassify = Enumerable
+            .OfType<WordDataViewModel>(WordsDataGrid.Items)
             .ToList();
 
         var lastProcessedWordPosition = 0; //wordsToClassify.FindIndex(x => x.Word.Word == lastProcessedWord);

@@ -136,13 +136,13 @@ public sealed class CardViewModel(
     [DependsOn(nameof(CefrLevelQuestion), nameof(HasQualityIssues), nameof(Meanings), nameof(NumDefinitionsForQuestion), nameof(NumDefinitionsForAnswer))]
     public int Penalty =>
         // missing information about CEFR level
-        (this.CefrLevelQuestion == CefrClassification.Unknown ? 1 : 0) +
+        (CefrLevelQuestion == CefrClassification.Unknown ? 1 : 0) +
 
         // words with CEFR level C1 and higher should be prioritized down until I learn basics
-        (this.CefrLevelQuestion >= CefrClassification.C1 ? 1 : 0) +
+        (CefrLevelQuestion >= CefrClassification.C1 ? 1 : 0) +
 
         // words with CEFR level C2 should be prioritized down even more than B2
-        (this.CefrLevelQuestion >= CefrClassification.C2 ? 1 : 0) +
+        (CefrLevelQuestion >= CefrClassification.C2 ? 1 : 0) +
 
         // the more individual meanings word has, the more confusing learning it with flashcards might be
         (Meanings.Count > 0 ? Meanings.Count - 1 : 0) +

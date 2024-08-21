@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace AdvancedSentenceExtractor.Models;
+namespace CoreLibrary.Interfaces;
 
 [DebuggerDisplay("{Text}")]
 public class Sentence

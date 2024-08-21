@@ -38,7 +38,7 @@ internal static class AddPolishTranslationToRemarks
 
         AnsiConsole.WriteLine($"Fetching translations from ChatGPT API for a chunk of {notesChunk.Count} notes...");
 
-        var fillModel = notesChunk.Select(x => new FlashcardToFill() { Ukrainian = x.FrontText, English = x.BackText }).ToList();
+        var fillModel = notesChunk.Select(x => new FlashcardToFill { Ukrainian = x.FrontText, English = x.BackText }).ToList();
 
         // requires refactoring to be used with new abstraction contract
         var rulesString =

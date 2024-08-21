@@ -1,8 +1,8 @@
-using AdvancedSentenceExtractor.Models;
+using CoreLibrary.Interfaces;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AdvancedSentenceExtractor.Services;
+namespace CoreLibrary.Services;
 
 public class SentenceTokenizer(SentenceFactory sentenceBuilder)
 {
@@ -28,7 +28,7 @@ public class SentenceTokenizer(SentenceFactory sentenceBuilder)
 
             if (IsSentenceEndingCharacter(currentChar, bookContent, i))
             {
-                var currentSentenceCandidate = currentSentence.ToString().Trim().Trim(new char[] { '‘', '’' });
+                var currentSentenceCandidate = currentSentence.ToString().Trim().Trim('‘', '’');
                 if (currentSentenceCandidate.Length > 1 &&
                     !string.IsNullOrWhiteSpace(currentSentenceCandidate) &&
                     !UselessSentencePattern.IsMatch(currentSentenceCandidate)

@@ -10,7 +10,7 @@ public class WordRankingTests
     public void When_AskingForWordsInExactCasing_Expect_CorrectCount()
     {
         // Arrange
-        var words = new string[] {
+        var words = new[] {
             "One",
             "Two"
         };
@@ -25,7 +25,7 @@ public class WordRankingTests
     public void When_AskingForWordsNotInInput_Expect_AnswerIsZero()
     {
         // Arrange
-        var words = new string[] {
+        var words = new[] {
             "One",
         };
         WordRanking sut = new WordRanking(words);
@@ -42,7 +42,7 @@ public class WordRankingTests
     public void When_AskingForWordsInDifferentCasing_Expect_CorrectCount()
     {
         // Arrange
-        var words = new string[] {
+        var words = new[] {
             "Two",
             "TWO",
         };

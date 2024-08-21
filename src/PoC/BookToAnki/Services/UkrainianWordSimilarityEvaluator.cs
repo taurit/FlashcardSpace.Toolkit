@@ -164,15 +164,12 @@ public class UkrainianWordSimilarityEvaluator(EmbeddingsServiceWrapper embedding
             {
                 similarWords.Add(similarWord);
             }
-            else
-            {
-                // I see no value, Embedding are good enough, and this mostly adds unrelated words differing by 1-2 letters.
-                //bool heuristicSuggestsRelatedWordDespiteLowSimilarity = givenWords.All(gw => IsPossiblyTheSameWord(gw, similarWord.Word));
-                //if (heuristicSuggestsRelatedWordDespiteLowSimilarity)
-                //{
-                //    similarWords.Add(similarWord);
-                //}
-            }
+            // I see no value, Embedding are good enough, and this mostly adds unrelated words differing by 1-2 letters.
+            //bool heuristicSuggestsRelatedWordDespiteLowSimilarity = givenWords.All(gw => IsPossiblyTheSameWord(gw, similarWord.Word));
+            //if (heuristicSuggestsRelatedWordDespiteLowSimilarity)
+            //{
+            //    similarWords.Add(similarWord);
+            //}
         });
         s.Stop();
         Debug.WriteLine($"FindMostSimilarWords: {s.ElapsedMilliseconds}");

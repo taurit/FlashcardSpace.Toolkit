@@ -1,12 +1,12 @@
-using AdvancedSentenceExtractor.Models;
 using BookToAnki.Models;
+using CoreLibrary.Interfaces;
 
 namespace BookToAnki.Services;
 
 public static class SentenceMatcher
 {
     private record EqualWordPair(String WordA, String WordB);
-    private static readonly EqualWordPair[] EqualWordPairs = new EqualWordPair[] {
+    private static readonly EqualWordPair[] EqualWordPairs = {
             new EqualWordPair( "і", "й" ),
             new EqualWordPair( "з", "із" ),
             new EqualWordPair( "в", "у" ),

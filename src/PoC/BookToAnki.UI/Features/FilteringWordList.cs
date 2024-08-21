@@ -1,3 +1,5 @@
+
+
 using BookToAnki.Services;
 using BookToAnki.UI.ViewModels;
 using NickBuhro.Translit;
@@ -34,7 +36,7 @@ public partial class MainWindow
     private void UpdateViewFilter()
     {
         var visiblePartsOfSpeech =
-            MultiSelectListBox.SelectedItems.Cast<PartOfSpeech>().Select(x => x.Name).ToHashSet();
+            Enumerable.Cast<PartOfSpeech>(MultiSelectListBox.SelectedItems).Select(x => x.Name).ToHashSet();
         var view = CollectionViewSource.GetDefaultView(WordsDataGrid.ItemsSource);
 
         view.Filter = obj =>
