@@ -1,4 +1,4 @@
-﻿using CoreLibrary.Services.ChatGpt;
+﻿using CoreLibrary.Services.GenerativeAiClients;
 using GenerateFlashcards.Commands;
 using GenerateFlashcards.Models;
 using GenerateFlashcards.Services;
@@ -23,7 +23,9 @@ internal class Program
 
         app.Configure(config =>
         {
+#if DEBUG
             config.PropagateExceptions();
+#endif
             config.AddCommand<GenerateFlashcardsCommand>("generate")
                 .WithDescription("Generates language-learning flashcards from an input file.")
                 .WithExample("generate", "--inputLanguage", "Spanish", "--outputLanguage", "English", "--inputFileFormat", "FrequencyDictionary", "input.txt")
@@ -50,7 +52,7 @@ internal class Program
         // Bind the configuration values to the strongly typed class
         var secretsConfiguration = new SecretsConfiguration();
         configuration.Bind(secretsConfiguration);
-        secretsConfiguration.EnsureValid();
+        var openAiApiKeysPresent = secretsConfiguration.EnsureOpenAIKeysArePresent();
         services.AddSingleton(secretsConfiguration);
 
         // Add logging
@@ -82,12 +84,15 @@ internal class Program
 
         services.AddTransient<BuildingBlocksProvider>();
 
-        ChatGptClient chatGptClient = new ChatGptClient(
+        IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
+            ? new ChatGptClient(
                 secretsConfiguration.OPENAI_ORGANIZATION_ID!,
                 secretsConfiguration.OPENAI_DEVELOPER_KEY!,
                 Parameters.RootAppDataFolderPath
-            );
-        services.AddSingleton(chatGptClient);
+            )
+            : new MockGenerativeAiClient();
+
+        services.AddSingleton(generativeAiClient);
 
         return new ServiceCollectionRegistrar(services);
     }

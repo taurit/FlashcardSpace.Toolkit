@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Spectre.Console;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GenerateFlashcards.Models;
 
@@ -8,16 +9,22 @@ public class SecretsConfiguration
     public string? OPENAI_ORGANIZATION_ID { get; set; }
     public string? OPENAI_DEVELOPER_KEY { get; set; }
 
-    public void EnsureValid()
+    public bool EnsureOpenAIKeysArePresent()
     {
+        // write out values
+        var openAiKeysPresent = true;
         if (string.IsNullOrWhiteSpace(OPENAI_ORGANIZATION_ID))
         {
-            throw new InvalidOperationException($"The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Read how to set it: {Parameters.UrlToDocumentationAboutDefiningUserSecrets}");
+            AnsiConsole.MarkupLine($"[orange1]Warning:[/] The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.UrlToDocumentationAboutDefiningUserSecrets}\n");
+            openAiKeysPresent = false;
         }
 
         if (string.IsNullOrWhiteSpace(OPENAI_DEVELOPER_KEY))
         {
-            throw new InvalidOperationException($"The `OPENAI_DEVELOPER_KEY` secret is missing in configuration. Read how to set it: {Parameters.UrlToDocumentationAboutDefiningUserSecrets}");
+            AnsiConsole.MarkupLine($"[orange1]Warning:[/] The `OPENAI_DEVELOPER_KEY` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.UrlToDocumentationAboutDefiningUserSecrets}");
+            openAiKeysPresent = false;
         }
+
+        return openAiKeysPresent;
     }
 }

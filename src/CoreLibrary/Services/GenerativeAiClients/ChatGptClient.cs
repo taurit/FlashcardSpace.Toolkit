@@ -5,22 +5,11 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CoreLibrary.Services.ChatGpt;
+namespace CoreLibrary.Services.GenerativeAiClients;
 
-public record PromptResponseFile(string FilePath)
+public class ChatGptClient(string openAiOrganization, string openAiDeveloperKey, string persistentCacheRootFolder) : IGenerativeAiClient
 {
-    public async Task<string> GetContent() => await File.ReadAllTextAsync(FilePath);
-}
-
-public class ChatGptClient(string openAiOrganization, string openAiDeveloperKey, string persistentCacheRootFolder)
-{
-    /// <param name="modelId">OpenAI model id, e.g. `gpt-4o`</param>
-    /// <param name="modelClassId">
-    /// Arbitrary model class identifier, used as cache key.
-    /// For example, of we want to consider cache outputs generated with model like `gpt-4o-preview`
-    /// still valid after we upgrade to `gpt-4o`, we just need to use the same <paramref name="modelClassId"/> value.
-    /// </param>
-    public async Task<PromptResponseFile> FetchAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt, bool jsonMode)
+    public async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt, bool jsonMode)
     {
         var openAiClientOptions = new OpenAIClientOptions { OrganizationId = openAiOrganization };
         ChatClient client = new(model: modelId, new ApiKeyCredential(openAiDeveloperKey), openAiClientOptions);
@@ -34,7 +23,8 @@ public class ChatGptClient(string openAiOrganization, string openAiDeveloperKey,
         if (File.Exists(responseToPromptFileName))
         {
             Debug.WriteLine("Cached response from ChatGPT is used.");
-            return new PromptResponseFile(responseToPromptFileName);
+            var fileContent = await File.ReadAllTextAsync(responseToPromptFileName);
+            return fileContent;
         }
         Debug.WriteLine($"Cache miss, querying ChatGPT API (model: {modelId}, model class: {modelClassId})...");
 
@@ -56,6 +46,6 @@ public class ChatGptClient(string openAiOrganization, string openAiDeveloperKey,
 
         Debug.WriteLine($"Query finished, total tokens: input={completion.Usage.InputTokens}, output={completion.Usage.OutputTokens}");
 
-        return new PromptResponseFile(responseToPromptFileName);
+        return responseToPrompt;
     }
 }
