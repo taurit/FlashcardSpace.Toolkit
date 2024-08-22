@@ -1,25 +1,24 @@
-﻿using System.Reflection;
+﻿using CoreLibrary.Services.GenerativeAiClients;
+using System.Reflection;
 using System.Text.Json;
 
-namespace AnkiCardValidator.Utilities.JsonGenerativeFill;
+namespace CoreLibrary.Services.GenerativeFill;
 
 /// <summary>
 /// Helps process arrays of items instead of single item, to save on input tokens
 /// </summary>
-public static class GenerativeFill
+public class GenerativeFill(IGenerativeAiClient generativeAiClient)
 {
-    public static async Task<T> FillMissingProperties<T>(T inputElement, string systemChatMessage = "You are a helpful assistant")
-        where T : ObjectWithId
+    const string SystemChatMessage = "You are a helpful assistant";
+
+    public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement) where T : ObjectWithId
     {
         var inputElements = new List<T> { inputElement };
-        var response = await FillMissingProperties(inputElements, systemChatMessage);
+        var response = await FillMissingProperties(modelId, modelClassId, inputElements);
         return response.Single();
     }
 
-    public static async Task<List<T>> FillMissingProperties<T>(
-        IEnumerable<T> inputItems,
-        string systemChatMessage = "You are a helpful assistant"
-        ) where T : ObjectWithId
+    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, IEnumerable<T> inputItems) where T : ObjectWithId
     {
         var inputObjects = inputItems.ToList();
 
@@ -66,7 +65,7 @@ public static class GenerativeFill
 
 
         // execute query
-        var response = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(systemChatMessage, prompt, true);
+        var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, true);
 
         // match items in response array with items in input array
         // deserialize response

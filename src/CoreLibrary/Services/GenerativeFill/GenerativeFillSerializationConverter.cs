@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace AnkiCardValidator.Utilities.JsonGenerativeFill;
+namespace CoreLibrary.Services.GenerativeFill;
 
-public enum SerializationSetting
+internal enum SerializationSetting
 {
     IdAndInputs,
     IdAndOutputsPlaceholders,
 }
 
-public class GenerativeFillSerializationConverter<T>(SerializationSetting serializationSetting) : JsonConverter<T>
+internal class GenerativeFillSerializationConverter<T>(SerializationSetting serializationSetting) : JsonConverter<T>
 {
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

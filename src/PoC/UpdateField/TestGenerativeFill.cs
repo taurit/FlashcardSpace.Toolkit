@@ -1,4 +1,7 @@
-﻿using AnkiCardValidator.Utilities.JsonGenerativeFill;
+﻿using CoreLibrary.Services.GenerativeAiClients;
+using CoreLibrary.Services.GenerativeFill;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace UpdateField;
 
@@ -20,13 +23,17 @@ internal class TestGenerativeFill
 {
     public async Task DoTestGenerativeFill()
     {
-        //var partiallyCompleteCountry = new Country("Poland");
-        //Country country = await GenerativeFill.FillMissingProperties(partiallyCompleteCountry);
-        //return;
+        var config = new ConfigurationBuilder().AddUserSecrets<TestGenerativeFill>().Build();
+        var openAiDeveloperKey = config["OPENAI_DEVELOPER_KEY"];
+        var openAiOrganizationId = config["OPENAI_ORGANIZATION_ID"];
 
-        var countries = await GenerativeFill.FillMissingProperties(new Country[] { new("USA"), new("Poland"), new("France") });
+        var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
+        var chatGptClient = new ChatGptClient(logger, openAiOrganizationId!, openAiDeveloperKey!, "s:\\Caches\\temp\\");
+        var generativeFill = new GenerativeFill(chatGptClient);
 
-
+        var countries = await generativeFill.FillMissingProperties("gpt-4o-mini", "gpt-mini",
+                new Country[] { new("USA"), new("Poland"), new("France") }
+            );
 
 
         foreach (var job in countries)

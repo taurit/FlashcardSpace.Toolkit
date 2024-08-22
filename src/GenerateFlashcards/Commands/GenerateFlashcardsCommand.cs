@@ -15,6 +15,9 @@ internal sealed class GenerateFlashcardsCommand(
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
     {
+
+        return 0;
+
         var sentences = await ExtractSentences(settings);
         var terms = await ExtractTerms(settings, sentences);
         var termsWithTranslations = await TranslateTerms(settings, terms);
