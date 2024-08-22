@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CoreLibrary.Services.GenerativeFill;
+namespace CoreLibrary.Services.ObjectGenerativeFill;
 
 internal enum SerializationSetting
 {

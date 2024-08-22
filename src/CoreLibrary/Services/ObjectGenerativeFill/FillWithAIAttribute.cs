@@ -1,4 +1,4 @@
-﻿namespace CoreLibrary.Services.GenerativeFill;
+﻿namespace CoreLibrary.Services.ObjectGenerativeFill;
 
 /// <summary>
 /// Attribute used to decorate fields that should be filled by AI.

@@ -1,4 +1,4 @@
-﻿namespace CoreLibrary.Services.GenerativeFill;
+﻿namespace CoreLibrary.Services.ObjectGenerativeFill;
 
 internal class ArrayOfItemsWithIds<T>(List<T> items) where T : ObjectWithId
 {

@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-namespace CoreLibrary.Services.GenerativeFill;
+namespace CoreLibrary.Services.ObjectGenerativeFill;
 
 /// <summary>
 /// Helps process arrays of items instead of single item, to save on input tokens

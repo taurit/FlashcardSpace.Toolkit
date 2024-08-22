@@ -1,4 +1,4 @@
-﻿namespace CoreLibrary.Services.GenerativeFill;
+﻿namespace CoreLibrary.Services.ObjectGenerativeFill;
 
 /// <summary>
 /// Represents a single item to process. User should inherit from this class.
