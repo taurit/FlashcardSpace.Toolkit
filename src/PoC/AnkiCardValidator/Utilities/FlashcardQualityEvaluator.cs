@@ -40,65 +40,41 @@ internal static class FlashcardQualityEvaluator
 
     internal static async Task<FlashcardQualityEvaluationBatchResult> EvaluateFlashcardsQuality<T>(List<T> noteBatch, FlashcardDirection direction)
     {
-        const int allowedNumAttempts = 1;
-        int attempt = 0;
-        while (true)
+        var promptTemplatePath = direction switch
         {
-            attempt++;
+            FlashcardDirection.FrontTextInPolish => Settings.EvaluateQualityPolishToSpanishPromptPath,
+            FlashcardDirection.FrontTextInSpanish => Settings.EvaluateQualitySpanishToPolishPromptPath,
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, "Unknown flashcard direction")
+        };
 
-            try
-            {
-                var promptTemplatePath = direction switch
-                {
-                    FlashcardDirection.FrontTextInPolish => Settings.EvaluateQualityPolishToSpanishPromptPath,
-                    FlashcardDirection.FrontTextInSpanish => Settings.EvaluateQualitySpanishToPolishPromptPath,
-                    _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, "Unknown flashcard direction")
-                };
+        // generate prompt
+        var templateContent = await File.ReadAllTextAsync(promptTemplatePath);
+        var template = Template.Parse(templateContent, promptTemplatePath);
+        var jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+        var noteBatchSerialized = JsonSerializer.Serialize(noteBatch, jsonSerializerOptions);
+        var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
+        var prompt = await template.RenderAsync(templateInput, x => x.Name);
 
-                // generate prompt
-                var templateContent = await File.ReadAllTextAsync(promptTemplatePath);
-                var template = Template.Parse(templateContent, promptTemplatePath);
-                var jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-                var noteBatchSerialized = JsonSerializer.Serialize(noteBatch, jsonSerializerOptions);
-                var templateInput = new FlashcardQualityEvaluationInput(noteBatchSerialized);
-                var prompt = await template.RenderAsync(templateInput, x => x.Name);
+        // get response
+        var chatGptResponse = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, true);
 
-                // get response
+        // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+            PropertyNameCaseInsensitive = true
+        };
+        var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluationBatch>(chatGptResponse, options);
 
-                var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, attempt, true);
-                var chatGptResponse = await File.ReadAllTextAsync(responseFileName);
-
-                // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
-                var options = new JsonSerializerOptions
-                {
-                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-                    PropertyNameCaseInsensitive = true
-                };
-                var evaluation = JsonSerializer.Deserialize<FlashcardQualityEvaluationBatch>(chatGptResponse, options);
-
-                if (evaluation is null)
-                {
-                    throw new SerializationException($"Failed to deserialize ChatGPT response. Response is cached in {responseFileName}.");
-                }
-                if (evaluation.Evaluations.Count != noteBatch.Count)
-                {
-                    // happens from time to time
-                    var capturedPromptFileName = $"{responseFileName}.prompt.md";
-                    await File.WriteAllTextAsync(capturedPromptFileName, prompt);
-
-                    throw new ArgumentOutOfRangeException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Prompt captured in {capturedPromptFileName}; response is cached in {responseFileName}.");
-                }
-
-                return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine($"ChatGPT API call failed (attempt {attempt} / {allowedNumAttempts})");
-                if (attempt >= allowedNumAttempts)
-                {
-                    throw;
-                }
-            }
+        if (evaluation is null)
+        {
+            throw new SerializationException($"Failed to deserialize ChatGPT response. Response was: {chatGptResponse}.");
         }
+        if (evaluation.Evaluations.Count != noteBatch.Count)
+        {
+            throw new ArgumentOutOfRangeException($"Number of items in output array ({evaluation.Evaluations.Count}) does not match number of items in input ({noteBatch.Count}), cannot continue. Response was {chatGptResponse}.");
+        }
+
+        return new FlashcardQualityEvaluationBatchResult(evaluation.Evaluations, chatGptResponse);
     }
 }

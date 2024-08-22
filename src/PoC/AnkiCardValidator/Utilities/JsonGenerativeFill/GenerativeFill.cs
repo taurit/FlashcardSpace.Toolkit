@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
 
 namespace AnkiCardValidator.Utilities.JsonGenerativeFill;
@@ -67,8 +66,7 @@ public static class GenerativeFill
 
 
         // execute query
-        var responseFileName = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(systemChatMessage, prompt, 1, true);
-        var response = await File.ReadAllTextAsync(responseFileName);
+        var response = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(systemChatMessage, prompt, true);
 
         // match items in response array with items in input array
         // deserialize response
