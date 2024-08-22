@@ -47,7 +47,7 @@ internal sealed class GenerateFlashcardsCommand(
         logger.LogInformation("Extracting terms from the sentences...");
 
         IExtractTerms termExtractor = buildingBlocksProvider.SelectBestTermExtractor(settings);
-        var extractedTerms = await termExtractor.ExtractTerms(extractedSentences);
+        var extractedTerms = await termExtractor.ExtractTerms(extractedSentences, settings.InputLanguage.ToString());
 
         logger.LogInformation("Extracted {ExtractedTermsCount} terms", extractedTerms.Count);
         return extractedTerms;

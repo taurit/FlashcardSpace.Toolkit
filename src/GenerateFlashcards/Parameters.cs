@@ -10,24 +10,36 @@
 internal static class Parameters
 {
     public const string UrlToDocumentationAboutDefiningUserSecrets = "https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md";
+    private const string AppName = "GenerateFlashcards";
+    private const string CacheSubfolderName = "ChatResponseCache";
 
-    public static string RootAppDataFolderPath
+    // Flagship models are listed at: https://platform.openai.com/docs/models
+
+    // For development, I use small and cheap models like `gpt-4o-mini` which are good enough to produce responses
+    // conforming to the schema and usually being correct.
+    // To generate real flashcard sets however, we want to switch to state-of-the-art models optimized for best intelligence.
+    public const string OpenAiModelId = "gpt-4o-mini";
+
+    /// Arbitrary identifier of model's class, used as a key when caching responses. For example, if we want cache outputs
+    /// generated with `gpt-4o-preview` to remain utilized after upgrade to `gpt-4o`, just use the same value here.
+    public const string OpenAiModelClassId = "gpt-mini";
+
+    private static Lazy<string> RootAppDataFolder => new(() =>
     {
-        get
-        {
-            const string appName = "GenerateFlashcards";
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string cacheFolder = Path.Combine(appDataFolder, appName);
+        var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var cacheFolder = Path.Combine(appDataFolder, AppName);
 
-            if (!_alreadyEnsuredAppDataFolderExists)
-            {
-                Directory.CreateDirectory(cacheFolder);
-                _alreadyEnsuredAppDataFolderExists = true;
-            }
+        Directory.CreateDirectory(cacheFolder);
 
-            return cacheFolder;
-        }
-    }
-    private static bool _alreadyEnsuredAppDataFolderExists = false;
+        return cacheFolder;
+    });
+
+    public static Lazy<string> ChatResponseCacheFolder => new(() =>
+    {
+        var cacheFolder = Path.Combine(RootAppDataFolder.Value, CacheSubfolderName);
+        Directory.CreateDirectory(cacheFolder);
+        return cacheFolder;
+    });
+
 
 }

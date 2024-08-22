@@ -2,5 +2,5 @@
 
 public interface IExtractTerms
 {
-    Task<List<Note>> ExtractTerms(List<string> extractedSentences);
+    Task<List<Note>> ExtractTerms(List<string> extractedSentences, string contentLanguageName);
 }

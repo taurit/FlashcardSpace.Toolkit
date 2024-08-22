@@ -10,7 +10,7 @@ namespace GenerateFlashcards.Services.TermExtractors;
 /// </summary>
 public class ReferenceTermExtractor : IExtractTerms
 {
-    public async Task<List<Note>> ExtractTerms(List<string> sentences)
+    public async Task<List<Note>> ExtractTerms(List<string> sentences, string contentInputLanguage)
     {
         var notes = new List<Note>();
 

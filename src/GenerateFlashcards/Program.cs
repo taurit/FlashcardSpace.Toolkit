@@ -42,19 +42,6 @@ internal class Program
     {
         var services = new ServiceCollection();
 
-        // Add configuration
-        var configuration = new ConfigurationBuilder()
-            .AddUserSecrets<Program>()
-            .AddJsonFile("secrets.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
-
-        // Bind the configuration values to the strongly typed class
-        var secretsConfiguration = new SecretsConfiguration();
-        configuration.Bind(secretsConfiguration);
-        var openAiApiKeysPresent = secretsConfiguration.EnsureOpenAIKeysArePresent();
-        services.AddSingleton(secretsConfiguration);
-
         // Add logging
         services.AddLogging(loggingBuilder =>
             loggingBuilder
@@ -72,6 +59,25 @@ internal class Program
                 .SetMinimumLevel(LogLevel.Debug)
         );
 
+        // Get instance of ILogger which we need already at this point
+        var serviceProvider = services.BuildServiceProvider();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+        ILogger<Program> logger = loggerFactory.CreateLogger<Program>();
+
+        // Read secrets
+        var configuration = new ConfigurationBuilder()
+            .AddUserSecrets<Program>()
+            .AddJsonFile("secrets.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        // Bind the configuration values to the strongly typed class
+        var secretsConfiguration = new SecretsConfiguration();
+        configuration.Bind(secretsConfiguration);
+        var openAiApiKeysPresent = secretsConfiguration.EnsureOpenAIKeysArePresent(logger);
+        services.AddSingleton(secretsConfiguration);
+
+
         // Add other services
         services.AddTransient<ReferenceSentenceExtractor>();
         services.AddTransient<ReferenceTermExtractor>();
@@ -86,9 +92,10 @@ internal class Program
 
         IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
             ? new ChatGptClient(
+                logger,
                 secretsConfiguration.OPENAI_ORGANIZATION_ID!,
                 secretsConfiguration.OPENAI_DEVELOPER_KEY!,
-                Parameters.RootAppDataFolderPath
+                Parameters.ChatResponseCacheFolder.Value
             )
             : new MockGenerativeAiClient();
 

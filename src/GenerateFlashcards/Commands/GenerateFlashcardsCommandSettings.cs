@@ -51,7 +51,9 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
         if (!File.Exists(InputFilePath))
             return ValidationResult.Error($"The input file `{InputFilePath}` cannot be found.");
 
-        // ensure the input file format is set
+        if (InputLanguage == SupportedInputLanguage.Autodetect)
+            return ValidationResult.Error("The `--inputLanguage` must be set explicitly (the auto-detection is not implemented yet).");
+
         if (InputFileFormat == InputFileFormat.Autodetect)
             return ValidationResult.Error("The `--inputFileFormat` must be set explicitly (the auto-detection is not implemented yet).");
 
