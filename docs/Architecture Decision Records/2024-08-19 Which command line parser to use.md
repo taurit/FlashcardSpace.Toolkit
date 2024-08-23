@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-In another ADR document, [How users should input the configuration parameters.md](./2024-08-19 How users should input the configuration parameters.md), I decided to design the toolkit using the CLI model.
+In another ADR document, [How users should input the configuration parameters.md](<./2024-08-19 How users should input the configuration parameters.md>), I decided to design the toolkit using the CLI model.
 
 There's no point in re-inventing the wheel and implementing a code to parse command line arguments by myself, so let's just choose the best library for the job I can find.  
 
