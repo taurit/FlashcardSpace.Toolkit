@@ -26,6 +26,7 @@ public class GenerativeFillSchemaProvider
         generator.DefaultRequired = Required.Always; // required by OpenAI
         generator.SchemaReferenceHandling = SchemaReferenceHandling.None;
         generator.SchemaIdGenerationHandling = SchemaIdGenerationHandling.TypeName;
+        generator.GenerationProviders.Add(new StringEnumGenerationProvider());
         generator.GenerationProviders.Add(new IncludeRulesInSchemaDescription());
 
         var typeOfArrayOfItems = typeof(ArrayOfItemsWithIds<TSingleItem>);

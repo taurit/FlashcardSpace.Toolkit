@@ -1,6 +1,7 @@
 ﻿using CoreLibrary.Services.GenerativeAiClients;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
 
@@ -30,57 +31,75 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
 
         // assign consecutive IDs to input elements
         for (var i = 0; i < inputObjects.Count; i++)
-        {
             inputObjects[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
-        }
 
         // build prompt
-
-        // serialize input to process
-        var inputSerializationOptions = new JsonSerializerOptions();
-        inputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndInputs));
-        // wrapping array with an object because OpenAI API doesn't like JSON arrays as root element
-        var inputArrayAsObject = new ArrayOfItemsWithIds<T>(inputObjects);
-        var inputSerialized = JsonSerializer.Serialize(inputArrayAsObject, inputSerializationOptions);
-
-        // serialize output example
-        var outputExample = new List<T> { inputObjects[0] };
-        var outputSerializationOptions = new JsonSerializerOptions();
-        outputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndOutputsPlaceholders));
-        var outputExampleAsObject = new ArrayOfItemsWithIds<T>(outputExample);
-        var outputFormatExample = JsonSerializer.Serialize(outputExampleAsObject, outputSerializationOptions);
-
+        var inputSerialized = SerializeInput(inputObjects);
         var prompt = $"Input contains array of items to process (in the `Items` property):\n" +
                      $"\n" +
                      $"```json\n" +
                      $"{inputSerialized}\n" +
                      $"```\n" +
                      $"\n" +
-                     $"The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id). Example of output format with one item:" +
-                     $"\n" +
-                     $"```json\n" +
-                     $"{outputFormatExample}\n" +
-                     $"```";
-
-        // execute query
+                     $"The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id)."
+                     //+ GenerateOutputExamplePromptPart(inputObjects)
+                     ;
         var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
+
         var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
-
-        // match items in response array with items in input array
-        // deserialize response
-        var resultObject = JsonSerializer.Deserialize<ArrayOfItemsWithIds<T>>(response);
-        var resultItems = resultObject.Items;
-
-        if (resultItems.Count != inputObjects.Count)
-        {
-            throw new InvalidOperationException("Number of items in response doesn't match number of items in input.");
-        }
+        var resultItems = DeserializeResponse<T>(response, inputObjects.Count);
 
         // for each output element, rewrite values of properties without the `Fill` attribute from input elements. Match items by Id.
         RewriteInputPropertiesIntoOutput(inputObjects, resultItems);
 
         // return output
         return resultItems;
+    }
+
+    private static string SerializeInput<T>(List<T> inputObjects) where T : ObjectWithId, new()
+    {
+        var inputSerializationOptions = new JsonSerializerOptions();
+        inputSerializationOptions.Converters.Add(new JsonStringEnumConverter());
+        inputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndInputs));
+
+        // wrapping array with an object because OpenAI API doesn't like JSON arrays as root element
+        var inputArrayAsObject = new ArrayOfItemsWithIds<T>(inputObjects);
+        var inputSerialized = JsonSerializer.Serialize(inputArrayAsObject, inputSerializationOptions);
+        return inputSerialized;
+    }
+
+    private static List<T> DeserializeResponse<T>(string response, int numInputElements) where T : ObjectWithId, new()
+    {
+        var deserializationOptions = new JsonSerializerOptions();
+        deserializationOptions.Converters.Add(new JsonStringEnumConverter());
+        var resultObject = JsonSerializer.Deserialize<ArrayOfItemsWithIds<T>>(response, deserializationOptions);
+        var resultItems = resultObject.Items;
+
+        if (resultItems.Count != numInputElements)
+        {
+            throw new InvalidOperationException("Number of items in response doesn't match number of items in input.");
+        }
+
+        return resultItems;
+    }
+
+    // seems not needed with Structured Outputs, but I'll test a bit more before removing this code completely
+    private static string GenerateOutputExamplePromptPart<T>(List<T> inputObjects) where T : ObjectWithId, new()
+    {
+        // serialize output example
+        var outputExample = new List<T> { inputObjects[0] };
+        var outputSerializationOptions = new JsonSerializerOptions();
+        outputSerializationOptions.Converters.Add(new JsonStringEnumConverter());
+        outputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndOutputsPlaceholders));
+        var outputExampleAsObject = new ArrayOfItemsWithIds<T>(outputExample);
+        var outputFormatExample = JsonSerializer.Serialize(outputExampleAsObject, outputSerializationOptions);
+
+        var outputExampleString = $" Example of output format with one item:" +
+                                  $"\n" +
+                                  $"```json\n" +
+                                  $"{outputFormatExample}\n" +
+                                  $"```";
+        return outputExampleString;
     }
 
     private static void RewriteInputPropertiesIntoOutput<T>(List<T> inputElements, List<T> outputElements) where T : ObjectWithId

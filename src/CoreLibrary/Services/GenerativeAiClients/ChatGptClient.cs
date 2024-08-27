@@ -20,7 +20,9 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
         ChatClient client = new(model: modelId, new ApiKeyCredential(openAiDeveloperKey), openAiClientOptions);
 
         var stableHash = (prompt + outputSchema).GetHashCodeStable();
-        var responseCacheFileName = $"{modelClassId}_{stableHash}.txt";
+        // proper extensions helps debugging (e.g. VS Code highlights JSON files if they have proper extension only)
+        var cacheFileExtension = mode == GenerativeAiClientResponseMode.PlainText ? "txt" : "json";
+        var responseCacheFileName = $"{modelClassId}_{stableHash}.{cacheFileExtension}";
         var responseToPromptFileName = Path.Combine(persistentCacheRootFolder, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
