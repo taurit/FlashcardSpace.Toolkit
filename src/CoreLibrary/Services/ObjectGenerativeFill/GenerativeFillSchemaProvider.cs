@@ -32,7 +32,12 @@ public class GenerativeFillSchemaProvider
 
         JSchema schema = generator.Generate(typeOfArrayOfItems);
         schema.AllowAdditionalProperties = false; // required by OpenAI
+        var schemaAsString = schema.ToString();
 
-        return schema.ToString();
+        // remove indentation
+        var jsonObject = JsonConvert.DeserializeObject(schemaAsString);
+        string nonIndentedJson = JsonConvert.SerializeObject(jsonObject, Formatting.None);
+
+        return nonIndentedJson;
     }
 }
