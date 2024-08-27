@@ -49,5 +49,6 @@ class Country(string countryName) : ObjectWithId
     [FillWithAIRule("Fill the value with name of the current capital of the country")]
     [FillWithAIRule("If capital goes by several names, use the name most used in English-speaking countries")]
     [FillWithAIRule("Use CAPITAL LETTERS for this value")]
+    [FillWithAIRule("Use CAPITAL LETTERS for this value")]
     public string? CurrentCapital { get; set; } = null;
 }
