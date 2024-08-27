@@ -1,7 +1,7 @@
 using FluentAssertions;
 using GenerateFlashcards.Services.SentenceExtractors;
 
-namespace GenerateFlashcards.Tests.BuildingBlocks;
+namespace GenerateFlashcards.Tests.Services.SentenceExtractors;
 
 [TestClass]
 public class ReferenceSentenceExtractorTests

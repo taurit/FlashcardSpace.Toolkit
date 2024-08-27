@@ -46,4 +46,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="GenerateFlashcards.Tests" />
+  </ItemGroup>
+  
 </Project>
