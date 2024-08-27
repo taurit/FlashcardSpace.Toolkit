@@ -5,13 +5,13 @@ namespace AnkiCardValidator.Utilities;
 
 public static class ChatGptHelper
 {
-    public static async Task<string> GetAnswerToPromptUsingChatGptApi(string systemChatMessage, string prompt, bool jsonMode)
+    public static async Task<string> GetAnswerToPromptUsingChatGptApi(string systemChatMessage, string prompt, GenerativeAiClientResponseMode mode)
     {
         // adapt to use the refined service from CoreLibrary 
         var appSettings = new Settings();
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
         var chatGptClient = new ChatGptClient(logger, appSettings.OpenAiOrganizationId, appSettings.OpenAiDeveloperKey, Settings.GptResponseCacheDirectory);
 
-        return await chatGptClient.GetAnswerToPrompt(Settings.OpenAiModelId, Settings.OpenAiModelGenerationId, systemChatMessage, prompt, jsonMode);
+        return await chatGptClient.GetAnswerToPrompt(Settings.OpenAiModelId, Settings.OpenAiModelGenerationId, systemChatMessage, prompt, mode);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AnkiCardValidator.Models;
+using CoreLibrary.Services.GenerativeAiClients;
 using Scriban;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -56,7 +57,7 @@ internal static class FlashcardQualityEvaluator
         var prompt = await template.RenderAsync(templateInput, x => x.Name);
 
         // get response
-        var chatGptResponse = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, true);
+        var chatGptResponse = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, GenerativeAiClientResponseMode.JsonMode);
 
         // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
         var options = new JsonSerializerOptions

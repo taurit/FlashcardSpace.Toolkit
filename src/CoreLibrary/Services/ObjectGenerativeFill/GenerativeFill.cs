@@ -11,14 +11,20 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
 {
     const string SystemChatMessage = "You are a helpful assistant";
 
-    public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement) where T : ObjectWithId
+    /// <summary>
+    ///  Excluded from DI so library client doesn't have to be aware of that internal class.
+    /// </summary>
+    private GenerativeFillSchemaProvider _schemaProvider = new GenerativeFillSchemaProvider();
+
+
+    public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement) where T : ObjectWithId, new()
     {
         var inputElements = new List<T> { inputElement };
         var response = await FillMissingProperties(modelId, modelClassId, inputElements);
         return response.Single();
     }
 
-    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, IEnumerable<T> inputItems) where T : ObjectWithId
+    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, IEnumerable<T> inputItems) where T : ObjectWithId, new()
     {
         var inputObjects = inputItems.ToList();
 
@@ -44,28 +50,21 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
         var outputExampleAsObject = new ArrayOfItemsWithIds<T>(outputExample);
         var outputFormatExample = JsonSerializer.Serialize(outputExampleAsObject, outputSerializationOptions);
 
-        var hints = GenerateHintsPart(typeof(T));
-
         var prompt = $"Input contains array of items to process (in the `Items` property):\n" +
                      $"\n" +
                      $"```json\n" +
                      $"{inputSerialized}\n" +
                      $"```\n" +
                      $"\n" +
-                     $"The output should be in JSON and contain array of output items with following schema:\n" +
+                     $"The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id). Example of output format with one item:" +
                      $"\n" +
                      $"```json\n" +
                      $"{outputFormatExample}\n" +
-                     $"```\n" +
-                     $"\n" +
-                     $"For each input item you should generate one output item, using the `id` property as a key linking input and output.\n" +
-                     $"Your job is to replace the null values with content.\n" +
-                     $"\n" +
-                     $"{hints}";
-
+                     $"```";
 
         // execute query
-        var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, true);
+        var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
+        var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
 
         // match items in response array with items in input array
         // deserialize response
@@ -82,36 +81,6 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
 
         // return output
         return resultItems;
-    }
-
-    private static string GenerateHintsPart(Type type)
-    {
-        // scan all properties of the type given as argument and collect all instances of [FillWithAIRuleAttribute] in a list
-        var properties = type.GetProperties();
-        var rulesSpecifiedInAttributes = new List<string>();
-
-        foreach (var property in properties)
-        {
-            var rulesForProperty = property.GetCustomAttributes<FillWithAIRuleAttribute>();
-            foreach (var rule in rulesForProperty)
-            {
-                var ruleForPrompt = $"For `{property.Name}` property: {rule.RuleText}";
-                rulesSpecifiedInAttributes.Add(ruleForPrompt);
-            }
-
-        }
-
-        string rulesString = "Try deduce the meaning of properties to fill without any hints.";
-
-        if (rulesSpecifiedInAttributes.Any())
-        {
-            var rulesPrecededByBulletPoint = rulesSpecifiedInAttributes.Select(rule => $"- {rule}");
-            var rulesAsSingleString = String.Join("\n", rulesPrecededByBulletPoint);
-            rulesString = $"Use the following rules when filling values of properties:\n" +
-                          $"{rulesAsSingleString}";
-        }
-        return rulesString;
-
     }
 
     private static void RewriteInputPropertiesIntoOutput<T>(List<T> inputElements, List<T> outputElements) where T : ObjectWithId

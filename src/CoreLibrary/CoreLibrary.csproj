@@ -8,7 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="OpenAI" Version="2.0.0-beta.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="CoreLibrary.Tests" />
+  </ItemGroup>
+  
 </Project>

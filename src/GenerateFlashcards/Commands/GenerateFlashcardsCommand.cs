@@ -28,7 +28,7 @@ internal sealed class GenerateFlashcardsCommand(
             "gpt-4o-mini",
             "You are a helpful assistant",
             "What is the capital of Ostrołęka?",
-            false);
+            GenerativeAiClientResponseMode.PlainText);
         logger.LogInformation($"ChatGPT response: {response}");
 
         return 0;

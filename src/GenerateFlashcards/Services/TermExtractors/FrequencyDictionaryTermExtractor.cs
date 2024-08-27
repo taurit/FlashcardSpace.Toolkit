@@ -19,7 +19,7 @@ public class FrequencyDictionaryTermExtractor(IGenerativeAiClient generativeAiCl
                 "You are a helpful assistant. If the prompt is clear, provide succinct answer without any unnecessary explanations. " +
                 "If the prompt is unclear, respond asking for clarification.",
                 $"Generate example of simple sentence at A1 language learning level that uses {contentInputLanguage} term: '{word}'. Sentence should have 5 words or less if possible.",
-                false);
+                GenerativeAiClientResponseMode.PlainText);
             var sentenceExample = answer;
             var note = new Note(word, sentenceExample, PartOfSpeech.Unknown, []);
             result.Add(note);

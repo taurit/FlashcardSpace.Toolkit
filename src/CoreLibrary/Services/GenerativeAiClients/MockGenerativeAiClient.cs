@@ -9,7 +9,8 @@
 /// </summary>
 public class MockGenerativeAiClient : IGenerativeAiClient
 {
-    public Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt, bool jsonMode)
+    public Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt, GenerativeAiClientResponseMode mode,
+        string? outputSchema = null)
     {
         return Task.FromResult("MOCK RESPONSE - API KEY NOT FOUND IN CONFIGURATION");
     }
