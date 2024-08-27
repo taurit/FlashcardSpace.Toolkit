@@ -14,7 +14,7 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
     /// <summary>
     ///  Excluded from DI so library client doesn't have to be aware of that internal class.
     /// </summary>
-    private GenerativeFillSchemaProvider _schemaProvider = new GenerativeFillSchemaProvider();
+    private readonly GenerativeFillSchemaProvider _schemaProvider = new GenerativeFillSchemaProvider();
 
 
     public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement) where T : ObjectWithId, new()

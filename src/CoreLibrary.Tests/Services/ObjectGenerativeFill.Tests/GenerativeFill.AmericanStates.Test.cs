@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Services.ObjectGenerativeFill;
 using FluentAssertions;
+using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 
 namespace CoreLibrary.Tests.Services.ObjectGenerativeFill.Tests;
@@ -8,7 +9,7 @@ namespace CoreLibrary.Tests.Services.ObjectGenerativeFill.Tests;
 /// These tests use the real OpenAI API, therefore are skipped from running in the pipeline to not generate costs.
 /// </summary>
 [TestClass, TestCategory("SkipInGitHubActions")]
-//[Ignore("Skipped to avoid unnecessary costs. Uncomment when modifying the service or changing the AI model.")]
+[Ignore("Skipped to avoid unnecessary costs. Uncomment when modifying the service or changing the AI model.")]
 public class GenerativeFillAmericanStatesTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();
@@ -76,7 +77,7 @@ public class GenerativeFillAmericanStatesTests
     [SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
     private class AmericanState(string state) : ObjectWithId
     {
-        public AmericanState() : this(null!) { /* necessary for deserialization */}
+        [JsonConstructor] public AmericanState() : this(null!) { }
 
         public string StateName { get; init; } = state;
 
