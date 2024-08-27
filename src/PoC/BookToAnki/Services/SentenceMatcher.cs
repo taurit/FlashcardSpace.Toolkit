@@ -6,12 +6,13 @@ namespace BookToAnki.Services;
 public static class SentenceMatcher
 {
     private record EqualWordPair(String WordA, String WordB);
-    private static readonly EqualWordPair[] EqualWordPairs = {
-            new EqualWordPair( "і", "й" ),
-            new EqualWordPair( "з", "із" ),
-            new EqualWordPair( "в", "у" ),
-            new EqualWordPair( "вже", "уже" ),
-        };
+    private static readonly EqualWordPair[] EqualWordPairs =
+    [
+        new( "і", "й" ),
+            new( "з", "із" ),
+            new( "в", "у" ),
+            new( "вже", "уже" )
+    ];
 
     private static readonly Dictionary<string, string> DirectionA;
     private static readonly Dictionary<string, string> DirectionB;
@@ -32,7 +33,7 @@ public static class SentenceMatcher
         int lastFoundMatchIndex = 0;
         int lastFoundMatchLengthWords = 0;
 
-        List<SentenceWithSound> result = new List<SentenceWithSound>();
+        List<SentenceWithSound> result = [];
 
         foreach (var sentence in sentences)
         {

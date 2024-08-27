@@ -20,7 +20,7 @@ public class AnkiDeck
 
     private readonly AnkiDeckModel _ankiDeckModel;
     private readonly string _temporaryDeckPath;
-    private readonly ImageProcessor _imageProcessor = new ImageProcessor();
+    private readonly ImageProcessor _imageProcessor = new();
 
     /// <summary>
     ///     Creates a AnkiDeck object

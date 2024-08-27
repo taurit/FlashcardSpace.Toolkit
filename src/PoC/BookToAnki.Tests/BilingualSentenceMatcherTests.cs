@@ -22,7 +22,7 @@ public class BilingualSentenceMatcherTests
         var language2 = new BilingualSentence("Siemka", "Hi");
 
         // Act
-        var match = sut.Match(new List<BilingualSentence> { language1 }, new List<BilingualSentence> { language2 });
+        var match = sut.Match([language1], [language2]);
 
         // Assert
         match.MatchedSentences.Should().BeEmpty();
@@ -39,7 +39,7 @@ public class BilingualSentenceMatcherTests
         var language2 = new BilingualSentence("Cześć", "Hi");
 
         // Act
-        var match = sut.Match(new List<BilingualSentence> { language1 }, new List<BilingualSentence> { language2 });
+        var match = sut.Match([language1], [language2]);
 
         // Assert
         match.MatchedSentences.Should().HaveCount(1);
@@ -58,7 +58,7 @@ public class BilingualSentenceMatcherTests
         var language2 = new BilingualSentence("Cześć", "Hello");
 
         // Act
-        var match = sut.Match(new List<BilingualSentence> { language1 }, new List<BilingualSentence> { language2 });
+        var match = sut.Match([language1], [language2]);
 
         // Assert
         match.MatchedSentences.Should().HaveCount(1);
@@ -81,8 +81,8 @@ public class BilingualSentenceMatcherTests
 
 
         // Act
-        var match = sut.Match(new List<BilingualSentence> { language1_sentence1, language1_sentence2 },
-            new List<BilingualSentence> { language2_sentence1, language2_sentence2 });
+        var match = sut.Match([language1_sentence1, language1_sentence2],
+            [language2_sentence1, language2_sentence2]);
 
         // Assert
         match.MatchedSentences.Should().HaveCount(1);

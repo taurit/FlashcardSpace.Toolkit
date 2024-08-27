@@ -7,13 +7,13 @@ public class PartOfSpeechDictionary(Dictionary<string, string> wordToPartOfSpeec
 
 public class PartOfSpeechDictionaryBuilder
 {
-    private static readonly char[] LabelTrimChars = { '#', ' ' };
+    private static readonly char[] LabelTrimChars = ['#', ' '];
 
     public PartOfSpeechDictionary BuildPartOfSpeechDictionary(string inputFileContent)
     {
         var wordToPartOfSpeech = new Dictionary<string, string>();
 
-        var lines = inputFileContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+        var lines = inputFileContent.Split(["\r\n", "\r", "\n"], StringSplitOptions.RemoveEmptyEntries)
             .Select(x => x.Trim())
             .Where(x => !String.IsNullOrEmpty(x))
             .Where(x => !x.StartsWith("```"))

@@ -12,7 +12,7 @@ internal struct ShortGuid
     /// A read-only instance of the ShortGuid class whose value
     /// is guaranteed to be all zeroes.
     /// </summary>
-    public static readonly ShortGuid Empty = new ShortGuid(Guid.Empty);
+    public static readonly ShortGuid Empty = new(Guid.Empty);
 
     #endregion
 

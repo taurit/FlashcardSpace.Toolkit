@@ -48,7 +48,7 @@ public class EndToEndMatchingAccuracyTestsUkrainian
                     if (book.BookNumber == 7 && testedChapter == 32) continue;
                     if (book.BookNumber == 5 && testedChapter == 3) continue;
 
-                    yield return new object[] { book.BookNumber, testedChapter };
+                    yield return [book.BookNumber, testedChapter];
                 }
             }
 

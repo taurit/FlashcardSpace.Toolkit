@@ -15,11 +15,11 @@ public partial class WordTokenizer : IWordTokenizer
     [GeneratedRegex(@"^['’．]*$")]
     private static partial Regex _irrelevantWordCandidatePattern();
 
-    private static readonly char[] TrimCharacters = { '\n', '\r', '.', '’', ' ', '\'' };
+    private static readonly char[] TrimCharacters = ['\n', '\r', '.', '’', ' ', '\''];
     public List<string> GetWords(string sentence)
     {
         if (string.IsNullOrEmpty(sentence))
-            return new List<string>();
+            return [];
 
         sentence = KnownAbbreviationsHandler.ReplaceDotWithFullWidthDotInAbbreviations(sentence);
 

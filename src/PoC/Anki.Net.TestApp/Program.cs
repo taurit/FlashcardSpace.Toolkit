@@ -9,9 +9,9 @@ internal class Program
     static void Main(string[] args)
     {
         var fields = new FieldList {
-            new Field("English"),
-            new Field("Ukrainian"),
-            new Field("ExampleA"),
+            new("English"),
+            new("Ukrainian"),
+            new("ExampleA"),
         };
 
         var cardTemplates = new[] {

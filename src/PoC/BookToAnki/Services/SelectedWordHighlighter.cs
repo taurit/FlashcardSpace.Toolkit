@@ -61,7 +61,8 @@ public class SelectedWordHighlighter
         return Regex.Replace(html, "<.*?>", string.Empty);
     }
 
-    private static readonly char[] WordBoundaryCharacters = { ' ', '\t', '.', '!', '?', '…', ',', '"', '‑', '—', '-', ':', '(', ')', ';', '„', ',', '.', '|', '?', ' ', ']', '[' };
+    private static readonly char[] WordBoundaryCharacters = [' ', '\t', '.', '!', '?', '…', ',', '"', '‑', '—', '-', ':', '(', ')', ';', '„', ',', '.', '|', '?', ' ', ']', '['
+    ];
     private bool IsWordBoundary(char c, int numHtmlOpeningTags, char previousCharacter, char nextCharacter)
     {
         return numHtmlOpeningTags == 0 && (WordBoundaryCharacters.Contains(c)

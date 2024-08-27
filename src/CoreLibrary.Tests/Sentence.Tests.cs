@@ -12,7 +12,7 @@ public class SentenceTests
         // Arrange
 
         // Act
-        var sentence = new Sentence("aaa", new List<string> { "aaa" });
+        var sentence = new Sentence("aaa", ["aaa"]);
 
         // Assert
         sentence.PreviousSentence.Should().BeNull();
@@ -24,8 +24,8 @@ public class SentenceTests
         // Arrange
 
         // Act
-        var sentence1 = new Sentence("aaa", new List<string> { "aaa" });
-        var sentence2 = new Sentence("bbb", new List<string> { "bbb" }, sentence1);
+        var sentence1 = new Sentence("aaa", ["aaa"]);
+        var sentence2 = new Sentence("bbb", ["bbb"], sentence1);
 
         // Assert
         sentence1.PreviousSentence.Should().BeNull();
@@ -39,9 +39,9 @@ public class SentenceTests
         // Arrange
 
         // Act
-        var sentence1 = new Sentence("aaa", new List<string> { "aaa" });
-        var sentence2 = new Sentence("bbb", new List<string> { "bbb" }, sentence1);
-        var sentence3 = new Sentence("ccc", new List<string> { "ccc" }, sentence2);
+        var sentence1 = new Sentence("aaa", ["aaa"]);
+        var sentence2 = new Sentence("bbb", ["bbb"], sentence1);
+        var sentence3 = new Sentence("ccc", ["ccc"], sentence2);
 
         // Assert
         sentence1.PreviousSentence.Should().BeNull();

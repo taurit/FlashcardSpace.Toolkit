@@ -12,7 +12,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("", new List<string>());
+        var sentence = new Sentence("", []);
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence);
@@ -28,7 +28,7 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence = new Sentence("irrelevant", new List<string> { "Word1", "word2" });
+        var sentence = new Sentence("irrelevant", ["Word1", "word2"]);
 
         // Act
         var wordGroups = sut.GetWordGroups(sentence);
@@ -46,8 +46,8 @@ public class WordStatisticCounterTests
         // Arrange
         var sut = new WordStatisticCounter(null);
 
-        var sentence1 = new Sentence("irrelevant", new List<string> { "word1", "word2" });
-        var sentence2 = new Sentence("irrelevant", new List<string> { "word3", "word4" });
+        var sentence1 = new Sentence("irrelevant", ["word1", "word2"]);
+        var sentence2 = new Sentence("irrelevant", ["word3", "word4"]);
 
         // Act
         var wordGroups1 = sut.GetWordGroups(sentence1);

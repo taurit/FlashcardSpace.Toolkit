@@ -39,7 +39,7 @@ public class GenerativeFillDataTypesTests
 
 class HistoricalFigure() : ObjectWithId
 {
-    public string Name { get; init; }
+    public string? Name { get; init; }
 
     [FillWithAI]
     public decimal HeightCm { get; set; }

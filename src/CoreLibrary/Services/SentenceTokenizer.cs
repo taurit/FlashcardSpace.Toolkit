@@ -81,7 +81,7 @@ public class SentenceTokenizer(SentenceFactory sentenceBuilder)
         // cant remember what it was for, lets see when it fils
         //bookContent = Regex.Replace(bookContent, @" (\p{Lu})\.", " $1．"); // note a fullwidthdot
 
-        var lines = bookContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+        var lines = bookContent.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
 
         StringBuilder bookContentWithPunctuationMarksAdded = new StringBuilder();
         foreach (var line in lines)

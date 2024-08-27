@@ -11,16 +11,12 @@ public class WordDataTests
     public void When_TwoDifferentWordsAreMerged_Expect_Exception()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word2 is awesome", new List<string> { "Word2", "is", "awesome" });
+        var sentence1 = new Sentence("Word1 is awesome", ["Word1", "is", "awesome"]);
+        var sentence2 = new Sentence("Word2 is awesome", ["Word2", "is", "awesome"]);
 
-        var word1 = new WordData("Word1", 2, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>(), null, null, null, null, null)
-        });
+        var word1 = new WordData("Word1", 2, [new("Word1", sentence1, [], null, null, null, null, null)]);
 
-        var word2 = new WordData("Word2", 15, new List<WordUsageExample> {
-            new WordUsageExample("Word2", sentence2, new List<SentenceWithSound>(), null, null, null, null, null)
-        });
+        var word2 = new WordData("Word2", 15, [new("Word2", sentence2, [], null, null, null, null, null)]);
 
         // Act
         Action act = () =>
@@ -37,16 +33,12 @@ public class WordDataTests
     public void When_TwoIdenticalWordsAreMerged_Expect_ResultHasASumOfUsageExamples()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word1 is awesome two", new List<string> { "Word1", "is", "awesome", "two" });
+        var sentence1 = new Sentence("Word1 is awesome", ["Word1", "is", "awesome"]);
+        var sentence2 = new Sentence("Word1 is awesome two", ["Word1", "is", "awesome", "two"]);
 
-        var word1 = new WordData("Word1", 2, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>(), null, null, null, null, null)
-        });
+        var word1 = new WordData("Word1", 2, [new("Word1", sentence1, [], null, null, null, null, null)]);
 
-        var word2 = new WordData("Word1", 15, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>(), null, null, null, null, null)
-        });
+        var word2 = new WordData("Word1", 15, [new("Word1", sentence2, [], null, null, null, null, null)]);
 
         // Act
         var result = word1 + word2;
@@ -63,16 +55,12 @@ public class WordDataTests
     public void When_TwoWordsDifferingByCasingAreMerged_Expect_ResultHasASumOfUsageExamples()
     {
         // Arrange
-        var sentence1 = new Sentence("WORD1 is awesome", new List<string> { "WORD1", "is", "awesome" });
-        var sentence2 = new Sentence("word1 is awesome two", new List<string> { "word1", "is", "awesome", "two" });
+        var sentence1 = new Sentence("WORD1 is awesome", ["WORD1", "is", "awesome"]);
+        var sentence2 = new Sentence("word1 is awesome two", ["word1", "is", "awesome", "two"]);
 
-        var word1 = new WordData("WORD1", 2, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>(), null, null, null, null, null)
-        });
+        var word1 = new WordData("WORD1", 2, [new("Word1", sentence1, [], null, null, null, null, null)]);
 
-        var word2 = new WordData("word1", 15, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>(), null, null, null, null, null)
-        });
+        var word2 = new WordData("word1", 15, [new("Word1", sentence2, [], null, null, null, null, null)]);
 
         // Act
         var result = word1 + word2;
@@ -89,22 +77,16 @@ public class WordDataTests
     public void When_UsageExamplesFromTwoBooksAreMerged_Expect_AudioSamplesFromBothArePreserved()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
+        var sentence1 = new Sentence("Word1 is awesome", ["Word1", "is", "awesome"]);
+        var sentence2 = new Sentence("Word1 is awesome", ["Word1", "is", "awesome"]);
 
-        var word1 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>
-            {
-                new SentenceWithSound(sentence1, null, "BOOK1.mp3")
-            }, null, null, null, null, null)
-        });
+        var word1 = new WordData("Word1", 1, [
+            new("Word1", sentence1, [new(sentence1, null, "BOOK1.mp3")], null, null, null, null, null)
+        ]);
 
-        var word2 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>
-            {
-                new SentenceWithSound(sentence2, null, "BOOK2.mp3")
-            }, null, null, null, null, null)
-        });
+        var word2 = new WordData("Word1", 1, [
+            new("Word1", sentence2, [new(sentence2, null, "BOOK2.mp3")], null, null, null, null, null)
+        ]);
 
         // Act
         var result = word1 + word2;
@@ -124,22 +106,18 @@ public class WordDataTests
     public void When_OneBookHasTranslationForUsageExampleButTheOtherDoesnt_Expect_ExistingTranslationIsAlwaysChosen()
     {
         // Arrange
-        var sentence1 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
-        var sentence2 = new Sentence("Word1 is awesome", new List<string> { "Word1", "is", "awesome" });
+        var sentence1 = new Sentence("Word1 is awesome", ["Word1", "is", "awesome"]);
+        var sentence2 = new Sentence("Word1 is awesome", ["Word1", "is", "awesome"]);
 
-        var word1 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence1, new List<SentenceWithSound>
-            {
-                new SentenceWithSound(sentence1, null, "BOOK1.mp3")
-            }, null, null, "Existing Polish translation", null /* intentionally missing */, null)
-        });
+        var word1 = new WordData("Word1", 1, [
+            new("Word1", sentence1, [new(sentence1, null, "BOOK1.mp3")], null, null, "Existing Polish translation",
+                null /* intentionally missing */, null)
+        ]);
 
-        var word2 = new WordData("Word1", 1, new List<WordUsageExample> {
-            new WordUsageExample("Word1", sentence2, new List<SentenceWithSound>
-            {
-                new SentenceWithSound(sentence2, null, "BOOK2.mp3")
-            }, null, null, /* intentionally missing */ null, "Existing English translation", null)
-        });
+        var word2 = new WordData("Word1", 1, [
+            new("Word1", sentence2, [new(sentence2, null, "BOOK2.mp3")], null, null, /* intentionally missing */ null,
+                "Existing English translation", null)
+        ]);
 
         // Act
         var result = word1 + word2;
@@ -156,8 +134,8 @@ public class WordDataTests
     public void When_GetPreferredCasingGetsTwoLowercaseWords_Expect_OneOfThemInResponse()
     {
         // Arrange
-        var word1 = new WordData("cat", 10, new List<WordUsageExample>());
-        var word2 = new WordData("cat", 20, new List<WordUsageExample>());
+        var word1 = new WordData("cat", 10, []);
+        var word2 = new WordData("cat", 20, []);
 
         // Act
         var result = WordData.GetPreferredCasing(word1, word2);
@@ -170,11 +148,11 @@ public class WordDataTests
     public void When_GetPreferredCasingGetsTwoMixedCaseWords_Expect_MorePopularVariantInResponse()
     {
         // Arrange
-        var word1 = new WordData("Cat", 10, new List<WordUsageExample>());
-        var word2 = new WordData("CAT", 20, new List<WordUsageExample>());
+        var word1 = new WordData("Cat", 10, []);
+        var word2 = new WordData("CAT", 20, []);
 
-        var word3 = new WordData("Dog", 20, new List<WordUsageExample>());
-        var word4 = new WordData("DOG", 10, new List<WordUsageExample>());
+        var word3 = new WordData("Dog", 20, []);
+        var word4 = new WordData("DOG", 10, []);
 
         // Act
         var result1 = WordData.GetPreferredCasing(word1, word2);
@@ -189,8 +167,8 @@ public class WordDataTests
     public void When_GetPreferredCasingGetsOneLowercaseOneMixedWord_Expect_LowercaseAlwaysWins()
     {
         // Arrange
-        var word1 = new WordData("CAT", 20, new List<WordUsageExample>());
-        var word2 = new WordData("cat", 1, new List<WordUsageExample>());
+        var word1 = new WordData("CAT", 20, []);
+        var word2 = new WordData("cat", 1, []);
 
         // Act
         var result1 = WordData.GetPreferredCasing(word1, word2);

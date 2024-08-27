@@ -12,7 +12,7 @@ public class UkrainianWordSimilarityEvaluator(EmbeddingsServiceWrapper embedding
 {
     private readonly EmbeddingsServiceWrapper _embeddingsService = embeddingsService;
 
-    readonly ConcurrentDictionary<string, string> _wordToStemCache = new ConcurrentDictionary<string, string>();
+    readonly ConcurrentDictionary<string, string> _wordToStemCache = new();
 
     public async Task PrimeCache(List<string> words)
     {

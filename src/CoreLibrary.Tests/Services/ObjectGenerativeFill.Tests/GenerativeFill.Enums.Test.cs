@@ -23,7 +23,6 @@ public class GenerativeFillEnumsTests
 
         // Act
         var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
-        Console.WriteLine(output);
 
         // Assert
         output.Should().HaveCount(5);
@@ -46,7 +45,7 @@ internal enum TermType
 
 internal class TermInEnglish() : ObjectWithId
 {
-    public string Term { get; init; }
+    public string? Term { get; init; }
 
     [FillWithAI]
     public TermType TermType { get; set; }

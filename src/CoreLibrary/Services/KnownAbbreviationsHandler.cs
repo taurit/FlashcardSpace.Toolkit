@@ -13,7 +13,8 @@ public static class KnownAbbreviationsHandler
         public readonly string NewlineWithFullWidthDot = $"\n{withFullWidthDot}";
     }
 
-    private static readonly string[] KnownAbbreviationsWithDot = {
+    private static readonly string[] KnownAbbreviationsWithDot =
+    [
         "Mr.",
         "див.",
         "ст.",
@@ -68,8 +69,8 @@ public static class KnownAbbreviationsHandler
         "U.S.",
         "U.K.",
         "E.g.",
-        "I.e.",
-    };
+        "I.e."
+    ];
 
     private static readonly Replacement[] Replacements = KnownAbbreviationsWithDot
         .Select(x => new Replacement(x, x.Replace('.', '．')))

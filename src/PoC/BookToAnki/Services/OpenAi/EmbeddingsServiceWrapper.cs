@@ -29,7 +29,7 @@ public class EmbeddingsServiceWrapper
         }
 
         // Cache is primed, and it's unexpected if this breakpoint is hit on HP data - debug!
-        var embeddingFromService = await CreateEmbeddingInternal(new List<string> { inputText });
+        var embeddingFromService = await CreateEmbeddingInternal([inputText]);
         var vector = embeddingFromService.Single();
         _embeddingsCacheManager.Cache.Cache.Add(inputText, vector);
         return vector;
@@ -90,7 +90,7 @@ public class EmbeddingsServiceWrapper
         throw new InvalidOperationException("Generating embedding failed, but the service didn't provide any details");
     }
 
-    private ConcurrentDictionary<List<double>, Vector<double>> _cache = new ConcurrentDictionary<List<double>, Vector<double>>();
+    private ConcurrentDictionary<List<double>, Vector<double>> _cache = new();
 
     // hot path
     // ideas:

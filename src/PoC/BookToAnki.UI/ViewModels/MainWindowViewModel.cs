@@ -10,11 +10,11 @@ public class MainWindowViewModel
 {
     public bool IsBusy { get; set; } = true;
     public int NumberUniqueWordsInAllProcessedBooks { get; set; } = 0;
-    public ObservableCollection<WordDataViewModel> Words { get; set; } = new ObservableCollection<WordDataViewModel>();
+    public ObservableCollection<WordDataViewModel> Words { get; set; } = new();
 
-    public ObservableCollection<WordDataViewModel> SimilarWords { get; set; } = new ObservableCollection<WordDataViewModel>();
+    public ObservableCollection<WordDataViewModel> SimilarWords { get; set; } = new();
 
-    public ObservableCollection<WordUsageExampleViewModel> SelectedWordUsages { get; set; } = new ObservableCollection<WordUsageExampleViewModel>();
+    public ObservableCollection<WordUsageExampleViewModel> SelectedWordUsages { get; set; } = new();
 
     public WordDataViewModel? SelectedWord { get; set; }
     public WordDataViewModel? SelectedSimilarWord { get; set; }

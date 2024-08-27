@@ -6,7 +6,7 @@ public class WordsLinker
 {
     private readonly string? _persistenceFilePath;
     private readonly List<HashSet<string>> _groups;
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     private readonly Dictionary<string, HashSet<string>> quickGroupLookup;
 

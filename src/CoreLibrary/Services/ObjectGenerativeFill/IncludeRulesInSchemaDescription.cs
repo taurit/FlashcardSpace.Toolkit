@@ -17,7 +17,7 @@ class IncludeRulesInSchemaDescription : JSchemaGenerationProvider
         if (context.MemberProperty?.AttributeProvider is not null)
         {
             var ruleAttributes = context.MemberProperty.AttributeProvider.GetAttributes(typeof(FillWithAIRuleAttribute), false).ToList();
-            if (ruleAttributes.Any())
+            if (ruleAttributes.Count > 0)
             {
                 var description = String.Join(". ", ruleAttributes.Select(a => ((FillWithAIRuleAttribute)a).RuleText.TrimEnd('.'))) + ".";
                 schemaForType = context.Generator.Generate(context.ObjectType);

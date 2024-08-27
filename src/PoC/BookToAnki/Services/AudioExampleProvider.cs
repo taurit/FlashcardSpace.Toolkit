@@ -27,7 +27,7 @@ public class AudioExampleProvider
         return outputFileName;
     }
 
-    readonly char[] _allowedPunctuation = { '!' };
+    readonly char[] _allowedPunctuation = ['!'];
 
     private string CreateDeterministicValidFileName(string sentence, AudioShift? shift)
     {

@@ -11,7 +11,7 @@ internal class QualityIssuesIgnoreList
 {
     private readonly string _ignoreListFilePath;
 
-    readonly HashSet<string> _ignoredItems = new HashSet<string>();
+    readonly HashSet<string> _ignoredItems = [];
 
     public QualityIssuesIgnoreList(string ignoreListFilePath)
     {
@@ -19,7 +19,7 @@ internal class QualityIssuesIgnoreList
         if (File.Exists(ignoreListFilePath))
         {
             var lines = File.ReadAllLines(ignoreListFilePath);
-            _ignoredItems = new HashSet<string>(lines);
+            _ignoredItems = [.. lines];
         }
     }
 

@@ -61,7 +61,7 @@ public partial class MainWindow
             new("Illustration")
         };
         CardTemplate[] cardTemplates =
-        {
+        [
             new(0, "RecognizeWordInSentence",
                 "{{UkrainianSentence}}<br />\n" +
                 "{{UkrainianSentenceAudio}}",
@@ -73,7 +73,7 @@ public partial class MainWindow
                 "<br />\n" +
                 "<i>{{PolishSentence}}</i><br /><br />\n" +
                 "{{Illustration}}")
-        };
+        ];
         var deckModel =
             new AnkiDeckModel(deckName, fieldList, cardTemplates, prefixForMedia);
         var deck = new AnkiDeck(deckModel);

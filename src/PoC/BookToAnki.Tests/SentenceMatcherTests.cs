@@ -1,5 +1,4 @@
 using BookToAnki.Models;
-using BookToAnki.Models.GoogleCloudTranscripts;
 using BookToAnki.Services;
 using CoreLibrary.Interfaces;
 
@@ -53,13 +52,13 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Hello world", new List<string> { "Hello", "world" })
+            new("Hello world", ["Hello", "world"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Tralalala", 0, 1),
-            new GoogleCloudTranscriptWord("Alalalala", 2, 3)
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("Tralalala", 0, 1),
+            new("Alalalala", 2, 3)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -74,13 +73,13 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Hello world", new List<string> { "Hello", "world" })
+            new("Hello world", ["Hello", "world"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Hello", 0, 1),
-            new GoogleCloudTranscriptWord("world", 2, 3)
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("Hello", 0, 1),
+            new("world", 2, 3)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -99,13 +98,13 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Hello world", new List<string> { "Hello", "WoRlD" })
+            new("Hello world", ["Hello", "WoRlD"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("HELLo", 0, 1),
-            new GoogleCloudTranscriptWord("world", 0, 1),
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("HELLo", 0, 1),
+            new("world", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -124,13 +123,13 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Коли містер", new List<string> { "Коли", "містер" })
+            new("Коли містер", ["Коли", "містер"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Коли", 0, 1),
-            new GoogleCloudTranscriptWord("містер", 0, 1),
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("Коли", 0, 1),
+            new("містер", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -149,14 +148,14 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Hello worldwide xxx", new List<string> { "Hello", "worldwide", "xxx" })
+            new("Hello worldwide xxx", ["Hello", "worldwide", "xxx"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Hello", 0, 1),
-            new GoogleCloudTranscriptWord("worldwise", 0, 1),
-            new GoogleCloudTranscriptWord("xxx", 0, 1),
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("Hello", 0, 1),
+            new("worldwise", 0, 1),
+            new("xxx", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -175,13 +174,13 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Hello sgdfgsgsdgsdfgdf", new List<string> { "Hello", "sgdfgsgsdgsdfgdf" })
+            new("Hello sgdfgsgsdgsdfgdf", ["Hello", "sgdfgsgsdgsdfgdf"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Hello", 0, 1),
-            new GoogleCloudTranscriptWord("world", 0, 1),
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("Hello", 0, 1),
+            new("world", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -197,14 +196,14 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Hello sgdfgsgsdgsdfgdf hi", new List<string> { "Hello", "sgdfgsgsdgsdfgdf", "hi" })
+            new("Hello sgdfgsgsdgsdfgdf hi", ["Hello", "sgdfgsgsdgsdfgdf", "hi"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Hello", 0, 1),
-            new GoogleCloudTranscriptWord("world", 0, 1),
-            new GoogleCloudTranscriptWord("hi", 0, 1),
-        }, "irrelevant");
+        var transcript = new Transcript([
+            new("Hello", 0, 1),
+            new("world", 0, 1),
+            new("hi", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -220,20 +219,20 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Натомість місіс Дурслі була худорлява", new List<string> { "Натомість", "місіс", "Дурслі", "була", "худорлява" })
+            new("Натомість місіс Дурслі була худорлява", ["Натомість", "місіс", "Дурслі", "була", "худорлява"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("Натомість", 0, 1),
-            new GoogleCloudTranscriptWord("місіс", 0, 1),
+        var transcript = new Transcript([
+            new("Натомість", 0, 1),
+            new("місіс", 0, 1),
 
             // this happens in a transcript sometimes
-            new GoogleCloudTranscriptWord("Дур", 0, 1),
-            new GoogleCloudTranscriptWord("слі", 0, 1),
+            new("Дур", 0, 1),
+            new("слі", 0, 1),
 
-            new GoogleCloudTranscriptWord("була", 0, 1),
-            new GoogleCloudTranscriptWord("худорлява", 0, 1),
-        }, "irrelevant");
+            new("була", 0, 1),
+            new("худорлява", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -252,25 +251,25 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Навпаки, він радісно заусміхався й верескнув.", new List<string> { "Навпаки", "він", "радісно", "заусміхався", "й", "верескнув" })
+            new("Навпаки, він радісно заусміхався й верескнув.", ["Навпаки", "він", "радісно", "заусміхався", "й", "верескнув"])
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("asdasd", 0, 1),
-            new GoogleCloudTranscriptWord("asdasdasd", 0, 1),
+        var transcript = new Transcript([
+            new("asdasd", 0, 1),
+            new("asdasdasd", 0, 1),
 
-            new GoogleCloudTranscriptWord("навпаки", 0, 1),
-            new GoogleCloudTranscriptWord("він", 0, 1),
-            new GoogleCloudTranscriptWord("радісно", 0, 1),
+            new("навпаки", 0, 1),
+            new("він", 0, 1),
+            new("радісно", 0, 1),
 
             // happened
-            new GoogleCloudTranscriptWord("за", 0, 1),
-            new GoogleCloudTranscriptWord("усміхався", 0, 1),
+            new("за", 0, 1),
+            new("усміхався", 0, 1),
 
-            new GoogleCloudTranscriptWord("і", 0, 1),
-            new GoogleCloudTranscriptWord("верескнув", 0, 1),
-            new GoogleCloudTranscriptWord("asdasd", 0, 1),
-        }, "irrelevant");
+            new("і", 0, 1),
+            new("верескнув", 0, 1),
+            new("asdasd", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);
@@ -289,38 +288,37 @@ public class SentenceMatcherTests
         // Arrange
         var sentences = new List<Sentence>
         {
-            new Sentence("Той хлопчик був ще однією причиною не знатися з Поттерами",
-            new List<string>
-            {
-                "Той",
-                "хлопчик",
-                "був",
-                "ще",
-                "однією",
-                "причиною",
-                "не",
-                "знатися",
-                "з",
-                "Поттерами",
-                }
+            new("Той хлопчик був ще однією причиною не знатися з Поттерами",
+                [
+                    "Той",
+                    "хлопчик",
+                    "був",
+                    "ще",
+                    "однією",
+                    "причиною",
+                    "не",
+                    "знатися",
+                    "з",
+                    "Поттерами"
+                ]
             )
         };
 
-        var transcript = new Transcript(new List<GoogleCloudTranscriptWord> {
-            new GoogleCloudTranscriptWord("той", 0, 1),
-            new GoogleCloudTranscriptWord("хлопчик", 0, 1),
-            new GoogleCloudTranscriptWord("був", 0, 1),
-            new GoogleCloudTranscriptWord("ще", 0, 1),
-            new GoogleCloudTranscriptWord("однією", 0, 1),
-            new GoogleCloudTranscriptWord("причиною", 0, 1),
-            new GoogleCloudTranscriptWord("не", 0, 1),
+        var transcript = new Transcript([
+            new("той", 0, 1),
+            new("хлопчик", 0, 1),
+            new("був", 0, 1),
+            new("ще", 0, 1),
+            new("однією", 0, 1),
+            new("причиною", 0, 1),
+            new("не", 0, 1),
 
-            new GoogleCloudTranscriptWord("знатися", 0, 1),
-            new GoogleCloudTranscriptWord("споттерами", 0, 1),
-            new GoogleCloudTranscriptWord("Дурслі", 0, 1),
-            new GoogleCloudTranscriptWord("не", 0, 1),
-            new GoogleCloudTranscriptWord("xxx", 0, 1),
-        }, "irrelevant");
+            new("знатися", 0, 1),
+            new("споттерами", 0, 1),
+            new("Дурслі", 0, 1),
+            new("не", 0, 1),
+            new("xxx", 0, 1)
+        ], "irrelevant");
 
         // Act
         var matches = SentenceMatcher.Match(sentences, transcript);

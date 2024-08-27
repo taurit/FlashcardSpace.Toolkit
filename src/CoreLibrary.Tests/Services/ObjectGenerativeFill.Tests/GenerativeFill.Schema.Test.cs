@@ -24,7 +24,7 @@ public class GenerativeFillSchemaTests
     }
 
     [TestMethod]
-    public async Task WhenObjectIsGiven_GeneratesOutputSchemaAcceptableByOpenAiAPI()
+    public void WhenObjectIsGiven_GeneratesOutputSchemaAcceptableByOpenAiAPI()
     {
         // Arrange
         var sut = new GenerativeFillSchemaProvider();
@@ -62,7 +62,7 @@ public class GenerativeFillSchemaTests
     }
 
     [TestMethod]
-    public async Task WhenMultipleRulesArePresentForProperty_ConcatenateThemAsSentences()
+    public void WhenMultipleRulesArePresentForProperty_ConcatenateThemAsSentences()
     {
         // Arrange
         var sut = new GenerativeFillSchemaProvider();
@@ -83,7 +83,7 @@ public class GenerativeFillSchemaTests
             "Word translated to Polish. Value is in CAPITAL LETTERS."
             );
 
-        schema["properties"]!["Items"]!["items"]!["$id"].Value<string>().Should().Be(
+        schema["properties"]!["Items"]!["items"]!["$id"]!.Value<string>().Should().Be(
             nameof(EnglishWord), because: "Providing type name can help OpenAI API determine its purpose");
     }
 

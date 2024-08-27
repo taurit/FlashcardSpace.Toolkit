@@ -57,10 +57,7 @@ public class BilingualSentenceMatcher(IWordTokenizer wordTokenizer)
         return result;
     }
 
-    private static List<string> _ignoredWords = new List<string>
-    {
-        "the", "a", "to", "me"
-    };
+    private static List<string> _ignoredWords = ["the", "a", "to", "me"];
 
     public bool SentenceMatches(string sentence1, string sentence2)
     {

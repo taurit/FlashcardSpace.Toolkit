@@ -25,7 +25,7 @@ public partial class WordLinkingFlow : Window
     [DependsOn(nameof(CurrentCandidateIndex))]
     public double ProgressPercent => 100 * CurrentCandidateIndex / (double)(_candidates.Count);
 
-    private readonly LinkingExceptionsStore _wordsLinkingExceptions = new LinkingExceptionsStore(Settings.LinkingExceptionsStore);
+    private readonly LinkingExceptionsStore _wordsLinkingExceptions = new(Settings.LinkingExceptionsStore);
 
     public WordLinkingFlow(IReadOnlyList<WordSimilarity> similaritiesByScore, WordsLinker wordsLinker)
     {

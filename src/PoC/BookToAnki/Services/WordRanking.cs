@@ -1,7 +1,7 @@
 namespace BookToAnki.Services;
 public class WordRanking
 {
-    readonly Dictionary<string, int> _numUsages = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<string, int> _numUsages = new(StringComparer.OrdinalIgnoreCase);
 
     public WordRanking(IEnumerable<String> words)
     {

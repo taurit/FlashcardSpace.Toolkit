@@ -11,7 +11,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -29,7 +29,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -46,7 +46,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -64,7 +64,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -82,7 +82,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -100,7 +100,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -152,7 +152,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -190,7 +190,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
@@ -228,7 +228,7 @@ public class SentenceTokenizerTests
     {
         // Arrange
         var wordTokenizerMock = new Mock<IWordTokenizer>(MockBehavior.Strict);
-        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(new List<string> { "Irrelevant to this test." });
+        wordTokenizerMock.Setup(x => x.GetWords(It.IsAny<string>())).Returns(["Irrelevant to this test."]);
         var sentenceFactory = new SentenceFactory(wordTokenizerMock.Object);
 
         var sut = new SentenceTokenizer(sentenceFactory);
