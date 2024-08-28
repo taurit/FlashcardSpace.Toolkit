@@ -12,7 +12,7 @@ public class GenerativeFillTests
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();
 
     [TestMethod]
-    public async Task WordCatShouldBeRecognizedAndClassified()
+    public async Task WordCatShouldBeRecognizedAndClassifiedAsNoun()
     {
         // Arrange
         var input = new EnglishWordInContext() { Word = "cat" };
@@ -26,4 +26,37 @@ public class GenerativeFillTests
         output.SentenceExample.Should().NotBeNullOrEmpty();
         output.PartOfSpeech.Should().Be(DetectedPartOfSpeech.Noun);
     }
+
+    [TestMethod]
+    public async Task WordRunShouldBeRecognizedAndClassifiedAsVerb()
+    {
+        // Arrange
+        var input = new EnglishWordInContext() { Word = "run" };
+
+        // Act
+        var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
+
+        // Assert
+        output.Word.Should().Be("run");
+        output.WordBaseForm.Should().Be("to run");
+        output.SentenceExample.Should().NotBeNullOrEmpty();
+        output.PartOfSpeech.Should().Be(DetectedPartOfSpeech.Verb);
+    }
+
+    [TestMethod]
+    public async Task WordBlueShouldBeRecognizedAndClassifiedAsAdjective()
+    {
+        // Arrange
+        var input = new EnglishWordInContext() { Word = "blue" };
+
+        // Act
+        var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
+
+        // Assert
+        output.Word.Should().Be("blue");
+        output.WordBaseForm.Should().Be("blue");
+        output.SentenceExample.Should().NotBeNullOrEmpty();
+        output.PartOfSpeech.Should().Be(DetectedPartOfSpeech.Adjective);
+    }
+
 }

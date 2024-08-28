@@ -8,14 +8,18 @@ namespace CoreLibrary.Services.ObjectGenerativeFill;
 /// <summary>
 /// Helps process arrays of items instead of single item, to save on input tokens
 /// </summary>
-public class GenerativeFill(IGenerativeAiClient generativeAiClient)
+public class GenerativeFill(IGenerativeAiClient generativeAiClient, string generativeFillCacheFolder)
 {
-    const string SystemChatMessage = "You are a helpful assistant";
+    // exposed for testing
+    internal string GenerativeFillCacheFolder { get; } = generativeFillCacheFolder;
+
+    const string SystemChatMessage = "Your job is to transform array of input objects into array of output objects. Adhere to the JSON schema and use property descriptions for guidelines.";
 
     /// <summary>
     ///  Excluded from DI so library client doesn't have to be aware of that internal class.
     /// </summary>
     private readonly GenerativeFillSchemaProvider _schemaProvider = new();
+    private readonly GenerativeFillCache _cache = new(generativeFillCacheFolder);
 
 
     public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement) where T : ObjectWithId, new()
@@ -34,16 +38,16 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
             inputObjects[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
 
         // build prompt
+        var promptTemplate = "Input contains array of items to process (in the `Items` property):\n" +
+                               "\n" +
+                               "```json\n" +
+                               "{0}\n" +
+                               "```\n" +
+                               "\n" +
+                               "The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id).";
+
         var inputSerialized = SerializeInput(inputObjects);
-        var prompt = $"Input contains array of items to process (in the `Items` property):\n" +
-                     $"\n" +
-                     $"```json\n" +
-                     $"{inputSerialized}\n" +
-                     $"```\n" +
-                     $"\n" +
-                     $"The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id)."
-                     //+ GenerateOutputExamplePromptPart(inputObjects)
-                     ;
+        var prompt = String.Format(promptTemplate, inputSerialized);
         var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
 
         var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
@@ -51,6 +55,8 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
 
         // for each output element, rewrite values of properties without the `Fill` attribute from input elements. Match items by Id.
         RewriteInputPropertiesIntoOutput(inputObjects, resultItems);
+
+        _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, resultItems);
 
         // return output
         return resultItems;
@@ -81,25 +87,6 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient)
         }
 
         return resultItems;
-    }
-
-    // seems not needed with Structured Outputs, but I'll test a bit more before removing this code completely
-    private static string GenerateOutputExamplePromptPart<T>(List<T> inputObjects) where T : ObjectWithId, new()
-    {
-        // serialize output example
-        var outputExample = new List<T> { inputObjects[0] };
-        var outputSerializationOptions = new JsonSerializerOptions();
-        outputSerializationOptions.Converters.Add(new JsonStringEnumConverter());
-        outputSerializationOptions.Converters.Add(new GenerativeFillSerializationConverter<T>(SerializationSetting.IdAndOutputsPlaceholders));
-        var outputExampleAsObject = new ArrayOfItemsWithIds<T>(outputExample);
-        var outputFormatExample = JsonSerializer.Serialize(outputExampleAsObject, outputSerializationOptions);
-
-        var outputExampleString = $" Example of output format with one item:" +
-                                  $"\n" +
-                                  $"```json\n" +
-                                  $"{outputFormatExample}\n" +
-                                  $"```";
-        return outputExampleString;
     }
 
     private static void RewriteInputPropertiesIntoOutput<T>(List<T> inputElements, List<T> outputElements) where T : ObjectWithId

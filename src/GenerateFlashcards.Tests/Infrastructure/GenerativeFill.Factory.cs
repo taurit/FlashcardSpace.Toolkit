@@ -16,12 +16,13 @@ internal class GenerativeFillTestFactory
 
         // create ChatGPT client instance
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
-        var cacheRootFolder = Path.Combine(Path.GetTempPath(), "ObjectGenerativeFill", "GenerateFlashcardsIntegrationTests");
+        var cacheRootFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "GenerateFlashcards.Tests.ChatGptClient");
         Directory.CreateDirectory(cacheRootFolder);
         var chatGptClient = new ChatGptClient(logger, openAiOrganizationId!, openAiDeveloperKey!, cacheRootFolder);
 
         // create instance of system under test
-        var generativeFill = new GenerativeFill(chatGptClient);
+        var generativeFillCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "GenerateFlashcards.Tests.GenerativeFill");
+        var generativeFill = new GenerativeFill(chatGptClient, generativeFillCacheFolder);
         return generativeFill;
     }
 }
