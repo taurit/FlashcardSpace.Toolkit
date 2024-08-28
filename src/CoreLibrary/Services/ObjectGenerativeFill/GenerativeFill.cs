@@ -49,15 +49,23 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
 
         if (itemsThatRequireApiCall.Count > 0)
         {
-            var inputSerialized = SerializeInput(itemsThatRequireApiCall);
-            var prompt = String.Format(promptTemplate, inputSerialized);
             var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
 
-            var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
-            var apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCall.Count);
-            var newOutputItems = ReplacePlaceholdersWithFullObjects(outputItems, apiResultItems);
-            _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, newOutputItems);
-            outputItems = newOutputItems;
+            var chunks = itemsThatRequireApiCall.Chunk(20);
+
+            foreach (var chunk in chunks)
+            {
+                var itemsThatRequireApiCallChunk = chunk.ToList();
+                var inputSerialized = SerializeInput(itemsThatRequireApiCallChunk);
+                var prompt = String.Format(promptTemplate, inputSerialized);
+                var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
+                var apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCallChunk.Count);
+                var newOutputItems = ReplacePlaceholdersWithFullObjects(outputItems, apiResultItems);
+
+                _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, newOutputItems);
+                outputItems = newOutputItems;
+            }
+
         }
 
         // return output

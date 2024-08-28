@@ -1,17 +1,25 @@
 ﻿using CoreLibrary.Utilities;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
 internal class GenerativeFillCache
 {
     private readonly string _rootFolder;
+    private readonly JsonSerializerOptions _serializationOptions;
 
     public GenerativeFillCache(string rootFolder)
     {
         _rootFolder = rootFolder;
         Directory.CreateDirectory(rootFolder);
+
+        _serializationOptions = new JsonSerializerOptions();
+        _serializationOptions.Converters.Add(new JsonStringEnumConverter());
+        _serializationOptions.WriteIndented = true; // for convenience in debugging only
+
     }
 
     public void SaveToCache<T>(
@@ -30,7 +38,7 @@ internal class GenerativeFillCache
             if (File.Exists(cacheFilePath))
                 continue;
 
-            var serializedItem = JsonConvert.SerializeObject(item, Formatting.Indented);
+            var serializedItem = JsonSerializer.Serialize(item, _serializationOptions);
             File.WriteAllText(cacheFilePath, serializedItem);
         }
     }
@@ -49,7 +57,7 @@ internal class GenerativeFillCache
             return null;
 
         var serializedItem = File.ReadAllText(cacheFilePath);
-        var deserializedItem = JsonConvert.DeserializeObject<T>(serializedItem);
+        var deserializedItem = JsonSerializer.Deserialize<T>(serializedItem, _serializationOptions);
         if (deserializedItem == null)
             throw new InvalidOperationException($"Failed to deserialize item from cache file {cacheFilePath}. It's unexpected, debug!");
 
