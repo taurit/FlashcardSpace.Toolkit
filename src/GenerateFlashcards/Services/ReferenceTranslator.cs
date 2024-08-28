@@ -8,13 +8,13 @@ public class ReferenceTranslator : IProvideFieldValues
 
         foreach (var note in notes)
         {
-            var fieldsCopy = new Dictionary<string, string>(note.Fields);
+            var fieldsCopy = new Dictionary<string, string>(note.OtherFields);
 
             // simulate translation to a fake language "YellingEnglish" (ALL CAPS), without calling any external APIs
             fieldsCopy["YellingEnglishTranslation"] = note.Term.ToUpperInvariant();
             fieldsCopy["YellingEnglishDefinition"] = $"SOME DEFINITION OF THE WORD `{note.Term.ToUpperInvariant()}`";
 
-            var extendedNote = note with { Fields = fieldsCopy };
+            var extendedNote = note with { OtherFields = fieldsCopy };
             outputNotes.Add(extendedNote);
         }
 

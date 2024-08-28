@@ -10,8 +10,9 @@
 internal static class Parameters
 {
     public const string UrlToDocumentationAboutDefiningUserSecrets = "https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md";
-    private const string AppName = "GenerateFlashcards";
-    private const string CacheSubfolderName = "ChatResponseCache";
+    private const string AppName = "FlashcardSpaceToolkitCaches";
+    private const string CacheSubfolderName = "GenerateFlashcards.ChatGptClient";
+    private const string GenerativeFillSubfolderName = "GenerateFlashcards.GenerativeFill";
 
     // Flagship models are listed at: https://platform.openai.com/docs/models
 
@@ -34,12 +35,17 @@ internal static class Parameters
         return cacheFolder;
     });
 
-    public static Lazy<string> ChatResponseCacheFolder => new(() =>
+    internal static Lazy<string> ChatResponseCacheFolder => new(() =>
     {
         var cacheFolder = Path.Combine(RootAppDataFolder.Value, CacheSubfolderName);
         Directory.CreateDirectory(cacheFolder);
         return cacheFolder;
     });
 
-
+    internal static Lazy<string> GenerativeFillCacheFolder => new(() =>
+    {
+        var cacheFolder = Path.Combine(RootAppDataFolder.Value, GenerativeFillSubfolderName);
+        Directory.CreateDirectory(cacheFolder);
+        return cacheFolder;
+    });
 }

@@ -17,7 +17,7 @@ public class ReferenceTermExtractor : IExtractTerms
         foreach (var sentence in sentences)
         {
             var words = sentence.Split([' ', '\n', '\r', '\t', ',', ';'], StringSplitOptions.RemoveEmptyEntries);
-            notes.AddRange(words.Select(word => new Note(word, sentence, PartOfSpeech.Unknown, [])));
+            notes.AddRange(words.Select(word => new Note(word, sentence, word, PartOfSpeech.Unknown, [])));
         }
 
         return notes;

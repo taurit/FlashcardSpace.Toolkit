@@ -23,10 +23,3 @@ internal class EnglishWordInContext : ObjectWithId
     public DetectedPartOfSpeech PartOfSpeech { get; init; }
 }
 
-internal enum DetectedPartOfSpeech
-{
-    Noun,
-    Verb,
-    Adjective,
-    Other
-}

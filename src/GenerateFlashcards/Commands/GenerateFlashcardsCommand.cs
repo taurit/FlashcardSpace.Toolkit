@@ -16,20 +16,10 @@ internal sealed class GenerateFlashcardsCommand(
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
     {
 
-        return 0;
-
         var sentences = await ExtractSentences(settings);
         var terms = await ExtractTerms(settings, sentences);
         var termsWithTranslations = await TranslateTerms(settings, terms);
 
-        // chatgpt test
-        var response = await chatGptClient.GetAnswerToPrompt(
-            "gpt-4o-mini",
-            "gpt-4o-mini",
-            "You are a helpful assistant",
-            "What is the capital of Ostrołęka?",
-            GenerativeAiClientResponseMode.PlainText);
-        logger.LogInformation($"ChatGPT response: {response}");
 
         return 0;
     }
@@ -53,6 +43,9 @@ internal sealed class GenerateFlashcardsCommand(
         var extractedTerms = await termExtractor.ExtractTerms(extractedSentences, settings.InputLanguage.ToString());
 
         logger.LogInformation("Extracted {ExtractedTermsCount} terms", extractedTerms.Count);
+
+        logger.LogInformation("{@RawData}", extractedTerms);
+
         return extractedTerms;
     }
 

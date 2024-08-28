@@ -1,4 +1,5 @@
 using CoreLibrary.Services.GenerativeAiClients;
+using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models;
 using GenerateFlashcards.Services;
 using GenerateFlashcards.Services.SentenceExtractors;
@@ -74,6 +75,9 @@ internal static class DependencyInjection
             : new MockGenerativeAiClient();
 
         services.AddSingleton(generativeAiClient);
+
+        GenerativeFill generativeFill = new(generativeAiClient, Parameters.GenerativeFillCacheFolder.Value);
+        services.AddSingleton(generativeFill);
 
         return new ServiceCollectionRegistrar(services);
     }

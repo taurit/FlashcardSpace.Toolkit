@@ -21,7 +21,11 @@ public static class StringExtensionMethodsHashing
         // 8 is a reasonable default giving as short hash as possible but still very low probability of collision
 
         var stableHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
-        var stableHash = Convert.ToBase64String(stableHashBytes).Replace("+", "").Replace("=", "").Substring(0, reduceLengthToCharacters);
+        var stableHash = Convert.ToBase64String(stableHashBytes)
+            .Replace("+", "") // allowed in filenames but less readable than other characters
+            .Replace("=", "") // base64 padding character; allowed in filenames but less readable than other characters
+            .Replace("/", "") // not allowed in filenames, but happens in Base64 strings
+            .Substring(0, reduceLengthToCharacters);
 
         return stableHash;
     }
