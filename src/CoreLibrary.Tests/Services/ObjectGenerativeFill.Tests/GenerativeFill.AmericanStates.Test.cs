@@ -69,9 +69,7 @@ public class GenerativeFillAmericanStatesTests
         output[3].StateName.Should().Be("Texas");
         output[3].Capital.Should().Be("<b>Austin</b>");
         output[3].NeighboringStates.Should().BeEquivalentTo(["New Mexico", "Oklahoma", "Arkansas", "Louisiana"]);
-
     }
-
 
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
     [SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]

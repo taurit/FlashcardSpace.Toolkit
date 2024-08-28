@@ -93,4 +93,19 @@ internal class GenerativeFillCache
 
         throw new InvalidOperationException($"Cannot determine primary key for object of type {typeof(T).Name}. Designate one using the [Key] attribute.");
     }
+
+    public List<T> FillFromCacheWherePossible<T>(string modelClassId, string systemChatMessage, string promptTemplate, List<T> inputItems)
+        where T : ObjectWithId, new()
+    {
+        var outputItems = new List<T>();
+        foreach (var objectToFill in inputItems)
+        {
+            var primaryKeyValue = GetPrimaryKeyValue(objectToFill);
+            var cachedObject = ReadFromCache<T>(modelClassId, systemChatMessage, promptTemplate, primaryKeyValue);
+
+            outputItems.Add(cachedObject ?? objectToFill);
+        }
+
+        return outputItems;
+    }
 }

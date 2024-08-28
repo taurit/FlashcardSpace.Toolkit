@@ -87,12 +87,16 @@ public class GenerativeFillCacheTests
         await File.WriteAllTextAsync(cacheFilePath, JsonConvert.SerializeObject(cacheItem));
 
         // Act
+        Stopwatch s = Stopwatch.StartNew();
         var output2 = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
+        s.Stop();
 
         // Assert
         output2.Should().NotBeNull();
         output2.Should().HaveCount(2);
         output2.Single(w => w.WordInItalian == "arrivederci").WordInEnglish.Should().Be("VALUE IN CACHE FILE");
+
+        s.ElapsedMilliseconds.Should().BeLessThan(100, because: "data should be read from cache and be quick");
     }
 
 }

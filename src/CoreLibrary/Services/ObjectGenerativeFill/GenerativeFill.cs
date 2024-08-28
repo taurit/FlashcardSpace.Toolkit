@@ -29,14 +29,8 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
         return response.Single();
     }
 
-    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, IEnumerable<T> inputItems) where T : ObjectWithId, new()
+    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, List<T> inputItems) where T : ObjectWithId, new()
     {
-        var inputObjects = inputItems.ToList();
-
-        // assign consecutive IDs to input elements
-        for (var i = 0; i < inputObjects.Count; i++)
-            inputObjects[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
-
         // build prompt
         var promptTemplate = "Input contains array of items to process (in the `Items` property):\n" +
                                "\n" +
@@ -46,20 +40,28 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
                                "\n" +
                                "The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id).";
 
-        var inputSerialized = SerializeInput(inputObjects);
-        var prompt = String.Format(promptTemplate, inputSerialized);
-        var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
+        var outputItems = _cache.FillFromCacheWherePossible(modelClassId, SystemChatMessage, promptTemplate, inputItems);
+        var itemsThatRequireApiCall = outputItems.Where(x => x.Id is null).ToList();
 
-        var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
-        var resultItems = DeserializeResponse<T>(response, inputObjects.Count);
+        // assign consecutive IDs to input elements
+        for (var i = 0; i < outputItems.Count; i++)
+            outputItems[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
 
-        // for each output element, rewrite values of properties without the `Fill` attribute from input elements. Match items by Id.
-        RewriteInputPropertiesIntoOutput(inputObjects, resultItems);
+        if (itemsThatRequireApiCall.Count > 0)
+        {
+            var inputSerialized = SerializeInput(itemsThatRequireApiCall);
+            var prompt = String.Format(promptTemplate, inputSerialized);
+            var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
 
-        _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, resultItems);
+            var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
+            var apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCall.Count);
+            var newOutputItems = ReplacePlaceholdersWithFullObjects(outputItems, apiResultItems);
+            _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, newOutputItems);
+            outputItems = newOutputItems;
+        }
 
         // return output
-        return resultItems;
+        return outputItems;
     }
 
     private static string SerializeInput<T>(List<T> inputObjects) where T : ObjectWithId, new()
@@ -89,29 +91,43 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
         return resultItems;
     }
 
-    private static void RewriteInputPropertiesIntoOutput<T>(List<T> inputElements, List<T> outputElements) where T : ObjectWithId
+    private static List<T> ReplacePlaceholdersWithFullObjects<T>(List<T> partiallyFilledList, List<T> elementsFromApi) where T : ObjectWithId
+    {
+        var completelyFilledList = new List<T>();
+
+        foreach (var element in partiallyFilledList)
+        {
+            // find element in API response
+            var apiResult = elementsFromApi.SingleOrDefault(x => x.Id == element.Id);
+
+            if (apiResult == null)
+            {
+                // object already read from cache earlier; rewrite to output
+                completelyFilledList.Add(element);
+            }
+            else
+            {
+                // fill out the missing properties first
+                CloneValuesOfPropertiesWithoutAttributes(element, apiResult);
+                completelyFilledList.Add(apiResult);
+            }
+        }
+        return completelyFilledList;
+    }
+
+    private static void CloneValuesOfPropertiesWithoutAttributes<T>(T element, T apiResult) where T : ObjectWithId
     {
         var properties = typeof(T).GetProperties();
-
-        foreach (var outputElement in outputElements)
+        foreach (var prop in properties)
         {
-            // match input element by id
-            var inputElement = inputElements.Single(x => x.Id == outputElement.Id);
+            if (prop.Name == "Id")
+                continue;
 
-            foreach (var outputProperty in properties)
+            var aiFilledProperty = prop.GetCustomAttribute<FillWithAIAttribute>() is not null;
+            if (!aiFilledProperty)
             {
-                // leave alone properties that don't have Fill attribute; they were filled by AI model already
-                var filledByAi = outputProperty.GetCustomAttribute<FillWithAIAttribute>() != null;
-                if (filledByAi)
-                    continue;
-
-                // skip the Id property
-                if (outputProperty.Name == "Id")
-                    continue;
-
-                // otherwise, rewrite property value from input to output
-                var propertyValueInInput = outputProperty.GetValue(inputElement);
-                outputProperty.SetValue(outputElement, propertyValueInInput);
+                var propertyValueInApiResponseObject = prop.GetValue(element);
+                prop.SetValue(apiResult, propertyValueInApiResponseObject);
             }
         }
     }
