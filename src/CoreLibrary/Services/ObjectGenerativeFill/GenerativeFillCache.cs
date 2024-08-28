@@ -24,17 +24,8 @@ internal class GenerativeFillCache
         foreach (var item in itemsToSaveInCache)
         {
             var itemKeyValue = GetPrimaryKeyValue(item);
-
-            var cacheFileName = $"{modelClassId}_" +
-                                $"{item.GetType().Name}_" +
-                                $"s{systemChatMessage.GetHashCodeStable(3)}_" +
-                                $"p{promptTemplate.GetHashCodeStable(3)}_" +
-                                $"k{itemKeyValue.GetHashCodeStable(3)}_" +
-                                $"{itemKeyValue.GetFilenameFriendlyString()}" +
-                                $".json" // Generative fill uses Structured Outputs and response is always JSON
-                                ;
-
-            var cacheFilePath = Path.Combine(_rootFolder, cacheFileName);
+            string itemTypeName = item.GetType().Name;
+            var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue);
 
             if (File.Exists(cacheFilePath))
                 continue;
@@ -42,6 +33,45 @@ internal class GenerativeFillCache
             var serializedItem = JsonConvert.SerializeObject(item, Formatting.Indented);
             File.WriteAllText(cacheFilePath, serializedItem);
         }
+    }
+
+    public T? ReadFromCache<T>(
+        string modelClassId,
+        string systemChatMessage,
+        string promptTemplate,
+        string itemKeyValue
+    ) where T : ObjectWithId, new()
+    {
+        var itemTypeName = typeof(T).Name;
+        var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue);
+
+        if (!File.Exists(cacheFilePath))
+            return null;
+
+        var serializedItem = File.ReadAllText(cacheFilePath);
+        var deserializedItem = JsonConvert.DeserializeObject<T>(serializedItem);
+        if (deserializedItem == null)
+            throw new InvalidOperationException($"Failed to deserialize item from cache file {cacheFilePath}. It's unexpected, debug!");
+
+        deserializedItem.Id = 0;
+
+        return deserializedItem;
+    }
+
+    private string GenerateCacheFilePath(string modelClassId, string systemChatMessage, string promptTemplate, string itemTypeName,
+        string itemKeyValue)
+    {
+        var cacheFileName = $"{modelClassId}_" +
+                            $"{itemTypeName}_" +
+                            $"s{systemChatMessage.GetHashCodeStable(3)}_" +
+                            $"p{promptTemplate.GetHashCodeStable(3)}_" +
+                            $"k{itemKeyValue.GetHashCodeStable(3)}_" +
+                            $"{itemKeyValue.GetFilenameFriendlyString()}" +
+                            $".json" // Generative fill uses Structured Outputs and response is always JSON
+            ;
+
+        var cacheFilePath = Path.Combine(_rootFolder, cacheFileName);
+        return cacheFilePath;
     }
 
     /// <summary>

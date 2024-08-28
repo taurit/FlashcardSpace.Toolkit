@@ -50,7 +50,49 @@ public class GenerativeFillCacheTests
         var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
 
         // Assert
+        output.Should().NotBeNull();
+        output.Should().HaveCount(3);
+        output.Should().ContainSingle(w => w.WordInItalian == "grazie" && w.WordInEnglish != null);
+        output.Should().ContainSingle(w => w.WordInItalian == "ciao" && w.WordInEnglish != null);
+        output.Should().ContainSingle(w => w.WordInItalian == "buongiorno" && w.WordInEnglish != null);
 
+        var filesInCacheFolder = Directory.GetFiles(_generativeFill.GenerativeFillCacheFolder, "*.json", SearchOption.TopDirectoryOnly);
+        filesInCacheFolder.Should().HaveCountGreaterThanOrEqualTo(3);
+        filesInCacheFolder.Should().Contain(f => f.Contains("grazie"));
+        filesInCacheFolder.Should().Contain(f => f.Contains("ciao"));
+        filesInCacheFolder.Should().Contain(f => f.Contains("buongiorno"));
+    }
+
+    [TestMethod]
+    public async Task When_GenerativeFillIsUsed_CacheFilesAreUtilized()
+    {
+        // Arrange
+        var input = new List<ItalianWord>() {
+            new("arrivederci"),
+            new("buonasera"),
+        };
+        // if cache files existed from last test runs, remove them
+        var cacheFilesFromPreviousRuns = Directory.EnumerateFiles(_generativeFill.GenerativeFillCacheFolder, "*arrivederci*.json");
+        foreach (var file in cacheFilesFromPreviousRuns)
+        {
+            File.Delete(file);
+        }
+        var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
+        var cacheFilePath = Directory.EnumerateFiles(_generativeFill.GenerativeFillCacheFolder, "*arrivederci*.json").Single();
+
+        // manipulate the cache to be able to prove the file was used
+        var cacheContent = await File.ReadAllTextAsync(cacheFilePath);
+        var cacheItem = JsonConvert.DeserializeObject<ItalianWord>(cacheContent);
+        cacheItem!.WordInEnglish = "VALUE IN CACHE FILE";
+        await File.WriteAllTextAsync(cacheFilePath, JsonConvert.SerializeObject(cacheItem));
+
+        // Act
+        var output2 = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
+
+        // Assert
+        output2.Should().NotBeNull();
+        output2.Should().HaveCount(2);
+        output2.Single(w => w.WordInItalian == "arrivederci").WordInEnglish.Should().Be("VALUE IN CACHE FILE");
     }
 
 }
