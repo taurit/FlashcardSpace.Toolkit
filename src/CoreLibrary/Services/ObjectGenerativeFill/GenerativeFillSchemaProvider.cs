@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using CoreLibrary.Utilities;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
 
-public class GenerativeFillSchemaProvider
+public class GenerativeFillSchemaProvider(string generativeFillCacheFolder)
 {
     /// <summary>
     /// Generates expected JSON schema for a ChatGPT containing an array of items of specific type.
@@ -30,15 +31,37 @@ public class GenerativeFillSchemaProvider
         generator.GenerationProviders.Add(new IncludeRulesInSchemaDescription());
 
         var typeOfArrayOfItems = typeof(ArrayOfItemsWithIds<TSingleItem>);
+        var typeOfSingleItem = typeof(TSingleItem);
 
-        JSchema schema = generator.Generate(typeOfArrayOfItems);
-        schema.AllowAdditionalProperties = false; // required by OpenAI
-        var schemaAsString = schema.ToString();
+        // have cache expire after 1h in case of type changes
+        var dateAnHourPart = DateTime.Now.ToString("yyyy-MM-dd-HH");
 
-        // remove indentation
-        var jsonObject = JsonConvert.DeserializeObject(schemaAsString);
-        string nonIndentedJson = JsonConvert.SerializeObject(jsonObject, Formatting.None);
+        var schemaCacheFileName = $"schema-" +
+                                  $"arr-" +
+                                  $"{dateAnHourPart}" +
+                                  $"-" +
+                                  $"{typeOfSingleItem.FullName!.GetHashCodeStable(4)}" +
+                                  $"-" +
+                                  $"{typeOfSingleItem.Name.GetFilenameFriendlyString()}" +
+                                  $".json";
 
-        return nonIndentedJson;
+        var schemaCacheFilePath = Path.Combine(generativeFillCacheFolder, schemaCacheFileName);
+
+        if (!File.Exists(schemaCacheFilePath))
+        {
+            JSchema schema = generator.Generate(typeOfArrayOfItems);
+            schema.AllowAdditionalProperties = false; // required by OpenAI
+            var schemaAsString = schema.ToString();
+
+            // remove indentation
+            var jsonObject = JsonConvert.DeserializeObject(schemaAsString);
+            string nonIndentedJson = JsonConvert.SerializeObject(jsonObject, Formatting.None);
+
+            File.WriteAllText(schemaCacheFilePath, nonIndentedJson);
+        }
+
+        var schemaString = File.ReadAllText(schemaCacheFilePath);
+
+        return schemaString;
     }
 }

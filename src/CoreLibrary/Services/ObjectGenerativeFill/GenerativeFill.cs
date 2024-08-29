@@ -18,7 +18,7 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
     /// <summary>
     ///  Excluded from DI so library client doesn't have to be aware of that internal class.
     /// </summary>
-    private readonly GenerativeFillSchemaProvider _schemaProvider = new();
+    private readonly GenerativeFillSchemaProvider _schemaProvider = new(generativeFillCacheFolder);
     private readonly GenerativeFillCache _cache = new(generativeFillCacheFolder);
 
 
