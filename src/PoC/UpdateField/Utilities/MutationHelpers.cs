@@ -124,4 +124,70 @@ public static class MutationHelpers
             note.BackText = backTextHtml.DocumentNode.InnerHtml.Trim();
         }
     }
+
+    public static void RemoveWrapperDivs(AnkiNote note)
+    {
+        var frontText = note.FrontText;
+        var backText = note.BackText;
+        var remarks = note.Remarks;
+        var image = note.Image;
+
+        note.FrontText = RemoveAllWrapperDivs(frontText);
+        note.BackText = RemoveAllWrapperDivs(backText);
+        note.Remarks = RemoveAllWrapperDivs(remarks);
+        note.Image = RemoveAllWrapperDivs(image);
+
+    }
+
+    /// <summary>
+    /// Performs removal until nothing more can be removed
+    /// </summary>
+    private static string RemoveAllWrapperDivs(string htmlContent)
+    {
+        while (true)
+        {
+            var newHtmlContent = RemoveSingleWrapperDiv(htmlContent);
+            if (newHtmlContent == htmlContent) return htmlContent;
+
+            htmlContent = newHtmlContent;
+        }
+    }
+
+    /// <summary>
+    /// Removes wrapping DIVs from the given HTML content but only if:
+    /// - they are the only top-level tag (they don't have siblings)
+    /// - they have no attributes.
+    ///
+    /// Examples of divs that should be removed:
+    /// - <div>Front text</div>
+    /// - <DIV>Back text</DIV>
+    /// - <DiV>Image</div>
+    /// - <div><div>Image</div></div>
+    /// 
+    /// Examples of divs that should NOT be removed:
+    /// - <div id="test">Front text</div>
+    /// - <div class='test'>Back text</div>
+    /// - <div style=''>Image</div>
+    /// - <div isDisabled>Remarks</div>
+    /// - <div></div><div>Front text</div>
+    /// - <b></b>Back <div>text</div>
+    /// - <div>Text 1</div><span>AAA</span>
+    ///  
+    /// </summary>
+    internal static string RemoveSingleWrapperDiv(string htmlContent)
+    {
+        if (String.IsNullOrWhiteSpace(htmlContent)) return htmlContent;
+
+        var html = new HtmlDocument();
+        html.LoadHtml(htmlContent);
+
+        // if there's only one child node and it's a div with no attributes, remove the div
+        if (html.DocumentNode.ChildNodes.Count == 1 && html.DocumentNode.FirstChild.Name == "div" && !html.DocumentNode.FirstChild.HasAttributes)
+        {
+            return html.DocumentNode.FirstChild.InnerHtml;
+        }
+
+        return htmlContent;
+
+    }
 }
