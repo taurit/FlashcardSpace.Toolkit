@@ -15,9 +15,9 @@ internal class Program
     /// <param name="args"></param>
     static async Task Main(string[] args)
     {
-        return;
+        //return;
 
-        var notes = RemoveRedundantWrapperDiv.LoadNotesThatRequireAdjustment();
+        var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
 
         var chunks = notes.Chunk(30).ToList();
         int chunkNo = 0;
@@ -25,7 +25,7 @@ internal class Program
         {
             Console.WriteLine($"Processing chunk {++chunkNo} of {chunks.Count}...");
             var chunkItems = chunk.ToList();
-            RemoveRedundantWrapperDiv.RunMigration(chunkItems);
+            await AddPolishTranslationToRemarks.AddPolishTranslation(chunkItems);
             UpdateNotesInDatabase(chunkItems, userConfirmationRequired: false);
 
         }
