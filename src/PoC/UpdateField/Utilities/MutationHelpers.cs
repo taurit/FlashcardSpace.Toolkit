@@ -29,6 +29,14 @@ public static class MutationHelpers
         note.Remarks = html.DocumentNode.OuterHtml;
     }
 
+    public static string TrimLeadingAndTrailingLineBreaks(string htmlString)
+    {
+        var html = new HtmlDocument();
+        html.LoadHtml(htmlString);
+        TrimLeadingAndTrailingLineBreaks(html);
+        return html.DocumentNode.OuterHtml;
+    }
+
     /// <summary>
     /// If given HTML starts or ends with HTML break tag (e.g. <br>, <br />, <BR/>, <BR />) remove it using HtmlAgilityPack.
     /// </summary>
@@ -184,10 +192,12 @@ public static class MutationHelpers
         // if there's only one child node and it's a div with no attributes, remove the div
         if (html.DocumentNode.ChildNodes.Count == 1 && html.DocumentNode.FirstChild.Name == "div" && !html.DocumentNode.FirstChild.HasAttributes)
         {
-            return html.DocumentNode.FirstChild.InnerHtml;
+            var divContent = html.DocumentNode.FirstChild.InnerHtml;
+            var divContentTrimmed = TrimLeadingAndTrailingLineBreaks(divContent);
+            return divContentTrimmed;
         }
 
-        return htmlContent;
+        return TrimLeadingAndTrailingLineBreaks(htmlContent);
 
     }
 }

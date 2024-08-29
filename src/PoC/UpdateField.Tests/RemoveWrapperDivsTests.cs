@@ -10,7 +10,10 @@ public class RemoveWrapperDivsTests
     public void RemoveWrapperDivs_RemovesWrapperDivsWhenTheyHaveNoAttributes()
     {
         // Arrange
-        var fields = AnkiNote.SerializeFields("<div><div>Front text</div></div>", "", "<div><DIV>Back text</DIV></div>", "", "<DiV><div>Image</div></DiV>", "<Div><dIV>Remarks</div></div>");
+        var fields = AnkiNote.SerializeFields("<div><div>Front text</div></div>", "",
+            "<div><DIV>Back text</DIV></div>", "",
+            "<DiV><div>Image</div></DiV>",
+            "<Div><dIV>Remarks</div><br /></div><BR />");
         var note = new AnkiNote(1, "OneDirection", "", fields);
 
         // Act
@@ -31,7 +34,7 @@ public class RemoveWrapperDivsTests
             "<div id=\"test\">Front text</div>", "",
             "<div class='test'>Back text</div>", "",
             "<div style=''>Image</div>",
-            "<div isDisabled>Remarks</div>");
+            "<div disabled>Remarks</div>");
         var note = new AnkiNote(1, "OneDirection", "", fields);
 
         // Act
@@ -41,7 +44,7 @@ public class RemoveWrapperDivsTests
         Assert.AreEqual("<div id=\"test\">Front text</div>", note.FrontText);
         Assert.AreEqual("<div class='test'>Back text</div>", note.BackText);
         Assert.AreEqual("<div style=''>Image</div>", note.Image);
-        Assert.AreEqual("<div isDisabled>Remarks</div>", note.Remarks);
+        Assert.AreEqual("<div disabled>Remarks</div>", note.Remarks);
     }
 
     [TestMethod]
@@ -49,7 +52,7 @@ public class RemoveWrapperDivsTests
     {
         // Arrange
         var fields = AnkiNote.SerializeFields(
-            "<div></div><div>Front text</div>", "",
+            "<span>a</span><div>Front text</div>", "",
             "<b></b>Back <div>text</div>", "",
             "<div><div>Image</div> 1</div><span>AAA</span>",
             "Remarks");
@@ -59,7 +62,7 @@ public class RemoveWrapperDivsTests
         MutationHelpers.RemoveWrapperDivs(note);
 
         // Assert
-        Assert.AreEqual("<div></div><div>Front text</div>", note.FrontText);
+        Assert.AreEqual("<span>a</span><div>Front text</div>", note.FrontText);
         Assert.AreEqual("<b></b>Back <div>text</div>", note.BackText);
         Assert.AreEqual("<div><div>Image</div> 1</div><span>AAA</span>", note.Image);
         Assert.AreEqual("Remarks", note.Remarks);
