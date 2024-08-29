@@ -15,7 +15,7 @@ internal class Program
     /// <param name="args"></param>
     static async Task Main(string[] args)
     {
-        //return;
+        return;
 
         var notes = RemoveRedundantWrapperDiv.LoadNotesThatRequireAdjustment();
 
@@ -26,7 +26,7 @@ internal class Program
             Console.WriteLine($"Processing chunk {++chunkNo} of {chunks.Count}...");
             var chunkItems = chunk.ToList();
             RemoveRedundantWrapperDiv.RunMigration(chunkItems);
-            UpdateNotesInDatabase(chunkItems, userConfirmationRequired: true);
+            UpdateNotesInDatabase(chunkItems, userConfirmationRequired: false);
 
         }
 

@@ -29,8 +29,21 @@ public static class MutationHelpers
         note.Remarks = html.DocumentNode.OuterHtml;
     }
 
-    public static string TrimLeadingAndTrailingLineBreaks(string htmlString)
+    private static string TrimLeadingAndTrailingLineBreaks(string htmlString)
     {
+        // replace &nbsp; (case-insensitive) with space character
+        htmlString = Regex.Replace(htmlString, "&nbsp;", " ", RegexOptions.IgnoreCase).Trim();
+
+        // replace ` </div>` with `</div>`
+        htmlString = Regex.Replace(htmlString, "\\s*</div>", "</div>", RegexOptions.IgnoreCase);
+
+        // replace `<Br /></div>` with `</div>`
+        htmlString = Regex.Replace(htmlString, "<br /></div>", "</div>", RegexOptions.IgnoreCase);
+        htmlString = Regex.Replace(htmlString, "<br></div>", "</div>", RegexOptions.IgnoreCase);
+
+        // replace `<div></div>` with ``
+        htmlString = Regex.Replace(htmlString, "<div></div>", "", RegexOptions.IgnoreCase);
+
         var html = new HtmlDocument();
         html.LoadHtml(htmlString);
         TrimLeadingAndTrailingLineBreaks(html);

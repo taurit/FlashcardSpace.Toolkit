@@ -52,8 +52,8 @@ public class RemoveWrapperDivsTests
     {
         // Arrange
         var fields = AnkiNote.SerializeFields(
-            "<span>a</span><div>Front text</div>", "",
-            "<b></b>Back <div>text</div>", "",
+            "<span>a</span><div>Front text&nbsp;</div>", "",
+            "<b></b>Back <div>text  </div>", "",
             "<div><div>Image</div> 1</div><span>AAA</span>",
             "Remarks");
         var note = new AnkiNote(1, "OneDirection", "", fields);
@@ -66,5 +66,27 @@ public class RemoveWrapperDivsTests
         Assert.AreEqual("<b></b>Back <div>text</div>", note.BackText);
         Assert.AreEqual("<div><div>Image</div> 1</div><span>AAA</span>", note.Image);
         Assert.AreEqual("Remarks", note.Remarks);
+    }
+
+    [TestMethod]
+    public void RemoveWrapperDivs_AlsoRemovesTrailingSpacesAndNewlinesAndEmptyDivsInside()
+    {
+        // Arrange
+        var fields = AnkiNote.SerializeFields("<div>Text&nbsp;</div>\n<br />", "",
+            "<div>Text</div>&nbsp;", "",
+            "<div>Text </div><div></div><br />&nbsp;",
+            "<div>Te<div>&nbsp; </div>xt&nbsp;<br /> </div>\n&nbsp; \n");
+        var note = new AnkiNote(1, "OneDirection", "", fields);
+
+        // Act
+        MutationHelpers.RemoveWrapperDivs(note);
+
+        // Assert
+        Assert.AreEqual("Text", note.FrontText);
+        Assert.AreEqual("Text", note.BackText);
+        Assert.AreEqual("Text", note.Image);
+        Assert.AreEqual("Text", note.Remarks);
+
+
     }
 }

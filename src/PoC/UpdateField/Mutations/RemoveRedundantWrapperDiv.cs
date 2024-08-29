@@ -8,7 +8,7 @@ public static class RemoveRedundantWrapperDiv
 {
 
     public static List<AnkiNote> LoadNotesThatRequireAdjustment() =>
-        AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "s05")
+        AnkiHelpers.GetNotes(Settings.AnkiDatabaseFilePath, limitToTag: "5-minute-ukrainian")
             .ToList();
 
     public static void RunMigration(List<AnkiNote> notes)
