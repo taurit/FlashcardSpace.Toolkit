@@ -17,7 +17,7 @@ internal class Program
     {
         return;
 
-        var notes = MoveImageToImageField.LoadNotesThatRequireAdjustment();
+        var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
 
         var chunks = notes.Chunk(30).ToList();
         int chunkNo = 0;
@@ -25,7 +25,7 @@ internal class Program
         {
             Console.WriteLine($"Processing chunk {++chunkNo} of {chunks.Count}...");
             var chunkItems = chunk.ToList();
-            MoveImageToImageField.RunMigration(chunkItems);
+            await AddPolishTranslationToRemarks.AddPolishTranslation(chunkItems);
             UpdateNotesInDatabase(chunkItems, userConfirmationRequired: false);
 
         }

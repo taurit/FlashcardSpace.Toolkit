@@ -42,8 +42,8 @@ internal static class UiHelper
     {
         if (current != previous)
         {
-            table.AddRow($"[red]{fieldName}[/]", $"[red]{(Markup.Escape(previous))}[/]");
-            table.AddRow($"[green]{fieldName}[/]", $"[green]{(Markup.Escape(current))}[/]");
+            table.AddRow($"[red]{fieldName}[/]", $"[red]{(Markup.Escape(previous.RemoveUkrainianFlashcardsAccentMark()))}[/]");
+            table.AddRow($"[green]{fieldName}[/]", $"[green]{(Markup.Escape(current.RemoveUkrainianFlashcardsAccentMark()))}[/]");
         }
         else
         {
