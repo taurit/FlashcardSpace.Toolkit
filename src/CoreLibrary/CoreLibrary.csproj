@@ -10,10 +10,18 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="OpenAI" Version="2.0.0-beta.10" />
+    
+    <PackageReference Include="DotnetGeminiSDK" Version="1.0.14" />
   </ItemGroup>
 
+  <!-- My local fork of dotnet-gemini-sdk if I decide I need to implement support for Structured Outputs (currently paused)-->
+  <!--<ItemGroup>
+    <ProjectReference Include="..\..\..\dotnet-gemini-sdk\src\DotnetGeminiSDK\DotnetGeminiSDK.csproj" />
+  </ItemGroup>-->
+  
+  
   <ItemGroup>
     <InternalsVisibleTo Include="CoreLibrary.Tests" />
   </ItemGroup>
-  
+
 </Project>
