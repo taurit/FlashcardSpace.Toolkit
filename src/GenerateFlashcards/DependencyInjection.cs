@@ -75,7 +75,7 @@ internal static class DependencyInjection
                 logger,
                 secretsConfiguration.OPENAI_ORGANIZATION_ID!,
                 secretsConfiguration.OPENAI_DEVELOPER_KEY!,
-                Parameters.ChatResponseCacheFolder.Value
+                Parameters.ChatGptClientCacheFolder.Value
             )
             : new MockGenerativeAiClient();
 
