@@ -3,7 +3,6 @@ using CoreLibrary.Services.GenerativeAiClients;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace GenerateFlashcards.Commands;
@@ -18,23 +17,9 @@ internal sealed class GenerateFlashcardsCommand(
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFlashcardsCommandSettings settings)
     {
-        var image = await imageGenerator.GenerateImage("test");
-        var htmlFragmentDisplayingBase64Image = $"<img src=\"data:image/png;base64,{image.Base64EncodedImage}\" />";
-        await File.WriteAllTextAsync("d:/testAAA.html", htmlFragmentDisplayingBase64Image);
-
-        // Launch html
-        var processStartInfo = new ProcessStartInfo("d:/testAAA.html")
-        {
-            UseShellExecute = true
-        };
-        Process.Start(processStartInfo);
-
-        return 0;
-
         var sentences = await ExtractSentences(settings);
         var terms = await ExtractTerms(settings, sentences);
         var termsWithTranslations = await TranslateTerms(settings, terms);
-
 
         return 0;
     }

@@ -29,7 +29,7 @@ public class GoogleGeminiClient(ILogger logger, string geminiApiKey, string pers
         var response = await geminiClient.TextPrompt(prompt, new GenerationConfig()
         {
             MaxOutputTokens = 300,
-            //ResponseMimeType = null //"application/json"
+            //ResponseMimeType = null //"application/json" // support for Structured Outputs not yet available in this version of library
         });
 
 

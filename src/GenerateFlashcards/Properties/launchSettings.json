@@ -1,6 +1,10 @@
 {
   "profiles": {
-    "GenerateFlashcards": {
+    "Run debug command": {
+      "commandName": "Project",
+      "commandLineArgs": "debug"
+    },
+    "Run English -> Polish": {
       "commandName": "Project",
       "commandLineArgs": "generate --inputLanguage EnGLIsH --outputLanguage Polish --inputFileFormat FrequencyDictionary Resources/InputExample.English.Frequencies.txt"
     }
