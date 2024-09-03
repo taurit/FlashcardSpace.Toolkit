@@ -1,3 +1,4 @@
+using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models;
@@ -52,6 +53,10 @@ internal static class DependencyInjection
         configuration.Bind(secretsConfiguration);
         var openAiApiKeysPresent = secretsConfiguration.EnsureOpenAIKeysArePresent(logger);
         services.AddSingleton(secretsConfiguration);
+
+        // Add HttpClient (what Nuget package is needed?)
+        services.AddHttpClient();
+        services.AddSingleton<ImageGenerator>();
 
         // Add other services
         services.AddTransient<ReferenceSentenceExtractor>();
