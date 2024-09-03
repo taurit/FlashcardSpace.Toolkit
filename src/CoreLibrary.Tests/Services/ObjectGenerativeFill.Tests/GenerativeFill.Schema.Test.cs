@@ -27,7 +27,7 @@ public class GenerativeFillSchemaTests
     public void WhenObjectIsGiven_GeneratesOutputSchemaAcceptableByOpenAiAPI()
     {
         // Arrange
-        var sut = new GenerativeFillSchemaProvider();
+        var sut = new GenerativeFillSchemaProvider(GenerativeFillTestFactory.GenerativeFillCacheFolder);
 
         // Act
         var schemaString = sut.GenerateJsonSchemaForArrayOfItems<AmericanState>();
@@ -65,7 +65,7 @@ public class GenerativeFillSchemaTests
     public void WhenMultipleRulesArePresentForProperty_ConcatenateThemAsSentences()
     {
         // Arrange
-        var sut = new GenerativeFillSchemaProvider();
+        var sut = new GenerativeFillSchemaProvider(GenerativeFillTestFactory.GenerativeFillCacheFolder);
 
         // Act
         var schemaString = sut.GenerateJsonSchemaForArrayOfItems<EnglishWord>();

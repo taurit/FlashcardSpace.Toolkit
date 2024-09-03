@@ -7,6 +7,9 @@ namespace CoreLibrary.Tests.Services.ObjectGenerativeFill.Tests;
 
 internal static class GenerativeFillTestFactory
 {
+    internal static readonly string GenerativeFillCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "CoreLibrary.Tests.GenerativeFill");
+    private static readonly string ChatGptClientCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "CoreLibrary.Tests.ChatGptClient");
+
     internal static GenerativeFill CreateInstance()
     {
         // read API configuration
@@ -16,13 +19,12 @@ internal static class GenerativeFillTestFactory
 
         // create ChatGPT client instance
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
-        var chatGptClientCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "CoreLibrary.Tests.ChatGptClient");
-        Directory.CreateDirectory(chatGptClientCacheFolder);
-        var chatGptClient = new ChatGptClient(logger, openAiOrganizationId!, openAiDeveloperKey!, chatGptClientCacheFolder);
+
+        Directory.CreateDirectory(ChatGptClientCacheFolder);
+        var chatGptClient = new ChatGptClient(logger, openAiOrganizationId!, openAiDeveloperKey!, ChatGptClientCacheFolder);
 
         // create instance of system under test
-        var generativeFillCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "CoreLibrary.Tests.GenerativeFill");
-        var generativeFill = new GenerativeFill(chatGptClient, generativeFillCacheFolder);
+        var generativeFill = new GenerativeFill(chatGptClient, GenerativeFillCacheFolder);
         return generativeFill;
     }
 }
