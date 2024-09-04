@@ -1,5 +1,4 @@
-﻿using GenerateFlashcards.Models;
-using Spectre.Console;
+﻿using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace GenerateFlashcards.Commands;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Instantiated by the Spectre.Console.Cli framework")]
-internal sealed class GenerateFromWordListCommandSettings : CommandSettings
+internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
 {
     [Description("Path to search. Defaults to current directory.")]
     [CommandArgument(0, "<inputFile>")] // <angleBrackets> mean required, [squareBrackets] mean optional

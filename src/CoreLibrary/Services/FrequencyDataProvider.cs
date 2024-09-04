@@ -1,13 +1,13 @@
-﻿using System.IO;
+﻿namespace CoreLibrary.Services;
 
-namespace AnkiCardValidator.Utilities;
+public record FrequencyRecord(string Term, int Position, long NumOccurrences);
 
 /// <summary>
 /// Provides information about the frequency of words' occurrence in a language.
 /// </summary>
 public class FrequencyDataProvider
 {
-    private readonly Dictionary<string, int> _frequencyData = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, FrequencyRecord> _frequencyData = new(StringComparer.OrdinalIgnoreCase);
     private readonly NormalFormProvider _normalFormProvider;
     private readonly string _frequencyDictionaryFilePath;
 
@@ -18,6 +18,11 @@ public class FrequencyDataProvider
     {
         _normalFormProvider = normalFormProvider;
         _frequencyDictionaryFilePath = frequencyDictionaryFilePath;
+
+        if (!File.Exists(_frequencyDictionaryFilePath))
+        {
+            throw new FileNotFoundException($"Frequency dictionary file not found at {_frequencyDictionaryFilePath}");
+        }
 
         LoadFrequencyData();
     }
@@ -42,14 +47,20 @@ public class FrequencyDataProvider
         if (_frequencyData.Any()) return;
 
         var lines = File.ReadAllLines(_frequencyDictionaryFilePath);
+
+
+
+
         for (var i = 0; i < lines.Length; i++)
         {
             var line = lines[i];
             var parts = line.Split(' ');
             var word = parts[0];
+            var numOccurrences = Int64.Parse(parts[1]);
 
             // in the dataset, duplicates are only found at the long tail (weird "words" with 1 usage like "µe"), so it's not worth to handle them
-            _frequencyData.TryAdd(word, i);
+            var frequencyRecord = new FrequencyRecord(word, i, numOccurrences);
+            _frequencyData.TryAdd(word, frequencyRecord);
         }
     }
 
@@ -62,9 +73,9 @@ public class FrequencyDataProvider
     {
         var wordSanitizedForFrequencyCheck = SanitizeWordForFrequencyCheck(word);
 
-        if (_frequencyData.TryGetValue(wordSanitizedForFrequencyCheck, out var position))
+        if (_frequencyData.TryGetValue(wordSanitizedForFrequencyCheck, out var frequencyRecord))
         {
-            return position;
+            return frequencyRecord.Position;
         }
 
         return null;
@@ -73,5 +84,11 @@ public class FrequencyDataProvider
     public string SanitizeWordForFrequencyCheck(string input)
     {
         return _normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(input);
+    }
+
+    public List<FrequencyRecord> Take(int numItemsToSkip, int numItemsToTake)
+    {
+        var subset = _frequencyData.Skip(numItemsToSkip).Take(numItemsToTake).Select(x => x.Value).ToList();
+        return subset;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace AnkiCardValidator.Utilities;
+namespace CoreLibrary.Services;
 
 public class NormalFormProvider
 {
@@ -15,7 +15,7 @@ public class NormalFormProvider
         _normalizedStringsCache.EnsureCapacity(60000);
     }
 
-    internal string GetNormalizedFormOfLearnedTermWithCache(string input)
+    public string GetNormalizedFormOfLearnedTermWithCache(string input)
     {
         if (_normalizedStringsCache.TryGetValue(input, out var trimmed))
         {

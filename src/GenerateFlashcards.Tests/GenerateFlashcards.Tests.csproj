@@ -12,6 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\SentenceExtractors\**" />
+    <EmbeddedResource Remove="Services\SentenceExtractors\**" />
+    <None Remove="Services\SentenceExtractors\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
     <PackageReference Include="MSTest.Analyzers" Version="3.5.2">
@@ -32,8 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\SentenceExtractors\" />
-    <Folder Include="Services\TermExtractors\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

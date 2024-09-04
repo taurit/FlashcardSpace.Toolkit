@@ -54,7 +54,9 @@ internal static class DependencyInjection
 
         // Add HttpClient (what Nuget package is needed?)
         services.AddHttpClient();
+
         services.AddSingleton<ImageGenerator>();
+        services.AddSingleton<NormalFormProvider>();
 
         // Add other services
         services.AddTransient<ReferenceTranslator>();

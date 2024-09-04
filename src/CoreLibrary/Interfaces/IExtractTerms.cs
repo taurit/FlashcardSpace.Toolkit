@@ -2,5 +2,6 @@
 
 public interface IExtractTerms
 {
-    Task<List<TermInContext>> ExtractTerms(List<string> extractedSentences, string contentLanguageName);
+    Task<List<TermInContext>> ExtractTerms(string inputFileName, SupportedInputLanguage sourceLanguage,
+        int numItemsToSkip, int numItemsToTake);
 }

@@ -1,4 +1,6 @@
-﻿namespace AnkiCardValidator.Utilities;
+﻿using CoreLibrary.Services;
+
+namespace AnkiCardValidator.Utilities;
 
 public class DuplicateDetectionEqualityComparer(NormalFormProvider normalFormProvider) : IEqualityComparer<string>
 {
