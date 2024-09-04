@@ -18,7 +18,6 @@ namespace GenerateFlashcards.Services;
 /// </summary>
 internal class BuildingBlocksProvider(
     // Sentence extractors
-    ReferenceSentenceExtractor referenceSentenceExtractor,
     FrequencyDictionarySentenceExtractor frequencyDictionarySentenceExtractor,
     AdvancedSentenceExtractor advancedSentenceExtractor,
 

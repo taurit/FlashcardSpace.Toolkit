@@ -59,7 +59,6 @@ internal static class DependencyInjection
         services.AddSingleton<ImageGenerator>();
 
         // Add other services
-        services.AddTransient<ReferenceSentenceExtractor>();
         services.AddTransient<ReferenceTermExtractor>();
         services.AddTransient<ReferenceTranslator>();
 

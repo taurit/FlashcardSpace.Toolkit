@@ -19,7 +19,7 @@ internal sealed class GenerateFlashcardsCommand(
     {
         var sentences = await ExtractSentences(settings);
         var terms = await ExtractTerms(settings, sentences);
-        var termsWithTranslations = await TranslateTerms(settings, terms);
+        //var termsWithTranslations = await TranslateTerms(settings, terms);
 
         return 0;
     }
