@@ -16,9 +16,14 @@ internal class Program
             // convenient when running in Visual Studio to see the exception in place where it was thrown, and not just a message in the console output
             config.PropagateExceptions();
 #endif
-            config.AddCommand<GenerateFlashcardsCommand>("generate")
-                .WithDescription("Generates language-learning flashcards from an input file.")
-                .WithExample("generate", "--inputLanguage", "Spanish", "--outputLanguage", "English", "--inputFileFormat", "FrequencyDictionary", "input.txt")
+            config.AddCommand<GenerateFromFrequencyDictionaryCommand>("generate-from-frequency-dictionary")
+                .WithDescription("Generates flashcards from an input containing word frequency dictionary.")
+                .WithExample("generate-from-frequency-dictionary", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
+                ;
+
+            config.AddCommand<GenerateFromNaturalLanguageCommand>("generate-from-natural-language")
+                .WithDescription("Generates flashcards from an input containing plain text in natural language.")
+                .WithExample("generate-from-natural-language", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
                 ;
 
             config.AddCommand<DebugCommand>("debug")

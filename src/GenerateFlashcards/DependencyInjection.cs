@@ -3,8 +3,6 @@ using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models;
 using GenerateFlashcards.Services;
-using GenerateFlashcards.Services.SentenceExtractors;
-using GenerateFlashcards.Services.TermExtractors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -59,15 +57,9 @@ internal static class DependencyInjection
         services.AddSingleton<ImageGenerator>();
 
         // Add other services
-        services.AddTransient<ReferenceTermExtractor>();
         services.AddTransient<ReferenceTranslator>();
-
-        services.AddTransient<FrequencyDictionarySentenceExtractor>();
-        services.AddTransient<AdvancedSentenceExtractor>();
-
         services.AddTransient<FrequencyDictionaryTermExtractor>();
-
-        services.AddTransient<BuildingBlocksProvider>();
+        services.AddTransient<AdvancedSentenceExtractor>();
 
         IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
             ? new ChatGptClient(

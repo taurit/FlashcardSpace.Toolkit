@@ -14,6 +14,8 @@ internal sealed class DebugCommand(ImageGenerator imageGenerator) : AsyncCommand
 {
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
+        return 0;
+
         CalculateBestCutOffLine();
         return 0;
 

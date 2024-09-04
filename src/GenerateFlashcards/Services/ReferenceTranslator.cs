@@ -1,21 +1,21 @@
 ﻿namespace GenerateFlashcards.Services;
 
-public class ReferenceTranslator : IProvideFieldValues
+public class ReferenceTranslator : IProvideTranslations
 {
-    public async Task<List<Note>> ProcessNotes(List<Note> notes)
+    public async Task<List<Note>> AddTranslations(List<TermInContext> terms)
     {
         var outputNotes = new List<Note>();
 
-        foreach (var note in notes)
+        foreach (var term in terms)
         {
-            var fieldsCopy = new Dictionary<string, string>(note.OtherFields);
+
+            var newNote = new Note(term);
 
             // simulate translation to a fake language "YellingEnglish" (ALL CAPS), without calling any external APIs
-            fieldsCopy["YellingEnglishTranslation"] = note.Term.ToUpperInvariant();
-            fieldsCopy["YellingEnglishDefinition"] = $"SOME DEFINITION OF THE WORD `{note.Term.ToUpperInvariant()}`";
+            var termInTargetLanguage = term.TermOriginal.ToUpperInvariant();
+            var definitionInTargetLanguage = $"DEFINITION OF `{term.TermOriginal.ToUpperInvariant()}`";
 
-            var extendedNote = note with { OtherFields = fieldsCopy };
-            outputNotes.Add(extendedNote);
+            outputNotes.Add(newNote);
         }
 
         return outputNotes;

@@ -7,16 +7,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace GenerateFlashcards.Commands;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Instantiated by the Spectre.Console.Cli framework")]
-internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
+internal sealed class GenerateFromWordListCommandSettings : CommandSettings
 {
     [Description("Path to search. Defaults to current directory.")]
     [CommandArgument(0, "<inputFile>")] // <angleBrackets> mean required, [squareBrackets] mean optional
     public required string InputFilePath { get; init; }
-
-    [Description("Declares the format of an input file's content. If not specified, app will try autodetect the file format.")]
-    [CommandOption("--inputFileFormat")]
-    [DefaultValue(InputFileFormat.Autodetect)]
-    public InputFileFormat InputFileFormat { get; init; }
 
     [Description("Name of the language of the content in the input file (typically, a foreign language we learn).")]
     [CommandOption("--inputLanguage")]
@@ -27,10 +22,6 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
     [CommandOption("--outputLanguage")]
     [DefaultValue(SupportedOutputLanguage.Unknown)]
     public required SupportedOutputLanguage OutputLanguage { get; init; }
-
-    [Description($"Path to an .env file containing secrets required by the application. Read more: https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md")]
-    [CommandOption("--secretsFile")]
-    public required string SecretsFileName { get; init; }
 
     public override ValidationResult Validate()
     {
@@ -53,9 +44,6 @@ internal sealed class GenerateFlashcardsCommandSettings : CommandSettings
 
         if (InputLanguage == SupportedInputLanguage.Autodetect)
             return ValidationResult.Error("The `--inputLanguage` must be set explicitly (the auto-detection is not implemented yet).");
-
-        if (InputFileFormat == InputFileFormat.Autodetect)
-            return ValidationResult.Error("The `--inputFileFormat` must be set explicitly (the auto-detection is not implemented yet).");
 
         return ValidationResult.Success();
     }

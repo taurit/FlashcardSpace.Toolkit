@@ -2,12 +2,12 @@
 using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models;
 
-namespace GenerateFlashcards.Services.TermExtractors;
+namespace GenerateFlashcards.Services;
 public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill) : IExtractTerms
 {
-    public async Task<List<Note>> ExtractTerms(List<string> extractedSentences, string contentInputLanguage)
+    public async Task<List<TermInContext>> ExtractTerms(List<string> extractedSentences, string contentInputLanguage)
     {
-        var notes = new List<Note>();
+        var notes = new List<TermInContext>();
 
         // when working with a frequency dictionary, the sentences are just a list of words without a context.
         var words = extractedSentences;
@@ -22,7 +22,7 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill) : I
         foreach (var word in wordsFilled)
         {
             PartOfSpeech partOfSpeechMapped = word.PartOfSpeech.ToCorePartOfSpeech();
-            var note = new Note(word.Word, word.SentenceExample, word.WordBaseForm, partOfSpeechMapped, []);
+            var note = new TermInContext(word.Word, word.WordBaseForm, word.SentenceExample, partOfSpeechMapped);
             notes.Add(note);
         }
 
