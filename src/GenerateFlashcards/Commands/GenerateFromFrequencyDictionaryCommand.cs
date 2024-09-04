@@ -13,6 +13,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
     {
         var terms = await frequencyDictionaryTermExtractor.ExtractTerms(settings.InputFilePath, settings.InputLanguage, 0, 5);
 
+        logger.LogInformation("{@Terms}", terms);
 
         return 0;
     }

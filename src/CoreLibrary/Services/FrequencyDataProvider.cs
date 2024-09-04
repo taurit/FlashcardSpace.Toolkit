@@ -1,4 +1,6 @@
-﻿namespace CoreLibrary.Services;
+﻿using System.Text.RegularExpressions;
+
+namespace CoreLibrary.Services;
 
 public record FrequencyRecord(string Term, int Position, long NumOccurrences);
 
@@ -47,16 +49,53 @@ public class FrequencyDataProvider
         if (_frequencyData.Any()) return;
 
         var lines = File.ReadAllLines(_frequencyDictionaryFilePath);
+        if (!lines.Any()) throw new InvalidOperationException("Frequency dictionary file is empty.");
 
+        // Autodetect format of frequency dictionary and load data accordingly
+        var isContentInReaFormat = lines[0].Contains("Frec.normalizada");
+        if (isContentInReaFormat)
+            LoadFrequencyData_RealAcademiaEspañolaFormat(lines);
+        else
+            LoadFrequencyData_DefaultFormat(lines);
 
+    }
 
-
+    private void LoadFrequencyData_DefaultFormat(string[] lines)
+    {
         for (var i = 0; i < lines.Length; i++)
         {
             var line = lines[i];
             var parts = line.Split(' ');
             var word = parts[0];
             var numOccurrences = Int64.Parse(parts[1]);
+
+            // in the dataset, duplicates are only found at the long tail (weird "words" with 1 usage like "µe"), so it's not worth to handle them
+            var frequencyRecord = new FrequencyRecord(word, i, numOccurrences);
+            _frequencyData.TryAdd(word, frequencyRecord);
+        }
+    }
+
+    private void LoadFrequencyData_RealAcademiaEspañolaFormat(string[] lines)
+    {
+        // skip headers line
+        const int firstLine = 1;
+
+        // regex to match data like:
+        // Orden Palabra Frec.absoluta Frec.normalizada 
+        // 1.	de	9,999,518 	 65545.55 
+        // 2.	la	6,277,560 	 41148.59 
+        // 3.	que 	4,681,839 	 30688.85 
+        Regex raeLineRegex = new Regex(@"^\s+(?<order>\d+)\.\s+(?<word>[^\s]+)\s+(?<numOccurrences>[\d,]+)\s+.*$");
+
+        for (var i = firstLine; i < lines.Length; i++)
+        {
+            var line = lines[i];
+            var match = raeLineRegex.Match(line);
+            if (!match.Success)
+                throw new InvalidOperationException($"Failed to parse line {i} ('{line}') in RAE frequency dictionary file.");
+
+            var word = match.Groups["word"].Value;
+            var numOccurrences = Int64.Parse(match.Groups["numOccurrences"].Value.Replace(",", ""));
 
             // in the dataset, duplicates are only found at the long tail (weird "words" with 1 usage like "µe"), so it's not worth to handle them
             var frequencyRecord = new FrequencyRecord(word, i, numOccurrences);
