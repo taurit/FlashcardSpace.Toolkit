@@ -11,6 +11,11 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill) : I
 
         // when working with a frequency dictionary, the sentences are just a list of words without a context.
         var words = extractedSentences;
+
+        // so the optimal way to work with frequency dictionary is to learn top N word *families* 
+        // source: https://www.scotthyoung.com/blog/2024/04/02/learn-vocabulary-language/
+
+
         var wordsToFill = words.Select(word => new EnglishWordInContext { Word = word }).ToList();
         var wordsFilled = await generativeFill.FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, wordsToFill);
 
