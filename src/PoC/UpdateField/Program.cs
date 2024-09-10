@@ -17,7 +17,7 @@ internal class Program
     {
         //return;
 
-        var notes = AddPolishTranslationToRemarks.LoadNotesThatRequireAdjustment();
+        var notes = MoveTranslationFromRemarksToFrontText.LoadNotesThatRequireAdjustment();
 
         var chunks = notes.Chunk(30).ToList();
         int chunkNo = 0;
@@ -25,7 +25,7 @@ internal class Program
         {
             Console.WriteLine($"Processing chunk {++chunkNo} of {chunks.Count}...");
             var chunkItems = chunk.ToList();
-            await AddPolishTranslationToRemarks.AddPolishTranslation(chunkItems);
+            await MoveTranslationFromRemarksToFrontText.RunMigration(chunkItems);
             UpdateNotesInDatabase(chunkItems, userConfirmationRequired: false);
 
         }

@@ -91,6 +91,12 @@ public static class RemarksUpdater
 
     public static bool HasRemark(this string? existingRemarks, string @class)
     {
+        var remark = TryGetRemark(existingRemarks, @class);
+        return remark != null;
+    }
+
+    public static string? TryGetRemark(this string? existingRemarks, string @class)
+    {
         existingRemarks = existingRemarks ?? string.Empty;
 
         // Use HtmlAgility pack to determine if div with the class `@class` exists
@@ -98,11 +104,13 @@ public static class RemarksUpdater
         doc.LoadHtml(existingRemarks);
 
         var isValidHtml = IsValidHtml(doc, existingRemarks);
-        if (!isValidHtml) return false;
+        if (!isValidHtml) return null;
 
         // find if there is an existing div with the class `@class`
         var existingDiv = doc.DocumentNode.SelectSingleNode($"//div[contains(@class, '{@class}')]");
-        return existingDiv != null;
+        if (existingDiv is null) return null;
+
+        return existingDiv.OuterHtml;
     }
 
 }

@@ -165,5 +165,20 @@ public class RemarksUpdaterTests
         remarks.HasRemark(scopeToCheck).Should().BeFalse();
     }
 
+    [DataTestMethod]
+    [DataRow("aaabbb<div class=\"scope\">yes</div>", "<div class=\"scope\">yes</div>")]
+    [DataRow("<div class=\"scope unrelatedClass\">yes</div>aaabbb", "<div class=\"scope unrelatedClass\">yes</div>")]
+    public void TryGetRemark_ShouldReturnRemarkTagIfPresent(string remarks, string expected)
+    {
+        remarks.TryGetRemark("scope").Should().Be(expected);
+    }
+
+    [DataTestMethod]
+    [DataRow("aaabbb<div class=\"scope\">yes</div>")]
+    [DataRow("<div class=\"scope unrelatedClass\">yes</div>aaabbb")]
+    public void TryGetRemark_ShouldReturnNullTagIfRemarkNotPresent(string remarks)
+    {
+        remarks.TryGetRemark("scopeThatDoesntExist").Should().BeNull();
+    }
 
 }
