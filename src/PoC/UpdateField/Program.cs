@@ -15,9 +15,17 @@ internal class Program
     /// <param name="args"></param>
     static async Task Main(string[] args)
     {
-        //return;
+        // Configuration
+        IMutation mutationToApply = new FixImperativeCards();
+        bool userConfirmationRequired = true;
 
-        var notes = MoveTranslationFromRemarksToFrontText.LoadNotesThatRequireAdjustment();
+        // Universal code
+        await MigrateNotesInChunks(mutationToApply, userConfirmationRequired);
+    }
+
+    private static async Task MigrateNotesInChunks(IMutation mutation, bool userConfirmationRequired)
+    {
+        var notes = mutation.LoadNotesThatRequireAdjustment();
 
         var chunks = notes.Chunk(30).ToList();
         int chunkNo = 0;
@@ -25,11 +33,10 @@ internal class Program
         {
             Console.WriteLine($"Processing chunk {++chunkNo} of {chunks.Count}...");
             var chunkItems = chunk.ToList();
-            await MoveTranslationFromRemarksToFrontText.RunMigration(chunkItems);
-            UpdateNotesInDatabase(chunkItems, userConfirmationRequired: false);
+            await mutation.RunMigration(chunkItems);
 
+            UpdateNotesInDatabase(chunkItems, userConfirmationRequired: userConfirmationRequired);
         }
-
     }
 
     private static void UpdateNotesInDatabase(List<AnkiNote> notes, bool userConfirmationRequired = true)
