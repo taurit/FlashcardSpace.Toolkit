@@ -15,13 +15,13 @@ public class SecretParameters
         var openAiKeysPresent = true;
         if (string.IsNullOrWhiteSpace(OPENAI_ORGANIZATION_ID))
         {
-            logger.LogWarning($"The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.UrlToDocumentationAboutDefiningUserSecrets}\n");
+            logger.LogWarning($"The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.DocumentationUrlAboutUserSecrets}\n");
             openAiKeysPresent = false;
         }
 
         if (string.IsNullOrWhiteSpace(OPENAI_DEVELOPER_KEY))
         {
-            logger.LogWarning($"The `OPENAI_DEVELOPER_KEY` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.UrlToDocumentationAboutDefiningUserSecrets}");
+            logger.LogWarning($"The `OPENAI_DEVELOPER_KEY` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.DocumentationUrlAboutUserSecrets}");
             openAiKeysPresent = false;
         }
 

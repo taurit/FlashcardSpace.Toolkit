@@ -1,13 +1,13 @@
 ﻿using CoreLibrary.Services.ObjectGenerativeFill;
 using FluentAssertions;
 using GenerateFlashcards.Models;
+using GenerateFlashcards.Models.English;
 using GenerateFlashcards.Tests.Infrastructure;
 
-namespace GenerateFlashcards.Tests.Models;
+namespace GenerateFlashcards.Tests.Models.English;
 
 [TestClass, TestCategory("SkipInGitHubActions")]
-//[Ignore("Skipped to avoid unnecessary costs. Uncomment when modifying the service or changing the AI model.")]
-public class GenerativeFillTests
+public class EnglishWordInContextTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();
 

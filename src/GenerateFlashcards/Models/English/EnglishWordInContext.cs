@@ -1,9 +1,12 @@
 ﻿using CoreLibrary.Services.ObjectGenerativeFill;
 
-namespace GenerateFlashcards.Models;
+namespace GenerateFlashcards.Models.English;
 
 internal class EnglishWordInContext : ObjectWithId
 {
+    /// <summary>
+    /// A word taken from the frequency dictionary, without any known context.
+    /// </summary>
     public string Word { get; init; }
 
     [FillWithAI]

@@ -2,11 +2,25 @@
 
 namespace GenerateFlashcards.Models;
 
+/// <summary>
+/// Warning! gpt-4o-mini with Structured Outputs (!) still can return enum value outside this range. Observed by me and others.
+/// Might be resolved in future models.
+/// </summary>
 internal enum DetectedPartOfSpeech
 {
+    // Easy to teach
     Noun,
     Verb,
     Adjective,
+
+    // Weird ones
+    Adverb,
+    Pronoun,
+    Preposition,
+    Conjunction,
+    Interjection,
+    Article,
+
     Other
 }
 

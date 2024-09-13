@@ -1,7 +1,6 @@
-﻿using CoreLibrary;
-using CoreLibrary.Services;
+﻿using CoreLibrary.Services;
 using CoreLibrary.Services.ObjectGenerativeFill;
-using GenerateFlashcards.Models;
+using GenerateFlashcards.Models.Spanish;
 
 namespace GenerateFlashcards.Services;
 public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, NormalFormProvider normalFormProvider) : IExtractTerms
@@ -31,18 +30,20 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
     {
         var frequencyDictionary = new FrequencyDataProvider(normalFormProvider, inputFileName);
 
-        var wordsToFill = frequencyDictionary
+        var wordsRolesToDetermine = frequencyDictionary
             .Take(numItemsToSkip, numItemsToTake)
-            .Select(record => new EnglishWordInContext { Word = record.Term }).ToList();
+            .Select(record => new SpanishWordPartsOfSpeech { IsolatedWord = record.Term }).ToList();
 
-        var wordsFilled = await generativeFill.FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, wordsToFill);
+        var wordsRolesDetermined = await generativeFill
+            .FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, wordsRolesToDetermine);
 
-        foreach (var word in wordsFilled)
-        {
-            PartOfSpeech partOfSpeechMapped = word.PartOfSpeech.ToCorePartOfSpeech();
-            var term = new TermInContext(word.Word, word.WordBaseForm, word.SentenceExample, partOfSpeechMapped);
-            terms.Add(term);
-        }
+        List<TermInContext> terms = new List<TermInContext>();
+        //foreach (var word in wordsRolesDetermined)
+        //{
+        //    PartOfSpeech partOfSpeechMapped = word.PartOfSpeech.ToCorePartOfSpeech();
+        //    var term = new TermInContext(word.Word, word.WordBaseForm, word.SentenceExample, partOfSpeechMapped);
+        //    terms.Add(term);
+        //}
 
         return terms;
     }

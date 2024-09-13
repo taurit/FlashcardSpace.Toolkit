@@ -34,6 +34,7 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
         logger.LogDebug($"Response not found in cache, retrieving response from model {modelId} (class: {modelClassId})...");
 
         var options = new ChatCompletionOptions();
+        options.Seed = 4815162342; // let's try to have some determinism in the responses to reduce test flakiness
 
         switch (mode)
         {
