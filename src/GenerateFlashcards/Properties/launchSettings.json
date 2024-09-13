@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "(Freq. Dict.) Spanish -> Polish": {
+    "EasyWords: 1000 common adjectives (ES->PL)": {
       "commandName": "Project",
-      "commandLineArgs": "generate-from-frequency-dictionary --inputLanguage EnGLIsH --outputLanguage Polish Resources/FrequencyDictionaries/Spanish.Words.RAE.txt"
+      "commandLineArgs": "generate-from-frequency-dictionary --inputLanguage Spanish --outputLanguage Polish Resources/FrequencyDictionaries/Spanish.Words.RAE.txt"
     },
     "(Natural language) Spanish -> Polish": {
       "commandName": "Project",

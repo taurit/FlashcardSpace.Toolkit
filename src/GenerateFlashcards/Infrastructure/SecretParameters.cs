@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 
-namespace GenerateFlashcards.Models;
+namespace GenerateFlashcards.Infrastructure;
 
 [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Property names match conventions typical for Environment Variables, which is one of the sources of this data")]
-public class SecretsConfiguration
+public class SecretParameters
 {
     public string? OPENAI_ORGANIZATION_ID { get; set; }
     public string? OPENAI_DEVELOPER_KEY { get; set; }

@@ -1,7 +1,7 @@
 using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.ObjectGenerativeFill;
-using GenerateFlashcards.Models;
+using GenerateFlashcards.Infrastructure;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,10 +47,10 @@ internal static class DependencyInjection
             .Build();
 
         // Bind the configuration values to the strongly typed class
-        var secretsConfiguration = new SecretsConfiguration();
-        configuration.Bind(secretsConfiguration);
-        var openAiApiKeysPresent = secretsConfiguration.EnsureOpenAIKeysArePresent(logger);
-        services.AddSingleton(secretsConfiguration);
+        var secretParameters = new SecretParameters();
+        configuration.Bind(secretParameters);
+        var openAiApiKeysPresent = secretParameters.EnsureOpenAIKeysArePresent(logger);
+        services.AddSingleton(secretParameters);
 
         // Add HttpClient (what Nuget package is needed?)
         services.AddHttpClient();
@@ -66,8 +66,8 @@ internal static class DependencyInjection
         IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
             ? new ChatGptClient(
                 logger,
-                secretsConfiguration.OPENAI_ORGANIZATION_ID!,
-                secretsConfiguration.OPENAI_DEVELOPER_KEY!,
+                secretParameters.OPENAI_ORGANIZATION_ID!,
+                secretParameters.OPENAI_DEVELOPER_KEY!,
                 Parameters.ChatGptClientCacheFolder.Value
             )
             : new MockGenerativeAiClient();
