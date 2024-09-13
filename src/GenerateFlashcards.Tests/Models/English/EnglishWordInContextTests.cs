@@ -6,7 +6,8 @@ using GenerateFlashcards.Tests.Infrastructure;
 
 namespace GenerateFlashcards.Tests.Models.English;
 
-[TestClass, TestCategory("SkipInGitHubActions")]
+[TestClass]
+[TestCategory("RequiresGenerativeAi")]
 public class EnglishWordInContextTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();

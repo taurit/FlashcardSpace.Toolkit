@@ -10,7 +10,9 @@ namespace BookToAnki.Tests;
 /// Tests that can be run manually during development, but are not meant to be run regularly.
 /// Typically: ones that use external services, like Dall-A API.
 /// </summary>
-[TestClass, TestCategory("SkipInGitHubActions")]
+[TestClass]
+[TestCategory("SkipInGitHubActions")] // todo: experimental code and not tests, really
+[Ignore]
 public class ManualTests
 {
     [Ignore]

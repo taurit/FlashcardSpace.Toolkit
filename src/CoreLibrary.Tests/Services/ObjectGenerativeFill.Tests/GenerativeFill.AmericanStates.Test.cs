@@ -8,8 +8,8 @@ namespace CoreLibrary.Tests.Services.ObjectGenerativeFill.Tests;
 /// <summary>
 /// These tests use the real OpenAI API, therefore are skipped from running in the pipeline to not generate costs.
 /// </summary>
-[TestClass, TestCategory("SkipInGitHubActions")]
-//[Ignore("Skipped to avoid unnecessary costs. Uncomment when modifying the service or changing the AI model.")]
+[TestClass]
+[TestCategory("RequiresGenerativeAi")]
 public class GenerativeFillAmericanStatesTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();

@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-test:
     runs-on: windows-latest
 
     steps:
@@ -28,4 +28,4 @@ jobs:
       run: dotnet build src/FlashcardSpace.Toolkit.sln --configuration Debug --no-restore
 
     - name: Run unit tests
-      run: dotnet test src/FlashcardSpace.Toolkit.sln --configuration Debug --no-build --no-restore --filter TestCategory!=SkipInGitHubActions --logger "console;verbosity=detailed"
+      run: dotnet test src/FlashcardSpace.Toolkit.sln --configuration Debug --no-build --no-restore --filter "TestCategory!=RequiresGenerativeAi&TestCategory!=SkipInGitHubActions" --logger "console;verbosity=detailed"

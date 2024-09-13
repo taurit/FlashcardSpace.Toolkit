@@ -1,12 +1,12 @@
-﻿using AnkiCardValidator.Utilities;
-using CoreLibrary.Services;
+﻿using CoreLibrary.Services;
 using FluentAssertions;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AnkiCardValidator.Tests.LocalOnly;
 
-[TestClass, TestCategory("SkipInGitHubActions")]
+[TestClass]
+[TestCategory("SkipInGitHubActions")] // todo: use LFS to commit large dictionary and allow run in pipelines? disable? not sure yet
 public class FrequencyDataProviderTest
 {
     private static FrequencyDataProvider _sut = null!;

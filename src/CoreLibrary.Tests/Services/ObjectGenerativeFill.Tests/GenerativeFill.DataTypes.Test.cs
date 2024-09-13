@@ -3,8 +3,8 @@ using FluentAssertions;
 
 namespace CoreLibrary.Tests.Services.ObjectGenerativeFill.Tests;
 
-[TestClass, TestCategory("SkipInGitHubActions")]
-//[Ignore("Skipped to avoid unnecessary costs. Uncomment when modifying the service or changing the AI model.")]
+[TestClass]
+[TestCategory("RequiresGenerativeAi")]
 public class GenerativeFillDataTypesTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();

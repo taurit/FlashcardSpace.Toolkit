@@ -4,7 +4,7 @@ using FluentAssertions;
 namespace CoreLibrary.Tests.Services;
 
 [TestClass]
-[TestCategory("SkipInGitHubActions")]
+[TestCategory("RequiresGenerativeAi")]
 public class GoogleGeminiClientTests
 {
     [TestMethod]

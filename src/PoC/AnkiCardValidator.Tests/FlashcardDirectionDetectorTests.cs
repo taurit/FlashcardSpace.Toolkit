@@ -6,7 +6,8 @@ using FluentAssertions;
 
 namespace AnkiCardValidator.Tests;
 
-[TestClass, TestCategory("SkipInGitHubActions")] // skipped for now to avoid committing large frequency dictionaries with unclear license
+[TestClass]
+[TestCategory("SkipInGitHubActions")] // todo: use LFS to commit large dictionary and allow run in pipelines? disable? not sure yet
 public class FlashcardDirectionDetectorTests
 {
     private static FlashcardDirectionDetector _sut = null!;

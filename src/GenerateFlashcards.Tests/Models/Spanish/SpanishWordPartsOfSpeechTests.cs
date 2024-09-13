@@ -5,9 +5,10 @@ using GenerateFlashcards.Models.Spanish;
 using GenerateFlashcards.Tests.Infrastructure;
 using GenerateFlashcards.Tests.TestInfrastructure;
 
-namespace GenerateFlashcards.Tests.Models.English;
+namespace GenerateFlashcards.Tests.Models.Spanish;
 
-[TestClass, TestCategory("SkipInGitHubActions")]
+[TestClass]
+[TestCategory("RequiresGenerativeAi")]
 public class SpanishWordPartsOfSpeechTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();
