@@ -93,7 +93,7 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
 
         if (resultItems.Count != numInputElements)
         {
-            throw new InvalidOperationException("Number of items in response doesn't match number of items in input.");
+            throw new InvalidOperationException($"Number of items in response ({resultItems.Count}) doesn't match number of items in input ({numInputElements}).");
         }
 
         return resultItems;

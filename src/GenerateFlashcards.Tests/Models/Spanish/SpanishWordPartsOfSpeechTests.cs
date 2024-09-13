@@ -107,7 +107,7 @@ public class SpanishWordPartsOfSpeechTests
         output[1].PossiblePartsOfSpeechUsage[0].PartOfSpeech.Should().Be(DetectedPartOfSpeech.Article);
 
         output[2].IsolatedWord.Should().Be("que");
-        output[2].PossiblePartsOfSpeechUsage.Should().HaveCount(1, because: "que can serve as a conjunction and nothing else.");
+        output[2].PossiblePartsOfSpeechUsage.Should().HaveCountGreaterOrEqualTo(1, because: "que can serve as a conjunction or pronoun.");
         // depending on context it can be a pronoun or conjunction, and ChatGPT gives different answers sometimes. So:
         output[2].PossiblePartsOfSpeechUsage[0].PartOfSpeech.Should().NotBe(DetectedPartOfSpeech.Verb);
         output[2].PossiblePartsOfSpeechUsage[0].PartOfSpeech.Should().NotBe(DetectedPartOfSpeech.Noun);

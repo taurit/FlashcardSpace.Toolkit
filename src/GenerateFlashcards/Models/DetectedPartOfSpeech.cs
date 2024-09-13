@@ -21,6 +21,7 @@ internal enum DetectedPartOfSpeech
     Interjection,
     Article,
 
+    WordNotRecognized,
     Other
 }
 
