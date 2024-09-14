@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
-using System.Reflection;
-using System.Text;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
 
@@ -46,15 +44,12 @@ public class GenerativeFillSchemaProvider
         var typeOfSingleItem = typeof(TSingleItem);
 
         // have cache expire after any changes in AI prompt defined in attributes
-        var typeFingerprint = GenerateTypeFingerprint(typeOfSingleItem);
+        var typeFingerprint = ClassFingerprintProvider.GenerateTypeFingerprint(typeOfSingleItem);
 
         var schemaCacheFileName = $"schema-" +
-                                  $"arr-" +
-                                  $"{typeFingerprint.GetHashCodeStable(4)}" +
-                                  $"-" +
-                                  $"{typeOfSingleItem.FullName!.GetHashCodeStable(4)}" +
-                                  $"-" +
-                                  $"{typeOfSingleItem.Name.GetFilenameFriendlyString()}" +
+                                  $"{typeOfSingleItem.Name.GetFilenameFriendlyString()}-" +
+                                  $"array-" +
+                                  $"f{typeFingerprint.GetHashCodeStable(4)}" +
                                   $".json";
 
         var schemaCacheFilePath = Path.Combine(_generativeFillCacheFolder, schemaCacheFileName);
@@ -75,37 +70,5 @@ public class GenerativeFillSchemaProvider
         var schemaString = File.ReadAllText(schemaCacheFilePath);
 
         return schemaString;
-    }
-
-    /// <summary>
-    /// This method generates unique string fingerprint for the type of single item.
-    /// The fingerprint should change whenever:
-    /// - any of the property names changes
-    /// - properties order change
-    /// - presence of [FillWithAI] attribute on any property changed
-    /// - presence of [FillWithAIRule] attribute on any property changed
-    /// - the content of [FillWithAIRule] attribute changed
-    /// </summary>
-    /// <param name="typeOfSingleItem">A type to generate the fingerprint for</param>
-    /// <returns>An arbitrary string that wil remain the same if type didn't change, but differs if it changed.</returns>
-    private string GenerateTypeFingerprint(Type typeOfSingleItem)
-    {
-        var properties = typeOfSingleItem.GetProperties();
-        var fingerprint = new StringBuilder();
-
-        foreach (var property in properties)
-        {
-            fingerprint.AppendLine($"Property: {property.Name}");
-            fingerprint.AppendLine($"Has FillWithAIAttribute: {property.GetCustomAttribute<FillWithAIAttribute>() != null}");
-
-            var ruleAttributes = property.GetCustomAttributes<FillWithAIRuleAttribute>();
-            foreach (var ruleAttribute in ruleAttributes)
-                fingerprint.AppendLine($"FillWithAIRuleAttribute text: {ruleAttribute.RuleText}");
-
-            fingerprint.AppendLine($"");
-        }
-
-        var generateTypeFingerprint = fingerprint.ToString();
-        return generateTypeFingerprint;
     }
 }

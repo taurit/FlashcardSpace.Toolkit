@@ -34,7 +34,7 @@ internal class GenerativeFillCache
         {
             var itemKeyValue = GetPrimaryKeyValue(item);
             string itemTypeName = item.GetType().Name;
-            var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue, seed);
+            var cacheFilePath = GenerateCacheFilePath<T>(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue, seed);
 
             if (File.Exists(cacheFilePath))
                 continue;
@@ -53,7 +53,7 @@ internal class GenerativeFillCache
     ) where T : ObjectWithId, new()
     {
         var itemTypeName = typeof(T).Name;
-        var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue, seed);
+        var cacheFilePath = GenerateCacheFilePath<T>(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue, seed);
 
         if (!File.Exists(cacheFilePath))
             return null;
@@ -68,16 +68,25 @@ internal class GenerativeFillCache
         return deserializedItem;
     }
 
-    private string GenerateCacheFilePath(string modelClassId, string systemChatMessage, string promptTemplate, string itemTypeName,
+    private string GenerateCacheFilePath<T>(string modelClassId, string systemChatMessage, string promptTemplate, string itemTypeName,
         string itemKeyValue, int seed)
     {
-        var cacheFileName = $"{modelClassId}_" +
-                            $"{itemTypeName}_" +
-                            $"s{systemChatMessage.GetHashCodeStable(3)}_" +
-                            $"p{promptTemplate.GetHashCodeStable(3)}_" +
-                            $"k{itemKeyValue.GetHashCodeStable(3)}_" +
-                            $"r{seed}_" +
-                            $"{itemKeyValue.GetFilenameFriendlyString()}" +
+        var typeFingerprint = ClassFingerprintProvider.GenerateTypeFingerprint(typeof(T));
+
+        var cacheFileName = $"{itemTypeName}-" +
+                            $"{itemKeyValue.GetFilenameFriendlyString()}-" +
+                            $"{modelClassId}-" +
+                            $"s{systemChatMessage.GetHashCodeStable(3)}-" +
+
+                            // explicit prompt needs to be in a cache key
+                            $"p{promptTemplate.GetHashCodeStable(3)}-" +
+                            // but requested JSON Schema of a response also contains prompt-like hints, and needs to be included
+                            // so cache is invalidated when it changes
+                            $"f{typeFingerprint.GetHashCodeStable(3)}-" +
+
+                            $"k{itemKeyValue.GetHashCodeStable(3)}-" +
+                            $"r{seed}" +
+
                             $".json" // Generative fill uses Structured Outputs and response is always JSON
             ;
 

@@ -38,7 +38,7 @@ public class ChatGptClient : IGenerativeAiClient
         var stableHash = (prompt + outputSchema).GetHashCodeStable();
         // proper extensions helps debugging (e.g. VS Code highlights JSON files if they have proper extension only)
         var cacheFileExtension = mode == GenerativeAiClientResponseMode.PlainText ? "txt" : "json";
-        var responseCacheFileName = $"{modelClassId}_{stableHash}_{seed}.{cacheFileExtension}";
+        var responseCacheFileName = $"{modelClassId}_{stableHash}_r{seed}.{cacheFileExtension}";
         var responseToPromptFileName = Path.Combine(_persistentCacheRootFolder, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))

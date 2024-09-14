@@ -39,10 +39,10 @@ internal class PossiblePartOfSpeech
     public DetectedPartOfSpeech PartOfSpeech { get; init; }
 
     [FillWithAI]
-    [FillWithAIRule("For nouns (e.g., 'gatos'), provide the singular form with its appropriate article ('el gato').")]
+    [FillWithAIRule("For nouns (e.g., 'gatos'), provide the singular form with a definite article ('el gato').")]
     [FillWithAIRule("For verbs (e.g., 'vive'), provide the infinitive form ('vivir').")]
     [FillWithAIRule("For adjectives (e.g., 'verdes'), provide the singular masculine form ('verde').")]
-    [FillWithAIRule("Use the most commonly recognized base form.")]
+    [FillWithAIRule("For other parts of speech, use the most commonly recognized base form.")]
     public string WordBaseForm { get; init; }
 
     [FillWithAI]
