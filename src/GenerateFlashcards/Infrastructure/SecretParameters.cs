@@ -9,22 +9,37 @@ public class SecretParameters
     public string? OPENAI_ORGANIZATION_ID { get; set; }
     public string? OPENAI_DEVELOPER_KEY { get; set; }
 
-    public bool EnsureOpenAIKeysArePresent(ILogger logger)
+    public string? AZURE_TEXT_TO_SPEECH_KEY { get; set; }
+    public string? AZURE_TEXT_TO_SPEECH_REGION { get; set; }
+
+    public bool WarnIfGenerativeAIKeysAreNotPresent(ILogger logger)
     {
         // write out values
-        var openAiKeysPresent = true;
+        var genAiKeysPresent = true;
         if (string.IsNullOrWhiteSpace(OPENAI_ORGANIZATION_ID))
         {
             logger.LogWarning($"The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.DocumentationUrlAboutUserSecrets}\n");
-            openAiKeysPresent = false;
+            genAiKeysPresent = false;
         }
 
         if (string.IsNullOrWhiteSpace(OPENAI_DEVELOPER_KEY))
         {
             logger.LogWarning($"The `OPENAI_DEVELOPER_KEY` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {Parameters.DocumentationUrlAboutUserSecrets}");
-            openAiKeysPresent = false;
+            genAiKeysPresent = false;
         }
 
-        return openAiKeysPresent;
+        if (string.IsNullOrWhiteSpace(AZURE_TEXT_TO_SPEECH_KEY))
+        {
+            logger.LogWarning($"The `AZURE_TEXT_TO_SPEECH_KEY` secret is missing in configuration. Application will not generate audio files. Read how to configure: {Parameters.DocumentationUrlAboutUserSecrets}");
+            genAiKeysPresent = false;
+        }
+
+        if (string.IsNullOrWhiteSpace(AZURE_TEXT_TO_SPEECH_REGION))
+        {
+            logger.LogWarning($"The `AZURE_TEXT_TO_SPEECH_REGION` secret is missing in configuration. Application will not generate audio files. Read how to configure: {Parameters.DocumentationUrlAboutUserSecrets}");
+            genAiKeysPresent = false;
+        }
+
+        return genAiKeysPresent;
     }
 }

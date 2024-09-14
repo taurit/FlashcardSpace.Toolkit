@@ -1,5 +1,6 @@
 using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients;
+using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Infrastructure;
 using GenerateFlashcards.Services;
@@ -49,7 +50,7 @@ internal static class DependencyInjection
         // Bind the configuration values to the strongly typed class
         var secretParameters = new SecretParameters();
         configuration.Bind(secretParameters);
-        var openAiApiKeysPresent = secretParameters.EnsureOpenAIKeysArePresent(logger);
+        var openAiApiKeysPresent = secretParameters.WarnIfGenerativeAIKeysAreNotPresent(logger);
         services.AddSingleton(secretParameters);
 
         // Add HttpClient (what Nuget package is needed?)
@@ -77,6 +78,9 @@ internal static class DependencyInjection
 
         GenerativeFill generativeFill = new(generativeAiClient, Parameters.GenerativeFillCacheFolder.Value);
         services.AddSingleton(generativeFill);
+
+        TextToSpeechClient ttsClient = new TextToSpeechClient(secretParameters.AZURE_TEXT_TO_SPEECH_KEY!, secretParameters.AZURE_TEXT_TO_SPEECH_REGION!);
+        services.AddSingleton(ttsClient);
 
         return new ServiceCollectionRegistrar(services);
     }

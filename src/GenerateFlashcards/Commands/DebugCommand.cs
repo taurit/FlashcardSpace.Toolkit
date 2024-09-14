@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Services;
+using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
@@ -10,10 +11,20 @@ namespace GenerateFlashcards.Commands;
 /// A temporary command just for convenience of testing some pieces code with "F5" (Run) in Visual Studio.
 /// </summary>
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-internal sealed class DebugCommand(ImageGenerator imageGenerator) : AsyncCommand<DebugCommandSettings>
+internal sealed class DebugCommand(
+        ImageGenerator imageGenerator,
+        TextToSpeechClient ttsClient
+
+    ) : AsyncCommand<DebugCommandSettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
+        //(await ttsClient.GenerateAudioFile("Hola, como estas?", SupportedInputLanguage.Spanish)).SaveToTemporaryFileAndPlay();
+        //(await ttsClient.GenerateAudioFile("Siemano! Co słychać?", SupportedTtsLanguage.Polish)).SaveToTemporaryFileAndPlay();
+        //(await ttsClient.GenerateAudioFile("Hi, how are you?", SupportedTtsLanguage.English)).SaveToTemporaryFileAndPlay();
+
+        await Task.Delay(1000);
+
         return 0;
 
         CalculateBestCutOffLine();
@@ -32,6 +43,7 @@ internal sealed class DebugCommand(ImageGenerator imageGenerator) : AsyncCommand
 
         return 0;
     }
+
 
     private record WordOccurrence(string Word, Int64 NumOccurrences);
     /// <summary>
@@ -62,5 +74,17 @@ internal sealed class DebugCommand(ImageGenerator imageGenerator) : AsyncCommand
             }
             lineNumber++;
         }
+    }
+}
+
+static class AudioFileExtensions
+{
+
+    public static async void SaveToTemporaryFileAndPlay(this byte[] audioFile)
+    {
+        var audioFilePath = $"d:/testAAA.mp3";
+        await File.WriteAllBytesAsync(audioFilePath, audioFile);
+        var processStartInfoA = new ProcessStartInfo(audioFilePath) { UseShellExecute = true };
+        Process.Start(processStartInfoA);
     }
 }
