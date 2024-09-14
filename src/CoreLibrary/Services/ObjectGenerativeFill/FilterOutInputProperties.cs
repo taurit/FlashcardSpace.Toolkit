@@ -18,15 +18,15 @@ public class FilterOutInputProperties<TSingleItem> : DefaultContractResolver
         if (type == typeof(TSingleItem))
         {
             var propertiesToIncludeInSchema = allProperties
-                //.Where(p => p.AttributeProvider.GetAttributes(typeof(FillWithAIAttribute), true).Any() ||
-                //            p.PropertyName == nameof(ObjectWithId.Id)
-                //            )
+                // We can exclude input properties (and leave just ID) to save on output tokens expenses.
+                // It works MOST of the time. But sometimes it skips array elements in response, or duplicates them.
+                // Not sure yet if including them in output will increase reliability...
+                .Where(p => p.AttributeProvider.GetAttributes(typeof(FillWithAIAttribute), true).Any() || p.PropertyName == nameof(ObjectWithId.Id))
+                // filter out getter-only properties
+                .Where(p => p.Writable)
                 .ToList();
 
-            // theoretically we can exclude input properties (and leave just ID) to save on output tokens.
-            // it works MOST of the time. But sometimes it skips array elements in response, or duplicates them.
-            // I'll see if re-writing input properties to output can help with that. That might help the algorithm
-            // notice inconsistency in generated data.
+
 
             return propertiesToIncludeInSchema;
         }

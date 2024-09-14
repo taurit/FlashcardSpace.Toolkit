@@ -139,6 +139,9 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
             if (prop.Name == "Id")
                 continue;
 
+            if (!prop.CanWrite)
+                continue;
+
             var aiFilledProperty = prop.GetCustomAttribute<FillWithAIAttribute>() is not null;
             if (!aiFilledProperty)
             {

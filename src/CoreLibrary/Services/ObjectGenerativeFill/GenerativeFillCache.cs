@@ -107,7 +107,7 @@ internal class GenerativeFillCache
         if (primaryKeyProperty != null)
             return primaryKeyProperty.GetValue(item)?.ToString() ?? "";
 
-        var inputProperties = properties.Where(p => p.GetCustomAttribute<FillWithAIAttribute>() == null && p.Name != "Id").ToList();
+        var inputProperties = properties.Where(p => p.GetCustomAttribute<FillWithAIAttribute>() == null && p.Name != "Id" && p.CanWrite).ToList();
         if (inputProperties.Count == 1)
             return inputProperties[0].GetValue(item)?.ToString() ?? "";
 

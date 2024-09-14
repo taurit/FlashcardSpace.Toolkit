@@ -1,7 +1,6 @@
 ﻿using CoreLibrary;
 using CoreLibrary.Services;
 using CoreLibrary.Services.ObjectGenerativeFill;
-using GenerateFlashcards.Models;
 using GenerateFlashcards.Models.Spanish;
 
 namespace GenerateFlashcards.Services;
@@ -32,7 +31,8 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
 
         var wordsToAnalyze = frequencyDictionary
             .Take(numItemsToSkip, numItemsToTake)
-            .Select(record => new SpanishWordPartsOfSpeech { IsolatedWord = record.Term }).ToList();
+            //  todo don't limit to adjectives, unless that's the filter
+            .Select(record => new SpanishAdjectiveDetector { IsolatedWord = record.Term }).ToList();
 
         var words = await generativeFill
             .FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, wordsToAnalyze);
@@ -41,16 +41,15 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
 
         foreach (var word in words)
         {
-            foreach (var possiblePartOfSpeech in word.PossiblePartsOfSpeechUsage)
+            if (word.IsAdjective)
             {
-                PartOfSpeech partOfSpeechMapped = possiblePartOfSpeech.PartOfSpeech.ToCorePartOfSpeech();
                 var term = new TermInContext(word.IsolatedWord,
-                        possiblePartOfSpeech.WordBaseForm,
-                        possiblePartOfSpeech.SentenceExample,
-                        partOfSpeechMapped
-                    );
+                    word.BaseForm!,
+                    word.SentenceExample,
+                    PartOfSpeech.Adjective);
                 terms.Add(term);
             }
+
 
         }
 
