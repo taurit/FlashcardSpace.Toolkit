@@ -17,7 +17,7 @@ internal class Program
             config.PropagateExceptions();
 #endif
             config.AddCommand<GenerateFromFrequencyDictionaryCommand>("generate-from-frequency-dictionary")
-                .WithDescription("Generates flashcards from an input containing word frequency dictionary.")
+                .WithDescription("Generates flashcards with from an input containing word frequency dictionary.")
                 .WithExample("generate-from-frequency-dictionary", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
                 ;
 

@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Services.GenerativeAiClients;
+using CoreLibrary.Utilities;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -62,7 +63,10 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
                 var apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCallChunk.Count);
                 var newOutputItems = ReplacePlaceholdersWithFullObjects(outputItems, apiResultItems);
 
-                _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, seed, newOutputItems);
+                var newItemsToStoreInCacheIds = apiResultItems.Select(x => x.Id).ToHashSet();
+                var newItemsToStoreInCache = newOutputItems.Where(x => newItemsToStoreInCacheIds.Contains(x.Id)).ToList();
+                _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, seed, newItemsToStoreInCache);
+
                 outputItems = newOutputItems;
             }
 
@@ -87,7 +91,11 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
     private static List<T> DeserializeResponse<T>(string response, int numInputElements) where T : ObjectWithId, new()
     {
         var deserializationOptions = new JsonSerializerOptions();
-        deserializationOptions.Converters.Add(new JsonStringEnumConverter());
+
+        // gpt-4o-mini hallucinates on enum value despite Structured Output;
+        // https://community.openai.com/t/structured-outputs-deep-dive/930169/40
+        // a workaround is to use a custom JsonStringEnumConverterWithFallback: 
+        deserializationOptions.Converters.Add(new JsonStringEnumConverterWithFallback());
         var resultObject = JsonSerializer.Deserialize<ArrayOfItemsWithIds<T>>(response, deserializationOptions);
         var resultItems = resultObject.Items;
 
@@ -101,7 +109,7 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
 
     private static List<T> ReplacePlaceholdersWithFullObjects<T>(List<T> partiallyFilledList, List<T> elementsFromApi) where T : ObjectWithId
     {
-        var completelyFilledList = new List<T>();
+        var partiallyFilledListIncludingCurrentChunk = new List<T>();
 
         foreach (var element in partiallyFilledList)
         {
@@ -111,16 +119,16 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
             if (apiResult == null)
             {
                 // object already read from cache earlier; rewrite to output
-                completelyFilledList.Add(element);
+                partiallyFilledListIncludingCurrentChunk.Add(element);
             }
             else
             {
                 // fill out the missing properties first
                 CloneValuesOfPropertiesWithoutAttributes(element, apiResult);
-                completelyFilledList.Add(apiResult);
+                partiallyFilledListIncludingCurrentChunk.Add(apiResult);
             }
         }
-        return completelyFilledList;
+        return partiallyFilledListIncludingCurrentChunk;
     }
 
     private static void CloneValuesOfPropertiesWithoutAttributes<T>(T element, T apiResult) where T : ObjectWithId

@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Services.ObjectGenerativeFill;
+using GenerateFlashcards.Models.Spanish;
 
 namespace GenerateFlashcards.Models.English;
 
@@ -22,7 +23,7 @@ internal class EnglishWordInContext : ObjectWithId
 
     [FillWithAI]
     [FillWithAIRule($"Part of speech, consistent with the {nameof(WordBaseForm)} property.")]
-    [FillWithAIRule($"The value '{nameof(DetectedPartOfSpeech.Other)}' serves as a fallback, if no other available option fits.")]
-    public DetectedPartOfSpeech PartOfSpeech { get; init; }
+    [FillWithAIRule($"The value '{nameof(EnglishPartOfSpeech.Other)}' serves as a fallback, if no other available option fits.")]
+    public EnglishPartOfSpeech PartOfSpeech { get; init; }
 }
 

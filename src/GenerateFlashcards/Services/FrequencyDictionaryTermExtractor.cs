@@ -1,5 +1,7 @@
-﻿using CoreLibrary.Services;
+﻿using CoreLibrary;
+using CoreLibrary.Services;
 using CoreLibrary.Services.ObjectGenerativeFill;
+using GenerateFlashcards.Models;
 using GenerateFlashcards.Models.Spanish;
 
 namespace GenerateFlashcards.Services;
@@ -13,8 +15,6 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
     )
     {
         List<TermInContext>? extractedTerms;
-
-
 
         // Hints for ChatGPT model vary depending on the language.
         // I think a generic implementation working with several languages would be more complex overall.
@@ -30,20 +30,29 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
     {
         var frequencyDictionary = new FrequencyDataProvider(normalFormProvider, inputFileName);
 
-        var wordsRolesToDetermine = frequencyDictionary
+        var wordsToAnalyze = frequencyDictionary
             .Take(numItemsToSkip, numItemsToTake)
             .Select(record => new SpanishWordPartsOfSpeech { IsolatedWord = record.Term }).ToList();
 
-        var wordsRolesDetermined = await generativeFill
-            .FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, wordsRolesToDetermine);
+        var words = await generativeFill
+            .FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, wordsToAnalyze);
 
         List<TermInContext> terms = new List<TermInContext>();
-        //foreach (var word in wordsRolesDetermined)
-        //{
-        //    PartOfSpeech partOfSpeechMapped = word.PartOfSpeech.ToCorePartOfSpeech();
-        //    var term = new TermInContext(word.Word, word.WordBaseForm, word.SentenceExample, partOfSpeechMapped);
-        //    terms.Add(term);
-        //}
+
+        foreach (var word in words)
+        {
+            foreach (var possiblePartOfSpeech in word.PossiblePartsOfSpeechUsage)
+            {
+                PartOfSpeech partOfSpeechMapped = possiblePartOfSpeech.PartOfSpeech.ToCorePartOfSpeech();
+                var term = new TermInContext(word.IsolatedWord,
+                        possiblePartOfSpeech.WordBaseForm,
+                        possiblePartOfSpeech.SentenceExample,
+                        partOfSpeechMapped
+                    );
+                terms.Add(term);
+            }
+
+        }
 
         return terms;
     }

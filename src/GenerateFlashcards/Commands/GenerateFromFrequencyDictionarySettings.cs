@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using CoreLibrary;
+using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -21,6 +22,14 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
     [CommandOption("--outputLanguage")]
     [DefaultValue(SupportedOutputLanguage.Unknown)]
     public required SupportedOutputLanguage OutputLanguage { get; init; }
+
+    /// <summary>
+    /// This filter is added because I want to generate a few decks focused on concrete Parts of Speech (e.g. Adjectives, Nouns, Verbs).
+    /// </summary>
+    [Description("If present, only the words representing given Part of Speech will be included in the output.")]
+    [CommandOption("--partOfSpeech")]
+    [DefaultValue(SupportedOutputLanguage.Unknown)]
+    public required PartOfSpeech? PartOfSpeechFilter { get; init; }
 
     public override ValidationResult Validate()
     {

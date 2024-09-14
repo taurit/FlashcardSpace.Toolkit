@@ -50,7 +50,8 @@ public class ChatGptClient : IGenerativeAiClient
         _logger.LogDebug($"Response not found in cache, retrieving response from model {modelId} (class: {modelClassId})...");
 
         var options = new ChatCompletionOptions();
-        options.Seed = seed; // let's try to have some determinism in the responses to reduce test flakiness
+        options.Seed = seed; // let's try to have some determinism in the responses to reduce test flakiness (beta feature)
+        // comment: adds some determinism, but every few attempts I get different response with different system_fingerprint. So it's not reliable yet.
 
         switch (mode)
         {
