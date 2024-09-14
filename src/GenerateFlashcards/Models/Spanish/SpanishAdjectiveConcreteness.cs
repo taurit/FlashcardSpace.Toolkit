@@ -25,7 +25,7 @@ internal class SpanishAdjectiveConcreteness : ObjectWithId
     [FillWithAIRule("False for abstract, demonstrative, or less concrete adjectives (e.g., este, aquel, cada).")]
     public bool IsConcrete { get; init; }
 
-    //[FillWithAI]
-    //[FillWithAIRule("Provide a brief explanation of why the adjective is classified as concrete or non-concrete.")]
-    //public string Explanation { get; init; }
+    [FillWithAI]
+    [FillWithAIRule("A brief explanation of why the adjective is classified as concrete or non-concrete.")]
+    public string Explanation { get; init; }
 }
