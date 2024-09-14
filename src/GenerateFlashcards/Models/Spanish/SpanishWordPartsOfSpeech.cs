@@ -41,10 +41,10 @@ internal class SpanishWordPartsOfSpeech : ObjectWithId
     public string AllPossiblePartsOfSpeech { get; init; }
 
 
-    [FillWithAI]
-    [FillWithAIRule($"Provide a brief explanation of ALL the parts of speech listed in {nameof(PossiblePartsOfSpeechUsage)} and why they are included.")]
-    [FillWithAIRule("If any part of speech is not included, explain why it was omitted.")]
-    public string Explanation { get; init; }
+    //[FillWithAI]
+    //[FillWithAIRule($"Provide a brief explanation of ALL the parts of speech listed in {nameof(PossiblePartsOfSpeechUsage)} and why they are included.")]
+    //[FillWithAIRule("If any part of speech is not included, explain why it was omitted.")]
+    //public string Explanation { get; init; }
 }
 
 internal class PossiblePartOfSpeech
