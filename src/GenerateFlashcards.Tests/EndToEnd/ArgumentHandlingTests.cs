@@ -34,7 +34,7 @@ public class ArgumentHandlingTests
         var executablePath = GetPathToExecutable();
 
         // Act
-        var result = await ProcessRunner.Run(executablePath, arguments: "generate");
+        var result = await ProcessRunner.Run(executablePath, arguments: "generate-from-natural-language");
 
         // Assert
         result.StatusCode.Should().NotBe(0);
@@ -49,7 +49,7 @@ public class ArgumentHandlingTests
 
         // Act
         var result = await ProcessRunner.Run(executablePath,
-            arguments: "generate --inputLanguage klingon --outputLanguage English Resources/InputExample.Spanish.PlainText.txt");
+            arguments: "generate-from-natural-language --inputLanguage klingon --outputLanguage English Resources/InputExample.Spanish.PlainText.txt");
 
         // Assert
         result.StatusCode.Should().NotBe(0);
@@ -66,7 +66,7 @@ public class ArgumentHandlingTests
 
         // Act
         var result = await ProcessRunner.Run(executablePath,
-            arguments: "generate --inputLanguage Spanish --outputLanguage English ThisFileDoesNotExist.txt");
+            arguments: "generate-from-natural-language --inputLanguage Spanish --outputLanguage English ThisFileDoesNotExist.txt");
 
         // Assert
         result.StatusCode.Should().NotBe(0);

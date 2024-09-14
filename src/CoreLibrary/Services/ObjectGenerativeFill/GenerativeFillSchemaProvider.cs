@@ -5,8 +5,18 @@ using Newtonsoft.Json.Schema.Generation;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
 
-public class GenerativeFillSchemaProvider(string generativeFillCacheFolder)
+public class GenerativeFillSchemaProvider
 {
+    private readonly string _generativeFillCacheFolder;
+
+    public GenerativeFillSchemaProvider(string generativeFillCacheFolder)
+    {
+        _generativeFillCacheFolder = generativeFillCacheFolder;
+
+        // Ensure the folder exists (does nothing if it exists already
+        Directory.CreateDirectory(generativeFillCacheFolder);
+    }
+
     /// <summary>
     /// Generates expected JSON schema for a ChatGPT containing an array of items of specific type.
     /// The response is wrapped in an object with the `Items` property. Example of a response:
@@ -45,7 +55,7 @@ public class GenerativeFillSchemaProvider(string generativeFillCacheFolder)
                                   $"{typeOfSingleItem.Name.GetFilenameFriendlyString()}" +
                                   $".json";
 
-        var schemaCacheFilePath = Path.Combine(generativeFillCacheFolder, schemaCacheFileName);
+        var schemaCacheFilePath = Path.Combine(_generativeFillCacheFolder, schemaCacheFileName);
 
         if (!File.Exists(schemaCacheFilePath))
         {

@@ -6,8 +6,24 @@ using System.ClientModel;
 
 namespace CoreLibrary.Services.GenerativeAiClients;
 
-public class ChatGptClient(ILogger logger, string openAiOrganization, string openAiDeveloperKey, string persistentCacheRootFolder) : IGenerativeAiClient
+public class ChatGptClient : IGenerativeAiClient
 {
+    private readonly ILogger _logger;
+    private readonly string _openAiOrganization;
+    private readonly string _openAiDeveloperKey;
+    private readonly string _persistentCacheRootFolder;
+
+    public ChatGptClient(ILogger logger, string openAiOrganization, string openAiDeveloperKey, string persistentCacheRootFolder)
+    {
+        _logger = logger;
+        _openAiOrganization = openAiOrganization;
+        _openAiDeveloperKey = openAiDeveloperKey;
+        _persistentCacheRootFolder = persistentCacheRootFolder;
+
+        // Ensure the folder exists (does nothing if it exists already
+        Directory.CreateDirectory(persistentCacheRootFolder);
+    }
+
     public async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt,
         GenerativeAiClientResponseMode mode, string? outputSchema = null)
     {
@@ -16,22 +32,22 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
         if (mode is not GenerativeAiClientResponseMode.StructuredOutput && outputSchema is not null)
             throw new ArgumentException("Schema is only allowed for StructuredOutput mode.");
 
-        var openAiClientOptions = new OpenAIClientOptions { OrganizationId = openAiOrganization };
-        ChatClient client = new(model: modelId, new ApiKeyCredential(openAiDeveloperKey), openAiClientOptions);
+        var openAiClientOptions = new OpenAIClientOptions { OrganizationId = _openAiOrganization };
+        ChatClient client = new(model: modelId, new ApiKeyCredential(_openAiDeveloperKey), openAiClientOptions);
 
         var stableHash = (prompt + outputSchema).GetHashCodeStable();
         // proper extensions helps debugging (e.g. VS Code highlights JSON files if they have proper extension only)
         var cacheFileExtension = mode == GenerativeAiClientResponseMode.PlainText ? "txt" : "json";
         var responseCacheFileName = $"{modelClassId}_{stableHash}.{cacheFileExtension}";
-        var responseToPromptFileName = Path.Combine(persistentCacheRootFolder, responseCacheFileName);
+        var responseToPromptFileName = Path.Combine(_persistentCacheRootFolder, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
         {
-            logger.LogDebug("Response for the prompt found in cache, re-using.");
+            _logger.LogDebug("Response for the prompt found in cache, re-using.");
             var fileContent = await File.ReadAllTextAsync(responseToPromptFileName);
             return fileContent;
         }
-        logger.LogDebug($"Response not found in cache, retrieving response from model {modelId} (class: {modelClassId})...");
+        _logger.LogDebug($"Response not found in cache, retrieving response from model {modelId} (class: {modelClassId})...");
 
         var options = new ChatCompletionOptions();
         options.Seed = 4815162342; // let's try to have some determinism in the responses to reduce test flakiness
@@ -63,7 +79,7 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
         var responseToPrompt = completion.Content[0].Text;
 
         await File.WriteAllTextAsync(responseToPromptFileName, responseToPrompt);
-        logger.LogDebug($"Query finished, the usage was {completion.Usage.InputTokens} input tokens and {completion.Usage.OutputTokens} output tokens.");
+        _logger.LogDebug($"Query finished, the usage was {completion.Usage.InputTokens} input tokens and {completion.Usage.OutputTokens} output tokens.");
 
         return responseToPrompt;
     }
