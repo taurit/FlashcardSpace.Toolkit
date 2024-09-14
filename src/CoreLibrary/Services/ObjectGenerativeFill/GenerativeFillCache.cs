@@ -6,21 +6,13 @@ using System.Text.Json.Serialization;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
-internal class GenerativeFillCache
+internal class GenerativeFillCache(string rootFolder)
 {
-    private readonly string _rootFolder;
-    private readonly JsonSerializerOptions _serializationOptions;
-
-    public GenerativeFillCache(string rootFolder)
+    private readonly JsonSerializerOptions _serializationOptions = new()
     {
-        _rootFolder = rootFolder;
-        Directory.CreateDirectory(rootFolder);
-
-        _serializationOptions = new JsonSerializerOptions();
-        _serializationOptions.Converters.Add(new JsonStringEnumConverter());
-        _serializationOptions.WriteIndented = true; // for convenience in debugging only
-
-    }
+        WriteIndented = true, // needed for convenience in debugging only
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     public void SaveToCache<T>(
             string modelClassId,
@@ -44,7 +36,7 @@ internal class GenerativeFillCache
         }
     }
 
-    public T? ReadFromCache<T>(
+    private T? ReadFromCache<T>(
         string modelClassId,
         string systemChatMessage,
         string promptTemplate,
@@ -90,7 +82,9 @@ internal class GenerativeFillCache
                             $".json" // Generative fill uses Structured Outputs and response is always JSON
             ;
 
-        var cacheFilePath = Path.Combine(_rootFolder, cacheFileName);
+        var cacheFilePath = Path.Combine(rootFolder, cacheFileName);
+        rootFolder.EnsureDirectoryExists();
+
         return cacheFilePath;
     }
 

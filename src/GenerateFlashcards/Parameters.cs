@@ -19,7 +19,8 @@ internal static class Parameters
     /// generated with `gpt-4o-preview` to remain utilized after upgrade to `gpt-4o`, just use the same value here.
     public const string OpenAiModelClassId = "gpt-4o";
 
-    private static Lazy<string> RootAppDataFolder => new(() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches"));
-    internal static Lazy<string> ChatGptClientCacheFolder => new(() => Path.Combine(RootAppDataFolder.Value, "GenerateFlashcards.ChatGptClient"));
-    internal static Lazy<string> GenerativeFillCacheFolder => new(() => Path.Combine(RootAppDataFolder.Value, "GenerateFlashcards.GenerativeFill"));
+    private static readonly string RootAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches");
+    internal static readonly string ChatGptClientCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.ChatGptClient");
+    internal static readonly string GenerativeFillCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.GenerativeFill");
+    internal static readonly string TextToSpeechCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.TextToSpeech");
 }

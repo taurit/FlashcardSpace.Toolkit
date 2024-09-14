@@ -19,7 +19,7 @@ internal sealed class DebugCommand(
 {
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
-        //(await ttsClient.GenerateAudioFile("Hola, como estas?", SupportedInputLanguage.Spanish)).SaveToTemporaryFileAndPlay();
+        (await ttsClient.GenerateAudioFile("Hola, como estas?", SupportedInputLanguage.Spanish)).SaveToTemporaryFileAndPlay();
         //(await ttsClient.GenerateAudioFile("Siemano! Co słychać?", SupportedTtsLanguage.Polish)).SaveToTemporaryFileAndPlay();
         //(await ttsClient.GenerateAudioFile("Hi, how are you?", SupportedTtsLanguage.English)).SaveToTemporaryFileAndPlay();
 

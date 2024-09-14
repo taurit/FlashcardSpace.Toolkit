@@ -70,16 +70,20 @@ internal static class DependencyInjection
                 logger,
                 secretParameters.OPENAI_ORGANIZATION_ID!,
                 secretParameters.OPENAI_DEVELOPER_KEY!,
-                Parameters.ChatGptClientCacheFolder.Value
+                Parameters.ChatGptClientCacheFolder
             )
             : new MockGenerativeAiClient();
 
         services.AddSingleton(generativeAiClient);
 
-        GenerativeFill generativeFill = new(generativeAiClient, Parameters.GenerativeFillCacheFolder.Value);
+        GenerativeFill generativeFill = new(generativeAiClient, Parameters.GenerativeFillCacheFolder);
         services.AddSingleton(generativeFill);
 
-        TextToSpeechClient ttsClient = new TextToSpeechClient(secretParameters.AZURE_TEXT_TO_SPEECH_KEY!, secretParameters.AZURE_TEXT_TO_SPEECH_REGION!);
+        TextToSpeechClient ttsClient = new TextToSpeechClient(
+            secretParameters.AZURE_TEXT_TO_SPEECH_KEY!,
+            secretParameters.AZURE_TEXT_TO_SPEECH_REGION!,
+            Parameters.TextToSpeechCacheFolder
+            );
         services.AddSingleton(ttsClient);
 
         return new ServiceCollectionRegistrar(services);
