@@ -22,14 +22,14 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
     private readonly GenerativeFillCache _cache = new(generativeFillCacheFolder);
 
 
-    public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement) where T : ObjectWithId, new()
+    public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement, int seed = 1) where T : ObjectWithId, new()
     {
         var inputElements = new List<T> { inputElement };
-        var response = await FillMissingProperties(modelId, modelClassId, inputElements);
+        var response = await FillMissingProperties(modelId, modelClassId, inputElements, seed);
         return response.Single();
     }
 
-    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, List<T> inputItems) where T : ObjectWithId, new()
+    public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, List<T> inputItems, int seed = 1) where T : ObjectWithId, new()
     {
         // build prompt
         var promptTemplate = "Input contains array of items to process (in the `Items` property):\n" +
@@ -40,7 +40,7 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
                                "\n" +
                                "The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id).";
 
-        var outputItems = _cache.FillFromCacheWherePossible(modelClassId, SystemChatMessage, promptTemplate, inputItems);
+        var outputItems = _cache.FillFromCacheWherePossible(modelClassId, SystemChatMessage, promptTemplate, seed, inputItems);
         var itemsThatRequireApiCall = outputItems.Where(x => x.Id is null).ToList();
 
         // assign consecutive IDs to input elements
@@ -58,11 +58,11 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
                 var itemsThatRequireApiCallChunk = chunk.ToList();
                 var inputSerialized = SerializeInput(itemsThatRequireApiCallChunk);
                 var prompt = String.Format(promptTemplate, inputSerialized);
-                var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, schema);
+                var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, seed, schema);
                 var apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCallChunk.Count);
                 var newOutputItems = ReplacePlaceholdersWithFullObjects(outputItems, apiResultItems);
 
-                _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, newOutputItems);
+                _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, seed, newOutputItems);
                 outputItems = newOutputItems;
             }
 

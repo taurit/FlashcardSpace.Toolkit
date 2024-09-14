@@ -11,11 +11,14 @@ public interface IGenerativeAiClient
     /// <param name="systemChatMessage"></param>
     /// <param name="prompt"></param>
     /// <param name="mode"></param>
+    /// <param name="seed">Arbitrary seed number. Given the same seed, AI model should generate the same response.
+    /// This reduces indeterminism (e.g. test flakiness) and makes debugging easier.</param>
     /// <param name="outputSchema"></param>
     Task<string> GetAnswerToPrompt(string modelId, string modelClassId,
         string systemChatMessage,
         string prompt,
         GenerativeAiClientResponseMode mode,
+        long seed = 1,
         string? outputSchema = null);
 
 }

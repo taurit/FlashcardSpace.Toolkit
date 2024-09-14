@@ -25,7 +25,7 @@ public class ChatGptClient : IGenerativeAiClient
     }
 
     public async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt,
-        GenerativeAiClientResponseMode mode, string? outputSchema = null)
+        GenerativeAiClientResponseMode mode, long seed, string? outputSchema = null)
     {
         if (mode is GenerativeAiClientResponseMode.StructuredOutput && outputSchema is null)
             throw new ArgumentException("Schema is required for StructuredOutput mode.");
@@ -38,7 +38,7 @@ public class ChatGptClient : IGenerativeAiClient
         var stableHash = (prompt + outputSchema).GetHashCodeStable();
         // proper extensions helps debugging (e.g. VS Code highlights JSON files if they have proper extension only)
         var cacheFileExtension = mode == GenerativeAiClientResponseMode.PlainText ? "txt" : "json";
-        var responseCacheFileName = $"{modelClassId}_{stableHash}.{cacheFileExtension}";
+        var responseCacheFileName = $"{modelClassId}_{stableHash}_{seed}.{cacheFileExtension}";
         var responseToPromptFileName = Path.Combine(_persistentCacheRootFolder, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
@@ -50,7 +50,7 @@ public class ChatGptClient : IGenerativeAiClient
         _logger.LogDebug($"Response not found in cache, retrieving response from model {modelId} (class: {modelClassId})...");
 
         var options = new ChatCompletionOptions();
-        options.Seed = 4815162342; // let's try to have some determinism in the responses to reduce test flakiness
+        options.Seed = seed; // let's try to have some determinism in the responses to reduce test flakiness
 
         switch (mode)
         {

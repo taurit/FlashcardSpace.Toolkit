@@ -57,7 +57,7 @@ internal static class FlashcardQualityEvaluator
         var prompt = await template.RenderAsync(templateInput, x => x.Name);
 
         // get response
-        var chatGptResponse = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, GenerativeAiClientResponseMode.JsonMode);
+        var chatGptResponse = await ChatGptHelper.GetAnswerToPromptUsingChatGptApi(SystemChatMessage, prompt, GenerativeAiClientResponseMode.JsonMode, 1);
 
         // parse response (chatGptResponse contains JSON that can be deserialized to `FlashcardQualityEvaluation`)
         var options = new JsonSerializerOptions

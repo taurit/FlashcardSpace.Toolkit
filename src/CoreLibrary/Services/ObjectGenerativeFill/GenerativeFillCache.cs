@@ -26,6 +26,7 @@ internal class GenerativeFillCache
             string modelClassId,
             string systemChatMessage,
             string promptTemplate,
+            int seed,
             List<T> itemsToSaveInCache
         ) where T : ObjectWithId, new()
     {
@@ -33,7 +34,7 @@ internal class GenerativeFillCache
         {
             var itemKeyValue = GetPrimaryKeyValue(item);
             string itemTypeName = item.GetType().Name;
-            var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue);
+            var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue, seed);
 
             if (File.Exists(cacheFilePath))
                 continue;
@@ -47,11 +48,12 @@ internal class GenerativeFillCache
         string modelClassId,
         string systemChatMessage,
         string promptTemplate,
+        int seed,
         string itemKeyValue
     ) where T : ObjectWithId, new()
     {
         var itemTypeName = typeof(T).Name;
-        var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue);
+        var cacheFilePath = GenerateCacheFilePath(modelClassId, systemChatMessage, promptTemplate, itemTypeName, itemKeyValue, seed);
 
         if (!File.Exists(cacheFilePath))
             return null;
@@ -67,13 +69,14 @@ internal class GenerativeFillCache
     }
 
     private string GenerateCacheFilePath(string modelClassId, string systemChatMessage, string promptTemplate, string itemTypeName,
-        string itemKeyValue)
+        string itemKeyValue, int seed)
     {
         var cacheFileName = $"{modelClassId}_" +
                             $"{itemTypeName}_" +
                             $"s{systemChatMessage.GetHashCodeStable(3)}_" +
                             $"p{promptTemplate.GetHashCodeStable(3)}_" +
                             $"k{itemKeyValue.GetHashCodeStable(3)}_" +
+                            $"r{seed}_" +
                             $"{itemKeyValue.GetFilenameFriendlyString()}" +
                             $".json" // Generative fill uses Structured Outputs and response is always JSON
             ;
@@ -102,14 +105,14 @@ internal class GenerativeFillCache
         throw new InvalidOperationException($"Cannot determine primary key for object of type {typeof(T).Name}. Designate one using the [Key] attribute.");
     }
 
-    public List<T> FillFromCacheWherePossible<T>(string modelClassId, string systemChatMessage, string promptTemplate, List<T> inputItems)
+    public List<T> FillFromCacheWherePossible<T>(string modelClassId, string systemChatMessage, string promptTemplate, int seed, List<T> inputItems)
         where T : ObjectWithId, new()
     {
         var outputItems = new List<T>();
         foreach (var objectToFill in inputItems)
         {
             var primaryKeyValue = GetPrimaryKeyValue(objectToFill);
-            var cachedObject = ReadFromCache<T>(modelClassId, systemChatMessage, promptTemplate, primaryKeyValue);
+            var cachedObject = ReadFromCache<T>(modelClassId, systemChatMessage, promptTemplate, seed, primaryKeyValue);
 
             outputItems.Add(cachedObject ?? objectToFill);
         }
