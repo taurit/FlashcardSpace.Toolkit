@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
 import "./DeckPreviewWindow.scss";
-import ankiIcon from "./assets/anki-icon.svg";
-import playIcon from "./assets/play.svg";
+import playIcon from "./assets/play.png";
 
 // todo style as mac, not windows ;)
 function WindowTitleBar() {
     return (
         <div className="title-bar">
-            <div className="title">
-                <img src={ankiIcon} alt="" className="appIcon" />
-                <span>Anki</span>
-            </div>
             <div className="window-controls">
-                <div className="button close">⨉</div>
+                <div className="button close"></div>
+                <div className="button minimize"></div>
+                <div className="button maximize"></div>
             </div>
         </div>
     );
@@ -95,7 +92,11 @@ function Demo() {
                 <nav className="bottomBar">
                     <div
                         className="bottomButton previousExample"
-                        onClick={() => setFlashcardIndex((index) => (index - 1) % numFlashcards)}
+                        onClick={() =>
+                            setFlashcardIndex(
+                                (index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards
+                            )
+                        }
                     >
                         Previous
                     </div>
