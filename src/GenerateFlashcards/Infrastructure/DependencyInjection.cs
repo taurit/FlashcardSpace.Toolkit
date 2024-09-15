@@ -60,7 +60,6 @@ internal static class DependencyInjection
         services.AddSingleton<NormalFormProvider>();
 
         // Add other services
-        services.AddTransient<ReferenceTranslator>();
         services.AddTransient<FrequencyDictionaryTermExtractor>();
         services.AddTransient<AdvancedSentenceExtractor>();
         services.AddTransient<EasyWordsSpanishAdjectivesSelector>();

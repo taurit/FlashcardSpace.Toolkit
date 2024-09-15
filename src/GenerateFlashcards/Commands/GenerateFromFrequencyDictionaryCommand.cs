@@ -26,10 +26,10 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
 
         logger.LogInformation("Selected EasyWords {PartOfSpeech}:", settings.PartOfSpeechFilter);
-        logger.LogInformation("{@Terms}", concreteAdjectives.Select(x => x.TermOriginal));
+        logger.LogInformation("{@Terms}", concreteAdjectives);
 
         // export and open preview
-        ExportToFolderAndOpenPreview(concreteAdjectives);
+        //ExportToFolderAndOpenPreview(concreteAdjectives);
 
         return 0;
     }
