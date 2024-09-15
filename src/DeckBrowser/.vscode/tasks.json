@@ -7,7 +7,7 @@
       "command": "start", // Windows
       // "command": "open", // macOS
       // "command": "xdg-open", // Linux
-      "args": ["http://localhost:5173/demo/"], // Replace with your app URL
+      "args": ["http://localhost:5173/"], // Replace with your app URL
       "problemMatcher": []
     }
   ]

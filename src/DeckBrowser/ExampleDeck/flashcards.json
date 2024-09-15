@@ -1,0 +1,35 @@
+{
+    "$schema": "../deck.schema.json",
+    "flashcards": [
+        {
+            "term": "el gato",
+            "termAudio": "audio/el-gato.mp3",
+
+            "termTranslation": "a cat",
+            "termTranslationAudio": "audio/a-cat.mp3",
+
+            "termDefinition": "A small domesticated carnivorous mammal with soft fur, a short snout, and retractile claws.",
+
+            "context": "El gato está durmiendo en el sofá.",
+            "contextTranslation": "The cat is sleeping on the sofa.",
+
+            "type": "noun",
+            "imageCandidates": ["images/el-gato-01.webp", "images/el-gato-02.webp"]
+        },
+        {
+            "term": "la casa",
+            "termAudio": "audio/la-casa.mp3",
+
+            "termTranslation": "a house",
+            "termTranslationAudio": "audio/a-house.mp3",
+
+            "termDefinition": "A building for human habitation, especially one that is lived in by a family or small group of people.",
+
+            "context": "La casa es grande y bonita.",
+            "contextTranslation": "The house is big and pretty.",
+
+            "type": "noun",
+            "imageCandidates": ["images/la-casa-01.webp", "images/la-casa-02.webp"]
+        }
+    ]
+}

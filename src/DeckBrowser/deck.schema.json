@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Flashcard deck",
+  "additionalProperties": false,
+
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "flashcards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+
+        "properties": {
+          "term": {
+            "type": "string",
+            "description": "The main word or term being learned."
+          },
+          "context": {
+            "type": "string",
+            "description": "A sentence or phrase providing context for the term."
+          },
+          "type": {
+            "type": "string",
+            "description": "The grammatical category of the term, such as noun, verb, etc."
+          },
+          "termTranslation": {
+            "type": "string",
+            "description": "The translation of the term in another language."
+          },
+          "termDefinition": {
+            "type": "string",
+            "description": "A definition of the term."
+          },
+          "contextTranslation": {
+            "type": "string",
+            "description": "The translation of the context sentence."
+          },
+          "termAudio": {
+            "type": "string",
+            "description": "Relative URL to the audio file for the term."
+          },
+          "termTranslationAudio": {
+            "type": "string",
+            "description": "Relative URL to the audio file for the term translation."
+          },
+          "imageCandidates": {
+            "type": "array",
+            "description": "Array of potential image files related to the term (paths relative to flashcards.json).",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "term",
+          "context",
+          "type",
+          "termTranslation",
+          "termDefinition",
+          "contextTranslation",
+          "termAudio",
+          "termTranslationAudio",
+          "imageCandidates"
+        ]
+      }
+    }
+  },
+  "required": ["flashcards"]
+}
