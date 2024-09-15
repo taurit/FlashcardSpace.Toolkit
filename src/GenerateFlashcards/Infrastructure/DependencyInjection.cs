@@ -63,6 +63,7 @@ internal static class DependencyInjection
         services.AddTransient<FrequencyDictionaryTermExtractor>();
         services.AddTransient<AdvancedSentenceExtractor>();
         services.AddTransient<EasyWordsSpanishAdjectivesSelector>();
+        services.AddTransient<EnglishTranslationProvider>();
 
         IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
             ? new ChatGptClient(

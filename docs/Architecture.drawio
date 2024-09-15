@@ -65,7 +65,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Pipeline design" id="umH4Rj-IrQaxzbrvgMUB">
-    <mxGraphModel dx="3034" dy="1356" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+    <mxGraphModel dx="3274" dy="1356" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
       <root>
         <mxCell id="y6G5bxd4FIz6Uh3zoXyB-0" />
         <mxCell id="y6G5bxd4FIz6Uh3zoXyB-1" parent="y6G5bxd4FIz6Uh3zoXyB-0" />
@@ -341,8 +341,8 @@
             <mxPoint x="-149" y="189" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="O67qeWg2g0cBvgKJw8nU-13" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Filter using frequency dictionaries and blacklists&lt;/h1&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="y6G5bxd4FIz6Uh3zoXyB-1" vertex="1">
-          <mxGeometry x="-310" y="780" width="315" height="80" as="geometry" />
+        <mxCell id="O67qeWg2g0cBvgKJw8nU-13" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Filter according to the use case - e.g. exclude items from previously generated decks, from personal Anki deck, or filter using AI query&lt;/h1&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="y6G5bxd4FIz6Uh3zoXyB-1" vertex="1">
+          <mxGeometry x="-310" y="780" width="315" height="190" as="geometry" />
         </mxCell>
         <mxCell id="cgbVpmOV6KgHjEbu_0ea-0" value="Generative term extractor" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;labelBackgroundColor=none;strokeColor=none;strokeWidth=3;fillColor=#FF8000;fontFamily=Helvetica;fontSize=14;fontColor=#FFFFFF;align=center;spacing=5;fontStyle=1;arcSize=7;perimeterSpacing=2;" parent="y6G5bxd4FIz6Uh3zoXyB-1" vertex="1">
           <mxGeometry x="660" y="220" width="150" height="60" as="geometry" />
@@ -392,7 +392,7 @@
         <mxCell id="OnvlMn4g7Dz1ikx36JDE-8" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Output file&lt;/span&gt;&lt;/h1&gt;&lt;div&gt;Anki Package / CSV / HTML with card previews / ...&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="y6G5bxd4FIz6Uh3zoXyB-1" vertex="1">
           <mxGeometry x="-700" y="1980" width="415" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="fkXuNeHIS8BKjNS99rPN-0" value="IProvideTranslations" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;labelBackgroundColor=none;strokeWidth=3;fontFamily=Helvetica;fontSize=14;align=center;spacing=5;fontStyle=0;arcSize=7;perimeterSpacing=2;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="y6G5bxd4FIz6Uh3zoXyB-1">
+        <mxCell id="fkXuNeHIS8BKjNS99rPN-0" value="IProvideTranslations" style="rounded=1;whiteSpace=wrap;html=1;shadow=0;labelBackgroundColor=none;strokeWidth=3;fontFamily=Helvetica;fontSize=14;align=center;spacing=5;fontStyle=0;arcSize=7;perimeterSpacing=2;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="y6G5bxd4FIz6Uh3zoXyB-1" vertex="1">
           <mxGeometry x="802" y="310" width="152" height="60" as="geometry" />
         </mxCell>
       </root>

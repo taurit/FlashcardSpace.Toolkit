@@ -10,7 +10,8 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         ILogger<GenerateFromFrequencyDictionaryCommand> logger,
         FrequencyDictionaryTermExtractor frequencyDictionaryTermExtractor,
         EasyWordsSpanishAdjectivesSelector adjectivesSelector,
-        DeckExporter deckExporter
+        DeckExporter deckExporter,
+        EnglishTranslationProvider englishTranslationProvider
     ) : AsyncCommand<GenerateFromFrequencyDictionarySettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFromFrequencyDictionarySettings settings)
@@ -24,26 +25,21 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
 
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
+        var notesWithEnglishTranslations = await englishTranslationProvider.AnnotateWithEnglishTranslation(terms);
 
-        logger.LogInformation("Selected EasyWords {PartOfSpeech}:", settings.PartOfSpeechFilter);
-        logger.LogInformation("{@Terms}", concreteAdjectives);
+        logger.LogInformation("{@Terms}", notesWithEnglishTranslations);
 
         // export and open preview
-        //ExportToFolderAndOpenPreview(concreteAdjectives);
+        //ExportToFolderAndOpenPreview(notesWithEnglishTranslations);
 
         return 0;
     }
 
-    private void ExportToFolderAndOpenPreview(List<TermInContext> concreteAdjectives)
+    private void ExportToFolderAndOpenPreview(List<FlashcardNote> flashcards)
     {
         var deck = new Deck
         {
-            Flashcards = concreteAdjectives.Select(x => new FlashcardNote()
-            {
-                Term = x.TermOriginal,
-                Context = x.Sentence,
-                Type = x.PartOfSpeech,
-            }).ToList()
+            Flashcards = flashcards.ToList()
         };
 
         var tempSubfolderName = $"DeckExporter-{Guid.NewGuid().ToString().GetHashCodeStable(5)}";
