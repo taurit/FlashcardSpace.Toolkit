@@ -86,6 +86,10 @@ internal static class DependencyInjection
             );
         services.AddSingleton(ttsClient);
 
+        var browserProfileDirectory = Parameters.BrowserProfileDirectory;
+        DeckExporter deckExporter = new DeckExporter(browserProfileDirectory);
+        services.AddSingleton(deckExporter);
+
         return new ServiceCollectionRegistrar(services);
     }
 }

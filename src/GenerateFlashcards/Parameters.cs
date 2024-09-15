@@ -23,4 +23,5 @@ internal static class Parameters
     internal static readonly string ChatGptClientCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.ChatGptClient");
     internal static readonly string GenerativeFillCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.GenerativeFill");
     internal static readonly string TextToSpeechCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.TextToSpeech");
+    internal static readonly string BrowserProfileDirectory = Path.Combine(RootAppDataFolder, "GenerateFlashcards.DeckExporter.EdgeProfile");
 }

@@ -8,9 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-
-#dist
-# ^ for now I decided to commit the bundled index.html file with deck preview tool, so it's ready to use from the .NET flow without the need to locally build the Vite app.
+dist
 
 dist-ssr
 *.local
