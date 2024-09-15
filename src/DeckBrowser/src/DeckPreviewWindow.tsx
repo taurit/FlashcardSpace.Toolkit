@@ -58,32 +58,18 @@ function DeckPreviewWindow() {
                         <hr />
                         <div className="answer">{data.flashcards![flashcardIndex].termTranslation}</div>
                         <img src={playIcon} alt="" className="playAudio" onClick={playAnswerAudio} />
-                        <audio
-                            id="answerAudio"
-                            src={`./${deckName}/${data.flashcards![flashcardIndex].termTranslationAudio}`}
-                        />
-                        <img
-                            src={`./${deckName}/${data.flashcards![flashcardIndex].imageCandidates![0]}`}
-                            alt=""
-                            className="illustration"
-                        />
+                        <audio id="answerAudio" src={`./${deckName}/${data.flashcards![flashcardIndex].termTranslationAudio}`} />
+                        <img src={`./${deckName}/${data.flashcards![flashcardIndex].imageCandidates![0]}`} alt="" className="illustration" />
                     </div>
                 </div>
                 <nav className="bottomBar">
                     <div
                         className="bottomButton previousExample"
-                        onClick={() =>
-                            setFlashcardIndex(
-                                (index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards
-                            )
-                        }
+                        onClick={() => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards)}
                     >
                         Previous
                     </div>
-                    <div
-                        className="bottomButton nextExample"
-                        onClick={() => setFlashcardIndex((index) => (index + 1) % numFlashcards)}
-                    >
+                    <div className="bottomButton nextExample" onClick={() => setFlashcardIndex((index) => (index + 1) % numFlashcards)}>
                         Next
                     </div>
                 </nav>
