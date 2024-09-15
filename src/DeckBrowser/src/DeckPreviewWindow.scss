@@ -1,26 +1,16 @@
 @use "sass:color";
 
-$accentColor: #ececec;
+$accentColor: hsl(0, 0%, 93%);
 $borderColor: color.scale($accentColor, $lightness: -20%);
 $macAccentColor: #e0e0e0;
 $macShadowColor: rgba(0, 0, 0, 0.15);
 
 $ankiWindowMinWidth: 200px;
-$ankiWindowPreferredWidth: 245px;
-$ankiWindowHeight: 465px;
+$ankiWindowPreferredWidth: 275px;
+$ankiWindowHeight: 500px;
 
 .flashcards-demo-container {
     line-height: normal;
-}
-
-@mixin text-contrast($bgColor) {
-    $color-brightness: round((red($bgColor) * 299)+ (green($bgColor) * 587)+ (blue($bgColor) * 114)/1000);
-    $light-color: round((red(#ffffff) * 299)+ (green(#ffffff) * 587)+ (blue(#ffffff) * 114)/1000);
-    @if abs($color-brightness) < ($light-color/2) {
-        color: white;
-    } @else {
-        color: black;
-    }
 }
 
 .anki-window-frame {
@@ -50,11 +40,9 @@ $ankiWindowHeight: 465px;
         justify-content: space-between;
         align-items: center;
         background: $accentColor;
-        color: text-contrast($accentColor);
-        user-select: none;
+
         padding: 8px 0;
 
-        // macOS-like buttons
         .window-controls {
             display: flex;
             padding-left: 10px;
@@ -64,7 +52,6 @@ $ankiWindowHeight: 465px;
                 height: 12px;
                 border-radius: 50%;
                 margin-left: 6px;
-                cursor: pointer;
 
                 &.close {
                     background-color: #ff5f57;
@@ -77,29 +64,14 @@ $ankiWindowHeight: 465px;
                 &.maximize {
                     background-color: #28c940;
                 }
-
-                // Add hover effect for buttons
-                &:hover {
-                    opacity: 0.8;
-                }
             }
-        }
-
-        .title {
-            text-align: center;
-            flex: 1;
-            font-size: 12px;
-            margin-left: -30px; // to center properly given window controls
         }
     }
 
     & > .content {
         flex-grow: 1;
-        padding: 10px;
+        padding: 14px 10px 10px 10px;
         overflow: auto;
-        animation: fadeIn 0.3s ease-out; // Smooth fade for content
-
-        // hide horizontal scrollbar
         overflow-x: hidden;
     }
 
@@ -116,7 +88,6 @@ $ankiWindowHeight: 465px;
             background-color: $accentColor;
             border: none;
             border-radius: 6px; // Rounded corners for macOS look
-            color: text-contrast($accentColor);
 
             padding: 8px 16px; // Slightly increased padding for a more macOS-like button
             text-align: center;
@@ -142,17 +113,6 @@ $ankiWindowHeight: 465px;
     }
 }
 
-.flashcard-description {
-    h4 {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    p {
-        margin-top: 0.5em;
-    }
-}
-
 @media (max-width: $ankiWindowPreferredWidth) {
     .anki-window-frame {
         width: 100%;
@@ -163,33 +123,36 @@ $ankiWindowHeight: 465px;
     color: #000;
     text-align: center;
     font-size: large;
-}
 
-.flashcard .playAudio {
-    width: 20px;
-    height: 20px;
-    opacity: 0.7;
-    cursor: pointer;
-    margin-top: 8px;
+    .illustration {
+        display: block;
 
-    user-select: none;
-
-    &:hover {
-        opacity: 1;
-        transform: scale(1.1); // macOS-like scale effect
-        transition: transform 0.2s ease-in-out;
+        width: 90%;
+        margin: 8px auto 0 auto;
     }
-}
 
-.flashcard .illustration {
-    width: 100%;
-    margin-top: 12px;
-}
+    hr {
+        border: 1px solid $borderColor;
+        border-top: 0;
+        margin: 8px;
+    }
 
-.flashcard hr {
-    border: 1px solid $borderColor;
-    border-top: 0;
-    margin: 12px;
+    .playAudio {
+        width: 20px;
+        height: 20px;
+        padding: 12px; // for easier clicking/tapping
+
+        opacity: 0.7;
+        cursor: pointer;
+
+        user-select: none;
+
+        &:hover {
+            opacity: 1;
+            transform: scale(1.1); // macOS-like scale effect
+            transition: transform 0.1s ease-in-out;
+        }
+    }
 }
 
 // Fade-in animation for elements
