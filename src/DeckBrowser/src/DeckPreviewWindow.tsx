@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import "./DeckPreviewWindow.scss";
 import playIcon from "./assets/play.png";
+import "./DeckPreviewWindow.scss";
+import { FlashcardDeck } from "./models/FlashcardDeck";
 
-// todo style as mac, not windows ;)
 function WindowTitleBar() {
     return (
         <div className="title-bar">
@@ -15,35 +15,15 @@ function WindowTitleBar() {
     );
 }
 
-class FlashcardDeck {
-    public flashcards: Flashcard[] | undefined;
-}
-
-class Flashcard {
-    public term: string | undefined;
-    public termAudio: string | undefined;
-
-    public termTranslation: string | undefined;
-    public termTranslationAudio: string | undefined;
-
-    public termDefinition: string | undefined;
-
-    public context: string | undefined;
-    public contextTranslation: string | undefined;
-
-    public type: string | undefined;
-    public imageCandidates: string[] | undefined;
-}
-
-function Demo() {
-    const deckName = "ExampleDeck";
+function DeckPreviewWindow() {
+    const deckName = "FlashcardDeck";
 
     // fetch flashcard data from the `data.json` file
     const [data, setData] = useState<FlashcardDeck | null>(null);
     const [flashcardIndex, setFlashcardIndex] = useState(0);
 
     useEffect(() => {
-        fetch("./ExampleDeck/flashcards.json")
+        fetch(`./${deckName}/flashcards.json`)
             .then((response) => response.json())
             .then((data) => setData(data))
             .catch((error) => {
@@ -112,4 +92,4 @@ function Demo() {
     );
 }
 
-export default Demo;
+export default DeckPreviewWindow;
