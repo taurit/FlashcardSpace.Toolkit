@@ -1,0 +1,23 @@
+.flashcard {
+  color: #000;
+  text-align: center;
+  font-size: large;
+}
+
+.playAudio {
+  width: 24px;
+  height: 24px;
+  opacity: 0.8;
+  cursor: pointer;
+  margin-top: 1px;
+  user-select: none;
+}
+
+.playAudio:hover {
+  opacity: 1;
+}
+
+.illustration {
+  width: 100%;
+  margin-top: 6px;
+}

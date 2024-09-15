@@ -1,0 +1,8 @@
+[
+  {
+    "frontText": "el zorro",
+    "frontAudio": "./src/assets/el-cerebro.mp3",
+    "backText": "lisek",
+    "backAudio": "b.mp3"
+  }
+]

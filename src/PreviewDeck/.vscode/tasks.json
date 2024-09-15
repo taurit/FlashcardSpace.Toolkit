@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "openBrowser",
+      "type": "shell",
+      "command": "start", // Windows
+      // "command": "open", // macOS
+      // "command": "xdg-open", // Linux
+      "args": ["http://localhost:5173/demo/"], // Replace with your app URL
+      "problemMatcher": []
+    }
+  ]
+}
