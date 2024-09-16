@@ -8,24 +8,24 @@ namespace GenerateFlashcards.Tests.Models.Spanish;
 
 [TestClass]
 [TestCategory("RequiresGenerativeAi")]
-public class SpanishTermWithEnglishTranslationTests
+public class SpanishTermWithPolishTranslationTests
 {
     private readonly GenerativeFill _generativeFill = GenerativeFillTestFactory.CreateInstance();
 
     [DataTestMethod]
-    [DataRow("grande", "big")]
-    [DataRow("pequeño", "small")]
-    [DataRow("rojo", "red")]
-    [DataRow("azul", "blue")]
+    [DataRow("grande", "duży")]
+    [DataRow("pequeño", "mały")]
+    [DataRow("rojo", "czerwony")]
+    [DataRow("azul", "niebieski")]
     // below, more rare ones (C1)
-    [DataRow("perezoso", "lazy")]
-    [DataRow("valiente", "brave")]
-    [DataRow("sabroso", "tasty")]
-    [DataRow("soso", "bland")]
-    public async Task SpanishAdjective_GetsCorrectlyTranslatedToEnglish(string spanishAdjective, string expectedEnglishEquivalent)
+    [DataRow("perezoso", "leniwy")]
+    [DataRow("valiente", "odważny")]
+    [DataRow("sabroso", "smaczny")]
+    [DataRow("soso", "mdły")]
+    public async Task SpanishAdjective_GetsCorrectlyTranslatedToPolish(string spanishAdjective, string expectedPolishEquivalent)
     {
         // Arrange
-        var input = new SpanishTermWithEnglishTranslation()
+        var input = new SpanishTermWithPolishTranslation()
         {
             SpanishWord = spanishAdjective,
             SpanishWordPartOfSpeech = PartOfSpeech.Adjective,
@@ -37,7 +37,7 @@ public class SpanishTermWithEnglishTranslationTests
             TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input);
 
         // Assert
-        output.SpanishWordEquivalentInEnglish.Should().Be(expectedEnglishEquivalent);
-        output.SpanishSentenceEquivalentInEnglish.Should().NotBeNullOrWhiteSpace();
+        output.SpanishWordEquivalentInPolish.Should().Be(expectedPolishEquivalent);
+        output.SpanishSentenceEquivalentInPolish.Should().NotBeNullOrWhiteSpace();
     }
 }

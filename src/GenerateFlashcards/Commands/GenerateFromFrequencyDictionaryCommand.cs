@@ -11,7 +11,8 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         FrequencyDictionaryTermExtractor frequencyDictionaryTermExtractor,
         EasyWordsSpanishAdjectivesSelector adjectivesSelector,
         DeckExporter deckExporter,
-        EnglishTranslationProvider englishTranslationProvider
+        SpanishToEnglishTranslationProvider spanishToEnglishTranslationProvider,
+        SpanishToPolishTranslationProvider spanishToPolishTranslationProvider
     ) : AsyncCommand<GenerateFromFrequencyDictionarySettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFromFrequencyDictionarySettings settings)
@@ -25,12 +26,19 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
 
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
-        var notesWithEnglishTranslations = await englishTranslationProvider.AnnotateWithEnglishTranslation(terms);
 
-        logger.LogInformation("{@Terms}", notesWithEnglishTranslations);
+        var notesWithEnglishTranslations = await
+            spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(terms);
+
+        var notesWithEnglishAndPolishTranslations = await
+            spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
+
+        logger.LogInformation("{@Terms}", notesWithEnglishAndPolishTranslations);
+
+
 
         // export and open preview
-        //ExportToFolderAndOpenPreview(notesWithEnglishTranslations);
+        ExportToFolderAndOpenPreview(notesWithEnglishAndPolishTranslations);
 
         return 0;
     }

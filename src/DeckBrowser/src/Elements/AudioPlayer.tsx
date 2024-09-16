@@ -1,8 +1,10 @@
+import { ReactNode } from "react";
 import playIcon from "../assets/play.png";
 
 interface AudioPlayerProps {
     uniqueId: string;
     pathToAudioFile: string;
+    replaceDefaultIconWith?: ReactNode;
 }
 
 function playAudio(audioElementId: string): void {
@@ -10,10 +12,20 @@ function playAudio(audioElementId: string): void {
     audio.play();
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ uniqueId, pathToAudioFile }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ uniqueId, pathToAudioFile, replaceDefaultIconWith }) => {
+    let playControl: ReactNode = <img src={playIcon} alt="" className="playAudio" onClick={() => playAudio(uniqueId)} />;
+
+    if (replaceDefaultIconWith) {
+        playControl = (
+            <div className="playAudioCustom" onClick={() => playAudio(uniqueId)}>
+                {replaceDefaultIconWith}
+            </div>
+        );
+    }
+
     return (
         <>
-            <img src={playIcon} alt="" className="playAudio" onClick={() => playAudio(uniqueId)} />
+            {playControl}
             <audio id={uniqueId} src={pathToAudioFile} preload="auto" />
         </>
     );

@@ -10,13 +10,14 @@ namespace GenerateFlashcards.Services;
 /// This is because English translations are useful when talking to AI models, e.g. generating images
 /// using Stable Diffusion or other models trained on English keywords.
 /// </remarks>
-internal class EnglishTranslationProvider(GenerativeFill generativeFill)
+internal class SpanishToEnglishTranslationProvider(GenerativeFill generativeFill)
 {
     public async Task<List<FlashcardNote>> AnnotateWithEnglishTranslation(List<TermInContext> terms)
     {
         var toTranslate = terms.Select(t => new SpanishTermWithEnglishTranslation()
         {
             SpanishWord = t.TermBaseForm,
+            SpanishWordPartOfSpeech = t.PartOfSpeech,
             SpanishSentence = t.Sentence
         }).ToList();
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./DeckPreviewWindow.scss";
 import DesktopWindow from "./DesktopWindow/DesktopWindow";
 import AudioPlayer from "./Elements/AudioPlayer";
+import Image from "./Elements/Image";
 import { FlashcardDeck } from "./models/FlashcardDeck";
 
 function DeckPreviewWindow() {
@@ -27,22 +28,34 @@ function DeckPreviewWindow() {
     const goToPreviousExample = () => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards);
     const goToNextExample = () => setFlashcardIndex((index) => (index + 1) % numFlashcards);
 
+    const flashcard = data.flashcards![flashcardIndex];
     return (
         <section className="flashcards-demo-container">
             <DesktopWindow
                 windowClassName="anki-window-frame"
                 mainContent={
                     <div className="flashcard">
-                        <div className="question">{data.flashcards![flashcardIndex].term}</div>
+                        <div className="question">{flashcard.term}</div>
 
-                        <AudioPlayer uniqueId="questionAudio" pathToAudioFile={`./${deckName}/${data.flashcards![flashcardIndex].termAudio}`} />
+                        <AudioPlayer uniqueId="questionAudio" pathToAudioFile={`./${deckName}/${flashcard.termAudio}`} />
 
                         <hr />
-                        <div className="answer">{data.flashcards![flashcardIndex].termTranslation}</div>
+                        <div className="answer">{flashcard.termTranslation}</div>
 
-                        <AudioPlayer uniqueId="answerAudio" pathToAudioFile={`./${deckName}/${data.flashcards![flashcardIndex].termTranslationAudio}`} />
+                        <AudioPlayer uniqueId="answerAudio" pathToAudioFile={`./${deckName}/${flashcard.termTranslationAudio}`} />
 
-                        <img src={`./${deckName}/${data.flashcards![flashcardIndex].imageCandidates![0]}`} alt="" className="illustration" />
+                        <Image deckName={deckName} imageCandidates={flashcard.imageCandidates!} />
+
+                        {/* <div className="definition">{flashcard.termDefinition}</div> */}
+                        <div className="usageExample">
+                            <AudioPlayer
+                                uniqueId="exampleAudio"
+                                pathToAudioFile={`./${deckName}/${flashcard.contextAudio}`}
+                                replaceDefaultIconWith={<div className="sentenceExample">{flashcard.context}</div>}
+                            />
+
+                            <div className="sentenceExampleTranslated">{flashcard.contextTranslation}</div>
+                        </div>
                     </div>
                 }
                 bottomContent={

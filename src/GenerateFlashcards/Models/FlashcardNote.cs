@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace GenerateFlashcards.Models;
 
-internal class FlashcardNote
+internal record FlashcardNote
 {
     // A studied word in the source language (like 'la manzana', 'verde') or idiom (like 'tener miedo')
     [JsonPropertyName("term")]

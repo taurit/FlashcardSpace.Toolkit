@@ -1,8 +1,8 @@
 @use "sass:color";
 
 $ankiWindowMinWidth: 200px;
-$ankiWindowPreferredWidth: 275px;
-$ankiWindowHeight: 500px;
+$ankiWindowPreferredWidth: 265px;
+$ankiWindowHeight: 560px;
 
 .flashcards-demo-container {
     line-height: normal;
@@ -34,13 +34,6 @@ $ankiWindowHeight: 500px;
     text-align: center;
     font-size: large;
 
-    .illustration {
-        display: block;
-
-        width: 90%;
-        margin: 8px auto 0 auto;
-    }
-
     .playAudio {
         width: 20px;
         height: 20px;
@@ -57,9 +50,38 @@ $ankiWindowHeight: 500px;
             transition: transform 0.1s ease-in-out;
         }
     }
+
+    .playAudioCustom {
+        cursor: pointer;
+    }
+
+    $imagePadding: 10px;
+    .illustration {
+        display: block;
+
+        width: calc(100% - 2 * $imagePadding);
+        margin: 8px auto 0 auto;
+    }
+
+    .usageExample {
+        margin-top: 10px;
+        padding: 0 $imagePadding;
+        font-size: 16px;
+
+        font-style: italic;
+    }
+
+    .sentenceExampleTranslated {
+        margin-top: 4px;
+        color: #888;
+    }
 }
 
 @media (prefers-color-scheme: dark) {
+    body {
+        background-color: #222;
+    }
+
     .flashcard {
         .playAudio {
             filter: invert(100%);
