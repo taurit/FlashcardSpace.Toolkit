@@ -20,19 +20,37 @@ internal sealed class DebugCommand(
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
         //(await ttsClient.GenerateAudioFile("La casa es grande y bonita.", SupportedInputLanguage.Spanish)).SaveToTemporaryFileAndPlay();
-        (await ttsClient.GenerateAudioFile("dom", SupportedTtsLanguage.Polish)).SaveToTemporaryFileAndPlay();
+        //(await ttsClient.GenerateAudioFile("dom", SupportedTtsLanguage.Polish)).SaveToTemporaryFileAndPlay();
         //(await ttsClient.GenerateAudioFile("a house", SupportedTtsLanguage.English)).SaveToTemporaryFileAndPlay();
 
-        await Task.Delay(1000);
+        //await Task.Delay(1000);
 
-        return 0;
+        //return 0;
 
-        CalculateBestCutOffLine();
-        return 0;
+        //CalculateBestCutOffLine();
+        //return 0;
 
-        var image = await imageGenerator.GenerateImage("test");
-        var htmlFragmentDisplayingBase64Image = $"<img src=\"data:image/png;base64,{image.Base64EncodedImage}\" />";
-        await File.WriteAllTextAsync("d:/testAAA.html", htmlFragmentDisplayingBase64Image);
+        var isAlive = await imageGenerator.IsAlive();
+        if (!isAlive)
+        {
+            AnsiConsole.MarkupLine("[red]Image generator is not alive![/]");
+            return 1;
+        }
+
+        var images = await imageGenerator.GenerateImageVariants("a cat", "A cat eating onion pizza.", 4);
+
+        //var firstImageBase64 = images[0].Base64EncodedImage;
+        //var htmlFragmentDisplayingBase64Image = $"<img src=\"data:image/png;base64,{firstImageBase64}\" />";
+        //await File.WriteAllTextAsync("d:/testAAA.html", htmlFragmentDisplayingBase64Image);
+
+        // generate preview for all images
+        var htmlFragment = "<html>\n<body>\n";
+        foreach (var image in images)
+        {
+            htmlFragment += $"<img src=\"data:image/png;base64,{image.Base64EncodedImage}\" /><br />\n";
+        }
+        htmlFragment += "</body>\n</html>\n";
+        await File.WriteAllTextAsync("d:/testAAA.html", htmlFragment);
 
         // Launch html
         var processStartInfo = new ProcessStartInfo("d:/testAAA.html")
