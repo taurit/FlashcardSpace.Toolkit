@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import playIcon from "./assets/play.png";
 import "./DeckPreviewWindow.scss";
 import DesktopWindow from "./DesktopWindow/DesktopWindow";
+import AudioPlayer from "./Elements/AudioPlayer";
 import { FlashcardDeck } from "./models/FlashcardDeck";
 
 function DeckPreviewWindow() {
@@ -24,15 +24,8 @@ function DeckPreviewWindow() {
     if (!data) return null;
     var numFlashcards = data.flashcards?.length ?? 0;
 
-    function playQuestionAudio(): void {
-        var audio = document.getElementById("questionAudio") as HTMLAudioElement;
-        audio.play();
-    }
-
-    function playAnswerAudio(): void {
-        var audio = document.getElementById("answerAudio") as HTMLAudioElement;
-        audio.play();
-    }
+    const goToPreviousExample = () => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards);
+    const goToNextExample = () => setFlashcardIndex((index) => (index + 1) % numFlashcards);
 
     return (
         <section className="flashcards-demo-container">
@@ -41,25 +34,23 @@ function DeckPreviewWindow() {
                 mainContent={
                     <div className="flashcard">
                         <div className="question">{data.flashcards![flashcardIndex].term}</div>
-                        <img src={playIcon} alt="" className="playAudio" onClick={playQuestionAudio} />
-                        <audio id="questionAudio" src={`./${deckName}/${data.flashcards![flashcardIndex].termAudio}`} />
+
+                        <AudioPlayer uniqueId="questionAudio" pathToAudioFile={`./${deckName}/${data.flashcards![flashcardIndex].termAudio}`} />
 
                         <hr />
                         <div className="answer">{data.flashcards![flashcardIndex].termTranslation}</div>
-                        <img src={playIcon} alt="" className="playAudio" onClick={playAnswerAudio} />
-                        <audio id="answerAudio" src={`./${deckName}/${data.flashcards![flashcardIndex].termTranslationAudio}`} />
+
+                        <AudioPlayer uniqueId="answerAudio" pathToAudioFile={`./${deckName}/${data.flashcards![flashcardIndex].termTranslationAudio}`} />
+
                         <img src={`./${deckName}/${data.flashcards![flashcardIndex].imageCandidates![0]}`} alt="" className="illustration" />
                     </div>
                 }
                 bottomContent={
                     <>
-                        <div
-                            className="button bottomButton previousExample"
-                            onClick={() => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards)}
-                        >
+                        <div className="button bottomButton previousExample" onClick={goToPreviousExample}>
                             Previous
                         </div>
-                        <div className="button bottomButton nextExample" onClick={() => setFlashcardIndex((index) => (index + 1) % numFlashcards)}>
+                        <div className="button bottomButton nextExample" onClick={goToNextExample}>
                             Next
                         </div>
                     </>
