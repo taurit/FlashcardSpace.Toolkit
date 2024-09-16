@@ -11,10 +11,10 @@ public static class StringExtensionMethodsFilenames
     /// - retain the readability of the original string (keep the characters that are acceptable, replace ones that aren't)
     /// - be shortened to a reasonable length if the input is too long
     /// </summary>
-    public static string GetFilenameFriendlyString(this string input)
+    /// <param name="input">The string to transform</param>
+    /// <param name="maxFilenameLength">255 is safe as file name on all OSes, but this will usually only be a fragment of a file name</param>
+    public static string GetFilenameFriendlyString(this string input, int maxFilenameLength = 30)
     {
-        const int maxFilenameLength = 30; // 255 is safe as file name on all OSes, but this will usually only be a fragment of a file name
-
         // replace characters that are not allowed in filenames
         var invalidChars = new HashSet<char>(Path.GetInvalidFileNameChars());
         var filenameFriendly = new StringBuilder();

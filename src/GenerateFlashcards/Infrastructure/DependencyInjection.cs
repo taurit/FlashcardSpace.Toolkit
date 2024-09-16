@@ -59,7 +59,11 @@ internal static class DependencyInjection
 
         var stableDiffusionPromptProvider = new StableDiffusionPromptProvider(logger);
         services.AddSingleton<StableDiffusionPromptProvider>(stableDiffusionPromptProvider);
+
+        var imageGenerationSettings = new ImageGeneratorSettings(Parameters.ImageGeneratorCacheFolder);
+        services.AddSingleton(imageGenerationSettings);
         services.AddSingleton<ImageGenerator>();
+
         services.AddSingleton<NormalFormProvider>();
 
         // Add other services

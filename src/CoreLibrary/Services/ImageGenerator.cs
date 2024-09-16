@@ -1,13 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CoreLibrary.Utilities;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace CoreLibrary.Services;
+
+public record ImageGeneratorSettings(string CacheFolder);
 
 /// <summary>
 /// Calls API of AUTOMATIC1111's stable-diffusion-webui to generate good-looking images.
 /// </summary>
 public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logger,
-    StableDiffusionPromptProvider stableDiffusionPromptProvider)
+    StableDiffusionPromptProvider stableDiffusionPromptProvider, ImageGeneratorSettings settings)
 {
     public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish, int numImages)
     {
@@ -29,11 +33,24 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
         var refinerCheckpointId = "sd_xl_refiner_1.0";
         var refinerSwitchAt = 0.7m;
+
         var requestPayloadModel = new TextToImageRequestModel(
             stableDiffusionPrompt.PromptText,
             stableDiffusionPrompt.NegativePromptText,
             width, height, numImagesToGenerate, numSteps, cfgScale, samplerName,
             seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt);
+        var cacheFileName = GenerateCacheFileName(requestPayloadModel);
+
+        if (File.Exists(cacheFileName))
+        {
+            logger.LogInformation("Using cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
+            var cachedResultSerialized = await File.ReadAllTextAsync(cacheFileName);
+            var cachedResult = JsonSerializer.Deserialize<List<GeneratedImage>>(cachedResultSerialized);
+            if (cachedResult == null)
+                throw new InvalidOperationException($"Failed to deserialize images cached in {cacheFileName}");
+
+            return cachedResult;
+        }
 
         // Call API
         httpClient.Timeout = TimeSpan.FromMinutes(5);
@@ -45,8 +62,21 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             return new List<GeneratedImage>();
         }
 
-        return responseModel.Images.Select(i => new GeneratedImage(i)).ToList();
+        var arrayOfGenImages = responseModel.Images.Select(i => new GeneratedImage(i)).ToList();
 
+        // cache the response
+        await File.WriteAllTextAsync(cacheFileName, JsonSerializer.Serialize(arrayOfGenImages));
+        return arrayOfGenImages;
+    }
+
+    private string GenerateCacheFileName(TextToImageRequestModel request)
+    {
+        settings.CacheFolder.EnsureDirectoryExists();
+
+        var serializedRequest = JsonSerializer.Serialize(request);
+        var fingerprint = serializedRequest.GetHashCodeStable(5);
+        return Path.Combine(settings.CacheFolder,
+            $"{request.Prompt.GetFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.json");
     }
 
     /// <summary>
@@ -61,7 +91,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 
         var testUrl = "http://127.0.0.1:7860/favicon.ico";
         var timeout = TimeSpan.FromSeconds(1);
-        var testHttpClient = new HttpClient() { Timeout = timeout };
+        var testHttpClient = new HttpClient { Timeout = timeout };
         try
         {
             var response = await testHttpClient.GetAsync(testUrl);
