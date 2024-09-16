@@ -18,7 +18,7 @@ record TextToImageRequestModel(
 
     // Number of steps to run the model. Higher number of steps can generate better quality images, but takes longer.
     // This is also something specific to a model you use! Some need 7, some 30 to get good results.
-    [property: JsonPropertyName("num_steps")] int NumSteps,
+    [property: JsonPropertyName("steps")] int NumSteps,
 
     // CFG Scale: range is 1-30. The higher, the more model focuses on the prompt (at the cost of less creativity).
     [property: JsonPropertyName("cfg_scale")] int CfgScale,
@@ -32,10 +32,10 @@ record TextToImageRequestModel(
     // This property allows to override it per-request.
     [property: JsonPropertyName("override_settings")] OverrideSettingsModel OverrideSettings,
 
-    [property: JsonPropertyName("refiner_checkpoint")] string RefinerCheckpointId,
+    [property: JsonPropertyName("refiner_checkpoint")] string? RefinerCheckpointId,
 
     // Refiner switcher at certain percentage of the process. Range is 0-1. Good typical values are 0.7-0.8.
-    [property: JsonPropertyName("refiner_switch_at")] decimal RefinerSwitchAt
+    [property: JsonPropertyName("refiner_switch_at")] decimal? RefinerSwitchAt
 
 );
 

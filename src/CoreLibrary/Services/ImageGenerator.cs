@@ -27,13 +27,16 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 
         var width = 1024;
         var height = 1024;
-        var numSteps = cutCornersForFasterResponseInDevelopment ? 5 : 24;
+
         var cfgScale = 5;
         var samplerName = "DPM++ 2M";
         var seed = 30456;
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
+
+        // Cut corners in development to get faster response
+        var numSteps = cutCornersForFasterResponseInDevelopment ? 10 : 24;
         var refinerCheckpointId = cutCornersForFasterResponseInDevelopment ? null : "sd_xl_refiner_1.0";
-        var refinerSwitchAt = cutCornersForFasterResponseInDevelopment ? 0 : 0.7m;
+        decimal? refinerSwitchAt = cutCornersForFasterResponseInDevelopment ? null : 0.7m;
 
         var requestPayloadModel = new TextToImageRequestModel(
             stableDiffusionPrompt.PromptText,
