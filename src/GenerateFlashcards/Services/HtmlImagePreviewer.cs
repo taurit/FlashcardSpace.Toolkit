@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Services;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace GenerateFlashcards.Services;
 
@@ -11,13 +12,29 @@ internal static class HtmlImagePreviewer
 {
     public static async Task PreviewImages(IEnumerable<GeneratedImage> images)
     {
-        var outputFilePath = Path.Combine(Path.GetTempPath(), "generate_flashcards_image_preview.html");
+        var directoryPathOfRunningDll = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var stylesFileName = "HtmlImagePreviewer.css";
+        var cssStylePath = Path.Combine(directoryPathOfRunningDll!, "Resources", stylesFileName);
+
+        var previewerFolder = Path.Combine(Path.GetTempPath(), "HtmlImagePreviewer");
+        Directory.CreateDirectory(previewerFolder);
+        // copy styles to previewer directory unless they already exist there
+        var cssStyleDestinationPath = Path.Combine(previewerFolder, stylesFileName);
+        if (!File.Exists(cssStyleDestinationPath))
+        {
+            File.Copy(cssStylePath, cssStyleDestinationPath);
+        }
+
+        var outputFilePath = Path.Combine(previewerFolder, "preview.html");
         var htmlFragment = "<html>\n" +
+                           "<head>\n" +
+                           "    <link rel=\"stylesheet\" type=\"text/css\" href=\"" + stylesFileName + "\" />\n" +
+                           "</head>\n" +
                            "<body>\n"
                            ;
         foreach (var image in images)
         {
-            htmlFragment += $"<img src=\"data:image/png;base64,{image.Base64EncodedImage}\" /><br />\n";
+            htmlFragment += $"<img src=\"data:image/png;base64,{image.Base64EncodedImage}\" title=\"{image.PromptText}\" />\n";
         }
         htmlFragment += "</body>\n" +
                         "</html>\n";
@@ -26,6 +43,13 @@ internal static class HtmlImagePreviewer
 
         // Launch html
         var processStartInfo = new ProcessStartInfo(outputFilePath)
+        {
+            UseShellExecute = true
+        };
+        Process.Start(processStartInfo);
+
+        // Launch css file in default editor
+        processStartInfo = new ProcessStartInfo(cssStyleDestinationPath)
         {
             UseShellExecute = true
         };

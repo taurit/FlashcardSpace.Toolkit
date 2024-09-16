@@ -23,16 +23,17 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
     private async Task<List<GeneratedImage>> GenerateImageVariants(StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate)
     {
         // Call API of AUTOMATIC1111's stable-diffusion-webui
+        bool cutCornersForFasterResponseInDevelopment = true;
 
         var width = 1024;
         var height = 1024;
-        var numSteps = 24;
+        var numSteps = cutCornersForFasterResponseInDevelopment ? 5 : 24;
         var cfgScale = 5;
         var samplerName = "DPM++ 2M";
         var seed = 30456;
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
-        var refinerCheckpointId = "sd_xl_refiner_1.0";
-        var refinerSwitchAt = 0.7m;
+        var refinerCheckpointId = cutCornersForFasterResponseInDevelopment ? null : "sd_xl_refiner_1.0";
+        var refinerSwitchAt = cutCornersForFasterResponseInDevelopment ? 0 : 0.7m;
 
         var requestPayloadModel = new TextToImageRequestModel(
             stableDiffusionPrompt.PromptText,
@@ -62,7 +63,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             return new List<GeneratedImage>();
         }
 
-        var arrayOfGenImages = responseModel.Images.Select(i => new GeneratedImage(i)).ToList();
+        var arrayOfGenImages = responseModel.Images.Select(i => new GeneratedImage(i, stableDiffusionPrompt.PromptText)).ToList();
 
         // cache the response
         await File.WriteAllTextAsync(cacheFileName, JsonSerializer.Serialize(arrayOfGenImages));
