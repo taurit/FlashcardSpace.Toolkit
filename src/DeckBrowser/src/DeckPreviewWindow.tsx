@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import playIcon from "./assets/play.png";
 import "./DeckPreviewWindow.scss";
 import { FlashcardDeck } from "./models/FlashcardDeck";
+import "./windowStyles/iOs.scss";
 
 function WindowTitleBar() {
     return (
         <div className="title-bar">
             <div className="window-controls">
-                <div className="button close"></div>
-                <div className="button minimize"></div>
-                <div className="button maximize"></div>
+                <div className="window-control close"></div>
+                <div className="window-control minimize"></div>
+                <div className="window-control maximize"></div>
             </div>
         </div>
     );
@@ -47,9 +48,9 @@ function DeckPreviewWindow() {
 
     return (
         <section className="flashcards-demo-container">
-            <div className="anki-window-frame">
+            <div className="anki-window-frame window-frame">
                 {WindowTitleBar()}
-                <div className="content">
+                <div className="window-content">
                     <div className="flashcard">
                         <div className="question">{data.flashcards![flashcardIndex].term}</div>
                         <img src={playIcon} alt="" className="playAudio" onClick={playQuestionAudio} />
@@ -62,17 +63,29 @@ function DeckPreviewWindow() {
                         <img src={`./${deckName}/${data.flashcards![flashcardIndex].imageCandidates![0]}`} alt="" className="illustration" />
                     </div>
                 </div>
-                <nav className="bottomBar">
+                <nav className="window-bottom-content">
                     <div
-                        className="bottomButton previousExample"
+                        className="button bottomButton previousExample"
                         onClick={() => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards)}
                     >
                         Previous
                     </div>
-                    <div className="bottomButton nextExample" onClick={() => setFlashcardIndex((index) => (index + 1) % numFlashcards)}>
+                    <div className="button bottomButton nextExample" onClick={() => setFlashcardIndex((index) => (index + 1) % numFlashcards)}>
                         Next
                     </div>
                 </nav>
+            </div>
+
+            <div className="window-frame">
+                {WindowTitleBar()}
+                <div className="window-content">
+                    <p>yo dawg!</p>
+                    <div className="button">Button 1</div>
+                    <div className="button">Button 2</div>
+                </div>
+                <div className="window-bottom-content window-status-bar">
+                    <span>Status bar</span>
+                </div>
             </div>
         </section>
     );

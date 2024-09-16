@@ -1,10 +1,5 @@
 @use "sass:color";
 
-$accentColor: hsl(0, 0%, 93%);
-$borderColor: color.scale($accentColor, $lightness: -20%);
-$macAccentColor: #e0e0e0;
-$macShadowColor: rgba(0, 0, 0, 0.15);
-
 $ankiWindowMinWidth: 200px;
 $ankiWindowPreferredWidth: 275px;
 $ankiWindowHeight: 500px;
@@ -13,110 +8,26 @@ $ankiWindowHeight: 500px;
     line-height: normal;
 }
 
+@media (max-width: $ankiWindowPreferredWidth) {
+    .anki-window-frame {
+        width: 100%;
+    }
+}
+
 .anki-window-frame {
     min-width: $ankiWindowMinWidth;
     height: $ankiWindowHeight;
     width: $ankiWindowPreferredWidth;
 
     margin: 0 auto;
-    background: #fff;
-    border: 1px solid $macAccentColor;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px $macShadowColor;
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    font-family: -apple-system, BlinkMacSystemFont, Inter, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    font-weight: 300;
-    font-size: 14px;
-
-    // Subtle appearance animation
-    animation: fadeIn 0.3s ease-out;
-
-    & > .title-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: $accentColor;
-
-        padding: 8px 0;
-
-        .window-controls {
-            display: flex;
-            padding-left: 10px;
-
-            & > .button {
-                width: 12px;
-                height: 12px;
-                border-radius: 50%;
-                margin-left: 6px;
-
-                &.close {
-                    background-color: #ff5f57;
-                }
-
-                &.minimize {
-                    background-color: #ffbd2e;
-                }
-
-                &.maximize {
-                    background-color: #28c940;
-                }
-            }
-        }
-    }
-
-    & > .content {
-        flex-grow: 1;
-        padding: 14px 10px 10px 10px;
-        overflow: auto;
-        overflow-x: hidden;
-    }
-
-    & > .bottomBar {
-        display: flex;
-
-        padding: 10px 10px;
-        gap: 7px;
-
-        flex-direction: row;
-
-        & > .bottomButton {
-            flex: 1;
-            background-color: $accentColor;
-            border: none;
-            border-radius: 6px; // Rounded corners for macOS look
-
-            padding: 8px 16px; // Slightly increased padding for a more macOS-like button
-            text-align: center;
-
-            cursor: pointer;
-            user-select: none;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
-
-            // Adding macOS-style shadow and gradient
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            background: linear-gradient(to bottom, color.scale($accentColor, $lightness: 5%), $accentColor);
-
-            &:hover {
-                background-color: color.scale($accentColor, $lightness: 15%); // Lighter on hover for visual feedback
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // More pronounced shadow on hover
-            }
-
-            &:active {
-                background-color: color.scale($accentColor, $lightness: -10%); // Darken when clicked
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); // Pressed effect
-            }
-        }
-    }
 }
 
-@media (max-width: $ankiWindowPreferredWidth) {
-    .anki-window-frame {
-        width: 100%;
-    }
+.window-bottom-content {
+    display: flex;
+    flex-direction: row;
+
+    padding: 10px 10px;
+    gap: 7px;
 }
 
 .flashcard {
@@ -129,12 +40,6 @@ $ankiWindowHeight: 500px;
 
         width: 90%;
         margin: 8px auto 0 auto;
-    }
-
-    hr {
-        border: 1px solid $borderColor;
-        border-top: 0;
-        margin: 8px;
     }
 
     .playAudio {
@@ -152,17 +57,5 @@ $ankiWindowHeight: 500px;
             transform: scale(1.1); // macOS-like scale effect
             transition: transform 0.1s ease-in-out;
         }
-    }
-}
-
-// Fade-in animation for elements
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
     }
 }

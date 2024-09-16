@@ -1,0 +1,118 @@
+@use "sass:color";
+
+$titleBarColor: #eeeeee;
+$windowBorderColor: #e0e0e0;
+$boxShadowColor: rgba(0, 0, 0, 0.15);
+
+// Fade-in animation for elements
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.window-frame {
+    background: #fff;
+    border: 1px solid $windowBorderColor;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px $boxShadowColor;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    font-family: -apple-system, BlinkMacSystemFont, Inter, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+
+    // Subtle appearance animation
+    animation: fadeIn 0.3s ease-out;
+
+    hr {
+        border: 1px solid $windowBorderColor;
+        border-top: 0;
+        margin: 8px;
+    }
+
+    .title-bar {
+        background: $titleBarColor;
+        padding: 8px 0 8px 16px;
+
+        .window-controls {
+            display: flex;
+
+            .window-control {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 6px;
+
+                &.close {
+                    background-color: #ff5f57;
+                }
+
+                &.minimize {
+                    background-color: #ffbd2e;
+                }
+
+                &.maximize {
+                    background-color: #28c940;
+                }
+            }
+        }
+    }
+
+    .window-content {
+        flex-grow: 1; // stretch horizontally, to render eventual Status Bar at the bottom of the window
+        padding: 14px 10px 10px 10px;
+        overflow: auto;
+        overflow-x: hidden;
+    }
+
+    .window-status-bar {
+        background: $titleBarColor;
+        padding: 5px 10px;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #222;
+    }
+
+    .window-bottom-content {
+        & > .button {
+            flex: 1;
+        }
+    }
+
+    .button {
+        background-color: $titleBarColor;
+        border: none;
+        border-radius: 6px; // Rounded corners for macOS look
+        padding: 8px 16px; // Slightly increased padding for a more macOS-like button
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+        // Adding macOS-style shadow and gradient
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        $buttonBgColor: #eeeeee;
+        background-color: $buttonBgColor;
+
+        &:hover {
+            background-color: color.scale($buttonBgColor, $lightness: 5%);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        &:active {
+            background-color: color.scale($buttonBgColor, $lightness: -10%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
