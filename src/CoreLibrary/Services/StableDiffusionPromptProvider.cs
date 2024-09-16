@@ -10,6 +10,14 @@ public class StableDiffusionPromptProvider(ILogger logger)
                                               "error,missing fingers,extra digit,fewer digits,cropped," +
                                               "worst quality,low quality,normal quality,jpeg artifacts," +
                                               "signature,watermark,username,blurry,nsfw,";
+    string[] _keywords = {
+        "abstract", "vibrant", "minimalist", "monochrome", "surreal",
+        "geometric", "textured", "figurative", "dreamlike", "whimsical",
+        "bold", "organic", "dynamic", "symmetrical", "ethereal",
+        "harmonious", "rustic", "contrasting", "evocative", "grunge",
+        "melancholic", "mystical", "serene", "playful", "futuristic",
+        "intricate", "subtle", "chaotic", "timeless", "fragmented"
+    };
 
     /// <remarks>
     /// Remarks: example of a prompt giving good visual results:
@@ -22,6 +30,12 @@ public class StableDiffusionPromptProvider(ILogger logger)
         var keywords = new List<string>();
 
         keywords.Add(sentenceEnglish);
+        var random = new Random();
+        for (int i = 0; i < 5; i++)
+        {
+            var randomIndex = random.Next(_keywords.Length);
+            keywords.Add(_keywords[randomIndex]);
+        }
 
         var promptText = String.Join(",", keywords);
         var prompt = new StableDiffusionPrompt(promptText, NegativePromptText);
