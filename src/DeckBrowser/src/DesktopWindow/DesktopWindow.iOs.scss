@@ -74,16 +74,6 @@ $boxShadowColor: rgba(0, 0, 0, 0.15);
         overflow-x: hidden;
     }
 
-    .window-status-bar {
-        background: $titleBarColor;
-        padding: 5px 10px;
-        font-size: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #222;
-    }
-
     .window-bottom-content {
         & > .button {
             flex: 1;
@@ -143,16 +133,6 @@ $boxShadowColor: rgba(0, 0, 0, 0.15);
                 background-color: #222;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
             }
-        }
-
-        .window-status-bar {
-            background: $darkTitleBarColor;
-            padding: 5px 10px;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #eee;
         }
     }
 }
