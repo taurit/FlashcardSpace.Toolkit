@@ -116,3 +116,43 @@ $boxShadowColor: rgba(0, 0, 0, 0.15);
         }
     }
 }
+
+// Dark mode styles
+@media (prefers-color-scheme: dark) {
+    $darkTitleBarColor: #333;
+    .window-frame {
+        background: #222;
+        border-color: #444;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        color: #fff;
+
+        .title-bar {
+            background: $darkTitleBarColor;
+        }
+
+        .button {
+            background-color: $darkTitleBarColor;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+
+            &:hover {
+                background-color: #444;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            }
+
+            &:active {
+                background-color: #222;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .window-status-bar {
+            background: $darkTitleBarColor;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #eee;
+        }
+    }
+}

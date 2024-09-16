@@ -31,7 +31,6 @@ $ankiWindowHeight: 500px;
 }
 
 .flashcard {
-    color: #000;
     text-align: center;
     font-size: large;
 
@@ -56,6 +55,15 @@ $ankiWindowHeight: 500px;
             opacity: 1;
             transform: scale(1.1); // macOS-like scale effect
             transition: transform 0.1s ease-in-out;
+        }
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .flashcard {
+        .playAudio {
+            filter: invert(100%);
+            opacity: 0.9;
         }
     }
 }
