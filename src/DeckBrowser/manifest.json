@@ -1,0 +1,16 @@
+{
+    "name": "Deck browser demo",
+    "short_name": "Demo",
+    "description": "A simple PWA manifest for the browser demo, so I can pin it on Android phone and show to people when a quick pitch is expected :)",
+    "start_url": "./index.html?nocache=1",
+    "display": "fullscreen",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "icons": [
+        {
+            "src": "./star.png?v=1",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

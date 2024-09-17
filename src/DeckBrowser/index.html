@@ -1,7 +1,24 @@
-<div id="root"></div>
-<script type="module" src="/src/main.tsx"></script>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Deck browser</title>
+        <meta name="google" value="notranslate" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- Good enough for preview in authoring flow, but if I embed this component (app) on the site, those tags might need to be moved somewhere else -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap&subset=latin-ext,cyrillic" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap&subset=latin-ext,cyrillic" rel="stylesheet" />
+
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="theme-color" content="#ffffff" />
+        <!-- White top bar -->
+
+        <link rel="manifest" href="manifest.json" />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

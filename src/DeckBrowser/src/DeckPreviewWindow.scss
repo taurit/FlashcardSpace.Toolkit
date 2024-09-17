@@ -1,23 +1,24 @@
 @use "sass:color";
 
 $ankiWindowMinWidth: 200px;
-$ankiWindowPreferredWidth: 265px;
-$ankiWindowHeight: 560px;
+$ankiWindowPreferredWidth: 90vw;
+$ankiWindowMaxWidth: 8.4cm;
+
+$ankiWindowMinHeight: 570px;
+$ankiWindowPreferredHeight: 630px;
+$ankiWindowMaxHeight: 11cm;
 
 .flashcards-demo-container {
     line-height: normal;
 }
 
-@media (max-width: $ankiWindowPreferredWidth) {
-    .anki-window-frame {
-        width: 100%;
-    }
-}
-
 .anki-window-frame {
-    min-width: $ankiWindowMinWidth;
-    height: $ankiWindowHeight;
     width: $ankiWindowPreferredWidth;
+    min-width: $ankiWindowMinWidth;
+    max-width: $ankiWindowMaxWidth;
+
+    height: $ankiWindowPreferredHeight;
+    min-height: $ankiWindowMinHeight;
 
     margin: 0 auto;
 }
@@ -37,7 +38,7 @@ $ankiWindowHeight: 560px;
     .playAudio {
         width: 20px;
         height: 20px;
-        padding: 12px; // for easier clicking/tapping
+        padding: 10px; // for easier clicking/tapping
 
         opacity: 0.7;
         cursor: pointer;
@@ -55,12 +56,12 @@ $ankiWindowHeight: 560px;
         cursor: pointer;
     }
 
-    $imagePadding: 10px;
+    $imagePadding: 20px;
     .illustration {
         display: block;
 
         width: calc(100% - 2 * $imagePadding);
-        margin: 8px auto 0 auto;
+        margin: 0 auto 0 auto;
     }
 
     .usageExample {
@@ -87,5 +88,24 @@ $ankiWindowHeight: 560px;
             filter: invert(100%);
             opacity: 0.9;
         }
+    }
+}
+
+// on mobile screens, let's make the container take full size of the screen
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    html {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        //align-items: center;
+        margin-top: 1.5cm;
+
+        //but prevent from showing scrollbars
+        overflow: hidden;
     }
 }
