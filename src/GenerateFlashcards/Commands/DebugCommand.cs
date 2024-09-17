@@ -13,7 +13,7 @@ namespace GenerateFlashcards.Commands;
 /// </summary>
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 internal sealed class DebugCommand(
-        ImageGenerator imageGenerator,
+        ImageCandidatesGenerator candidatesGenerator,
         TextToSpeechClient ttsClient
 
     ) : AsyncCommand<DebugCommandSettings>
@@ -23,14 +23,8 @@ internal sealed class DebugCommand(
         //await GenerateAudioFile();
         //CalculateBestCutOffLine();
 
-        var isAlive = await imageGenerator.IsAlive();
-        if (!isAlive)
-        {
-            AnsiConsole.MarkupLine("[red]Image generator is not alive![/]");
-            return 1;
-        }
-
-        var images = await imageGenerator.GenerateImageVariants("a cat", "A cat eating onion pizza.", 4);
+        var images = await candidatesGenerator.GenerateImageVariants("a house", "A house was old and abandoned.",
+            numExperiments: 4, numImagesInExperiment: 4);
         await HtmlImagePreviewer.PreviewImages(images);
 
         return 0;

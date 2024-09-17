@@ -10,25 +10,18 @@ public record ImageGeneratorSettings(string CacheFolder);
 /// <summary>
 /// Calls API of AUTOMATIC1111's stable-diffusion-webui to generate good-looking images.
 /// </summary>
-public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logger,
-    StableDiffusionPromptProvider stableDiffusionPromptProvider, ImageGeneratorSettings settings)
+public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logger, ImageGeneratorSettings settings)
 {
-    public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish, int numImages)
-    {
-        var prompt = stableDiffusionPromptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish);
-
-        return await GenerateImageVariants(prompt, numImages);
-    }
-
-    private async Task<List<GeneratedImage>> GenerateImageVariants(StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate)
+    /// <param name="cfgScale">Reasonable range seems from 2.0 (creative freedom) to 7.0 (already strictly following the prompt)</param>
+    public async Task<List<GeneratedImage>> GenerateImageBatch(
+        StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale)
     {
         // Call API of AUTOMATIC1111's stable-diffusion-webui
-        bool cutCornersForFasterResponseInDevelopment = true;
+        bool cutCornersForFasterResponseInDevelopment = false;
 
         var width = 1024;
         var height = 1024;
 
-        var cfgScale = 5;
         var samplerName = "DPM++ 2M";
         var seed = 30456;
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
@@ -57,7 +50,9 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         }
 
         // Call API
-        httpClient.Timeout = TimeSpan.FromMinutes(5);
+        EnsureHttpClientTimeoutIsIncreased(httpClient);
+
+
         var response = await httpClient.PostAsJsonAsync("http://localhost:7860/sdapi/v1/txt2img", requestPayloadModel);
         var responseModel = await response.Content.ReadFromJsonAsync<TextToImageResponseModel>();
         if (responseModel == null)
@@ -66,11 +61,20 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             return new List<GeneratedImage>();
         }
 
-        var arrayOfGenImages = responseModel.Images.Select(i => new GeneratedImage(i, stableDiffusionPrompt.PromptText)).ToList();
+        var arrayOfGenImages = responseModel.Images.Select(i => new GeneratedImage(i, stableDiffusionPrompt.PromptText, cfgScale)).ToList();
 
         // cache the response
         await File.WriteAllTextAsync(cacheFileName, JsonSerializer.Serialize(arrayOfGenImages));
         return arrayOfGenImages;
+    }
+
+    private bool _timeoutAlreadySet = false;
+    private void EnsureHttpClientTimeoutIsIncreased(HttpClient httpClient1)
+    {
+        if (_timeoutAlreadySet)
+            return;
+        httpClient.Timeout = TimeSpan.FromMinutes(5);
+        _timeoutAlreadySet = true;
     }
 
     private string GenerateCacheFileName(TextToImageRequestModel request)
