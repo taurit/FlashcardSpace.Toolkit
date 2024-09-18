@@ -1,8 +1,8 @@
 ﻿namespace CoreLibrary.Interfaces;
 
-public enum SupportedOutputLanguage
+public enum SupportedLanguage
 {
-    Unknown,
+    Unspecified = 0,
     English,
     Spanish,
     Polish

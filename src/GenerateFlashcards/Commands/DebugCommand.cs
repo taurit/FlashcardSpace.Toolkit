@@ -32,9 +32,9 @@ internal sealed class DebugCommand(
 
     private async Task GenerateAudioFile()
     {
-        (await ttsClient.GenerateAudioFile("La casa es grande y bonita.", SupportedInputLanguage.Spanish)).SaveToTemporaryFileAndPlay();
-        (await ttsClient.GenerateAudioFile("dom", SupportedTtsLanguage.Polish)).SaveToTemporaryFileAndPlay();
-        (await ttsClient.GenerateAudioFile("a house", SupportedTtsLanguage.English)).SaveToTemporaryFileAndPlay();
+        (await ttsClient.GenerateAudioFile("La casa es grande y bonita.", SupportedLanguage.Spanish)).SaveToTemporaryFileAndPlay();
+        (await ttsClient.GenerateAudioFile("dom", SupportedLanguage.Polish)).SaveToTemporaryFileAndPlay();
+        (await ttsClient.GenerateAudioFile("a house", SupportedLanguage.English)).SaveToTemporaryFileAndPlay();
 
         await Task.Delay(1000);
     }

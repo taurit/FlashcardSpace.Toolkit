@@ -9,7 +9,7 @@ namespace CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 /// </summary>
 public class TextToSpeechClient(string speechKey, string speechRegion, string cacheFolder)
 {
-    public async Task<byte[]> GenerateAudioFile(string text, SupportedTtsLanguage language)
+    public async Task<byte[]> GenerateAudioFile(string text, SupportedLanguage language)
     {
         cacheFolder.EnsureDirectoryExists();
 
@@ -38,12 +38,6 @@ public class TextToSpeechClient(string speechKey, string speechRegion, string ca
 
         return audioData;
     }
-
-    public Task<byte[]> GenerateAudioFile(string text, SupportedInputLanguage supportedLanguage) =>
-        GenerateAudioFile(text, supportedLanguage.ToTtsLanguage());
-
-    public Task<byte[]> GenerateAudioFile(string text, SupportedOutputLanguage supportedOutputLanguage) =>
-        GenerateAudioFile(text, supportedOutputLanguage.ToTtsLanguage());
 
     private string GenerateCacheFileName(string text, string ssml)
     {

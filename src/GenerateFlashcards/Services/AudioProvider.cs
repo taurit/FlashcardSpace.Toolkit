@@ -15,8 +15,8 @@ internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient 
 {
     public async Task<List<FlashcardNote>> AddAudio(
         List<FlashcardNote> notes,
-        SupportedInputLanguage sourceLanguage,
-        SupportedOutputLanguage targetLanguage
+        SupportedLanguage sourceLanguage,
+        SupportedLanguage targetLanguage
         )
     {
         settings.AudioCacheFolder.EnsureDirectoryExists();
@@ -43,7 +43,7 @@ internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient 
         return newNotes;
     }
 
-    private async Task<string> GenerateAudioOrUseCached(string text, SupportedOutputLanguage language)
+    private async Task<string> GenerateAudioOrUseCached(string text, SupportedLanguage language)
     {
         var textFingerprint = text.GetHashCodeStable(5);
         var audioFileName = $"{language}_{text.ToFilenameFriendlyString(15)}_{textFingerprint}.mp3";
@@ -54,10 +54,5 @@ internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient 
             await File.WriteAllBytesAsync(audioFilePath, audioData);
         }
         return audioFilePath;
-    }
-
-    private async Task<string> GenerateAudioOrUseCached(string text, SupportedInputLanguage language)
-    {
-        throw new NotImplementedException();
     }
 }

@@ -20,7 +20,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
     {
         var terms = await frequencyDictionaryTermExtractor.ExtractTerms(
             settings.InputFilePath,
-            settings.InputLanguage,
+            settings.Language,
             settings.PartOfSpeechFilter,
             0,
             200);

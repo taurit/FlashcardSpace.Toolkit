@@ -15,32 +15,31 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
 
     [Description("Name of the language of the content in the input file (typically, a foreign language we learn).")]
     [CommandOption("--inputLanguage")]
-    [DefaultValue(SupportedInputLanguage.Autodetect)]
-    public SupportedInputLanguage InputLanguage { get; init; }
+    [DefaultValue(SupportedLanguage.Unspecified)]
+    public SupportedLanguage Language { get; init; }
 
     [Description("Name of the language to use for translation and explanations (typically, our native language).")]
     [CommandOption("--outputLanguage")]
-    [DefaultValue(SupportedOutputLanguage.Unknown)]
-    public required SupportedOutputLanguage OutputLanguage { get; init; }
+    [DefaultValue(SupportedLanguage.Unspecified)]
+    public required SupportedLanguage OutputLanguage { get; init; }
 
     /// <summary>
     /// This filter is added because I want to generate a few decks focused on concrete Parts of Speech (e.g. Adjectives, Nouns, Verbs).
     /// </summary>
     [Description("If present, only the words representing given Part of Speech will be included in the output.")]
     [CommandOption("--partOfSpeech")]
-    [DefaultValue(SupportedOutputLanguage.Unknown)]
+    [DefaultValue(SupportedLanguage.Unspecified)]
     public required PartOfSpeech? PartOfSpeechFilter { get; init; }
 
     public override ValidationResult Validate()
     {
         // ensure the `outputLanguage` option is set
         // currently, custom validation is the only way to make option required : https://github.com/spectreconsole/spectre.console/discussions/538
-        var outputLanguageIsNotSet = OutputLanguage == SupportedOutputLanguage.Unknown;
-        if (outputLanguageIsNotSet)
+        if (OutputLanguage == SupportedLanguage.Unspecified)
             return ValidationResult.Error("The `--outputLanguage` must be set.");
 
         // make sure the input and output languages are different
-        var inputLanguageName = InputLanguage.ToString();
+        var inputLanguageName = Language.ToString();
         var outputLanguageName = OutputLanguage.ToString();
         var inputAndOutputLanguageIsTheSame = inputLanguageName == outputLanguageName;
 
@@ -50,7 +49,7 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
         if (!File.Exists(InputFilePath))
             return ValidationResult.Error($"The input file `{InputFilePath}` cannot be found.");
 
-        if (InputLanguage == SupportedInputLanguage.Autodetect)
+        if (Language == SupportedLanguage.Unspecified)
             return ValidationResult.Error("The `--inputLanguage` must be set explicitly (the auto-detection is not implemented yet).");
 
         return ValidationResult.Success();

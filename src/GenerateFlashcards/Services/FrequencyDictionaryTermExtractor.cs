@@ -7,7 +7,7 @@ namespace GenerateFlashcards.Services;
 public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, NormalFormProvider normalFormProvider)
 {
     public async Task<List<TermInContext>> ExtractTerms(string inputFileName,
-        SupportedInputLanguage sourceLanguage,
+        SupportedLanguage sourceLanguage,
         PartOfSpeech? partOfSpeechFilter,
         int numItemsToSkip,
         int numItemsToTake)
@@ -16,7 +16,7 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
 
         // Hints for ChatGPT model vary depending on the language.
         // I think a generic implementation working with several languages would be more complex overall.
-        if (sourceLanguage == SupportedInputLanguage.Spanish)
+        if (sourceLanguage == SupportedLanguage.Spanish)
             extractedTerms = await ExtractTermsFromSpanishFrequencyDictionary(inputFileName, partOfSpeechFilter, numItemsToSkip, numItemsToTake);
         else
             throw new NotImplementedException("Only Spanish language is supported at the moment by the FrequencyDictionaryTermExtractor.");
