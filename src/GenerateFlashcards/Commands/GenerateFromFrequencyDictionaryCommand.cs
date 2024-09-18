@@ -1,6 +1,4 @@
-﻿using CoreLibrary.Utilities;
-using GenerateFlashcards.Models;
-using GenerateFlashcards.Services;
+﻿using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
@@ -29,28 +27,15 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
 
-        var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(terms);
+        var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(concreteAdjectives);
         var notesWithEnglishAndPolishTranslations = await spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
 
-        // export and open preview
-        ExportToFolderAndOpenPreview(notesWithImagesAndAudio);
+        deckExporter.ExportToFolderAndOpenPreview(notesWithImagesAndAudio);
 
         return 0;
     }
 
-    private void ExportToFolderAndOpenPreview(List<FlashcardNote> flashcards)
-    {
-        var deck = new Deck
-        {
-            Flashcards = flashcards.ToList()
-        };
 
-        var tempSubfolderName = $"DeckExporter-{Guid.NewGuid().ToString().GetHashCodeStable(5)}";
-        var singleUseExportDirectory = Path.Combine(Path.GetTempPath(), tempSubfolderName);
-        Directory.CreateDirectory(singleUseExportDirectory);
-        deckExporter.ExportDeck(deck, singleUseExportDirectory);
-        deckExporter.OpenPreview(singleUseExportDirectory);
-    }
 }

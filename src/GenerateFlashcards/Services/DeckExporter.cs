@@ -15,6 +15,22 @@ namespace GenerateFlashcards.Services;
 /// </summary>
 internal class DeckExporter(string browserProfileDirectory)
 {
+    // DEBUG ONLY
+    // a small adapter that allows to create preview for List of FlashcardNotes, without specifying any deck
+    public void ExportToFolderAndOpenPreview(List<FlashcardNote> flashcards)
+    {
+        var deck = new Deck
+        {
+            Flashcards = flashcards.ToList()
+        };
+
+        var tempSubfolderName = $"DeckExporter-{Guid.NewGuid().ToString().GetHashCodeStable(5)}";
+        var singleUseExportDirectory = Path.Combine(Path.GetTempPath(), tempSubfolderName);
+        Directory.CreateDirectory(singleUseExportDirectory);
+        ExportDeck(deck, singleUseExportDirectory);
+        OpenPreview(singleUseExportDirectory);
+    }
+
     public void ExportDeck(Deck deck, string exportFolderPath)
     {
         // the name of subfolder from which flashcards are loaded; hardcoded in web app, must be the same here

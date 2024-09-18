@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace CoreLibrary.Services;
 
-public record ImageGeneratorSettings(string CacheFolder);
+public record ImageGeneratorSettings(string CacheFolder, string StableDiffusionApiRunBatPath);
 
 /// <summary>
 /// Calls API of AUTOMATIC1111's stable-diffusion-webui to generate good-looking images.
@@ -49,8 +49,9 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             return cachedResult;
         }
 
-        // Call API
-        await EnsureProperSetupOfHttpClient(httpClient);
+        // Cache miss -> call Stable Diffusion API
+        await EnsureProperSetupOfHttpClient();
+        await EnsureStableDiffusionApiIsRunning();
 
         var response = await httpClient.PostAsJsonAsync("http://localhost:7860/sdapi/v1/txt2img", requestPayloadModel);
         var responseModel = await response.Content.ReadFromJsonAsync<TextToImageResponseModel>();
@@ -67,19 +68,39 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         return arrayOfGenImages;
     }
 
+
     private bool _timeoutAlreadySet = false;
-    private async Task EnsureProperSetupOfHttpClient(HttpClient httpClient1)
+    private async Task EnsureProperSetupOfHttpClient()
     {
         if (_timeoutAlreadySet)
             return;
         httpClient.Timeout = TimeSpan.FromMinutes(5);
         _timeoutAlreadySet = true;
-
-        // and since this is the first time we're using the client in this run, let's test if the API is alive:
-        var isAlive = await IsAlive();
-        if (!isAlive)
-            throw new InvalidOperationException("Image generator is not alive! You need to start Stable Diffusion Web API to generate images.");
     }
+
+    private bool _ensuredStableDiffusionApiIsAlive = false;
+    private async Task EnsureStableDiffusionApiIsRunning()
+    {
+        if (_ensuredStableDiffusionApiIsAlive)
+            return;
+
+        var isAlive = false;
+        const int retryTimeSeconds = 5;
+
+        while (!isAlive)
+        {
+            isAlive = await StableDiffusionHelper.IsAlive();
+            if (!isAlive)
+            {
+                logger.LogWarning("Stable Diffusion API is not running. Retrying in {RetryTimeSeconds} seconds...", retryTimeSeconds);
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(retryTimeSeconds));
+        }
+
+        _ensuredStableDiffusionApiIsAlive = true;
+    }
+
 
     private string GenerateCacheFileName(TextToImageRequestModel request)
     {
@@ -91,30 +112,5 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             $"{request.Prompt.ToFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.json");
     }
 
-    /// <summary>
-    /// Tests if local Stable Diffusion API is running.
-    ///
-    /// For image generation, this service must be configured and running locally:
-    /// https://github.com/AUTOMATIC1111/stable-diffusion-webui/
-    /// </summary>
-    public async Task<bool> IsAlive()
-    {
-        logger.LogDebug("Testing if Stable Diffusion API is running...");
-
-        var testUrl = "http://127.0.0.1:7860/favicon.ico";
-        var timeout = TimeSpan.FromSeconds(1);
-        var testHttpClient = new HttpClient { Timeout = timeout };
-        try
-        {
-            var response = await testHttpClient.GetAsync(testUrl);
-            logger.LogDebug("Stable Diffusion API is running. Received status code {StatusCode}", response.StatusCode);
-            return response.IsSuccessStatusCode;
-        }
-        catch (Exception)
-        {
-            logger.LogWarning("Stable Diffusion API is not running. Can't generate images.");
-            return false;
-        }
-    }
 
 }

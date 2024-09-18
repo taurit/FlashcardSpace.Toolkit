@@ -49,6 +49,7 @@ internal static class HtmlImagePreviewer
         Process.Start(processStartInfo);
 
         // Launch css file in default editor
+        return;
         processStartInfo = new ProcessStartInfo(cssStyleDestinationPath)
         {
             UseShellExecute = true
