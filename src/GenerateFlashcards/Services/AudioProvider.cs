@@ -6,8 +6,6 @@ namespace GenerateFlashcards.Services;
 
 internal record AudioProviderSettings(string AudioCacheFolder);
 
-
-
 /// <summary>
 /// Provides audio files for flashcards.
 /// </summary>

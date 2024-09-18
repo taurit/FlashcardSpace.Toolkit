@@ -26,4 +26,5 @@ internal static class Parameters
     internal static readonly string BrowserProfileDirectory = Path.Combine(RootAppDataFolder, "GenerateFlashcards.DeckExporter.EdgeProfile");
     internal static readonly string ImageGeneratorCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.ImageGenerator");
     internal static readonly string ImageProviderCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.ImageProvider");
+    internal static readonly string AudioCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.Audio");
 }

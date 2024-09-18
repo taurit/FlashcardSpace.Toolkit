@@ -1,4 +1,5 @@
-﻿using GenerateFlashcards.Models;
+﻿using CoreLibrary.Utilities;
+using GenerateFlashcards.Models;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
@@ -23,25 +24,19 @@ internal class DeckExporter(string browserProfileDirectory)
         Directory.CreateDirectory(deckSubfolder);
         var metadataFile = Path.Combine(deckSubfolder, "flashcards.json");
 
-        // Export the audio files
-        var audioFolderPath = Path.Combine(deckSubfolder, "audio");
-        Directory.CreateDirectory(audioFolderPath);
-        foreach (var flashcard in deck.Flashcards)
-        {
-            //var audioFilePath = Path.Combine(audioFolderPath, $"{flashcard.Id}.mp3");
-            //File.WriteAllBytes(audioFilePath, flashcard.Audio);
-        }
-
         // Export the images
         var imagesFolderPath = Path.Combine(deckSubfolder, "images");
-        Directory.CreateDirectory(imagesFolderPath);
+        var audioFolderPath = Path.Combine(deckSubfolder, "audio");
+        imagesFolderPath.EnsureDirectoryExists();
+        audioFolderPath.EnsureDirectoryExists();
+
         foreach (var flashcard in deck.Flashcards)
         {
+            // copy images to target directory
             foreach (var sourceImagePath in flashcard.ImageCandidates)
             {
-                // copy to target directory
                 var targetImagePath = Path.Combine(imagesFolderPath, new FileInfo(sourceImagePath).Name);
-                File.Copy(sourceImagePath, targetImagePath, true);
+                File.Copy(sourceImagePath, targetImagePath, false);
             }
 
             // update the image paths to relative paths
@@ -50,6 +45,12 @@ internal class DeckExporter(string browserProfileDirectory)
                 var imageFileName = new FileInfo(flashcard.ImageCandidates[i]).Name;
                 flashcard.ImageCandidates[i] = Path.Combine("images", imageFileName);
             }
+
+            // copy audio files to target directory
+            flashcard.TermAudio = CopyAudioFileToDeckAndReturnRelativePath(flashcard.TermAudio, audioFolderPath);
+            flashcard.TermTranslationAudio = CopyAudioFileToDeckAndReturnRelativePath(flashcard.TermTranslationAudio, audioFolderPath);
+            flashcard.ContextAudio = CopyAudioFileToDeckAndReturnRelativePath(flashcard.ContextAudio, audioFolderPath);
+            flashcard.ContextTranslationAudio = CopyAudioFileToDeckAndReturnRelativePath(flashcard.ContextTranslationAudio, audioFolderPath);
         }
 
         // Export the deck description
@@ -67,6 +68,18 @@ internal class DeckExporter(string browserProfileDirectory)
         var previewAppFile = Path.Combine(previewAppDirectory, "index.html");
         var previewAppDestination = Path.Combine(exportFolderPath, "index.html");
         File.Copy(previewAppFile, previewAppDestination);
+    }
+
+    private string CopyAudioFileToDeckAndReturnRelativePath(string audioFileFullPath, string targetDirectory)
+    {
+        // copy file to target directory
+        var sourceFileName = new FileInfo(audioFileFullPath).Name;
+        var targetFileAbsolutePath = Path.Combine(targetDirectory, sourceFileName);
+        var targetFileRelativePath = Path.Combine("audio", sourceFileName);
+
+        File.Copy(audioFileFullPath, targetFileAbsolutePath, false);
+
+        return targetFileRelativePath;
     }
 
     public void OpenPreview(string singleUseExportDirectory)

@@ -13,35 +13,29 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         DeckExporter deckExporter,
         SpanishToEnglishTranslationProvider spanishToEnglishTranslationProvider,
         SpanishToPolishTranslationProvider spanishToPolishTranslationProvider,
-        ImageProvider imageProvider
+        ImageProvider imageProvider,
+        AudioProvider audioProvider
     ) : AsyncCommand<GenerateFromFrequencyDictionarySettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFromFrequencyDictionarySettings settings)
     {
         var terms = await frequencyDictionaryTermExtractor.ExtractTerms(
             settings.InputFilePath,
-            settings.Language,
+            settings.SourceLanguage,
             settings.PartOfSpeechFilter,
             0,
-            200);
+            100);
 
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
 
-        var notesWithEnglishTranslations = await
-            spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(terms);
-
-        var notesWithEnglishAndPolishTranslations = await
-            spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
-
+        var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(terms);
+        var notesWithEnglishAndPolishTranslations = await spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
-
-        logger.LogInformation("{@Terms}", notesWithImages);
-
-
+        var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
 
         // export and open preview
-        ExportToFolderAndOpenPreview(notesWithImages);
+        ExportToFolderAndOpenPreview(notesWithImagesAndAudio);
 
         return 0;
     }

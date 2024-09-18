@@ -16,7 +16,7 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
     [Description("Name of the language of the content in the input file (typically, a foreign language we learn).")]
     [CommandOption("--inputLanguage")]
     [DefaultValue(SupportedLanguage.Unspecified)]
-    public SupportedLanguage Language { get; init; }
+    public SupportedLanguage SourceLanguage { get; init; }
 
     [Description("Name of the language to use for translation and explanations (typically, our native language).")]
     [CommandOption("--outputLanguage")]
@@ -39,7 +39,7 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
             return ValidationResult.Error("The `--outputLanguage` must be set.");
 
         // make sure the input and output languages are different
-        var inputLanguageName = Language.ToString();
+        var inputLanguageName = SourceLanguage.ToString();
         var outputLanguageName = OutputLanguage.ToString();
         var inputAndOutputLanguageIsTheSame = inputLanguageName == outputLanguageName;
 
@@ -49,7 +49,7 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
         if (!File.Exists(InputFilePath))
             return ValidationResult.Error($"The input file `{InputFilePath}` cannot be found.");
 
-        if (Language == SupportedLanguage.Unspecified)
+        if (SourceLanguage == SupportedLanguage.Unspecified)
             return ValidationResult.Error("The `--inputLanguage` must be set explicitly (the auto-detection is not implemented yet).");
 
         return ValidationResult.Success();

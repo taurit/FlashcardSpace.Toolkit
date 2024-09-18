@@ -67,6 +67,9 @@ internal static class DependencyInjection
         var imageProviderSettings = new ImageCandidatesProviderSettings(Parameters.ImageProviderCacheFolder);
         services.AddSingleton(imageProviderSettings);
 
+        var audioProviderSettings = new AudioProviderSettings(Parameters.AudioCacheFolder);
+        services.AddSingleton(audioProviderSettings);
+
         services.AddSingleton<NormalFormProvider>();
 
         // Add other services
@@ -77,6 +80,7 @@ internal static class DependencyInjection
         services.AddTransient<SpanishToPolishTranslationProvider>();
         services.AddTransient<ImageCandidatesGenerator>();
         services.AddTransient<ImageProvider>();
+        services.AddTransient<AudioProvider>();
 
         IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
             ? new ChatGptClient(
