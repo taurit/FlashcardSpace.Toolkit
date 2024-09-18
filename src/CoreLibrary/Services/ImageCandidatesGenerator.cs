@@ -10,10 +10,6 @@ public class ImageCandidatesGenerator(
     public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish,
         int numExperiments, int numImagesInExperiment)
     {
-        var isAlive = await imageGenerator.IsAlive();
-        if (!isAlive)
-            throw new InvalidOperationException("Image generator is not alive! You need to start Stable Diffusion Web API to generate images.");
-
         var results = new List<GeneratedImage>();
 
         const int cfgScaleMin = 3;

@@ -13,7 +13,7 @@ public static class StringExtensionMethodsFilenames
     /// </summary>
     /// <param name="input">The string to transform</param>
     /// <param name="maxFilenameLength">255 is safe as file name on all OSes, but this will usually only be a fragment of a file name</param>
-    public static string GetFilenameFriendlyString(this string input, int maxFilenameLength = 30)
+    public static string ToFilenameFriendlyString(this string input, int maxFilenameLength = 30)
     {
         // replace characters that are not allowed in filenames
         var invalidChars = new HashSet<char>(Path.GetInvalidFileNameChars());

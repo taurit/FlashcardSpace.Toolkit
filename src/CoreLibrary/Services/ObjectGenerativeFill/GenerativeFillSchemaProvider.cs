@@ -47,7 +47,7 @@ public class GenerativeFillSchemaProvider
         var typeFingerprint = ClassFingerprintProvider.GenerateTypeFingerprint(typeOfSingleItem);
 
         var schemaCacheFileName = $"schema-" +
-                                  $"{typeOfSingleItem.Name.GetFilenameFriendlyString()}-" +
+                                  $"{typeOfSingleItem.Name.ToFilenameFriendlyString()}-" +
                                   $"array-" +
                                   $"f{typeFingerprint.GetHashCodeStable(4)}" +
                                   $".json";

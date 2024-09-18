@@ -49,7 +49,7 @@ public class TextToSpeechClient(string speechKey, string speechRegion, string ca
     {
         var fileName =
             // text part is just for readability of file list and ease of debugging
-            $"{text.GetFilenameFriendlyString()}_" +
+            $"{text.ToFilenameFriendlyString()}_" +
             // ssml contains all unique characteristics of a request
             $"{ssml.GetHashCodeStable(7)}" +
             $".mp3";

@@ -50,8 +50,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         }
 
         // Call API
-        EnsureHttpClientTimeoutIsIncreased(httpClient);
-
+        await EnsureProperSetupOfHttpClient(httpClient);
 
         var response = await httpClient.PostAsJsonAsync("http://localhost:7860/sdapi/v1/txt2img", requestPayloadModel);
         var responseModel = await response.Content.ReadFromJsonAsync<TextToImageResponseModel>();
@@ -69,12 +68,17 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
     }
 
     private bool _timeoutAlreadySet = false;
-    private void EnsureHttpClientTimeoutIsIncreased(HttpClient httpClient1)
+    private async Task EnsureProperSetupOfHttpClient(HttpClient httpClient1)
     {
         if (_timeoutAlreadySet)
             return;
         httpClient.Timeout = TimeSpan.FromMinutes(5);
         _timeoutAlreadySet = true;
+
+        // and since this is the first time we're using the client in this run, let's test if the API is alive:
+        var isAlive = await IsAlive();
+        if (!isAlive)
+            throw new InvalidOperationException("Image generator is not alive! You need to start Stable Diffusion Web API to generate images.");
     }
 
     private string GenerateCacheFileName(TextToImageRequestModel request)
@@ -84,7 +88,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         var serializedRequest = JsonSerializer.Serialize(request);
         var fingerprint = serializedRequest.GetHashCodeStable(5);
         return Path.Combine(settings.CacheFolder,
-            $"{request.Prompt.GetFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.json");
+            $"{request.Prompt.ToFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.json");
     }
 
     /// <summary>
