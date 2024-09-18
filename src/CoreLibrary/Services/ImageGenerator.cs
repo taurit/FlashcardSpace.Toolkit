@@ -17,7 +17,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale)
     {
         // Call API of AUTOMATIC1111's stable-diffusion-webui
-        bool cutCornersForFasterResponseInDevelopment = false;
+        bool cutCornersForFasterResponseInDevelopment = true;
 
         var width = 1024;
         var height = 1024;

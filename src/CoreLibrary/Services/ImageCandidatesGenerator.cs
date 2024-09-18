@@ -18,7 +18,8 @@ public class ImageCandidatesGenerator(
 
         const int cfgScaleMin = 3;
         const int cfgScaleMax = 7;
-        decimal cfgScaleStep = ((decimal)cfgScaleMax - cfgScaleMin) / (numExperiments - 1);
+
+        decimal cfgScaleStep = numExperiments == 1 ? 0 : ((decimal)cfgScaleMax - cfgScaleMin) / (numExperiments - 1);
 
         for (int i = 0; i < numExperiments; i++)
         {

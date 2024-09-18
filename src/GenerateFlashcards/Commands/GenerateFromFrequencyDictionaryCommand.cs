@@ -12,7 +12,8 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         EasyWordsSpanishAdjectivesSelector adjectivesSelector,
         DeckExporter deckExporter,
         SpanishToEnglishTranslationProvider spanishToEnglishTranslationProvider,
-        SpanishToPolishTranslationProvider spanishToPolishTranslationProvider
+        SpanishToPolishTranslationProvider spanishToPolishTranslationProvider,
+        ImageProvider imageProvider
     ) : AsyncCommand<GenerateFromFrequencyDictionarySettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFromFrequencyDictionarySettings settings)
@@ -22,7 +23,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
             settings.InputLanguage,
             settings.PartOfSpeechFilter,
             0,
-            300);
+            200);
 
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
@@ -33,12 +34,14 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         var notesWithEnglishAndPolishTranslations = await
             spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
 
-        logger.LogInformation("{@Terms}", notesWithEnglishAndPolishTranslations);
+        var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
+
+        logger.LogInformation("{@Terms}", notesWithImages);
 
 
 
         // export and open preview
-        ExportToFolderAndOpenPreview(notesWithEnglishAndPolishTranslations);
+        ExportToFolderAndOpenPreview(notesWithImages);
 
         return 0;
     }

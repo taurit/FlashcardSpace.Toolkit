@@ -34,7 +34,7 @@ internal static class HtmlImagePreviewer
                            ;
         foreach (var image in images)
         {
-            htmlFragment += $"<img src=\"data:image/png;base64,{image.Base64EncodedImage}\" title=\"{image.PromptText}, cfg={image.CfgScale}\" />\n";
+            htmlFragment += $"<img src=\"data:image/jpeg;base64,{image.Base64EncodedImage}\" title=\"{image.PromptText}, cfg={image.CfgScale}\" />\n";
         }
         htmlFragment += "</body>\n" +
                         "</html>\n";

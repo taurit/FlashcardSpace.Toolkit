@@ -8,57 +8,48 @@ public class StableDiffusionPromptProvider(ILogger logger)
 {
     private const string NegativePromptText = "lowres,bad anatomy,bad hands,text," +
                                               "error,missing fingers,extra digit,fewer digits,cropped," +
-                                              "worst quality,low quality,normal quality,jpeg artifacts," +
+                                              "worst quality,low quality,jpeg artifacts," +
                                               "signature,watermark,username,blurry,nsfw,";
 
-    readonly string[] _keywords = {
-        "vintage", "modern", "industrial", "pastel", "nocturnal",
-        "reflective", "symbolic", "angular", "melodic", "flowing",
-        "layered", "muted", "harmonic", "radiant", "mechanical",
-        "distorted", "glossy", "ornate", "delicate", "rigid",
-        "mechanistic", "tranquil", "organic", "faded", "opulent",
-        "glowing", "sharp", "blurry", "colorful", "bleak",
-        "detailed", "simple", "chaotic", "intriguing", "futuristic",
-        "rusted", "serpentine", "cubist", "bizarre", "muted",
-        "saturated", "airy", "contemplative", "medieval", "prismatic",
-        "deconstructed", "fantastical", "static", "angular", "lyrical",
-        "earthy", "mechanical", "repetitive", "interlocking", "woven",
-        "sketchy", "glitchy", "psychedelic", "translucent", "iridescent",
-        "vivid", "cinematic", "pop", "tactile", "monolithic",
-        "gothic", "baroque", "renaissance", "expressive", "raw",
-        "naturalistic", "modular", "digital", "fluid", "turbulent",
-        "static", "sculptural", "volumetric", "mesmerizing", "sharp-edged",
-        "smeared", "bleached", "dreamy", "fragmentary", "grotesque",
-        "cubist", "polished", "etched", "ornamental", "bleak",
-        "sharp-edged", "moody", "transcendent", "warped", "eroded",
-        "primitive", "alien", "urban", "timid", "glacial",
-        "brutal", "ethnic", "impressionistic", "avant-garde", "playful" };
+    readonly string[] _styles = {
+        "vintage", "modern", "cubist", "industrial", "gothic", "baroque",
+        "renaissance", "avant-garde", "impressionistic", "fantastical",
+        "medieval", "digital", "futuristic", "pop", "expressionistic",
+        "glamour", "studio-quality", "fashion", "cinematic", "vivid"
+    };
 
-    /// <remarks>
-    /// Remarks: example of a prompt giving good visual results:
-    ///
-    /// `masterpiece,best quality,<lora:tbh323-sdxl:0.6>,cat in fisheye,flowers,
-    /// <lora:tbh123-sdxl:0.2>,paint by Vincent van Gogh`
-    /// </remarks>
-    public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int seed)
+    readonly string[] _moods = {
+        "tranquil", "moody", "bleak", "dreamy", "playful", "grotesque",
+        "contemplative", "melodic", "chaotic", "bleached", "eroded",
+        "raw", "static", "turbulent", "surreal", "happy", "joyful",
+        "energetic", "whimsical", "uplifting", "bright", "cheerful"
+    };
+
+    readonly string[] _textures = {
+        "glossy", "matte", "ornate", "delicate", "rigid", "flowing",
+        "distorted", "layered", "sharp", "faded", "colorful", "bleak",
+        "angular", "airy", "woven", "fragmentary", "polished", "etched",
+        "smooth", "velvety", "shiny", "radiant", "luminous", "crisp"
+    };
+
+    public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed)
     {
-        var random = new Random(seed);
+        var random = new Random(seed.Value);
         var keywords = new List<string>();
 
         // always add the main sentence
         keywords.Add(sentenceEnglish);
 
-        // and the main keyword might help too
+        // add the main keyword
         keywords.Add(termEnglish);
 
-        // then use few random keywords to make the prompt more diverse and experiment with the style
-        for (int i = 0; i < 4; i++)
-        {
-            var randomIndex = random.Next(_keywords.Length);
-            keywords.Add(_keywords[randomIndex]);
-        }
+        // add one from each category for diversity and coherence
+        keywords.Add(_styles[random.Next(_styles.Length)]);
+        keywords.Add(_moods[random.Next(_moods.Length)]);
+        keywords.Add(_textures[random.Next(_textures.Length)]);
 
-        var promptText = String.Join(",", keywords);
+        // ensuring uniqueness
+        var promptText = string.Join(",", keywords.Distinct());
         var prompt = new StableDiffusionPrompt(promptText, NegativePromptText);
         return prompt;
     }

@@ -23,15 +23,6 @@ internal class DeckExporter(string browserProfileDirectory)
         Directory.CreateDirectory(deckSubfolder);
         var metadataFile = Path.Combine(deckSubfolder, "flashcards.json");
 
-        // Export the deck description
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() } // Add JsonStringEnumConverter to serialize enums as strings
-        };
-        var deckSerialized = JsonSerializer.Serialize(deck, options);
-        File.WriteAllText(metadataFile, deckSerialized);
-
         // Export the audio files
         var audioFolderPath = Path.Combine(deckSubfolder, "audio");
         Directory.CreateDirectory(audioFolderPath);
@@ -46,9 +37,30 @@ internal class DeckExporter(string browserProfileDirectory)
         Directory.CreateDirectory(imagesFolderPath);
         foreach (var flashcard in deck.Flashcards)
         {
-            //var imageFilePath = Path.Combine(imagesFolderPath, $"{flashcard.Id}.png");
-            //File.WriteAllBytes(imageFilePath, flashcard.Image);
+            foreach (var sourceImagePath in flashcard.ImageCandidates)
+            {
+                // copy to target directory
+                var targetImagePath = Path.Combine(imagesFolderPath, new FileInfo(sourceImagePath).Name);
+                File.Copy(sourceImagePath, targetImagePath, true);
+            }
+
+            // update the image paths to relative paths
+            for (var i = 0; i < flashcard.ImageCandidates.Count; i++)
+            {
+                var imageFileName = new FileInfo(flashcard.ImageCandidates[i]).Name;
+                flashcard.ImageCandidates[i] = Path.Combine("images", imageFileName);
+            }
         }
+
+        // Export the deck description
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter() } // Add JsonStringEnumConverter to serialize enums as strings
+        };
+        var deckSerialized = JsonSerializer.Serialize(deck, options);
+        File.WriteAllText(metadataFile, deckSerialized);
+
 
         // copy the JS app that allows to browse the deck.
         var previewAppDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources", "PreviewApp");
@@ -80,8 +92,6 @@ internal class DeckExporter(string browserProfileDirectory)
             UseShellExecute = true
         };
         Process.Start(processStartInfo);
-
-
     }
 }
 

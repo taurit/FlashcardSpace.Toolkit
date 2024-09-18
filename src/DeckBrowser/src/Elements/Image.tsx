@@ -5,7 +5,8 @@ interface ImageProps {
 
 const Image: React.FC<ImageProps> = ({ deckName, imageCandidates }) => {
     if (imageCandidates && imageCandidates.length > 0) {
-        return <img src={`./${deckName}/${imageCandidates![0]}`} alt="" className="illustration" />;
+        let lastImageIndex = imageCandidates.length - 1;
+        return <img src={`./${deckName}/${imageCandidates![lastImageIndex]}`} alt="" className="illustration" />;
     }
 };
 
