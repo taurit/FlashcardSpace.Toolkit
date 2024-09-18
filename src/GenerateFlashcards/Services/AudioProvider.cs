@@ -1,6 +1,7 @@
 ﻿using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Utilities;
 using GenerateFlashcards.Models;
+using Microsoft.Extensions.Logging;
 
 namespace GenerateFlashcards.Services;
 
@@ -9,7 +10,7 @@ internal record AudioProviderSettings(string AudioCacheFolder);
 /// <summary>
 /// Provides audio files for flashcards.
 /// </summary>
-internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient ttsClient)
+internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient ttsClient, ILogger<AudioProvider> logger)
 {
     public async Task<List<FlashcardNote>> AddAudio(
         List<FlashcardNote> notes,
@@ -23,6 +24,8 @@ internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient 
 
         foreach (var note in notes)
         {
+            logger.LogInformation("Generating audio file for {Term}", note.Term);
+
             var termAudio = await GenerateAudioOrUseCached(note.Term, sourceLanguage);
             var termTranslationAudio = await GenerateAudioOrUseCached(note.TermTranslation, targetLanguage);
             var contextAudio = await GenerateAudioOrUseCached(note.Context, sourceLanguage);

@@ -77,6 +77,10 @@ internal class DeckExporter(string browserProfileDirectory)
         var targetFileAbsolutePath = Path.Combine(targetDirectory, sourceFileName);
         var targetFileRelativePath = Path.Combine("audio", sourceFileName);
 
+        if (File.Exists(targetFileAbsolutePath))
+        {
+            return targetFileRelativePath;
+        }
         File.Copy(audioFileFullPath, targetFileAbsolutePath, false);
 
         return targetFileRelativePath;
