@@ -1,4 +1,5 @@
 ﻿using GenerateFlashcards.Commands;
+using GenerateFlashcards.Infrastructure;
 using Spectre.Console.Cli;
 
 namespace GenerateFlashcards;
@@ -20,6 +21,13 @@ internal class Program
                 .WithDescription("Generates flashcards with from an input containing word frequency dictionary.")
                 .WithExample("generate-from-frequency-dictionary", "--inputLanguage", "Spanish", "--outputLanguage", "English", "input.txt")
                 ;
+
+            // experimental; source is a plain text with lines containing terms to learn; possibly with typos
+            config.AddCommand<GenerateFromTermListCommand>("generate-from-term-list")
+                .WithDescription("Generates flashcards from a list of Spanish words and phrases I want to learn.")
+                .WithExample("generate-from-term-list", "words.txt")
+                ;
+
 
             config.AddCommand<GenerateFromNaturalLanguageCommand>("generate-from-natural-language")
                 .WithDescription("Generates flashcards from an input containing plain text in natural language.")

@@ -2,7 +2,6 @@ using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Services.ObjectGenerativeFill;
-using GenerateFlashcards.Infrastructure;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
 
-namespace GenerateFlashcards;
+namespace GenerateFlashcards.Infrastructure;
 
 internal static class DependencyInjection
 {
@@ -74,6 +73,7 @@ internal static class DependencyInjection
 
         // Add other services
         services.AddTransient<FrequencyDictionaryTermExtractor>();
+        services.AddTransient<GenericSpanishTermExtractor>();
         services.AddTransient<AdvancedSentenceExtractor>();
         services.AddTransient<EasyWordsSpanishAdjectivesSelector>();
         services.AddTransient<SpanishToEnglishTranslationProvider>();

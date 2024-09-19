@@ -23,6 +23,10 @@ internal class SpanishTermGenericDetector : ObjectWithId
     public string FlashcardQuestionInSpanish { get; init; }
 
     [FillWithAI]
+    [FillWithAIRule($"{nameof(FlashcardQuestionInSpanish)} translated to English.")]
+    public string FlashcardQuestionInEnglish { get; init; }
+
+    [FillWithAI]
     [FillWithAIRule($"A part of the back side of the flashcard, and a translation of {nameof(FlashcardQuestionInSpanish)} in the context of the example sentence.")]
     [FillWithAIRule("This value should be in Polish")]
     public string FlashcardAnswerInPolish { get; init; }
@@ -32,11 +36,21 @@ internal class SpanishTermGenericDetector : ObjectWithId
     [FillWithAIRule("This value should be completely in Polish")]
     public string FlashcardAnswerInEnglish { get; init; }
 
+
     [FillWithAI]
     [FillWithAIRule($"An example of a sentence using the term taught in {nameof(FlashcardQuestionInSpanish)}.")]
     [FillWithAIRule("This value should be completely in Spanish.")]
     [FillWithAIRule($"If {nameof(TermToCreateFlashcardFor)} contains a sentence already, use it, but first check for errors and refine if needed.")]
     public string FlashcardExampleSentenceInSpanish { get; init; }
+
+
+    [FillWithAI]
+    [FillWithAIRule($"{nameof(FlashcardExampleSentenceInSpanish)} translated to English.")]
+    public string FlashcardExampleSentenceInEnglish { get; init; }
+
+    [FillWithAI]
+    [FillWithAIRule($"{nameof(FlashcardExampleSentenceInSpanish)} translated to Polish.")]
+    public string FlashcardExampleSentenceInPolish { get; set; }
 
     [FillWithAI]
     [FillWithAIRule($"If the term taught in {nameof(TermToCreateFlashcardFor)} is unusual for Spanish (Castellano), or rarely used in Europe, briefly explain why.")]
@@ -44,8 +58,8 @@ internal class SpanishTermGenericDetector : ObjectWithId
     [FillWithAIRule("If the word has multiple frequently used meanings, mention it.")]
     public string? Remarks { get; init; }
 
-    [FillWithAI]
-    [FillWithAIRule($"Brief explanation of why other fields were generated the way they were.")]
-    public string? Explanation { get; init; }
+    //[FillWithAI]
+    //[FillWithAIRule($"Brief explanation of why other fields were generated the way they were.")]
+    //public string? Explanation { get; init; }
 
 }

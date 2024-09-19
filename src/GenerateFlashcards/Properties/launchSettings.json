@@ -10,7 +10,7 @@
     },
     "(Word list) Spanish -> Polish": {
       "commandName": "Project",
-      "commandLineArgs": "generate-from-word-list --inputLanguage SpAniSH --outputLanguage Polish d:\\Inbox\\words.txt"
+      "commandLineArgs": "generate-from-term-list d:\\Inbox\\words.txt"
     },
     "Debug command": {
       "commandName": "Project",

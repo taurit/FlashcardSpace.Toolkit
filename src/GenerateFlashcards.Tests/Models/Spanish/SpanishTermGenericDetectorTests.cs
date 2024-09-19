@@ -32,7 +32,6 @@ public class SpanishTermGenericDetectorTests
         output.FlashcardQuestionInSpanish.Should().Contain("el ");
 
         output.FlashcardAnswerInPolish.Should().NotBeNullOrEmpty();
-        output.Explanation.Should().NotBeNullOrEmpty();
     }
 
 
@@ -62,7 +61,7 @@ public class SpanishTermGenericDetectorTests
     public async Task WhenInputContainsWordInPolish_ExpectFlashcardIsStillFromSpanishToPolishButHintsAreTaken()
     {
         // Arrange
-        var inputO = new SpanishTermGenericDetector() { TermToCreateFlashcardFor = "kasztan (owoc)" };
+        var inputO = new SpanishTermGenericDetector() { TermToCreateFlashcardFor = "kasztan (jadalny)" };
         var inputD = new SpanishTermGenericDetector() { TermToCreateFlashcardFor = "kasztan (drzewo)" };
 
         // Act

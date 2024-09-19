@@ -9,7 +9,7 @@ public abstract class ObjectWithId
     /// Id to correlate item in input (prompt) with item in response (result from OpenAI Completions API).
     /// Id is managed by helper, not the caller.
     /// </summary>
-    [FillWithAIRule($"{nameof(Id)} is used to to link elements in input and output arrays.")]
-    [FillWithAIRule($"Always provide this value based on value in inputs.")]
+    [FillWithAIRule($"{nameof(Id)} links elements in input (prompt) and output.")]
+    [FillWithAIRule($"This value must always be provided.")]
     public int? Id { get; set; }
 }
