@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace CoreLibrary.Services;
 
-public record ImageGeneratorSettings(string CacheFolder, string StableDiffusionApiRunBatPath);
+public record ImageGeneratorSettings(string CacheFolder);
 
 /// <summary>
 /// Calls API of AUTOMATIC1111's stable-diffusion-webui to generate good-looking images.

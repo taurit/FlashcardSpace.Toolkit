@@ -8,6 +8,10 @@
       "commandName": "Project",
       "commandLineArgs": "generate-from-natural-language --inputLanguage SpAniSH --outputLanguage Polish Resources/InputExample.Spanish.PlainText.txt"
     },
+    "(Word list) Spanish -> Polish": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-from-word-list --inputLanguage SpAniSH --outputLanguage Polish d:\\Inbox\\words.txt"
+    },
     "Debug command": {
       "commandName": "Project",
       "commandLineArgs": "debug"
