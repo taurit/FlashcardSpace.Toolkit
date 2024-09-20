@@ -1,4 +1,4 @@
-﻿using GenerateFlashcards.Models;
+﻿using CoreLibrary.Models;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;

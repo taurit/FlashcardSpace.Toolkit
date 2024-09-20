@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using RefineDeck.Utils;
+using RefineDeck.ViewModels;
+using System.Windows;
 
 namespace RefineDeck;
 /// <summary>
@@ -6,21 +8,13 @@ namespace RefineDeck;
 /// </summary>
 public partial class MainWindow : Window
 {
+    MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
+
     public MainWindow()
     {
         InitializeComponent();
 
-        string[] args = Environment.GetCommandLineArgs();
-
-        if (args.Length > 1)
-        {
-            var launchParameter = args[1];
-            if (launchParameter.StartsWith("refinedeck:///"))
-                launchParameter = launchParameter.Replace("refinedeck:///", "");
-
-            this.Title = $"Refine deck: {launchParameter}";
-        }
-
-
+        DataContext = new MainWindowViewModel();
+        ViewModel.Deck = DeckLoader.LoadDeck();
     }
 }

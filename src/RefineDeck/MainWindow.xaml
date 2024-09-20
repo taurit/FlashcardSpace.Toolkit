@@ -2,13 +2,20 @@
     x:Class="RefineDeck.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:RefineDeck.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:RefineDeck"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RefineDeck.ViewModels"
     Title="Refine deck"
     Width="1200"
     Height="750"
+    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
+    <Window.Resources>
+        <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
+        <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -23,10 +30,33 @@
         </Grid.ColumnDefinitions>
 
         <!--  Violet panel on the left  -->
-        <Border
+        <ListBox
             Grid.Row="0"
             Grid.Column="0"
-            Background="#FF9400D3" />
+            HorizontalContentAlignment="Stretch"
+            ItemsSource="{Binding Deck.Flashcards}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="2">
+                        <DockPanel>
+                            <WrapPanel Margin="0,0,6,0" DockPanel.Dock="left">
+                                <TextBlock Foreground="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToColorConverter}}" Text="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToSymbolConverter}}" />
+                            </WrapPanel>
+
+                            <TextBlock DockPanel.Dock="Left" Text="{Binding Term}" />
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="BorderThickness" Value="0" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+        </ListBox>
 
         <!--  Yellow in the middle  -->
         <Border

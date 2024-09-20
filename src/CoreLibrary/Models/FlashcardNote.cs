@@ -1,9 +1,8 @@
-﻿using CoreLibrary;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace GenerateFlashcards.Models;
+namespace CoreLibrary.Models;
 
-internal record FlashcardNote
+public record FlashcardNote
 {
     // A studied word in the source language (like 'la manzana', 'verde') or idiom (like 'tener miedo')
     [JsonPropertyName("term")]

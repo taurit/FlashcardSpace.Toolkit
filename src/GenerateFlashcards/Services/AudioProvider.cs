@@ -1,6 +1,6 @@
-﻿using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
+﻿using CoreLibrary.Models;
+using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Utilities;
-using GenerateFlashcards.Models;
 using Microsoft.Extensions.Logging;
 
 namespace GenerateFlashcards.Services;

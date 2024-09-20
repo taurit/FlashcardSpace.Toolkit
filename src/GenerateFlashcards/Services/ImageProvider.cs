@@ -1,6 +1,6 @@
-﻿using CoreLibrary.Services;
+﻿using CoreLibrary.Models;
+using CoreLibrary.Services;
 using CoreLibrary.Utilities;
-using GenerateFlashcards.Models;
 
 namespace GenerateFlashcards.Services;
 

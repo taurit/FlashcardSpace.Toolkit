@@ -1,5 +1,5 @@
-﻿using CoreLibrary.Services.ObjectGenerativeFill;
-using GenerateFlashcards.Models;
+﻿using CoreLibrary.Models;
+using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models.Spanish;
 
 namespace GenerateFlashcards.Services;

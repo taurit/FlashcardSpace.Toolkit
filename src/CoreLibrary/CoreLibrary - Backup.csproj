@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MemoryPack" Version="1.21.3" />
+    <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.40.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
+    <PackageReference Include="OpenAI" Version="2.0.0-beta.10" />
+    
+    <PackageReference Include="DotnetGeminiSDK" Version="1.0.14" />
+  </ItemGroup>
+
+  <!-- My local fork of dotnet-gemini-sdk if I decide I need to implement support for Structured Outputs (currently paused)-->
+  <!--<ItemGroup>
+    <ProjectReference Include="..\..\..\dotnet-gemini-sdk\src\DotnetGeminiSDK\DotnetGeminiSDK.csproj" />
+  </ItemGroup>-->
+  
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="CoreLibrary.Tests" />
+  </ItemGroup>
+  
+  
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
+</Project>

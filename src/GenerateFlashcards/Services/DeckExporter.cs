@@ -1,9 +1,7 @@
-﻿using CoreLibrary.Utilities;
-using GenerateFlashcards.Models;
+﻿using CoreLibrary.Models;
+using CoreLibrary.Utilities;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace GenerateFlashcards.Services;
 
@@ -70,14 +68,8 @@ internal class DeckExporter(DeckExporterSettings settings)
         }
 
         // Export the deck description
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() } // Add JsonStringEnumConverter to serialize enums as strings
-        };
-        var deckSerialized = JsonSerializer.Serialize(deck, options);
+        var deckSerialized = deck.Serialize();
         File.WriteAllText(metadataFile, deckSerialized);
-
 
         // copy the JS app that allows to browse the deck.
         var previewAppDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources", "PreviewApp");
