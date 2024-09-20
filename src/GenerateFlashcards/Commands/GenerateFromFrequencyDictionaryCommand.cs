@@ -1,4 +1,5 @@
-﻿using GenerateFlashcards.Services;
+﻿using GenerateFlashcards.Models;
+using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
@@ -32,7 +33,8 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
 
-        deckExporter.ExportToFolderAndOpenPreview(notesWithImagesAndAudio);
+        var deck = new Deck("Spanish adjectives", notesWithImagesAndAudio);
+        deckExporter.ExportToFolderAndOpenPreview(deck);
 
         return 0;
     }

@@ -7,28 +7,26 @@ using System.Text.Json.Serialization;
 
 namespace GenerateFlashcards.Services;
 
+internal record DeckExporterSettings(string BrowserProfileDirectory, string DeckExportPath);
+
 /// <summary>
 /// Exports generated deck of flashcards into a folder containing:
 /// - `flashcards.json` file describing the deck and all the flashcards it contains
 /// - `audio` folder containing all the audio files for the flashcards
 /// - `images` folder containing all the images for the flashcards
 /// </summary>
-internal class DeckExporter(string browserProfileDirectory)
+internal class DeckExporter(DeckExporterSettings settings)
 {
-    // DEBUG ONLY
-    // a small adapter that allows to create preview for List of FlashcardNotes, without specifying any deck
-    public void ExportToFolderAndOpenPreview(List<FlashcardNote> flashcards)
+    public void ExportToFolderAndOpenPreview(Deck deck)
     {
-        var deck = new Deck
-        {
-            Flashcards = flashcards.ToList()
-        };
+        // name folder in the format like `Deck-2024-09-20_08-38_deckName
+        var deckNameWithoutSpaces = deck.DeckName.ToFilenameFriendlyString(20).Replace(" ", "_");
+        var deckSubfolderName = $"Deck-{DateTime.Now:yyyy-MM-dd_HH-mm}_{deckNameWithoutSpaces}";
+        var exportDirectory = Path.Combine(settings.DeckExportPath, deckSubfolderName);
+        Directory.CreateDirectory(exportDirectory);
+        ExportDeck(deck, exportDirectory);
 
-        var tempSubfolderName = $"DeckExporter-{Guid.NewGuid().ToString().GetHashCodeStable(5)}";
-        var singleUseExportDirectory = Path.Combine(Path.GetTempPath(), tempSubfolderName);
-        Directory.CreateDirectory(singleUseExportDirectory);
-        ExportDeck(deck, singleUseExportDirectory);
-        OpenPreview(singleUseExportDirectory);
+        OpenPreview(exportDirectory);
     }
 
     public void ExportDeck(Deck deck, string exportFolderPath)
@@ -52,6 +50,8 @@ internal class DeckExporter(string browserProfileDirectory)
             foreach (var sourceImagePath in flashcard.ImageCandidates)
             {
                 var targetImagePath = Path.Combine(imagesFolderPath, new FileInfo(sourceImagePath).Name);
+                if (File.Exists(targetImagePath))
+                    continue;
                 File.Copy(sourceImagePath, targetImagePath, false);
             }
 
@@ -112,7 +112,7 @@ internal class DeckExporter(string browserProfileDirectory)
             Arguments = $"--disable-web-security " +
                         // needed to allow the browser to access the local file system
                         // annoying when launched for the first time because there is "first run" wizard and all addons open their tabs
-                        $"--user-data-dir=\"{browserProfileDirectory}\" " +
+                        $"--user-data-dir=\"{settings.BrowserProfileDirectory}\" " +
                         "--no-first-run " +
                         "--disable-sync " +
 

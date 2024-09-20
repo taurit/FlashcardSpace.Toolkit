@@ -2,9 +2,11 @@
 
 namespace GenerateFlashcards.Models;
 
-internal class Deck
+internal class Deck(string deckName, List<FlashcardNote> flashcards)
 {
-    // todo: TermInContext is an early stage model. To be replaced with later-stage model when I develop it
+    [JsonPropertyName("deckName")]
+    public string DeckName { get; set; } = deckName;
+
     [JsonPropertyName("flashcards")]
-    public List<FlashcardNote> Flashcards { get; set; }
+    public List<FlashcardNote> Flashcards { get; set; } = flashcards;
 }
