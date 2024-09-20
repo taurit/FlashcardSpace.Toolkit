@@ -15,7 +15,6 @@ public class ApprovalStatusToSymbolConverter : OneWayConverter
                 ApprovalStatus.NotReviewedYet => "☐",
                 ApprovalStatus.Approved => "☑",
                 ApprovalStatus.Rejected => "⮽",
-                ApprovalStatus.RequiresDiscussion => "💬",
 
                 // unexpected
                 _ => "❓",

@@ -9,7 +9,4 @@ public enum ApprovalStatus
 
     // Flashcard is inconsistent, confusing, or contains errors not worth fixing
     Rejected,
-
-    // Card is interesting, but requires some team discussion before we can publish
-    RequiresDiscussion
 }

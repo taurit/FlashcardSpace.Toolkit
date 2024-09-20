@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:RefineDeck"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:RefineDeck.ViewModels"
+    xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="Refine deck"
     Width="1200"
     Height="750"
@@ -15,6 +16,9 @@
     <Window.Resources>
         <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
         <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="60" />
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -24,9 +28,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
         <!--  Violet panel on the left  -->
@@ -35,7 +39,9 @@
             Grid.Column="0"
             HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding Deck.Flashcards}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            SelectedItem="{Binding SelectedFlashcard}"
+            SelectionChanged="FlashcardChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="2">
@@ -58,17 +64,63 @@
 
         </ListBox>
 
-        <!--  Yellow in the middle  -->
-        <Border
+        <!--  Middle  -->
+        <DockPanel
             Grid.Row="0"
             Grid.Column="2"
-            Background="#FFFFD700" />
+            LastChildFill="True">
+
+
+            <UniformGrid
+                Height="40"
+                HorizontalAlignment="Stretch"
+                DockPanel.Dock="Bottom"
+                Rows="1">
+                <Button Background="IndianRed">Reject</Button>
+                <Button Background="DarkSeaGreen">Approve</Button>
+            </UniformGrid>
+            <DataGrid
+                Height="150"
+                AutoGenerateColumns="False"
+                BorderThickness="0"
+                CanUserSortColumns="True"
+                ClipboardCopyMode="IncludeHeader"
+                DockPanel.Dock="Bottom"
+                GridLinesVisibility="Horizontal"
+                HorizontalGridLinesBrush="LightGray"
+                IsReadOnly="True"
+                ItemsSource="{Binding SelectedFlashcard.Warnings}"
+                VerticalGridLinesBrush="Transparent">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Severity, Mode=OneWay}"
+                        Header="Severity" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel>
+                <GroupBox Header="Question">
+                    <DockPanel LastChildFill="True">
+                        <Button
+                            Width="50"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Stretch"
+                            Content="Reset"
+                            DockPanel.Dock="Right" />
+                        <TextBox MaxLines="3" Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}" />
+                    </DockPanel>
+                </GroupBox>
+
+            </StackPanel>
+        </DockPanel>
+
 
         <!--  Lime panel on the right  -->
-        <Border
+        <wpf:WebView2
+            Name="Preview"
             Grid.Row="0"
-            Grid.Column="4"
-            Background="#FF00FF00" />
+            Grid.Column="4" />
 
 
         <GridSplitter
@@ -107,28 +159,25 @@
             </StatusBar.ItemsPanel>
 
             <StatusBarItem Grid.Column="0" ToolTip="Approved">
-                <TextBlock DockPanel.Dock="Left" Foreground="DarkCyan">
+                <TextBlock DockPanel.Dock="Left" Foreground="DarkSeaGreen">
                     <Run>☑</Run>
-                    123</TextBlock>
+                    <Run Text="{Binding NumApproved, Mode=OneWay}" />
+                </TextBlock>
             </StatusBarItem>
 
 
             <StatusBarItem Grid.Column="1" ToolTip="Rejected">
-                <TextBlock DockPanel.Dock="Left" Foreground="Red">
+                <TextBlock DockPanel.Dock="Left" Foreground="IndianRed">
                     <Run>⮽</Run>
-                    3</TextBlock>
-            </StatusBarItem>
-
-            <StatusBarItem Grid.Column="2" ToolTip="Left for discussion">
-                <TextBlock DockPanel.Dock="Left" Foreground="MediumPurple">
-                    <Run>💬</Run>
-                    5</TextBlock>
+                    <Run Text="{Binding NumRejected, Mode=OneWay}" />
+                </TextBlock>
             </StatusBarItem>
 
             <StatusBarItem Grid.Column="4" ToolTip="Still need review">
-                <TextBlock DockPanel.Dock="Left" Foreground="Gray">
+                <TextBlock DockPanel.Dock="Left" Foreground="MediumPurple">
                     <Run>☐</Run>
-                    50</TextBlock>
+                    <Run Text="{Binding NumPending, Mode=OneWay}" />
+                </TextBlock>
             </StatusBarItem>
 
 

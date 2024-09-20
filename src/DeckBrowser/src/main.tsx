@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import PreviewWindow from "./PreviewWindow.tsx";
-import Toolbar from "./Toolbar.tsx";
+import FlashcardLoader from "./FlashcardLoader.tsx";
 
 // added to make debugging in Firefox responsibe/mobile rendering mode easier
 const codeToInjectWhenRanAsStandaloneApp = (
@@ -12,7 +11,6 @@ const codeToInjectWhenRanAsStandaloneApp = (
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         {codeToInjectWhenRanAsStandaloneApp}
-        <PreviewWindow />
-        <Toolbar />
+        <FlashcardLoader />
     </React.StrictMode>
 );

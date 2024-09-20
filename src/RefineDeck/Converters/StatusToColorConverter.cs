@@ -12,12 +12,11 @@ public class ApprovalStatusToColorConverter : OneWayConverter
             return status switch
             {
                 ApprovalStatus.NotReviewedYet => Brushes.Gray,
-                ApprovalStatus.Approved => Brushes.DarkCyan,
-                ApprovalStatus.Rejected => Brushes.Red,
-                ApprovalStatus.RequiresDiscussion => Brushes.MediumPurple,
+                ApprovalStatus.Approved => Brushes.DarkSeaGreen,
+                ApprovalStatus.Rejected => Brushes.IndianRed,
 
                 // unexpected
-                _ => Brushes.HotPink,
+                _ => Brushes.RoyalBlue,
             };
         }
 

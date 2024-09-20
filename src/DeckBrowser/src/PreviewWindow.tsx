@@ -1,34 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DesktopWindow from "./DesktopWindow/DesktopWindow";
 import AudioPlayer from "./Elements/AudioPlayer";
 import Image from "./Elements/Image";
-import { FlashcardDeck } from "./models/FlashcardDeck";
 import "./PreviewWindow.scss";
+import { FlashcardDeck } from "./models/FlashcardDeck";
 
-function DeckPreviewWindow() {
+interface DeckPreviewWindowProps {
+    deck: FlashcardDeck | null;
+}
+
+const DeckPreviewWindow: React.FC<DeckPreviewWindowProps> = ({ deck }) => {
     const deckName = "FlashcardDeck";
 
-    // fetch flashcard data from the `data.json` file
-    const [data, setData] = useState<FlashcardDeck | null>(null);
     const [flashcardIndex, setFlashcardIndex] = useState(0);
 
-    useEffect(() => {
-        fetch(`./${deckName}/flashcards.json`)
-            .then((response) => response.json())
-            .then((data) => setData(data))
-            .catch((error) => {
-                document.writeln(`An error occurred while fetching the flashcard data: ${error}<br />\n`);
-            });
-    }, []);
-
     // display the flashcard data
-    if (!data) return null;
-    var numFlashcards = data.flashcards?.length ?? 0;
+    if (!deck) return null;
+    var numFlashcards = deck.flashcards?.length ?? 0;
 
     const goToPreviousExample = () => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards);
     const goToNextExample = () => setFlashcardIndex((index) => (index + 1) % numFlashcards);
 
-    const flashcard = data.flashcards![flashcardIndex];
+    const flashcard = deck.flashcards![flashcardIndex];
+    const hasMoreThanOneFlashcard = numFlashcards > 1;
     return (
         <section className="flashcards-demo-container">
             <DesktopWindow
@@ -59,18 +53,20 @@ function DeckPreviewWindow() {
                     </div>
                 }
                 bottomContent={
-                    <>
-                        <div className="button bottomButton previousExample" onClick={goToPreviousExample}>
-                            Previous
-                        </div>
-                        <div className="button bottomButton nextExample" onClick={goToNextExample}>
-                            Next
-                        </div>
-                    </>
+                    hasMoreThanOneFlashcard && (
+                        <>
+                            <div className="button bottomButton previousExample" onClick={goToPreviousExample}>
+                                Previous
+                            </div>
+                            <div className="button bottomButton nextExample" onClick={goToNextExample}>
+                                Next
+                            </div>
+                        </>
+                    )
                 }
             />
         </section>
     );
-}
+};
 
 export default DeckPreviewWindow;
