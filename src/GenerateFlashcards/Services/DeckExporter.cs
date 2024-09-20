@@ -21,7 +21,7 @@ internal class DeckExporter(DeckExporterSettings settings)
     {
         // name folder in the format like `Deck-2024-09-20_08-38_deckName
         var deckNameWithoutSpaces = deck.DeckName.ToFilenameFriendlyString(20).Replace(" ", "_");
-        var deckSubfolderName = $"Deck-{DateTime.Now:yyyy-MM-dd_HH-mm}_{deckNameWithoutSpaces}";
+        var deckSubfolderName = $"Deck-{DateTime.Now:yyyy-MM-dd}_{deckNameWithoutSpaces}"; // _HH-mm
         var exportDirectory = Path.Combine(settings.DeckExportPath, deckSubfolderName);
         Directory.CreateDirectory(exportDirectory);
         ExportDeck(deck, exportDirectory);
@@ -83,7 +83,7 @@ internal class DeckExporter(DeckExporterSettings settings)
         var previewAppDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources", "PreviewApp");
         var previewAppFile = Path.Combine(previewAppDirectory, "index.html");
         var previewAppDestination = Path.Combine(exportFolderPath, "index.html");
-        File.Copy(previewAppFile, previewAppDestination);
+        File.Copy(previewAppFile, previewAppDestination, true);
     }
 
     private string CopyAudioFileToDeckAndReturnRelativePath(string audioFileFullPath, string targetDirectory)

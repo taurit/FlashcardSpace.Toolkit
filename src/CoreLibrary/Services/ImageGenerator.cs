@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Utilities;
+using MemoryPack;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -40,11 +41,26 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 
         if (File.Exists(cacheFileName))
         {
-            logger.LogInformation("Using cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
+            // Large Base64 image-strings in JSON are slow to deserialize, so I'll use webpack format to improve performance
+            var cacheFileNameMempack = $"{cacheFileName}.mempack";
+            if (File.Exists(cacheFileNameMempack))
+            {
+                logger.LogInformation("Using Mempack cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
+                var mempackCacheContent = await File.ReadAllBytesAsync(cacheFileNameMempack);
+                var mempackContent = MemoryPackSerializer.Deserialize<GeneratedImagesList>(mempackCacheContent);
+                return mempackContent!.Images;
+            }
+
+            logger.LogInformation("Using JSON cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
             var cachedResultSerialized = await File.ReadAllTextAsync(cacheFileName);
             var cachedResult = JsonSerializer.Deserialize<List<GeneratedImage>>(cachedResultSerialized);
             if (cachedResult == null)
                 throw new InvalidOperationException($"Failed to deserialize images cached in {cacheFileName}");
+
+            // save to mempack for faster deserialization next time
+            var imageList = new GeneratedImagesList(cachedResult);
+            var newMempackCacheContent = MemoryPackSerializer.Serialize<GeneratedImagesList>(imageList);
+            await File.WriteAllBytesAsync(cacheFileNameMempack, newMempackCacheContent);
 
             return cachedResult;
         }

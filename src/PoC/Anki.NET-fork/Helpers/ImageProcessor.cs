@@ -14,7 +14,7 @@ public class ImageProcessor
             var newHeight = (int)((1080 / (double)image.Width) * image.Height);
 
             // Resize the image to 1080px width while maintaining aspect ratio
-            image.Resize(1080, newHeight);
+            image.Resize(1080, (uint)newHeight);
         }
 
         // Convert the image to webp format

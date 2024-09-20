@@ -12,7 +12,6 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
     <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="MemoryPack" Version="1.21.1" />
     <PackageReference Include="NeoSmart.Caching.Sqlite" Version="[7.0.1]" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />

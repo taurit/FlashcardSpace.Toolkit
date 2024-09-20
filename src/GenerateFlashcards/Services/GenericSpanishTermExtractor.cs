@@ -7,7 +7,9 @@ internal class GenericSpanishTermExtractor(GenerativeFill generativeFill)
 {
     public async Task<List<FlashcardNote>> ExtractTerms(string inputFileName)
     {
-        var lines = await File.ReadAllLinesAsync(inputFileName);
+        var lines = (await File.ReadAllLinesAsync(inputFileName))
+            .Where(line => !string.IsNullOrWhiteSpace(line))
+            ;
 
         var modelsWithGaps = lines
             .Select(line => new SpanishTermGenericDetector { TermToCreateFlashcardFor = line })
