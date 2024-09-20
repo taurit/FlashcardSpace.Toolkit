@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import DeckPreviewWindow from "./DeckPreviewWindow.tsx";
+import PreviewWindow from "./PreviewWindow.tsx";
+import Toolbar from "./Toolbar.tsx";
 
 // added to make debugging in Firefox responsibe/mobile rendering mode easier
 const codeToInjectWhenRanAsStandaloneApp = (
@@ -11,6 +12,7 @@ const codeToInjectWhenRanAsStandaloneApp = (
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         {codeToInjectWhenRanAsStandaloneApp}
-        <DeckPreviewWindow />
+        <PreviewWindow />
+        <Toolbar />
     </React.StrictMode>
 );

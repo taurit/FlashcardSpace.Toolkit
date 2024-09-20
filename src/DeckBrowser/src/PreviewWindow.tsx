@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import "./DeckPreviewWindow.scss";
 import DesktopWindow from "./DesktopWindow/DesktopWindow";
 import AudioPlayer from "./Elements/AudioPlayer";
 import Image from "./Elements/Image";
 import { FlashcardDeck } from "./models/FlashcardDeck";
+import "./PreviewWindow.scss";
 
 function DeckPreviewWindow() {
     const deckName = "FlashcardDeck";
