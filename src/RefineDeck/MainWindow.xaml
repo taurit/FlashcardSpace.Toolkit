@@ -88,9 +88,56 @@
             ResizeBehavior="PreviousAndNext"
             ResizeDirection="Columns" />
 
-        <StatusBar Grid.Row="1" Grid.ColumnSpan="5">
-            ❌ 200 💬 1000 ✅ 400 🤖👤💻
-            <TextBlock FontFamily="Segoe UI Emoji" Text="❌ 200 💬 1000 ✅ 400 🤖👤💻" />
+        <StatusBar
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="5">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <StatusBarItem Grid.Column="0" ToolTip="Approved">
+                <TextBlock DockPanel.Dock="Left" Foreground="DarkCyan">
+                    <Run>☑</Run>
+                    123</TextBlock>
+            </StatusBarItem>
+
+
+            <StatusBarItem Grid.Column="1" ToolTip="Rejected">
+                <TextBlock DockPanel.Dock="Left" Foreground="Red">
+                    <Run>⮽</Run>
+                    3</TextBlock>
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="2" ToolTip="Left for discussion">
+                <TextBlock DockPanel.Dock="Left" Foreground="MediumPurple">
+                    <Run>💬</Run>
+                    5</TextBlock>
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="4" ToolTip="Still need review">
+                <TextBlock DockPanel.Dock="Left" Foreground="Gray">
+                    <Run>☐</Run>
+                    50</TextBlock>
+            </StatusBarItem>
+
+
+            <StatusBarItem Grid.Column="4" HorizontalContentAlignment="Right">
+                <Button Padding="4,2" DockPanel.Dock="Right">
+                    Generate Anki deck
+                </Button>
+            </StatusBarItem>
+
         </StatusBar>
 
 
