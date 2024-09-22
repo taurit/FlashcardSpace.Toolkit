@@ -17,8 +17,17 @@ internal static class DeckLoader
 
         var flashcardsViewModels = deckDeserialized.Flashcards.Select(flashcard => new ReviewedCardViewModel()
         {
+            OriginalFlashcard = flashcard,
+
             Term = flashcard.Term,
             TermTranslation = flashcard.TermTranslation,
+
+            SentenceExample = flashcard.Context,
+            SentenceExampleTranslation = flashcard.ContextTranslation,
+
+            ImageCandidates = new ObservableCollection<string>(flashcard.ImageCandidates
+            .Select(relativePath => Path.Combine(deckPath, relativePath))
+            ),
 
             ApprovalStatus = ApprovalStatus.Approved
         });

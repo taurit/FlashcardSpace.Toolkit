@@ -17,7 +17,13 @@
         <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
         <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
         <Style TargetType="TextBox">
-            <Setter Property="Height" Value="60" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+        <Style x:Key="ResetButton" TargetType="Button">
+            <Setter Property="Width" Value="50" />
+            <Setter Property="Margin" Value="5,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Content" Value="Reset" />
         </Style>
     </Window.Resources>
     <Grid>
@@ -41,7 +47,7 @@
             ItemsSource="{Binding Deck.Flashcards}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             SelectedItem="{Binding SelectedFlashcard}"
-            SelectionChanged="FlashcardChanged">
+            SelectionChanged="FlashcardSelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="2">
@@ -99,20 +105,60 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <StackPanel>
-                <GroupBox Header="Question">
-                    <DockPanel LastChildFill="True">
-                        <Button
-                            Width="50"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Stretch"
-                            Content="Reset"
-                            DockPanel.Dock="Right" />
-                        <TextBox MaxLines="3" Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}" />
-                    </DockPanel>
-                </GroupBox>
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <GroupBox Header="Term">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}" />
+                        </DockPanel>
+                    </GroupBox>
 
-            </StackPanel>
+                    <GroupBox Header="Term translation">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermTranslation, FallbackValue='[Card not selected]'}" />
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Sentence example">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, FallbackValue='[Card not selected]'}" />
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Sentence example translation">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, FallbackValue='[Card not selected]'}" />
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Picture">
+                        <ListBox ItemsSource="{Binding SelectedFlashcard.ImageCandidates}" SelectedItem="{Binding SelectedFlashcard.SelectedImageFullPath}" PreviewMouseWheel="ImagesPanel_OnPreviewMouseWheel">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Image
+                                        Width="128"
+                                        Height="128"
+                                        RenderOptions.BitmapScalingMode="HighQuality"
+                                        Source="{Binding}"
+                                        Stretch="Uniform" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+
+                </StackPanel>
+            </ScrollViewer>
         </DockPanel>
 
 

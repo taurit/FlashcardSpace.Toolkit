@@ -1,7 +1,11 @@
-﻿using RefineDeck.Utils;
+﻿using CoreLibrary.Models;
+using RefineDeck.Utils;
 using RefineDeck.ViewModels;
+using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RefineDeck;
 /// <summary>
@@ -17,48 +21,90 @@ public partial class MainWindow : Window
 
         DataContext = new MainWindowViewModel();
         ViewModel.Deck = DeckLoader.LoadDeck();
+
+        ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+        // load preview component in WebView
+        UpdateFlashcardPreview();
+
     }
 
-    private async void FlashcardChanged(object sender, SelectionChangedEventArgs e)
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        //MessageBox.Show($"{e.PropertyName} changed; updating sub to SelectedFlashcard");
+        if (ViewModel.SelectedFlashcard != null)
+        {
+            // unsubscribe from eventual previous subs to avoid multiple executions
+            ViewModel.SelectedFlashcard.PropertyChanged -= PropertyOfSelectedFlashcardChanged;
+            ViewModel.SelectedFlashcard.PropertyChanged += PropertyOfSelectedFlashcardChanged;
+        }
+    }
+
+    private void PropertyOfSelectedFlashcardChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        UpdateFlashcardPreview();
+    }
+
+    private async void FlashcardSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+    {
+        UpdateFlashcardPreview();
+    }
+
+    private async void UpdateFlashcardPreview()
     {
         var selectedFlashcard = ViewModel.SelectedFlashcard;
         if (selectedFlashcard is null) return;
 
         // update WebView preview
         await WebViewHelper.EnsureWebViewIsInitialized(this.Preview);
+
         // todo: un-hardcode path to previewer
-        Preview.Source = new Uri("d:\\Projekty\\FlashcardSpace.Toolkit\\src\\DeckBrowser\\dist\\index.html");
+        var recentBuildOfPreviewer = "d:\\Projekty\\FlashcardSpace.Toolkit\\src\\DeckBrowser\\dist\\index.html";
+        var targetFilePath = Path.Combine(ViewModel.Deck.DeckFolderPath, "..\\index.html");
+        File.Copy(recentBuildOfPreviewer, targetFilePath, true);
+        Preview.Source = new Uri(targetFilePath);
 
 
         // Call a JavaScript function with arguments
-        var cardPreview = new
-        {
-            flashcards = new[] {
-                new {
-                    term = selectedFlashcard.Term,
-                    termAudio = "audio/la-casa.mp3",
-                    termBaseForm = "la casa",
+        var flashcards = new List<FlashcardNote> {
+                new FlashcardNote {
+                    Term = selectedFlashcard.Term,
+                    TermAudio = selectedFlashcard.OriginalFlashcard.TermAudio,
+                    TermStandardizedForm = selectedFlashcard.OriginalFlashcard.TermStandardizedForm,
 
-                    termTranslation = selectedFlashcard.TermTranslation,
-                    termTranslationAudio = "audio/dom.mp3",
-                    termEnglishTranslation = "a house",
+                    TermTranslation = selectedFlashcard.TermTranslation,
+                    TermTranslationAudio = selectedFlashcard.OriginalFlashcard.TermTranslationAudio,
+                    TermStandardizedFormEnglishTranslation = selectedFlashcard.OriginalFlashcard.TermStandardizedFormEnglishTranslation,
 
-                    termDefinition = "Budynek przeznaczony do zamieszkania przez ludzi, zwłaszcza przez rodzinę lub małą grupę osób.",
+                    TermDefinition = selectedFlashcard.OriginalFlashcard.TermDefinition,
 
-                    context = "La casa es grande y bonita.",
-                    contextAudio = "audio/la-casa-es-grande-y-bonita.mp3",
-                    contextTranslation = "Dom jest duży i piękny.",
-                    contextTranslationAudio = "audio/dom-jest-duzy-i-piekny.mp3",
-                    contextEnglishTranslation = "The house is big and pretty.",
+                    Context = selectedFlashcard.SentenceExample,
+                    ContextAudio = selectedFlashcard.OriginalFlashcard.ContextAudio,
+                    ContextTranslation = selectedFlashcard.SentenceExampleTranslation,
+                    ContextTranslationAudio = selectedFlashcard.OriginalFlashcard.ContextTranslationAudio,
+                    ContextEnglishTranslation = selectedFlashcard.OriginalFlashcard.ContextEnglishTranslation,
 
-                    type = "Noun",
-                    imageCandidates = new[] {"images/la-casa-01.webp", "images/la-casa-02.webp"}
+                    Type = selectedFlashcard.OriginalFlashcard.Type,
+                    ImageCandidates = [selectedFlashcard.SelectedImageRelativePath]
                 }
-            }
         };
 
-        var cardPreviewSerialized = System.Text.Json.JsonSerializer.Serialize(cardPreview);
+        var deck = new Deck("Preview deck", flashcards);
+        var cardPreviewSerialized = deck.Serialize();
         await Preview.CoreWebView2.ExecuteScriptAsync($"window.setDataFromWpf({cardPreviewSerialized});");
-
     }
+
+
+    private void ImagesPanel_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        // Horizontal scrolling using mouse wheel
+        var wrapPanel = (sender as ListBox);
+        var scrollViewer = VisualTreeHelpers.FindVisualChild<ScrollViewer>(wrapPanel);
+        if (scrollViewer.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
+        {
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.Delta);
+            e.Handled = true; // Prevent vertical scrolling
+        }
+    }
+
 }
