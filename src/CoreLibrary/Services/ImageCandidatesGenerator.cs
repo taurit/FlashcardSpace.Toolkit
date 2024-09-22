@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CoreLibrary.Utilities;
+using Microsoft.Extensions.Logging;
 
 namespace CoreLibrary.Services;
 
@@ -19,12 +20,22 @@ public class ImageCandidatesGenerator(
 
         for (int i = 0; i < numExperiments; i++)
         {
-            logger.LogInformation("Generating images for experiment {ExperimentNumber}/{NumExperiments}", i + 1, numExperiments);
+            logger.LogDebug("Generating images for experiment {ExperimentNumber}/{NumExperiments}", i + 1, numExperiments);
 
-            var prompt = promptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish, i);
+            // I want the seed to be deterministic, but also unique for each term or sentence.
+            // If we just use `i` as the seed, the same small set of random keywords will be reused for all terms,
+            // leading to images in the same style.
+            //
+            // It could be a good thing if we look for a consistent style across all flashcards, but also boring
+            // if we get 400 images with the 'horror,gothic' theme.
+            var seed = i
+                + sentenceEnglish.GetHashCodeStableInt() // add deterministic variety to the seed
+                ;
+
+            var prompt = promptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish, seed);
             int cfgScaleForExperiment = cfgScaleMin + (int)(cfgScaleStep * i);
 
-            logger.LogDebug("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
+            logger.LogInformation("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
             var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment);
 
             results.AddRange(images);

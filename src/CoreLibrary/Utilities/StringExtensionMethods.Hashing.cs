@@ -29,4 +29,11 @@ public static class StringExtensionMethodsHashing
 
         return stableHash;
     }
+
+    public static int GetHashCodeStableInt(this string input)
+    {
+        var stableHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+        var stableHash = BitConverter.ToInt32(stableHashBytes, 0);
+        return stableHash;
+    }
 }

@@ -28,10 +28,12 @@ internal static class DependencyInjection
                             //profile.OutputTemplate = "{Message}{NewLine}{Exception}";
                         })
                         // by default Trace and Debug are not logged; enable them
-                        .SetMinimumLevel(LogLevel.Debug)
+                        .SetMinimumLevel(LogLevel.Information)
                 )
                 // also needed at this level to enable Trace and Debug
-                .SetMinimumLevel(LogLevel.Debug)
+                .SetMinimumLevel(LogLevel.Information)
+                .AddFilter("System.Net.Http.HttpClient", LogLevel.Warning)  // or LogLevel.None if you want to suppress all
+
         );
 
         // Get instance of ILogger which we need already at this point

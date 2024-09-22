@@ -1,6 +1,7 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services;
 using CoreLibrary.Utilities;
+using Microsoft.Extensions.Logging;
 
 namespace GenerateFlashcards.Services;
 
@@ -8,7 +9,8 @@ internal record ImageCandidatesProviderSettings(string ImageProviderCacheFolder)
 
 internal class ImageProvider(
     ImageCandidatesProviderSettings settings,
-    ImageCandidatesGenerator imageCandidatesGenerator
+    ImageCandidatesGenerator imageCandidatesGenerator,
+    ILogger<ImageProvider> logger
     )
 {
     public async Task<List<FlashcardNote>> AddImageCandidates(List<FlashcardNote> notes)
@@ -16,10 +18,17 @@ internal class ImageProvider(
         settings.ImageProviderCacheFolder.EnsureDirectoryExists();
 
         var notesWithImages = new List<FlashcardNote>();
+
+        int noteIndex = 0;
+
         foreach (var note in notes)
         {
+            noteIndex++;
+            // log progress (note number, total number of notes, percentage)
+            logger.LogInformation("Processing note {NoteIndex}/{TotalNotes} ({Percentage}%)",
+                noteIndex, notes.Count, noteIndex * 100 / notes.Count);
             var images = await imageCandidatesGenerator.GenerateImageVariants(
-                    note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, 2, 2);
+                    note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, 4, 4);
 
             var imagesSavedToDisk = new List<string>();
             foreach (var image in images)

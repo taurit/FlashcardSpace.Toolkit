@@ -35,6 +35,7 @@ public class StableDiffusionPromptProvider(ILogger logger)
     public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed)
     {
         var random = new Random(seed.Value);
+
         var keywords = new List<string>();
 
         // always add the main sentence

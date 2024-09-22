@@ -45,13 +45,13 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             var cacheFileNameMempack = $"{cacheFileName}.mempack";
             if (File.Exists(cacheFileNameMempack))
             {
-                logger.LogInformation("Using Mempack cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
+                logger.LogDebug("Using Mempack cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
                 var mempackCacheContent = await File.ReadAllBytesAsync(cacheFileNameMempack);
                 var mempackContent = MemoryPackSerializer.Deserialize<GeneratedImagesList>(mempackCacheContent);
                 return mempackContent!.Images;
             }
 
-            logger.LogInformation("Using JSON cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
+            logger.LogDebug("Using JSON cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
             var cachedResultSerialized = await File.ReadAllTextAsync(cacheFileName);
             var cachedResult = JsonSerializer.Deserialize<List<GeneratedImage>>(cachedResultSerialized);
             if (cachedResult == null)
