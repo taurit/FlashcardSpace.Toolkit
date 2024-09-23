@@ -16,6 +16,8 @@
     <Window.Resources>
         <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
         <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
+        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
+
         <Style TargetType="TextBox">
             <Setter Property="Height" Value="40" />
         </Style>
@@ -25,6 +27,7 @@
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Content" Value="Reset" />
         </Style>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -34,9 +37,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="400" />
         </Grid.ColumnDefinitions>
 
         <!--  Violet panel on the left  -->
@@ -56,7 +59,10 @@
                                 <TextBlock Foreground="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToColorConverter}}" Text="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToSymbolConverter}}" />
                             </WrapPanel>
 
-                            <TextBlock DockPanel.Dock="Left" Text="{Binding Term}" />
+                            <TextBlock
+                                DockPanel.Dock="Left"
+                                FontWeight="{Binding IsAnythingOverridden, Converter={StaticResource BoolToFontWeightConverter}}"
+                                Text="{Binding Term}" />
                         </DockPanel>
                     </Border>
                 </DataTemplate>
@@ -109,49 +115,91 @@
                 <StackPanel>
                     <GroupBox Header="Term">
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}" />
+                            <Button
+                                Click="ResetValue_OnClick"
+                                DockPanel.Dock="Right"
+                                IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="Term" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Term, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
                         </DockPanel>
                     </GroupBox>
 
                     <GroupBox Header="Term translation">
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermTranslation, FallbackValue='[Card not selected]'}" />
+                            <Button
+                                Click="ResetValue_OnClick"
+                                DockPanel.Dock="Right"
+                                IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="TermTranslation" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Term definition">
+                        <DockPanel LastChildFill="True">
+                            <Button
+                                Click="ResetValue_OnClick"
+                                DockPanel.Dock="Right"
+                                IsEnabled="{Binding SelectedFlashcard.IsTermDefinitionOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="TermDefinition" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermDefinition, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
                         </DockPanel>
                     </GroupBox>
 
                     <GroupBox Header="Sentence example">
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, FallbackValue='[Card not selected]'}" />
+                            <Button
+                                Click="ResetValue_OnClick"
+                                DockPanel.Dock="Right"
+                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="SentenceExample" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
                         </DockPanel>
                     </GroupBox>
 
                     <GroupBox Header="Sentence example translation">
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, FallbackValue='[Card not selected]'}" />
+                            <Button
+                                Click="ResetValue_OnClick"
+                                DockPanel.Dock="Right"
+                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="SentenceExampleTranslation" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
                         </DockPanel>
                     </GroupBox>
 
                     <GroupBox Header="Picture">
-                        <ListBox ItemsSource="{Binding SelectedFlashcard.ImageCandidates}" SelectedItem="{Binding SelectedFlashcard.SelectedImageFullPath}" PreviewMouseWheel="ImagesPanel_OnPreviewMouseWheel">
+                        <ListBox
+                            ItemsSource="{Binding SelectedFlashcard.ImageCandidates}"
+                            PreviewMouseWheel="ImagesPanel_OnPreviewMouseWheel"
+                            SelectedIndex="{Binding SelectedFlashcard.SelectedImageIndex}">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal" />
-
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Image
-                                        Width="128"
-                                        Height="128"
-                                        RenderOptions.BitmapScalingMode="HighQuality"
-                                        Source="{Binding}"
-                                        Stretch="Uniform" />
+                                    <Grid Background="LightGray">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="40">
+                                            ✖
+                                        </TextBlock>
+                                        <Image
+                                            Width="128"
+                                            Height="128"
+                                            RenderOptions.BitmapScalingMode="HighQuality"
+                                            Source="{Binding AbsolutePath, FallbackValue=null}"
+                                            Stretch="Uniform" />
+                                    </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -228,9 +276,25 @@
 
 
             <StatusBarItem Grid.Column="4" HorizontalContentAlignment="Right">
-                <Button Padding="4,2" DockPanel.Dock="Right">
-                    Generate Anki deck
-                </Button>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Click="ShowDiffInVsCode_OnClick">
+                        Show diff in VS Code
+                    </Button>
+
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Click="SaveChanges_OnClick">
+                        Save changes
+                    </Button>
+
+                    <Button Margin="5,0,0,0" Padding="4,2">
+                        Generate Anki deck
+                    </Button>
+                </StackPanel>
             </StatusBarItem>
 
         </StatusBar>

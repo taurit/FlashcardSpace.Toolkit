@@ -12,25 +12,13 @@ public class Deck(string deckName, List<FlashcardNote> flashcards)
     public List<FlashcardNote> Flashcards { get; set; } = flashcards;
 
     public string Serialize() => JsonSerializer.Serialize(this, DeckSerializationOptions.SerializationOptions);
-    public static Deck Deserialize(string deckSerialized)
+    public static Deck DeserializeFromFile(string deckFileName)
     {
+        var deckSerialized = File.ReadAllText(deckFileName);
         var deserialized = JsonSerializer.Deserialize<Deck>(deckSerialized, DeckSerializationOptions.SerializationOptions);
         if (deserialized == null)
             throw new JsonException($"Failed to deserialize deck");
 
         return deserialized;
     }
-}
-
-internal static class DeckSerializationOptions
-{
-    internal static readonly JsonSerializerOptions SerializationOptions = new JsonSerializerOptions
-    {
-        // For readability
-        WriteIndented = true,
-
-        // Add JsonStringEnumConverter to serialize enums as strings
-        Converters = { new JsonStringEnumConverter() }
-    };
-
 }

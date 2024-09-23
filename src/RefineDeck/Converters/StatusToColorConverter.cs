@@ -1,4 +1,4 @@
-﻿using RefineDeck.ViewModels;
+﻿using CoreLibrary.Models;
 using System.Globalization;
 using System.Windows.Media;
 

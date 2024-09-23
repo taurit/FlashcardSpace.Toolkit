@@ -1,4 +1,4 @@
-﻿namespace RefineDeck.ViewModels;
+﻿namespace CoreLibrary.Models;
 
 public enum ApprovalStatus
 {

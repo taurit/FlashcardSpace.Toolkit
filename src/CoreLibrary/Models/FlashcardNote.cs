@@ -2,7 +2,7 @@
 
 namespace CoreLibrary.Models;
 
-public record FlashcardNote
+public record FlashcardNoteEditablePart
 {
     // A studied word in the source language (like 'la manzana', 'verde') or idiom (like 'tener miedo')
     [JsonPropertyName("term")]
@@ -11,15 +11,6 @@ public record FlashcardNote
     // A filesystem path to the recording of a term (in the source language)
     [JsonPropertyName("termAudio")]
     public string TermAudio { get; set; }
-
-    // A standardized form of the term (e.g. for 'manzanas' it would be 'la manzana', for 'verdes' it would be 'verde')
-    [JsonPropertyName("termBaseForm")]
-    public string TermStandardizedForm { get; set; }
-
-    // Term's standardized form translation to English.
-    // Always present, regardless of the target language - it's useful for generating images with AI models.
-    [JsonPropertyName("termEnglishTranslation")]
-    public string TermStandardizedFormEnglishTranslation { get; set; }
 
     // Term's translation to the target language.
     [JsonPropertyName("termTranslation")]
@@ -41,16 +32,35 @@ public record FlashcardNote
     [JsonPropertyName("contextAudio")]
     public string ContextAudio { get; set; }
 
-    // A translation of the context to English (always present, regardless of the target language)
-    [JsonPropertyName("contextEnglishTranslation")]
-    public string ContextEnglishTranslation { get; set; }
-
     // A translation of the context to the target language
     [JsonPropertyName("contextTranslation")]
     public string ContextTranslation { get; set; }
 
+
     [JsonPropertyName("contextTranslationAudio")]
     public string ContextTranslationAudio { get; set; }
+
+    // A relative path to the selected image from the list of image candidates.
+    // Or null if no image was explicitly selected by deck author.
+    [JsonPropertyName("selectedImageIndex")]
+    public int? SelectedImageIndex { get; set; }
+}
+
+public record FlashcardNote : FlashcardNoteEditablePart
+{
+    // A standardized form of the term (e.g. for 'manzanas' it would be 'la manzana', for 'verdes' it would be 'verde')
+    [JsonPropertyName("termBaseForm")]
+    public string TermStandardizedForm { get; set; }
+
+    // Term's standardized form translation to English.
+    // Always present, regardless of the target language - it's useful for generating images with AI models.
+    [JsonPropertyName("termEnglishTranslation")]
+    public string TermStandardizedFormEnglishTranslation { get; set; }
+
+
+    // A translation of the context to English (always present, regardless of the target language)
+    [JsonPropertyName("contextEnglishTranslation")]
+    public string ContextEnglishTranslation { get; set; }
 
     // A part of speech which the term represents in a sentence.
     // If word has multiple meanings (e.g., a cut, to cut), then each part of speech is a separate flashcard.
@@ -62,5 +72,9 @@ public record FlashcardNote
     [JsonPropertyName("imageCandidates")]
     public List<string> ImageCandidates { get; set; } = new List<string>();
 
+    [JsonPropertyName("overrides")]
+    public FlashcardNoteEditablePart? Overrides { get; set; }
 
+    [JsonPropertyName("approvalStatus")]
+    public ApprovalStatus ApprovalStatus { get; set; }
 }

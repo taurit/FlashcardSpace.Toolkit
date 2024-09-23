@@ -59,6 +59,10 @@ internal class DeckExporter(DeckExporterSettings settings)
                 var imageFileName = new FileInfo(flashcard.ImageCandidates[i]).Name;
                 flashcard.ImageCandidates[i] = Path.Combine("images", imageFileName);
             }
+            if (flashcard.ImageCandidates.Count > 0)
+                flashcard.SelectedImageIndex = 0;
+            else
+                flashcard.SelectedImageIndex = null;
 
             // copy audio files to target directory
             flashcard.TermAudio = CopyAudioFileToDeckAndReturnRelativePath(flashcard.TermAudio, audioFolderPath);

@@ -1,4 +1,4 @@
-﻿using RefineDeck.ViewModels;
+﻿using CoreLibrary.Models;
 using System.Globalization;
 
 namespace RefineDeck.Converters;
@@ -12,7 +12,7 @@ public class ApprovalStatusToSymbolConverter : OneWayConverter
             return status switch
             {
                 // empty checkbox
-                ApprovalStatus.NotReviewedYet => "☐",
+                ApprovalStatus.NotReviewedYet => "",
                 ApprovalStatus.Approved => "☑",
                 ApprovalStatus.Rejected => "⮽",
 

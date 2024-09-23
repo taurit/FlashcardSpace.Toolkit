@@ -16,5 +16,7 @@ export class Flashcard {
     public contextEnglishTranslation: string | undefined;
 
     public type: string | undefined;
+
     public imageCandidates: string[] | undefined;
+    public selectedImageIndex: number | undefined;
 }

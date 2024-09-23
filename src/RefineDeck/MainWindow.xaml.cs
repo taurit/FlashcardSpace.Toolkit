@@ -2,6 +2,7 @@
 using RefineDeck.Utils;
 using RefineDeck.ViewModels;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +27,6 @@ public partial class MainWindow : Window
 
         // load preview component in WebView
         UpdateFlashcardPreview();
-
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -52,8 +52,6 @@ public partial class MainWindow : Window
 
     private async void UpdateFlashcardPreview()
     {
-        var selectedFlashcard = ViewModel.SelectedFlashcard;
-        if (selectedFlashcard is null) return;
 
         // update WebView preview
         await WebViewHelper.EnsureWebViewIsInitialized(this.Preview);
@@ -64,6 +62,8 @@ public partial class MainWindow : Window
         File.Copy(recentBuildOfPreviewer, targetFilePath, true);
         Preview.Source = new Uri(targetFilePath);
 
+        var selectedFlashcard = ViewModel.SelectedFlashcard;
+        if (selectedFlashcard is null) return;
 
         // Call a JavaScript function with arguments
         var flashcards = new List<FlashcardNote> {
@@ -85,7 +85,8 @@ public partial class MainWindow : Window
                     ContextEnglishTranslation = selectedFlashcard.OriginalFlashcard.ContextEnglishTranslation,
 
                     Type = selectedFlashcard.OriginalFlashcard.Type,
-                    ImageCandidates = [selectedFlashcard.SelectedImageRelativePath]
+                    ImageCandidates = selectedFlashcard.OriginalFlashcard.ImageCandidates,
+                    SelectedImageIndex = selectedFlashcard.SelectedImageIndex >= selectedFlashcard.OriginalFlashcard.ImageCandidates.Count ? null : selectedFlashcard.SelectedImageIndex
                 }
         };
 
@@ -107,4 +108,58 @@ public partial class MainWindow : Window
         }
     }
 
+    private void ResetValue_OnClick(object sender, RoutedEventArgs e)
+    {
+        var f = ViewModel.SelectedFlashcard;
+        if (f is null) return;
+
+        var senderButton = (Button)sender;
+        var resetValue = senderButton.Tag;
+
+        switch (resetValue)
+        {
+            case "Term":
+                f.Term = f.OriginalFlashcard.Term;
+                break;
+            case "TermTranslation":
+                f.TermTranslation = f.OriginalFlashcard.TermTranslation;
+                break;
+            case "SentenceExample":
+                f.SentenceExample = f.OriginalFlashcard.Context;
+                break;
+            case "SentenceExampleTranslation":
+                f.SentenceExampleTranslation = f.OriginalFlashcard.ContextTranslation;
+                break;
+            case "TermDefinition":
+                f.TermDefinition = f.OriginalFlashcard.TermDefinition;
+                break;
+            default:
+                throw new NotImplementedException($"Not implemented: resetting the {resetValue} field.");
+        }
+    }
+
+    private void SaveChanges_OnClick(object sender, RoutedEventArgs e)
+    {
+        DeckLoader.SaveChangesInDeck(ViewModel.Deck);
+    }
+
+    private void ShowDiffInVsCode_OnClick(object sender, RoutedEventArgs e)
+    {
+        var file1 = Path.Combine(ViewModel.Deck.DeckFolderPath, "flashcards.json");
+        var file2 = Path.Combine(ViewModel.Deck.DeckFolderPath, "flashcards.edited.json");
+        //code --diff <file1> <file2>
+
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "C:\\Users\\windo\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+                Arguments = $"--diff {file1} {file2}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
+    }
 }

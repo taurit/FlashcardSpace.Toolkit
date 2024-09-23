@@ -38,7 +38,7 @@ const DeckPreviewWindow: React.FC<DeckPreviewWindowProps> = ({ deck }) => {
 
                         <AudioPlayer uniqueId="answerAudio" pathToAudioFile={`./${deckName}/${flashcard.termTranslationAudio}`} />
 
-                        <Image deckName={deckName} imageCandidates={flashcard.imageCandidates!} />
+                        <Image deckName={deckName} imageCandidates={flashcard.imageCandidates!} selectedImageIndex={flashcard.selectedImageIndex} />
 
                         {/* <div className="definition">{flashcard.termDefinition}</div> */}
                         <div className="usageExample">

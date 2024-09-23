@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using CoreLibrary.Models;
+using PropertyChanged;
 using System.ComponentModel;
 
 namespace RefineDeck.ViewModels;

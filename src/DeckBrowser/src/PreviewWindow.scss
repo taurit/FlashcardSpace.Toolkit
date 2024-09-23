@@ -21,6 +21,19 @@ $ankiWindowMaxHeight: 11cm;
     min-height: $ankiWindowMinHeight;
 
     margin: 0 auto;
+
+    .alert {
+        position: relative;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
 }
 
 .window-bottom-content {
