@@ -6,4 +6,5 @@ namespace RefineDeck.ViewModels;
 public class Warning
 {
     public string Severity { get; set; }
+    public string Text { get; set; }
 }

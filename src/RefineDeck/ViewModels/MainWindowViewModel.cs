@@ -14,12 +14,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public ReviewedCardViewModel? SelectedFlashcard { get; set; } = null;
 
-    [DependsOn(nameof(Deck))]
+    [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
     public int NumPending => Deck.Flashcards.Count(flashcard => flashcard.ApprovalStatus == ApprovalStatus.NotReviewedYet);
 
-    [DependsOn(nameof(Deck))]
+    [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
     public int NumApproved => Deck.Flashcards.Count(flashcard => flashcard.ApprovalStatus == ApprovalStatus.Approved);
 
-    [DependsOn(nameof(Deck))]
+    [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
     public int NumRejected => Deck.Flashcards.Count(flashcard => flashcard.ApprovalStatus == ApprovalStatus.Rejected);
 }

@@ -138,10 +138,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SaveChanges_OnClick(object sender, RoutedEventArgs e)
-    {
-        DeckLoader.SaveChangesInDeck(ViewModel.Deck);
-    }
 
     private void ShowDiffInVsCode_OnClick(object sender, RoutedEventArgs e)
     {
@@ -162,4 +158,46 @@ public partial class MainWindow : Window
         };
         process.Start();
     }
+
+    private void Approve_OnClick(object sender, RoutedEventArgs e)
+    {
+        ChangeFlashcardStatusAndAdvance(ApprovalStatus.Approved);
+    }
+
+
+    private void Reject_OnClick(object sender, RoutedEventArgs e)
+    {
+        ChangeFlashcardStatusAndAdvance(ApprovalStatus.Rejected);
+    }
+
+    private void ChangeFlashcardStatusAndAdvance(ApprovalStatus newStatus)
+    {
+        var currentFlashcard = ViewModel.SelectedFlashcard;
+        if (currentFlashcard is null) return;
+
+        currentFlashcard.ApprovalStatus = newStatus;
+
+        SelectNextFlashcard(currentFlashcard);
+    }
+
+    private void SelectNextFlashcard(ReviewedCardViewModel f)
+    {
+        // select next flashcard
+        var nextIndex = ViewModel.Deck.Flashcards.IndexOf(f) + 1;
+        if (nextIndex < ViewModel.Deck.Flashcards.Count)
+        {
+            ViewModel.SelectedFlashcard = ViewModel.Deck.Flashcards[nextIndex];
+        }
+
+        this.SaveChanges();
+    }
+
+    private void SaveChanges_OnClick(object sender, RoutedEventArgs e) => SaveChanges();
+
+    private void SaveChanges()
+    {
+        DeckLoader.SaveChangesInDeck(ViewModel.Deck);
+    }
+
+
 }

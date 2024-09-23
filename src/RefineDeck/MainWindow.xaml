@@ -88,28 +88,9 @@
                 HorizontalAlignment="Stretch"
                 DockPanel.Dock="Bottom"
                 Rows="1">
-                <Button Background="IndianRed">Reject</Button>
-                <Button Background="DarkSeaGreen">Approve</Button>
+                <Button Background="IndianRed" Click="Reject_OnClick">Reject</Button>
+                <Button Background="DarkSeaGreen" Click="Approve_OnClick">Approve</Button>
             </UniformGrid>
-            <DataGrid
-                Height="150"
-                AutoGenerateColumns="False"
-                BorderThickness="0"
-                CanUserSortColumns="True"
-                ClipboardCopyMode="IncludeHeader"
-                DockPanel.Dock="Bottom"
-                GridLinesVisibility="Horizontal"
-                HorizontalGridLinesBrush="LightGray"
-                IsReadOnly="True"
-                ItemsSource="{Binding SelectedFlashcard.Warnings}"
-                VerticalGridLinesBrush="Transparent">
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="Auto"
-                        Binding="{Binding Severity, Mode=OneWay}"
-                        Header="Severity" />
-                </DataGrid.Columns>
-            </DataGrid>
 
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
@@ -211,10 +192,34 @@
 
 
         <!--  Lime panel on the right  -->
-        <wpf:WebView2
-            Name="Preview"
+        <DockPanel
             Grid.Row="0"
-            Grid.Column="4" />
+            Grid.Column="4"
+            LastChildFill="True">
+
+
+            <DataGrid
+                Height="150"
+                AutoGenerateColumns="False"
+                Background="White"
+                BorderThickness="0"
+                CanUserSortColumns="True"
+                ClipboardCopyMode="IncludeHeader"
+                DockPanel.Dock="Bottom"
+                GridLinesVisibility="Horizontal"
+                HorizontalGridLinesBrush="LightGray"
+                IsReadOnly="True"
+                ItemsSource="{Binding SelectedFlashcard.Warnings}"
+                VerticalGridLinesBrush="Transparent">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Severity, Mode=OneWay}"
+                        Header="Severity" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <wpf:WebView2 Name="Preview" DockPanel.Dock="Top" />
+        </DockPanel>
 
 
         <GridSplitter

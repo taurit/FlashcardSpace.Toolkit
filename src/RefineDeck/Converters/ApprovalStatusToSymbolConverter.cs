@@ -14,7 +14,7 @@ public class ApprovalStatusToSymbolConverter : OneWayConverter
                 // empty checkbox
                 ApprovalStatus.NotReviewedYet => "",
                 ApprovalStatus.Approved => "☑",
-                ApprovalStatus.Rejected => "⮽",
+                ApprovalStatus.Rejected => "❌",
 
                 // unexpected
                 _ => "❓",
