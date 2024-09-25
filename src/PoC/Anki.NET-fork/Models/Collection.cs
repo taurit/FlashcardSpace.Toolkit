@@ -8,7 +8,7 @@ internal class Collection
 {
     private const long Id = 1;
 
-    public Collection(AnkiDeckModel ankiDeckModel, string css)
+    public Collection(AnkiDeckModel ankiDeckModel)
     {
         DeckId = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
         var modificationTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
@@ -16,7 +16,7 @@ internal class Collection
 
 
         var conf = BuildConfigurationOptionsJson(ankiDeckModel);
-        var models = BuildNoteModelsJson(ankiDeckModel, css, modificationTimeSeconds);
+        var models = BuildNoteModelsJson(ankiDeckModel, modificationTimeSeconds);
         var decksJson = BuildDecksConfigJson(ankiDeckModel, DeckId);
         var decksConfigurationsJson = GeneralHelper.ReadResource("Anki.NET.AnkiData.dconf.scriban-txt");
 
@@ -35,10 +35,11 @@ internal class Collection
         return conf;
     }
 
-    private string BuildNoteModelsJson(AnkiDeckModel ankiDeckModel, string css, string modificationTimeSeconds)
+    private string BuildNoteModelsJson(AnkiDeckModel ankiDeckModel, string modificationTimeSeconds)
     {
         var modelsFileContent = GeneralHelper.ReadResource("Anki.NET.AnkiData.models.scriban-txt");
         var fieldListJson = ankiDeckModel.FieldList.ToJson();
+        var css = ankiDeckModel.CardTemplatesCssStyles;
         var json = Template.Parse(modelsFileContent).Render(
             new NoteTypesModel(DeckId, modificationTimeSeconds, ankiDeckModel.ModelName, ankiDeckModel.ModelId, css, fieldListJson,
                 ankiDeckModel.CardTemplatesJsonArray),

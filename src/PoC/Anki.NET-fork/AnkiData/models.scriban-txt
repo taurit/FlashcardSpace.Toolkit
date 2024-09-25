@@ -21,7 +21,7 @@
       "latexPost": "\\end{document}",
       "type": 0,
       "id": {{ModelId}},
-      "css": "{{Css}}",
+      "css": {{Css}},
       "mod": {{ModificationTimeSeconds}}
     }
 }

@@ -46,7 +46,6 @@
             </MenuItem>
             <MenuItem Header="Anki deck preparation" IsEnabled="{Binding IsBusy, Converter={StaticResource 'BoolInverter'}}">
                 <MenuItem Click="StartWordLinkingFlow_OnClick" Header="Start word linking flow" />
-                <MenuItem Click="ExportToAnkiDeckAuto_OnClick" Header="Export items to Anki Deck (auto-selected for me)" />
                 <MenuItem Click="RateNotes_OnClick" Header="Review and rate card candidates" />
             </MenuItem>
         </Menu>

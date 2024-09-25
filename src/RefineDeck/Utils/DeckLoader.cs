@@ -11,10 +11,8 @@ internal static class DeckLoader
 {
     public static DeckViewModel LoadDeck()
     {
-        var deckFolderPath = CommandLineHelper.GetDeckFolderPath();
-        var deckManifestPath = GetDeckManifestPath(deckFolderPath);
-
-        var deck = Deck.DeserializeFromFile(deckManifestPath);
+        var deckPath = CommandLineHelper.GetDeckFolderPath();
+        var deck = Deck.DeserializeFromFile(deckPath.DeckManifestEditsPathWithFallback);
 
         var flashcardsViewModels = new List<ReviewedCardViewModel>();
 
@@ -24,7 +22,7 @@ internal static class DeckLoader
             for (int i = 0; i < flashcard.ImageCandidates.Count; i++)
             {
                 var relativePath = flashcard.ImageCandidates[i];
-                var absolutePath = Path.Combine(deckFolderPath, relativePath);
+                var absolutePath = Path.Combine(deckPath.DeckDataPath, relativePath);
                 imageCandidates.Add(new ImageCandidate(i, relativePath, absolutePath));
             }
 
@@ -37,7 +35,7 @@ internal static class DeckLoader
 
                 Term = flashcard.Overrides?.Term ?? flashcard.Term,
                 TermTranslation = flashcard.Overrides?.TermTranslation ?? flashcard.TermTranslation,
-                TermDefinition = flashcard.Overrides?.TermDefinition ?? flashcard.TermDefinition,
+                Remarks = flashcard.Overrides?.Remarks ?? flashcard.Remarks,
                 SentenceExample = flashcard.Overrides?.Context ?? flashcard.Context,
                 SentenceExampleTranslation = flashcard.Overrides?.ContextTranslation ?? flashcard.ContextTranslation,
                 SelectedImageIndex = flashcard.Overrides?.SelectedImageIndex ?? flashcard.SelectedImageIndex,
@@ -51,7 +49,8 @@ internal static class DeckLoader
 
         var deckViewModel = new DeckViewModel()
         {
-            DeckFolderPath = deckFolderPath,
+            DeckPath = deckPath,
+            MediaFileNamePrefix = deck.MediaFilesPrefix,
             Flashcards = new ObservableCollection<ReviewedCardViewModel>(flashcardsViewModels)
         };
         return deckViewModel;
@@ -59,18 +58,14 @@ internal static class DeckLoader
 
     public static void SaveChangesInDeck(DeckViewModel viewModel)
     {
-        var deckFolderPath = CommandLineHelper.GetDeckFolderPath();
-
-        var deckManifestPath = Path.Combine(deckFolderPath, "flashcards.json");
-        var deckManifestEditedPath = Path.Combine(deckFolderPath, "flashcards.edited.json");
-
-        var originalDeck = Deck.DeserializeFromFile(deckManifestPath);
+        var deckPath = CommandLineHelper.GetDeckFolderPath();
+        var originalDeck = Deck.DeserializeFromFile(deckPath.DeckManifestPath);
 
         // construct edited deck based on original deck and ViewModel containing changes
         if (originalDeck.Flashcards.Count != viewModel.Flashcards.Count)
             throw new InvalidOperationException("Number of flashcards in original deck and ViewModel differ");
 
-        var editedDeck = new Deck(originalDeck.DeckName, new List<FlashcardNote>());
+        var editedDeck = new Deck(originalDeck.DeckName, new List<FlashcardNote>(), originalDeck.MediaFilesPrefix);
         for (var index = 0; index < originalDeck.Flashcards.Count; index++)
         {
             var original = originalDeck.Flashcards[index];
@@ -92,7 +87,7 @@ internal static class DeckLoader
                 {
                     Term = vm.IsTermOverridden ? vm.Term : null!,
                     TermTranslation = vm.IsTermTranslationOverridden ? vm.TermTranslation : null!,
-                    TermDefinition = vm.IsTermDefinitionOverridden ? vm.TermDefinition : null!,
+                    Remarks = vm.IsRemarksFieldOverridden ? vm.Remarks : null!,
                     Context = vm.IsSentenceExampleOverridden ? vm.SentenceExample : null!,
                     ContextTranslation = vm.IsSentenceExampleTranslationOverridden ? vm.SentenceExampleTranslation : null!,
                     SelectedImageIndex = imageIndexToSet
@@ -102,16 +97,7 @@ internal static class DeckLoader
         }
 
         var deckSerialized = editedDeck.Serialize();
-        File.WriteAllText(deckManifestEditedPath, deckSerialized);
+        File.WriteAllText(deckPath.DeckManifestEditsPath, deckSerialized);
     }
 
-    private static string GetDeckManifestPath(string deckFolderPath)
-    {
-        // save edited deck to a separate file for easier debugging (diffing),
-        // and keep the original file immutable
-        var deckManifestEditedPath = Path.Combine(deckFolderPath, "flashcards.edited.json");
-        var deckManifestPath = Path.Combine(deckFolderPath, "flashcards.json");
-        var deckPathToUse = File.Exists(deckManifestEditedPath) ? deckManifestEditedPath : deckManifestPath;
-        return deckPathToUse;
-    }
 }

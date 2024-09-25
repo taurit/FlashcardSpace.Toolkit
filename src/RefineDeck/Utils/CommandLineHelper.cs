@@ -1,31 +1,40 @@
-﻿using System.IO;
-using System.Windows;
+﻿using CoreLibrary.Models;
+using System.IO;
 
 namespace RefineDeck.Utils;
+
 internal static class CommandLineHelper
 {
-    public static string GetDeckFolderPath()
+    internal static DeckPath GetDeckFolderPath()
     {
         string[] args = Environment.GetCommandLineArgs();
 
-        if (args.Length > 1)
+        if (args.Length == 2)
         {
             var launchParameter = args[1];
-            var pathToDeck = launchParameter;
 
-            if (launchParameter.StartsWith("refinedeck:///"))
+            // support path to input deck in various formats, to allow easy drag&drop to tool's icon without
+            // much thinking, including:
+            // - d:\DeckWorkspace
+            // - d:\DeckWorkspace\index.html
+            // - d:\DeckWorkspace\FlashcardDeck
+            // - d:\DeckWorkspace\FlashcardDeck\flashcards.json
+            // - d:\DeckWorkspace\FlashcardDeck\flashcards.edited.json
+
+            var hypotheticalOuterPaths = new List<DeckPath>()
             {
-                // redirect comes from the browser (Deck Preview tool has link to edit the previewed deck)
-                pathToDeck = launchParameter.Replace("refinedeck:///", "");
-                pathToDeck = Path.Combine(pathToDeck, "FlashcardDeck"); // follows convention of deck folder structure
-            }
+                new(Path.GetDirectoryName(launchParameter)!),
+                new(Path.Combine(Path.GetDirectoryName(launchParameter)!, "..")),
+            };
 
-            return pathToDeck;
+            foreach (var hypotheticalOuterPath in hypotheticalOuterPaths)
+            {
+                var dataPath = Path.Combine(hypotheticalOuterPath.DeckOuterPath, "FlashcardDeck");
+                if (Directory.Exists(dataPath))
+                    return new DeckPath(hypotheticalOuterPath.DeckOuterPath);
+            }
         }
 
-        MessageBox.Show("Please provide a deck folder path as a command line argument.");
-
-        Application.Current.Shutdown();
-        return null!;
+        throw new Exception("Please provide a valid deck folder path as a command line argument.");
     }
 }

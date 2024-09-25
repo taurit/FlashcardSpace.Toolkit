@@ -25,7 +25,7 @@ internal class GenericSpanishTermExtractor(GenerativeFill generativeFill)
                 TermStandardizedForm = x.FlashcardQuestionInSpanish,
                 TermStandardizedFormEnglishTranslation = x.FlashcardQuestionInEnglish,
                 TermTranslation = x.FlashcardAnswerInPolish,
-                TermDefinition = x.Remarks ?? "",
+                Remarks = x.Remarks ?? "",
 
                 Context = x.FlashcardExampleSentenceInSpanish,
                 ContextEnglishTranslation = x.FlashcardExampleSentenceInEnglish,

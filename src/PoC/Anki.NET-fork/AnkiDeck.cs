@@ -10,7 +10,6 @@ namespace Anki.NET;
 public class AnkiDeck
 {
     private readonly Dictionary<string, string> _registeredMediaFiles = new();
-    private readonly string _css = GeneralHelper.ReadResource("Anki.NET.AnkiData.CardStyle.css");
 
     private readonly List<AnkiItem> _ankiItems = new();
     private string _collectionFilePath;
@@ -27,6 +26,7 @@ public class AnkiDeck
     public AnkiDeck(AnkiDeckModel ankiDeckModel)
     {
         _ankiDeckModel = ankiDeckModel;
+
         // unique temporary directory in %TEMP%
         _temporaryDeckPath = Path.Combine(Path.GetTempPath(), "Anki.NET", Path.GetRandomFileName());
 
@@ -95,7 +95,7 @@ public class AnkiDeck
     private string CreateCol()
     {
         _ankiItems.ForEach(x => x.Mid = _ankiDeckModel.ModelId);
-        var collection = new Collection(_ankiDeckModel, _css);
+        var collection = new Collection(_ankiDeckModel);
 
         SqLiteHelper.ExecuteSqLiteCommand(_conn, collection.Query);
 

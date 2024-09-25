@@ -1,4 +1,5 @@
-using CoreLibrary.Services;
+using CoreLibrary.Models;
+using CoreLibrary.Services.AnkiExportService;
 
 namespace Anki.Net.TestApp;
 
@@ -7,6 +8,6 @@ internal class Program
     static void Main(string[] args)
     {
         var ankiExportService = new AnkiExportService();
-        ankiExportService.ExportToAnki(@"d:\Projekty\FlashcardSpace.Toolkit\src\DeckBrowser\FlashcardDeck\", @"d:\TestDeck");
+        ankiExportService.ExportToAnki(new DeckPath(@"c:\Users\windo\AppData\Local\FlashcardSpaceToolkitCaches\GenerateFlashcards.Outputs\Deck-2024-09-25_My_Spanish_lessons\"));
     }
 }

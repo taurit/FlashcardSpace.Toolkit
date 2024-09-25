@@ -20,11 +20,6 @@ public record FlashcardNoteEditablePart
     [JsonPropertyName("termTranslationAudio")]
     public string TermTranslationAudio { get; set; }
 
-    // A definition of the term (like 'a round fruit with a red or green skin and a whitish inside')
-    // in the target language
-    [JsonPropertyName("termDefinition")]
-    public string TermDefinition { get; set; }
-
     // An example of usage of the term in a context (context is a single sentence or other minimal fragment of text)
     [JsonPropertyName("context")]
     public string Context { get; set; }
@@ -44,6 +39,10 @@ public record FlashcardNoteEditablePart
     // Or null if no image was explicitly selected by deck author.
     [JsonPropertyName("selectedImageIndex")]
     public int? SelectedImageIndex { get; set; }
+
+    // Additional remarks left from deck author to the student
+    [JsonPropertyName("remarks")]
+    public string Remarks { get; set; }
 }
 
 public record FlashcardNote : FlashcardNoteEditablePart

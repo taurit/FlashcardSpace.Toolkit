@@ -23,7 +23,7 @@ internal sealed class GenerateFromTermListCommand(
         var notesWithImages = await imageProvider.AddImageCandidates(notes);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, sourceLanguage, targetLanguage);
 
-        var deck = new Deck("My Spanish lessons", notesWithImagesAndAudio);
+        var deck = new Deck("My Spanish lessons", notesWithImagesAndAudio, "taurit");
         deckExporter.ExportToFolderAndOpenPreview(deck);
 
         return 0;

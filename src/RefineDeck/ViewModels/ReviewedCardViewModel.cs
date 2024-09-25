@@ -13,7 +13,7 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
 
     public FlashcardNote OriginalFlashcard { get; set; }
 
-    public bool IsAnythingOverridden => IsTermOverridden || IsTermTranslationOverridden || IsSentenceExampleOverridden || IsSentenceExampleTranslationOverridden || IsTermDefinitionOverridden | IsSelectedImageIndexOverridden;
+    public bool IsAnythingOverridden => IsTermOverridden || IsTermTranslationOverridden || IsSentenceExampleOverridden || IsSentenceExampleTranslationOverridden || IsRemarksFieldOverridden | IsSelectedImageIndexOverridden;
 
     public string Term { get; set; }
     public bool IsTermOverridden => this.Term != OriginalFlashcard.Term;
@@ -27,8 +27,8 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
     public string SentenceExampleTranslation { get; set; }
     public bool IsSentenceExampleTranslationOverridden => this.SentenceExampleTranslation != OriginalFlashcard.ContextTranslation;
 
-    public string TermDefinition { get; set; }
-    public bool IsTermDefinitionOverridden => this.TermDefinition != OriginalFlashcard.TermDefinition;
+    public string Remarks { get; set; }
+    public bool IsRemarksFieldOverridden => this.Remarks != OriginalFlashcard.Remarks;
 
     public ObservableCollection<ImageCandidate> ImageCandidates { get; set; }
 

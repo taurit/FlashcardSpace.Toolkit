@@ -1,0 +1,33 @@
+﻿.card {
+    font-family: arial;
+    font-size: 20px;
+    text-align: center;
+    background-color: white;
+}
+
+/* add some padding to make selecting text on touch screens easier */
+.frontText, .backText {
+    line-height: 1.3em;
+}
+
+.illustration {
+    padding-top: 8px;
+}
+
+/* To save space, this audio is optionally triggered when user clicks on a sentence text */
+#sentenceSourceLanguage {
+    cursor: pointer;
+    font-style: italic;
+    font-size: 18px;
+}
+
+#sentenceSourceLanguageAudio {
+    display: none;
+}
+
+#sentenceTargetLanguage {
+    font-style: italic;
+    color: #888;
+    margin-top: 4px;
+    font-size: 18px;
+}

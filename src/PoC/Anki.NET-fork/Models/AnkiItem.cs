@@ -11,7 +11,10 @@ public class AnkiItem : DynamicObject
         if (fields.Count != properties.Length) throw new ArgumentException($"{fields.Count} fields are required, but received {properties.Length} values!");
         for (var i = 0; i < properties.Length; ++i)
         {
-            _dictionary[fields[i].Name] = properties[i].Replace("'", "’");
+            var valueBefore = properties[i];
+            if (valueBefore is null)
+                valueBefore = String.Empty;
+            _dictionary[fields[i].Name] = valueBefore.Replace("'", "’");
         }
     }
 

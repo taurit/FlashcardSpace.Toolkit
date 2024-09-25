@@ -1,9 +1,10 @@
 ﻿using Anki.NET;
+using Anki.NET.Helpers;
 using Anki.NET.Models;
 using Anki.NET.Models.Scriban;
 using CoreLibrary.Models;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.AnkiExportService;
 
 public class AnkiExportService
 {
@@ -22,7 +23,12 @@ public class AnkiExportService
         new("BackAudio"),
         new("Image"),
         new("SentenceExample"),
+
+        // hack needed -> I need just filename in template to use my own player view, but I also 
+        // need the unused [sound:...] tag to make Anki import the file to media collection.
         new("SentenceExampleAudio"),
+        new("SentenceExampleAudioFileName"),
+
         new("SentenceExampleTranslation"),
         new("Remarks"),
     };
@@ -31,41 +37,50 @@ public class AnkiExportService
             // wrap question in a div to make it easier to style
             "<div class=\"frontText\">{{FrontText}}</div>\n" +
             // render audio tag only if the audio is present
-            "{{#FrontAudio}}<br />{{FrontAudio}}{{/FrontAudio}}"
+            "{{#FrontAudio}}{{FrontAudio}}{{/FrontAudio}}"
         ;
+
+
+    private static readonly string CardStyleCss = GeneralHelper.ReadResource("CoreLibrary.Services.AnkiExportService.CardStyle.css");
+    private static readonly string CardScriptJs = GeneralHelper.ReadResource("CoreLibrary.Services.AnkiExportService.CardScript.js");
+
 
     private static readonly string BackSideTemplate =
             "{{FrontSide}}\n" +
             "<hr id=answer>\n" +
 
             "<div class=\"backText\">{{BackText}}</div>\n" +
-            "{{#BackAudio}}<br />{{BackAudio}}{{/BackAudio}}\n" +
+            "{{#BackAudio}}{{BackAudio}}{{/BackAudio}}\n" +
 
             // image
-            "{{#Image}}<br />{{Image}}{{/Image}}\n" +
+            "{{#Image}}<br /><div class=\"illustration\">{{Image}}</div>{{/Image}}\n" +
 
             // sentence example
             "{{#SentenceExample}}" +
-            "<div class=\"sentenceSourceLanguage\">{{SentenceExample}}</div>\n" +
-            "{{#SentenceExampleAudio}}<br />{{SentenceExampleAudio}}{{/SentenceExampleAudio}}\n" +
-            "<div class=\"sentenceTargetLanguage\">{{SentenceExampleTranslation}}</div>\n" +
+            "<div id=\"sentenceSourceLanguage\">{{SentenceExample}}</div>\n" +
+            "<audio id=\"sentenceSourceLanguageAudio\" preload=\"auto\" src=\"{{SentenceExampleAudioFileName}}\"></audio>\n" +
+            "<div id=\"sentenceTargetLanguage\">{{SentenceExampleTranslation}}</div>\n" +
             "{{/SentenceExample}}" +
 
             // remarks
-            "{{#Remarks}}<br /><div class=\"remarks\">{{Remarks}}</div>{{/Remarks}}"
+            "{{#Remarks}}<br /><div class=\"remarks\">{{Remarks}}</div>{{/Remarks}}\n\n" +
+
+            // script
+            "<script>\n" +
+            "(function() {\n" +
+            CardScriptJs +
+            "\n" +
+            "})();\n" +
+            "</script>\n"
             ;
 
-    public void ExportToAnki(string editableDeckFolderPath, string outputFolderPath)
+
+    public void ExportToAnki(DeckPath deckPath)
     {
-        var manifestFilePath = Path.Combine(editableDeckFolderPath, "flashcards.edit.json");
+        var manifestFilePath = deckPath.DeckManifestEditsPathWithFallback;
         if (!File.Exists(manifestFilePath))
         {
-            manifestFilePath = Path.Combine(editableDeckFolderPath, "flashcards.json");
-
-            if (!File.Exists(manifestFilePath))
-            {
-                throw new FileNotFoundException($"Could not find the flashcards.edit.json not flashcards.json in the specified folder ({editableDeckFolderPath}).");
-            }
+            throw new FileNotFoundException($"Could not find the flashcards.edited.json not flashcards.json in ({deckPath.DeckDataPath}).");
         }
         var manifestFolder = Path.GetDirectoryName(manifestFilePath)!;
 
@@ -75,35 +90,38 @@ public class AnkiExportService
             new CardTemplate(0, "Forward", FrontSideTemplate, BackSideTemplate)
         };
 
-        var ankiNoteModel = new AnkiDeckModel(deck.DeckName, Fields, cardTemplates, deck.MediaFilesPrefix);
+        var ankiNoteModel = new AnkiDeckModel(deck.DeckName, Fields, cardTemplates, deck.MediaFilesPrefix, CardStyleCss);
         var exportedDeck = new AnkiDeck(ankiNoteModel);
 
-        foreach (var flashcard in deck.Flashcards)
+        var flashcardsToExport = deck.Flashcards.Where(x => x.ApprovalStatus == ApprovalStatus.Approved).ToList();
+        foreach (var flashcard in flashcardsToExport)
         {
             var imageTag = RegisterImageAndGetImageTag(exportedDeck, manifestFolder, flashcard);
 
-            string? termAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
+            var termAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
                 flashcard.Overrides?.TermAudio, flashcard.TermAudio);
 
-            string? termTranslationAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
+            var termTranslationAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
                 flashcard.Overrides?.TermTranslationAudio, flashcard.TermTranslationAudio);
 
-            string? contextAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
+            var contextAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
                 flashcard.Overrides?.ContextAudio, flashcard.ContextAudio);
 
             // add card to the deck
             string[] noteFields =
             [
                 flashcard.Overrides?.Term ?? flashcard.Term, // FrontText
-                termAudioTag, // FrontAudio
+                termAudioTag.FileNameInTag, // FrontAudio
                 flashcard.Overrides?.TermTranslation ?? flashcard.TermTranslation, // BackText
-                termTranslationAudioTag, // BackAudio
+                termTranslationAudioTag.FileNameInTag, // BackAudio
                 imageTag, // Image
                 flashcard.Overrides?.Context ?? flashcard.Context, // SentenceExample
-                contextAudioTag, // SentenceExampleAudio
+                
+                contextAudioTag.FileNameInTag, // SentenceExampleAudio
+                contextAudioTag.FileName, // SentenceExampleAudioFileName
 
                 flashcard.Overrides?.ContextTranslation ?? flashcard.ContextTranslation, // SentenceExampleTranslation
-                flashcard.Overrides ?.TermDefinition ?? flashcard.TermDefinition // Remarks
+                flashcard.Overrides?.Remarks ?? flashcard.Remarks // Remarks
             ];
 
             if (noteFields.Length != Fields.Count)
@@ -114,7 +132,7 @@ public class AnkiExportService
             exportedDeck.AddItem(noteFields);
         }
 
-        exportedDeck.CreateApkgFile(outputFolderPath);
+        exportedDeck.CreateApkgFile(deckPath.AnkiExportPath);
     }
 
     private static string RegisterImageAndGetImageTag(AnkiDeck exportedDeck, string manifestFileFolder,
@@ -124,7 +142,7 @@ public class AnkiExportService
 
         if (flashcard.SelectedImageIndex != null)
         {
-            bool imageIsPresent = flashcard.SelectedImageIndex != null &&
+            var imageIsPresent = flashcard.SelectedImageIndex != null &&
                                   flashcard.SelectedImageIndex >= 0 &&
                                   flashcard.SelectedImageIndex < flashcard.ImageCandidates.Count;
 
@@ -135,22 +153,26 @@ public class AnkiExportService
                 imageFileNameDeck = exportedDeck.RegisterImageFile(imageFilePathAbsolute);
             }
         }
-        var imageTag = String.IsNullOrWhiteSpace(imageFileNameDeck) ? "" : $"<img src=\"{imageFileNameDeck}\" />";
+        var imageTag = string.IsNullOrWhiteSpace(imageFileNameDeck) ? "" : $"<img src=\"{imageFileNameDeck}\" />";
         return imageTag;
     }
 
-    private string RegisterAudioAndGetSoundTag(AnkiDeck exportedDeck, string manifestFileFolder, string? termAudioOverride, string termAudioBase)
+    public record SoundMediaReference(string FileName)
+    {
+        public string FileNameInTag => $"[sound:{FileName}]";
+    }
+
+    private SoundMediaReference? RegisterAudioAndGetSoundTag(AnkiDeck exportedDeck, string manifestFileFolder, string? termAudioOverride, string termAudioBase)
     {
         var termAudio = termAudioOverride ?? termAudioBase;
 
-        if (!String.IsNullOrWhiteSpace(termAudio))
+        if (!string.IsNullOrWhiteSpace(termAudio))
         {
             var audioFilePathAbsolute = Path.Combine(manifestFileFolder, termAudio);
-            var deckPath = exportedDeck.RegisterAudioFile(audioFilePathAbsolute);
-
-            var soundTag = $"[sound:{deckPath}]";
-            return soundTag;
+            var soundFilePath = exportedDeck.RegisterAudioFile(audioFilePathAbsolute);
+            return new SoundMediaReference(soundFilePath);
         }
-        return String.Empty;
+        return null;
     }
+
 }

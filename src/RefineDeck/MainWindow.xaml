@@ -9,8 +9,8 @@
     xmlns:viewModels="clr-namespace:RefineDeck.ViewModels"
     xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="Refine deck"
-    Width="1200"
-    Height="750"
+    Width="1500"
+    Height="950"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
     <Window.Resources>
@@ -118,17 +118,6 @@
                         </DockPanel>
                     </GroupBox>
 
-                    <GroupBox Header="Term definition">
-                        <DockPanel LastChildFill="True">
-                            <Button
-                                Click="ResetValue_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsTermDefinitionOverridden, FallbackValue=false}"
-                                Style="{StaticResource ResetButton}"
-                                Tag="TermDefinition" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermDefinition, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
-                        </DockPanel>
-                    </GroupBox>
 
                     <GroupBox Header="Sentence example">
                         <DockPanel LastChildFill="True">
@@ -151,6 +140,18 @@
                                 Style="{StaticResource ResetButton}"
                                 Tag="SentenceExampleTranslation" />
                             <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Remarks from teacher to student">
+                        <DockPanel LastChildFill="True">
+                            <Button
+                                Click="ResetValue_OnClick"
+                                DockPanel.Dock="Right"
+                                IsEnabled="{Binding SelectedFlashcard.IsRemarksFieldOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="Remarks" />
+                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Remarks, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
                         </DockPanel>
                     </GroupBox>
 
@@ -300,7 +301,10 @@
                         Save changes
                     </Button>
 
-                    <Button Margin="5,0,0,0" Padding="4,2" Click="ExportToAnkiDeck_OnClick">
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Click="ExportToAnkiDeck_OnClick">
                         Generate Anki deck
                     </Button>
                 </StackPanel>

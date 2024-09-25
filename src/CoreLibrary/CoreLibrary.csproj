@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\AnkiExportService\CardScript.js" />
+    <None Remove="Services\AnkiExportService\CardStyle.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MemoryPack" Version="1.21.3" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.40.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
@@ -29,6 +34,14 @@
   
   <ItemGroup>
     <ProjectReference Include="..\PoC\Anki.NET-fork\Anki.NET.csproj" />
+  </ItemGroup>
+  
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Services\AnkiExportService\CardScript.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\AnkiExportService\CardStyle.css" />
   </ItemGroup>
 
 </Project>

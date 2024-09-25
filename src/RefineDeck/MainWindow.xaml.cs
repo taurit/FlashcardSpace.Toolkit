@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Models;
+using CoreLibrary.Services.AnkiExportService;
 using RefineDeck.Utils;
 using RefineDeck.ViewModels;
 using System.ComponentModel;
@@ -58,7 +59,7 @@ public partial class MainWindow : Window
 
         // todo: un-hardcode path to previewer
         var recentBuildOfPreviewer = "d:\\Projekty\\FlashcardSpace.Toolkit\\src\\DeckBrowser\\dist\\index.html";
-        var targetFilePath = Path.Combine(ViewModel.Deck.DeckFolderPath, "..\\index.html");
+        var targetFilePath = ViewModel.Deck.DeckPath.PreviewIndexHtmlPath;
         File.Copy(recentBuildOfPreviewer, targetFilePath, true);
         Preview.Source = new Uri(targetFilePath);
 
@@ -76,7 +77,7 @@ public partial class MainWindow : Window
                     TermTranslationAudio = selectedFlashcard.OriginalFlashcard.TermTranslationAudio,
                     TermStandardizedFormEnglishTranslation = selectedFlashcard.OriginalFlashcard.TermStandardizedFormEnglishTranslation,
 
-                    TermDefinition = selectedFlashcard.OriginalFlashcard.TermDefinition,
+                    Remarks = selectedFlashcard.OriginalFlashcard.Remarks,
 
                     Context = selectedFlashcard.SentenceExample,
                     ContextAudio = selectedFlashcard.OriginalFlashcard.ContextAudio,
@@ -90,7 +91,7 @@ public partial class MainWindow : Window
                 }
         };
 
-        var deck = new Deck("Preview deck", flashcards);
+        var deck = new Deck("Preview deck", flashcards, ViewModel.Deck.MediaFileNamePrefix);
         var cardPreviewSerialized = deck.Serialize();
         await Preview.CoreWebView2.ExecuteScriptAsync($"window.setDataFromWpf({cardPreviewSerialized});");
     }
@@ -130,8 +131,8 @@ public partial class MainWindow : Window
             case "SentenceExampleTranslation":
                 f.SentenceExampleTranslation = f.OriginalFlashcard.ContextTranslation;
                 break;
-            case "TermDefinition":
-                f.TermDefinition = f.OriginalFlashcard.TermDefinition;
+            case "Remarks":
+                f.Remarks = f.OriginalFlashcard.Remarks;
                 break;
             default:
                 throw new NotImplementedException($"Not implemented: resetting the {resetValue} field.");
@@ -141,8 +142,8 @@ public partial class MainWindow : Window
 
     private void ShowDiffInVsCode_OnClick(object sender, RoutedEventArgs e)
     {
-        var file1 = Path.Combine(ViewModel.Deck.DeckFolderPath, "flashcards.json");
-        var file2 = Path.Combine(ViewModel.Deck.DeckFolderPath, "flashcards.edited.json");
+        var file1 = ViewModel.Deck.DeckPath.DeckManifestPath;
+        var file2 = ViewModel.Deck.DeckPath.DeckManifestEditsPath;
         //code --diff <file1> <file2>
 
         var process = new Process
@@ -202,6 +203,10 @@ public partial class MainWindow : Window
 
     private void ExportToAnkiDeck_OnClick(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var ankiExportService = new AnkiExportService();
+        ankiExportService.ExportToAnki(ViewModel.Deck.DeckPath);
+
+        // open folder where the deck was created in Explorer
+        Process.Start("explorer.exe", ViewModel.Deck.DeckPath.AnkiExportPath);
     }
 }

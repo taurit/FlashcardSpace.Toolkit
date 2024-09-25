@@ -49,9 +49,9 @@
                     "termEnglishTranslation": {
                         "type": "string"
                     },
-                    "termDefinition": {
+                    "remarks": {
                         "type": "string",
-                        "description": "A definition of the term."
+                        "description": "Remarks left by teacher for student."
                     },
                     "contextTranslation": {
                         "type": "string",

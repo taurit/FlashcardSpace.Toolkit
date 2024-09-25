@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using CoreLibrary.Models;
+using PropertyChanged;
 using System.Collections.ObjectModel;
 
 namespace RefineDeck.ViewModels;
@@ -6,6 +7,7 @@ namespace RefineDeck.ViewModels;
 [AddINotifyPropertyChangedInterface]
 public class DeckViewModel
 {
-    public string? DeckFolderPath { get; set; }
+    public DeckPath DeckPath { get; set; }
     public ObservableCollection<ReviewedCardViewModel> Flashcards { get; set; } = [];
+    public string? MediaFileNamePrefix { get; set; }
 }

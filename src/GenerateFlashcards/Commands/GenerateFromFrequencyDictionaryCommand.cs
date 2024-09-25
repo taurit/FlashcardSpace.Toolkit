@@ -33,7 +33,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
 
-        var deck = new Deck("Spanish adjectives", notesWithImagesAndAudio);
+        var deck = new Deck("Spanish adjectives", notesWithImagesAndAudio, "fs-es-adj");
         deckExporter.ExportToFolderAndOpenPreview(deck);
 
         return 0;

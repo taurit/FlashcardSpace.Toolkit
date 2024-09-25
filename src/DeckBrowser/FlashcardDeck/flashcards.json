@@ -12,7 +12,7 @@
             "termTranslationAudio": "audio/dom.mp3",
             "termEnglishTranslation": "a house",
 
-            "termDefinition": "Budynek przeznaczony do zamieszkania przez ludzi, zwłaszcza przez rodzinę lub małą grupę osób.",
+            "remarks": null,
 
             "context": "La casa es grande y bonita.",
             "contextAudio": "audio/la-casa-es-grande-y-bonita.mp3",
@@ -33,7 +33,7 @@
             "termTranslationAudio": "audio/kot.mp3",
             "termEnglishTranslation": "a cat",
 
-            "termDefinition": "Mały domowy drapieżny ssak o miękkim futrze, krótkim pyszczku i chowanych pazurach.",
+            "remarks": "Mały domowy drapieżny ssak o miękkim futrze, krótkim pyszczku i chowanych pazurach.",
 
             "context": "El gato está durmiendo en el sofá.",
             "contextAudio": "audio/el-gato-esta-durmiendo-en-el-sofa.mp3",

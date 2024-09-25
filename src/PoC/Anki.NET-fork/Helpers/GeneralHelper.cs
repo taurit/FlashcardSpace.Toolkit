@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Anki.NET.Helpers;
 
-internal static class GeneralHelper
+public static class GeneralHelper
 {
     internal static string ConcatFields(FieldList fieldList, AnkiItem item, string separator)
     {
@@ -13,9 +13,9 @@ internal static class GeneralHelper
         return string.Join(separator, fieldsValues);
     }
 
-    internal static string ReadResource(string path)
+    public static string ReadResource(string path)
     {
-        var a = Assembly.GetExecutingAssembly();
+        var a = Assembly.GetCallingAssembly();
         var resourceStream = a.GetManifestResourceStream(path);
 
         return new StreamReader(resourceStream).ReadToEnd();
