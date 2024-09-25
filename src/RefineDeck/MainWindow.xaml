@@ -175,8 +175,8 @@
                                             ✖
                                         </TextBlock>
                                         <Image
-                                            Width="128"
-                                            Height="128"
+                                            Width="200"
+                                            Height="200"
                                             RenderOptions.BitmapScalingMode="HighQuality"
                                             Source="{Binding AbsolutePath, FallbackValue=null}"
                                             Stretch="Uniform" />
@@ -216,6 +216,10 @@
                         Width="Auto"
                         Binding="{Binding Severity, Mode=OneWay}"
                         Header="Severity" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Text, Mode=OneWay}"
+                        Header="Text" />
                 </DataGrid.Columns>
             </DataGrid>
             <wpf:WebView2 Name="Preview" DockPanel.Dock="Top" />
@@ -296,7 +300,7 @@
                         Save changes
                     </Button>
 
-                    <Button Margin="5,0,0,0" Padding="4,2">
+                    <Button Margin="5,0,0,0" Padding="4,2" Click="ExportToAnkiDeck_OnClick">
                         Generate Anki deck
                     </Button>
                 </StackPanel>

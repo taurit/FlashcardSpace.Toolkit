@@ -200,4 +200,8 @@ public partial class MainWindow : Window
     }
 
 
+    private void ExportToAnkiDeck_OnClick(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

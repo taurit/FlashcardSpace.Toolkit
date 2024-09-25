@@ -3,7 +3,6 @@ using Anki.NET.Models;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using System.IO.Compression;
-using System.Reflection;
 using System.Text.Json;
 
 namespace Anki.NET;
@@ -11,7 +10,7 @@ namespace Anki.NET;
 public class AnkiDeck
 {
     private readonly Dictionary<string, string> _registeredMediaFiles = new();
-    private readonly string _css = GeneralHelper.ReadResource("AnkiNet.AnkiData.CardStyle.css");
+    private readonly string _css = GeneralHelper.ReadResource("Anki.NET.AnkiData.CardStyle.css");
 
     private readonly List<AnkiItem> _ankiItems = new();
     private string _collectionFilePath;
@@ -28,7 +27,8 @@ public class AnkiDeck
     public AnkiDeck(AnkiDeckModel ankiDeckModel)
     {
         _ankiDeckModel = ankiDeckModel;
-        _temporaryDeckPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "tmp");
+        // unique temporary directory in %TEMP%
+        _temporaryDeckPath = Path.Combine(Path.GetTempPath(), "Anki.NET", Path.GetRandomFileName());
 
         if (Directory.Exists(_temporaryDeckPath) == false)
             Directory.CreateDirectory(_temporaryDeckPath);
@@ -48,12 +48,6 @@ public class AnkiDeck
     /// </summary>
     public void AddItem(params string[] properties)
     {
-        foreach (var property in properties)
-        {
-            if (String.IsNullOrEmpty(property))
-                throw new ArgumentException("Value of the field must not be empty, or it won't be imported to Anki!");
-        }
-
         var item = new AnkiItem(_ankiDeckModel.FieldList, properties);
         _ankiItems.Add(item);
     }
@@ -71,6 +65,7 @@ public class AnkiDeck
 
     private string CreateZipFile(string path)
     {
+        Directory.CreateDirectory(path);
         var anki2FilePath = Path.Combine(_temporaryDeckPath, "collection.anki2");
         var mediaFilePath = Path.Combine(_temporaryDeckPath, "media");
 
@@ -132,12 +127,12 @@ public class AnkiDeck
             _conn = new SqliteConnection("Data Source=" + _collectionFilePath + ";");
             _conn.Open();
 
-            var column = GeneralHelper.ReadResource("AnkiNet.SqLiteCommands.ColumnTable.sql");
-            var notes = GeneralHelper.ReadResource("AnkiNet.SqLiteCommands.NotesTable.sql");
-            var cards = GeneralHelper.ReadResource("AnkiNet.SqLiteCommands.CardsTable.sql");
-            var revLogs = GeneralHelper.ReadResource("AnkiNet.SqLiteCommands.RevLogTable.sql");
-            var graves = GeneralHelper.ReadResource("AnkiNet.SqLiteCommands.GravesTable.sql");
-            var indexes = GeneralHelper.ReadResource("AnkiNet.SqLiteCommands.Indexes.sql");
+            var column = GeneralHelper.ReadResource("Anki.NET.SqLiteCommands.ColumnTable.sql");
+            var notes = GeneralHelper.ReadResource("Anki.NET.SqLiteCommands.NotesTable.sql");
+            var cards = GeneralHelper.ReadResource("Anki.NET.SqLiteCommands.CardsTable.sql");
+            var revLogs = GeneralHelper.ReadResource("Anki.NET.SqLiteCommands.RevLogTable.sql");
+            var graves = GeneralHelper.ReadResource("Anki.NET.SqLiteCommands.GravesTable.sql");
+            var indexes = GeneralHelper.ReadResource("Anki.NET.SqLiteCommands.Indexes.sql");
 
             SqLiteHelper.ExecuteSqLiteCommand(_conn, column);
             SqLiteHelper.ExecuteSqLiteCommand(_conn, notes);

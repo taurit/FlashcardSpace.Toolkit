@@ -6,6 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Anki.NET-fork\Anki.NET.csproj" />
+    <ProjectReference Include="..\..\CoreLibrary\CoreLibrary.csproj" />
   </ItemGroup>
 </Project>

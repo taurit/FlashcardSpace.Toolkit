@@ -1,5 +1,7 @@
 {
     "$schema": "../deck.schema.json",
+    "deckName": "Dev Example Deck",
+    "mediaFilesPrefix": "example",
     "flashcards": [
         {
             "term": "la casa",
@@ -19,7 +21,8 @@
             "contextEnglishTranslation": "The house is big and pretty.",
 
             "type": "Noun",
-            "imageCandidates": ["images/la-casa-01.webp", "images/la-casa-02.webp"]
+            "imageCandidates": ["images/la-casa-01.webp", "images/la-casa-02.webp"],
+            "selectedImageIndex": 0
         },
         {
             "term": "el gato",
@@ -39,7 +42,8 @@
             "contextEnglishTranslation": "The cat is sleeping on the sofa.",
 
             "type": "Noun",
-            "imageCandidates": ["images/el-gato-01.webp", "images/el-gato-02.webp"]
+            "imageCandidates": ["images/el-gato-01.webp", "images/el-gato-02.webp"],
+            "selectedImageIndex": 999
         }
     ]
 }

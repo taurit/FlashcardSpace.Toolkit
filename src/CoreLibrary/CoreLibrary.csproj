@@ -25,5 +25,10 @@
   <ItemGroup>
     <InternalsVisibleTo Include="CoreLibrary.Tests" />
   </ItemGroup>
+  
+  
+  <ItemGroup>
+    <ProjectReference Include="..\PoC\Anki.NET-fork\Anki.NET.csproj" />
+  </ItemGroup>
 
 </Project>

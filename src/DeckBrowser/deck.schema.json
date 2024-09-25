@@ -8,6 +8,13 @@
         "$schema": {
             "type": "string"
         },
+        "deckName": {
+            "type": "string"
+        },
+        "mediaFilesPrefix": {
+            "type": "string",
+            "description": "Short, but ideally unique prefix for all media file names in the deck."
+        },
         "flashcards": {
             "type": "array",
             "items": {
@@ -71,6 +78,10 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "selectedImageIndex": {
+                        "type": "integer",
+                        "description": "Index of the selected image from the imageCandidates array."
                     }
                 },
                 "required": [
@@ -82,10 +93,11 @@
                     "contextTranslation",
                     "termAudio",
                     "termTranslationAudio",
-                    "imageCandidates"
+                    "imageCandidates",
+                    "selectedImageIndex"
                 ]
             }
         }
     },
-    "required": ["flashcards"]
+    "required": ["flashcards", "deckName"]
 }

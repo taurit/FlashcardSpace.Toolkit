@@ -9,12 +9,8 @@ internal static class GeneralHelper
 {
     internal static string ConcatFields(FieldList fieldList, AnkiItem item, string separator)
     {
-        var fields = fieldList
-            .Where(t => item[t.Name] as string != "")
-            .Select(t => item[t.Name])
-            .ToArray();
-
-        return string.Join(separator, fields);
+        var fieldsValues = fieldList.Select(t => item[t.Name]);
+        return string.Join(separator, fieldsValues);
     }
 
     internal static string ReadResource(string path)

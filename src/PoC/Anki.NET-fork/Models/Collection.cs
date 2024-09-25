@@ -18,7 +18,7 @@ internal class Collection
         var conf = BuildConfigurationOptionsJson(ankiDeckModel);
         var models = BuildNoteModelsJson(ankiDeckModel, css, modificationTimeSeconds);
         var decksJson = BuildDecksConfigJson(ankiDeckModel, DeckId);
-        var decksConfigurationsJson = GeneralHelper.ReadResource("AnkiNet.AnkiData.dconf.scriban-txt");
+        var decksConfigurationsJson = GeneralHelper.ReadResource("Anki.NET.AnkiData.dconf.scriban-txt");
 
         Query = @"INSERT INTO col VALUES(" + Id + ", " + crt + ", " + DeckId + ", " + DeckId + ", 11, 0, 0, 0, '"
                 + conf + "', '" + models + "', '" + decksJson + "', '" + decksConfigurationsJson + "', "
@@ -30,14 +30,14 @@ internal class Collection
 
     private static string BuildConfigurationOptionsJson(AnkiDeckModel ankiDeckModel)
     {
-        var confTemplate = GeneralHelper.ReadResource("AnkiNet.AnkiData.conf.scriban-txt");
+        var confTemplate = GeneralHelper.ReadResource("Anki.NET.AnkiData.conf.scriban-txt");
         var conf = Template.Parse(confTemplate).Render(new ConfScribanModel(ankiDeckModel.ModelId), member => member.Name);
         return conf;
     }
 
     private string BuildNoteModelsJson(AnkiDeckModel ankiDeckModel, string css, string modificationTimeSeconds)
     {
-        var modelsFileContent = GeneralHelper.ReadResource("AnkiNet.AnkiData.models.scriban-txt");
+        var modelsFileContent = GeneralHelper.ReadResource("Anki.NET.AnkiData.models.scriban-txt");
         var fieldListJson = ankiDeckModel.FieldList.ToJson();
         var json = Template.Parse(modelsFileContent).Render(
             new NoteTypesModel(DeckId, modificationTimeSeconds, ankiDeckModel.ModelName, ankiDeckModel.ModelId, css, fieldListJson,
@@ -49,7 +49,7 @@ internal class Collection
 
     private string BuildDecksConfigJson(AnkiDeckModel ankiDeckModel, string modificationTimeMilliseconds)
     {
-        var deckTemplate = GeneralHelper.ReadResource("AnkiNet.AnkiData.decks.scriban-txt");
+        var deckTemplate = GeneralHelper.ReadResource("Anki.NET.AnkiData.decks.scriban-txt");
         var decks = Template.Parse(deckTemplate).Render(
             new DecksScribanModel(ankiDeckModel.ModelName, DeckId, modificationTimeMilliseconds),
             member => member.Name);
