@@ -14,7 +14,7 @@ public class ImageCandidatesGenerator(
         var results = new List<GeneratedImage>();
 
         const int cfgScaleMin = 3;
-        const int cfgScaleMax = 7;
+        const int cfgScaleMax = 6;
 
         decimal cfgScaleStep = numExperiments == 1 ? 0 : ((decimal)cfgScaleMax - cfgScaleMin) / (numExperiments - 1);
 
@@ -36,7 +36,9 @@ public class ImageCandidatesGenerator(
             int cfgScaleForExperiment = cfgScaleMin + (int)(cfgScaleStep * i);
 
             logger.LogInformation("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
-            var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment);
+
+            // for Stable Diffusion I also want a deterministic seed that changes, because using the same one for all images leads to images with similar composition.
+            var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment, seed);
 
             results.AddRange(images);
         }

@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Utilities;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -13,9 +14,9 @@ internal record DeckExporterSettings(string BrowserProfileDirectory, string Deck
 /// - `audio` folder containing all the audio files for the flashcards
 /// - `images` folder containing all the images for the flashcards
 /// </summary>
-internal class DeckExporter(DeckExporterSettings settings)
+internal class DeckExporter(DeckExporterSettings settings, ILogger<DeckExporter> logger)
 {
-    public void ExportToFolderAndOpenPreview(Deck deck)
+    public async Task ExportToFolderAndOpenPreview(Deck deck)
     {
         // name folder in the format like `Deck-2024-09-20_08-38_deckName
         var deckNameWithoutSpaces = deck.DeckName.ToFilenameFriendlyString(20).Replace(" ", "_");
@@ -24,8 +25,12 @@ internal class DeckExporter(DeckExporterSettings settings)
         Directory.CreateDirectory(exportDirectory);
         ExportDeck(deck, exportDirectory);
 
-        OpenPreview(exportDirectory);
+        logger.LogInformation("Exported deck to {ExportDirectory}", exportDirectory);
+
+        //OpenPreviewInBrowser(exportDirectory);
+        await OpenPreviewInRefinementTool(exportDirectory);
     }
+
 
     public void ExportDeck(Deck deck, string exportFolderPath)
     {
@@ -98,7 +103,7 @@ internal class DeckExporter(DeckExporterSettings settings)
         return targetFileRelativePath;
     }
 
-    public void OpenPreview(string singleUseExportDirectory)
+    public void OpenPreviewInBrowser(string singleUseExportDirectory)
     {
         // open Edge with:
         // - arguments that disable web security (to allow fetching local file) 
@@ -121,6 +126,28 @@ internal class DeckExporter(DeckExporterSettings settings)
             UseShellExecute = true
         };
         Process.Start(processStartInfo);
+    }
+
+
+    private async Task OpenPreviewInRefinementTool(string exportDirectory)
+    {
+        // start at e.g. d:\Projekty\FlashcardSpace.Toolkit\src\GenerateFlashcards\bin\Debug\net8.0\win-x64\GenerateFlashcards.exe
+        var currentAssemblyPath = Assembly.GetExecutingAssembly().Location;
+        // back to e.g., d:\Projekty\FlashcardSpace.Toolkit\src\GenerateFlashcards\bin\Debug\net8.0\win-x64\
+        var currentAssemblyFolderPath = Path.GetDirectoryName(currentAssemblyPath);
+        // back to e.g., d:\Projekty\FlashcardSpace.Toolkit\src\
+        var solutionFolderPath = Path.GetFullPath(Path.Combine(currentAssemblyFolderPath, "..", "..", "..", "..", ".."));
+        var refinementToolRelativePath = Path.Combine(solutionFolderPath, "RefineDeck", "bin", "Debug", "net8.0-windows", "win-x64", "RefineDeck.exe");
+
+        var processStartInfo = new ProcessStartInfo(refinementToolRelativePath)
+        {
+            Arguments = $"\"{exportDirectory}\"",
+            UseShellExecute = true
+        };
+        Process.Start(processStartInfo);
+
+
+        await Task.Delay(5000); // give the tool some time to start
     }
 }
 

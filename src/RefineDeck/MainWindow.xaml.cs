@@ -17,6 +17,7 @@ public partial class MainWindow : Window
 {
     MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
 
+
     public MainWindow()
     {
         InitializeComponent();
@@ -70,17 +71,17 @@ public partial class MainWindow : Window
         var flashcards = new List<FlashcardNote> {
                 new FlashcardNote {
                     Term = selectedFlashcard.Term,
-                    TermAudio = selectedFlashcard.OriginalFlashcard.TermAudio,
+                    TermAudio = selectedFlashcard.TermAudio,
                     TermStandardizedForm = selectedFlashcard.OriginalFlashcard.TermStandardizedForm,
 
                     TermTranslation = selectedFlashcard.TermTranslation,
-                    TermTranslationAudio = selectedFlashcard.OriginalFlashcard.TermTranslationAudio,
+                    TermTranslationAudio = selectedFlashcard.TermTranslationAudio,
                     TermStandardizedFormEnglishTranslation = selectedFlashcard.OriginalFlashcard.TermStandardizedFormEnglishTranslation,
 
                     Remarks = selectedFlashcard.OriginalFlashcard.Remarks,
 
                     Context = selectedFlashcard.SentenceExample,
-                    ContextAudio = selectedFlashcard.OriginalFlashcard.ContextAudio,
+                    ContextAudio = selectedFlashcard.SentenceExampleAudio,
                     ContextTranslation = selectedFlashcard.SentenceExampleTranslation,
                     ContextTranslationAudio = selectedFlashcard.OriginalFlashcard.ContextTranslationAudio,
                     ContextEnglishTranslation = selectedFlashcard.OriginalFlashcard.ContextEnglishTranslation,
@@ -91,7 +92,7 @@ public partial class MainWindow : Window
                 }
         };
 
-        var deck = new Deck("Preview deck", flashcards, ViewModel.Deck.MediaFileNamePrefix);
+        var deck = new Deck("Preview deck", flashcards, ViewModel.Deck.MediaFileNamePrefix, ViewModel.Deck.SourceLanguage, ViewModel.Deck.TargetLanguage);
         var cardPreviewSerialized = deck.Serialize();
         await Preview.CoreWebView2.ExecuteScriptAsync($"window.setDataFromWpf({cardPreviewSerialized});");
     }
@@ -121,12 +122,15 @@ public partial class MainWindow : Window
         {
             case "Term":
                 f.Term = f.OriginalFlashcard.Term;
+                f.TermAudio = f.OriginalFlashcard.TermAudio;
                 break;
             case "TermTranslation":
                 f.TermTranslation = f.OriginalFlashcard.TermTranslation;
+                f.TermTranslationAudio = f.OriginalFlashcard.TermTranslationAudio;
                 break;
             case "SentenceExample":
                 f.SentenceExample = f.OriginalFlashcard.Context;
+                f.SentenceExampleAudio = f.OriginalFlashcard.ContextAudio;
                 break;
             case "SentenceExampleTranslation":
                 f.SentenceExampleTranslation = f.OriginalFlashcard.ContextTranslation;
@@ -137,6 +141,8 @@ public partial class MainWindow : Window
             default:
                 throw new NotImplementedException($"Not implemented: resetting the {resetValue} field.");
         }
+
+        SaveChanges();
     }
 
 
@@ -203,10 +209,43 @@ public partial class MainWindow : Window
 
     private void ExportToAnkiDeck_OnClick(object sender, RoutedEventArgs e)
     {
+        SaveChanges();
+
         var ankiExportService = new AnkiExportService();
         ankiExportService.ExportToAnki(ViewModel.Deck.DeckPath);
 
         // open folder where the deck was created in Explorer
         Process.Start("explorer.exe", ViewModel.Deck.DeckPath.AnkiExportPath);
     }
+
+    // Updates audio files 
+    private async void UpdateAudio_OnClick(object sender, RoutedEventArgs e)
+    {
+        var audioProvider = AudioPatcher.GetAudioProviderInstance(ViewModel.Deck.DeckPath);
+
+        var card = ViewModel.SelectedFlashcard;
+        var tag = ((Button)sender).Tag.ToString();
+
+        switch (tag)
+        {
+            case "Term":
+                var newAudioFilePathTerm = await audioProvider.GenerateAudioOrUseCached(card.Term, ViewModel.Deck.SourceLanguage);
+                card.TermAudio = AudioPatcher.ToRelativePath(newAudioFilePathTerm, ViewModel.Deck.DeckPath);
+                break;
+            case "TermTranslation":
+                var newAudioFilePathTermTranslation = await audioProvider.GenerateAudioOrUseCached(card.TermTranslation, ViewModel.Deck.TargetLanguage);
+                card.TermTranslationAudio = AudioPatcher.ToRelativePath(newAudioFilePathTermTranslation, ViewModel.Deck.DeckPath);
+                break;
+            case "SentenceExample":
+                var newAudioFilePathSentenceExample = await audioProvider.GenerateAudioOrUseCached(card.SentenceExample, ViewModel.Deck.SourceLanguage);
+                card.SentenceExampleAudio = AudioPatcher.ToRelativePath(newAudioFilePathSentenceExample, ViewModel.Deck.DeckPath);
+                break;
+
+            default:
+                throw new NotImplementedException($"Not implemented: updating the {tag} audio.");
+        }
+
+
+    }
+
 }

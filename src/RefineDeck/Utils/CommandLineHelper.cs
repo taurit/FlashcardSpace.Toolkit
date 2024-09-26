@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Models;
 using System.IO;
+using System.Windows;
 
 namespace RefineDeck.Utils;
 
@@ -23,8 +24,8 @@ internal static class CommandLineHelper
 
             var hypotheticalOuterPaths = new List<DeckPath>()
             {
+                new(Path.GetFullPath(launchParameter)!),
                 new(Path.GetDirectoryName(launchParameter)!),
-                new(Path.Combine(Path.GetDirectoryName(launchParameter)!, "..")),
             };
 
             foreach (var hypotheticalOuterPath in hypotheticalOuterPaths)
@@ -35,6 +36,7 @@ internal static class CommandLineHelper
             }
         }
 
+        MessageBox.Show("Please provide a valid deck folder path as a command line argument.");
         throw new Exception("Please provide a valid deck folder path as a command line argument.");
     }
 }

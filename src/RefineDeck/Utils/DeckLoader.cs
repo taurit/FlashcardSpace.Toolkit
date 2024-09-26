@@ -34,14 +34,18 @@ internal static class DeckLoader
                 OriginalFlashcard = flashcard,
 
                 Term = flashcard.Overrides?.Term ?? flashcard.Term,
+                TermAudio = flashcard.Overrides?.TermAudio ?? flashcard.TermAudio,
                 TermTranslation = flashcard.Overrides?.TermTranslation ?? flashcard.TermTranslation,
+                TermTranslationAudio = flashcard.Overrides?.TermTranslationAudio ?? flashcard.TermTranslationAudio,
                 Remarks = flashcard.Overrides?.Remarks ?? flashcard.Remarks,
                 SentenceExample = flashcard.Overrides?.Context ?? flashcard.Context,
+                SentenceExampleAudio = flashcard.Overrides?.ContextAudio ?? flashcard.ContextAudio,
                 SentenceExampleTranslation = flashcard.Overrides?.ContextTranslation ?? flashcard.ContextTranslation,
                 SelectedImageIndex = flashcard.Overrides?.SelectedImageIndex ?? flashcard.SelectedImageIndex,
 
                 ApprovalStatus = flashcard.ApprovalStatus,
                 ImageCandidates = imageCandidates,
+
             };
 
             flashcardsViewModels.Add(flashcardViewModel);
@@ -51,7 +55,10 @@ internal static class DeckLoader
         {
             DeckPath = deckPath,
             MediaFileNamePrefix = deck.MediaFilesPrefix,
-            Flashcards = new ObservableCollection<ReviewedCardViewModel>(flashcardsViewModels)
+            Flashcards = new ObservableCollection<ReviewedCardViewModel>(flashcardsViewModels),
+            SourceLanguage = deck.SourceLanguage,
+            TargetLanguage = deck.TargetLanguage
+
         };
         return deckViewModel;
     }
@@ -65,7 +72,7 @@ internal static class DeckLoader
         if (originalDeck.Flashcards.Count != viewModel.Flashcards.Count)
             throw new InvalidOperationException("Number of flashcards in original deck and ViewModel differ");
 
-        var editedDeck = new Deck(originalDeck.DeckName, new List<FlashcardNote>(), originalDeck.MediaFilesPrefix);
+        var editedDeck = new Deck(originalDeck.DeckName, new List<FlashcardNote>(), originalDeck.MediaFilesPrefix, originalDeck.SourceLanguage, originalDeck.TargetLanguage);
         for (var index = 0; index < originalDeck.Flashcards.Count; index++)
         {
             var original = originalDeck.Flashcards[index];
@@ -90,7 +97,12 @@ internal static class DeckLoader
                     Remarks = vm.IsRemarksFieldOverridden ? vm.Remarks : null!,
                     Context = vm.IsSentenceExampleOverridden ? vm.SentenceExample : null!,
                     ContextTranslation = vm.IsSentenceExampleTranslationOverridden ? vm.SentenceExampleTranslation : null!,
-                    SelectedImageIndex = imageIndexToSet
+                    SelectedImageIndex = imageIndexToSet,
+
+                    TermAudio = vm.IsTermAudioOverridden ? vm.TermAudio : null!,
+                    TermTranslationAudio = vm.IsTermTranslationAudioOverridden ? vm.TermTranslationAudio : null!,
+                    ContextAudio = vm.IsSentenceExampleAudioOverridden ? vm.SentenceExampleAudio : null!,
+
                 } : null
             };
             editedDeck.Flashcards.Add(edited);

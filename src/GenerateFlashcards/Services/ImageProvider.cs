@@ -28,7 +28,7 @@ internal class ImageProvider(
             logger.LogInformation("Processing note {NoteIndex}/{TotalNotes} ({Percentage}%)",
                 noteIndex, notes.Count, noteIndex * 100 / notes.Count);
             var images = await imageCandidatesGenerator.GenerateImageVariants(
-                    note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, 4, 4);
+                    note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, 3, 2);
 
             var imagesSavedToDisk = new List<string>();
             foreach (var image in images)

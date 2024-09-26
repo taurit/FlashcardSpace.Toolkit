@@ -2,6 +2,8 @@
     "$schema": "../deck.schema.json",
     "deckName": "Dev Example Deck",
     "mediaFilesPrefix": "example",
+    "sourceLanguage": "Spanish",
+    "targetLanguage": "Polish",
     "flashcards": [
         {
             "term": "la casa",

@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Models;
+using CoreLibrary.Services;
 using GenerateFlashcards.Services;
 using Spectre.Console.Cli;
 
@@ -10,7 +11,8 @@ internal sealed class GenerateFromTermListCommand(
         SpanishToEnglishTranslationProvider spanishToEnglishTranslationProvider,
         SpanishToPolishTranslationProvider spanishToPolishTranslationProvider,
         ImageProvider imageProvider,
-        AudioProvider audioProvider
+        AudioProvider audioProvider,
+        QualityControlService qualityControlService
     ) : AsyncCommand<GenerateFromTermListCommandSettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFromTermListCommandSettings settings)
@@ -23,8 +25,10 @@ internal sealed class GenerateFromTermListCommand(
         var notesWithImages = await imageProvider.AddImageCandidates(notes);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, sourceLanguage, targetLanguage);
 
-        var deck = new Deck("My Spanish lessons", notesWithImagesAndAudio, "taurit");
-        deckExporter.ExportToFolderAndOpenPreview(deck);
+        var qaChecked = await qualityControlService.AddQualitySuggestions(notesWithImagesAndAudio);
+
+        var deck = new Deck("My Spanish lessons", qaChecked, "taurit", sourceLanguage, targetLanguage);
+        await deckExporter.ExportToFolderAndOpenPreview(deck);
 
         return 0;
     }

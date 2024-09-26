@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Models;
+using CoreLibrary.Services;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
@@ -13,7 +14,8 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         SpanishToEnglishTranslationProvider spanishToEnglishTranslationProvider,
         SpanishToPolishTranslationProvider spanishToPolishTranslationProvider,
         ImageProvider imageProvider,
-        AudioProvider audioProvider
+        AudioProvider audioProvider,
+        QualityControlService qualityControlService
     ) : AsyncCommand<GenerateFromFrequencyDictionarySettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, GenerateFromFrequencyDictionarySettings settings)
@@ -32,9 +34,9 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
         var notesWithEnglishAndPolishTranslations = await spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
-
-        var deck = new Deck("Spanish adjectives", notesWithImagesAndAudio, "fs-es-adj");
-        deckExporter.ExportToFolderAndOpenPreview(deck);
+        var qaChecked = await qualityControlService.AddQualitySuggestions(notesWithImagesAndAudio);
+        var deck = new Deck("Spanish adjectives", qaChecked, "fs-es-adj", settings.SourceLanguage, settings.OutputLanguage);
+        await deckExporter.ExportToFolderAndOpenPreview(deck);
 
         return 0;
     }

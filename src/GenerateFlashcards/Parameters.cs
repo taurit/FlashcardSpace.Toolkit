@@ -9,8 +9,6 @@
 /// </summary>
 internal static class Parameters
 {
-    public const string DocumentationUrlAboutUserSecrets = "https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md";
-
     // Flagship models are listed at: https://platform.openai.com/docs/models
     // Use cheap model in development but the best one to generate the final output
     public const string OpenAiModelId = "gpt-4o-2024-08-06";

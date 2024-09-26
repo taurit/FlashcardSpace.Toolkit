@@ -1,9 +1,11 @@
-﻿using System.Text.Json;
+﻿using CoreLibrary.Interfaces;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace CoreLibrary.Models;
 
-public class Deck(string deckName, List<FlashcardNote> flashcards, string mediaFilesPrefix)
+public class Deck(string deckName, List<FlashcardNote> flashcards, string mediaFilesPrefix,
+    SupportedLanguage sourceLanguage, SupportedLanguage targetLanguage)
 {
     [JsonPropertyName("deckName")]
     public string DeckName { get; set; } = deckName;
@@ -16,6 +18,12 @@ public class Deck(string deckName, List<FlashcardNote> flashcards, string mediaF
 
     [JsonPropertyName("flashcards")]
     public List<FlashcardNote> Flashcards { get; set; } = flashcards;
+
+    [JsonPropertyName("sourceLanguage")]
+    public SupportedLanguage SourceLanguage { get; set; } = sourceLanguage;
+
+    [JsonPropertyName("targetLanguage")]
+    public SupportedLanguage TargetLanguage { get; set; } = targetLanguage;
 
     public string Serialize() => JsonSerializer.Serialize(this, DeckSerializationOptions.SerializationOptions);
     public static Deck DeserializeFromFile(string deckFileName)

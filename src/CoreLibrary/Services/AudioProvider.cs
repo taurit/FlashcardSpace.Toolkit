@@ -1,16 +1,17 @@
-﻿using CoreLibrary.Models;
+﻿using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
 
-namespace GenerateFlashcards.Services;
+namespace CoreLibrary.Services;
 
-internal record AudioProviderSettings(string AudioCacheFolder);
+public record AudioProviderSettings(string AudioCacheFolder);
 
 /// <summary>
 /// Provides audio files for flashcards.
 /// </summary>
-internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient ttsClient, ILogger<AudioProvider> logger)
+public class AudioProvider(AudioProviderSettings settings, TextToSpeechClient ttsClient, ILogger<AudioProvider> logger)
 {
     public async Task<List<FlashcardNote>> AddAudio(
         List<FlashcardNote> notes,
@@ -44,8 +45,10 @@ internal class AudioProvider(AudioProviderSettings settings, TextToSpeechClient 
         return newNotes;
     }
 
-    private async Task<string> GenerateAudioOrUseCached(string text, SupportedLanguage language)
+    public async Task<string> GenerateAudioOrUseCached(string text, SupportedLanguage language)
     {
+        settings.AudioCacheFolder.EnsureDirectoryExists();
+
         var textFingerprint = text.GetHashCodeStable(5);
         var audioFileName = $"{language}_{text.ToFilenameFriendlyString(15)}_{textFingerprint}.mp3";
         var audioFilePath = Path.Combine(settings.AudioCacheFolder, audioFileName);

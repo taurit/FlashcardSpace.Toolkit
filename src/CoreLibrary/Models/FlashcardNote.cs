@@ -31,7 +31,6 @@ public record FlashcardNoteEditablePart
     [JsonPropertyName("contextTranslation")]
     public string ContextTranslation { get; set; }
 
-
     [JsonPropertyName("contextTranslationAudio")]
     public string ContextTranslationAudio { get; set; }
 
@@ -76,4 +75,7 @@ public record FlashcardNote : FlashcardNoteEditablePart
 
     [JsonPropertyName("approvalStatus")]
     public ApprovalStatus ApprovalStatus { get; set; }
+
+    [JsonPropertyName("qaSuggestions")]
+    public string QaSuggestions { get; set; }
 }

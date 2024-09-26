@@ -15,7 +15,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 {
     /// <param name="cfgScale">Reasonable range seems from 2.0 (creative freedom) to 7.0 (already strictly following the prompt)</param>
     public async Task<List<GeneratedImage>> GenerateImageBatch(
-        StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale)
+        StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale, int seed)
     {
         // Call API of AUTOMATIC1111's stable-diffusion-webui
         bool cutCornersForFasterResponseInDevelopment = false;
@@ -24,7 +24,6 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         var height = 1024;
 
         var samplerName = "DPM++ 2M";
-        var seed = 30456;
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
 
         // Cut corners in development to get faster response

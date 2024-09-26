@@ -11,6 +11,12 @@
         "deckName": {
             "type": "string"
         },
+        "sourceLanguage": {
+            "type": "string"
+        },
+        "targetLanguage": {
+            "type": "string"
+        },
         "mediaFilesPrefix": {
             "type": "string",
             "description": "Short, but ideally unique prefix for all media file names in the deck."
@@ -82,6 +88,10 @@
                     "selectedImageIndex": {
                         "type": "integer",
                         "description": "Index of the selected image from the imageCandidates array."
+                    },
+                    "qaSuggestions": {
+                        "type": "string",
+                        "description": "Quality Assurance suggestion"
                     }
                 },
                 "required": [
@@ -89,7 +99,6 @@
                     "context",
                     "type",
                     "termTranslation",
-                    "termDefinition",
                     "contextTranslation",
                     "termAudio",
                     "termTranslationAudio",
@@ -99,5 +108,5 @@
             }
         }
     },
-    "required": ["flashcards", "deckName"]
+    "required": ["flashcards", "deckName", "mediaFilesPrefix", "sourceLanguage", "targetLanguage"]
 }
