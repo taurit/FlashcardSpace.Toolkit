@@ -20,21 +20,38 @@
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
 
         <Style TargetType="TextBox">
-            <Setter Property="Height" Value="40" />
+            <Setter Property="FontSize" Value="21" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="MinWidth" Value="70" />
+
+            <Setter Property="Background" Value="#f1f1f1" />
+
         </Style>
         <Style x:Key="ResetButton" TargetType="Button">
-            <Setter Property="Width" Value="50" />
+            <Setter Property="MinWidth" Value="25" />
             <Setter Property="Margin" Value="3,0,0,0" />
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Content" Value="Reset" />
+            <Setter Property="Content" Value="↻" />
+            <Setter Property="ToolTip" Value="Reset value" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style x:Key="WysiwygStackPanel" TargetType="StackPanel">
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Orientation" Value="Horizontal" />
         </Style>
 
         <Style x:Key="UpdateAudio" TargetType="Button">
-            <Setter Property="Width" Value="50" />
+            <Setter Property="MinWidth" Value="25" />
             <Setter Property="Margin" Value="3,0,0,0" />
             <Setter Property="FontSize" Value="16" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Content" Value="🔄🔊" />
+            <Setter Property="Content" Value="🔄" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
         </Style>
 
     </Window.Resources>
@@ -51,7 +68,7 @@
             <ColumnDefinition Width="400" />
         </Grid.ColumnDefinitions>
 
-        <!--  Violet panel on the left  -->
+        <!--  Panel on the left  -->
         <ListBox
             Grid.Row="0"
             Grid.Column="0"
@@ -86,153 +103,198 @@
         </ListBox>
 
         <!--  Middle  -->
-        <DockPanel
-            Grid.Row="0"
-            Grid.Column="2"
-            LastChildFill="True">
+        <DockPanel Grid.Row="0" Grid.Column="2">
+            <Border
+                Width="320"
+                Height="650"
+                Margin="20"
+                Padding="0,0,0,13"
+                Background="#eeeeee"
+                BorderBrush="#e0e0e0"
+                BorderThickness="1"
+                CornerRadius="13"
+                DockPanel.Dock="Top">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" Color="#eee" />
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <!--  Title bar with macOS style buttons  -->
+                    <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                        <!--  Buttons container  -->
+                        <StackPanel
+                            Margin="13,2,2,2"
+                            HorizontalAlignment="Left"
+                            Orientation="Horizontal">
+                            <!--  Close Button  -->
+                            <Ellipse
+                                Width="12"
+                                Height="12"
+                                Margin="0,5,5,5"
+                                Fill="#FF5F57" />
+                            <!--  Minimize Button  -->
+                            <Ellipse
+                                Width="12"
+                                Height="12"
+                                Margin="0,5,5,5"
+                                Fill="#FFBD2E" />
+                            <!--  Maximize Button  -->
+                            <Ellipse
+                                Width="12"
+                                Height="12"
+                                Margin="0,5,5,5"
+                                Fill="#28C840" />
+                        </StackPanel>
+                    </Grid>
+
+                    <ScrollViewer
+                        Grid.Row="1"
+                        Background="White"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Term">
+                                <TextBox Text="{Binding SelectedFlashcard.Term, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                                <Button
+                                    Click="ResetValue_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
+                                    Style="{StaticResource ResetButton}"
+                                    Tag="Term" />
+                                <Button
+                                    Click="UpdateAudio_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
+                                    Style="{StaticResource UpdateAudio}"
+                                    Tag="Term" />
+                            </StackPanel>
+
+                            <Border
+                                Height="1"
+                                Margin="15,15,15,0"
+                                Background="#e0e0e0" />
+
+                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Term translation">
+                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                                <Button
+                                    Click="ResetValue_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
+                                    Style="{StaticResource ResetButton}"
+                                    Tag="TermTranslation" />
+                                <Button
+                                    Click="UpdateAudio_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
+                                    Style="{StaticResource UpdateAudio}"
+                                    Tag="TermTranslation" />
+                            </StackPanel>
+
+                            <ListBox
+                                ItemsSource="{Binding SelectedFlashcard.ImageCandidates}"
+                                PreviewMouseWheel="ImagesPanel_OnPreviewMouseWheel"
+                                SelectedIndex="{Binding SelectedFlashcard.SelectedImageIndex}">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Background="LightGray">
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="40">
+                                                ✖
+                                            </TextBlock>
+                                            <Image
+                                                Width="250"
+                                                Height="250"
+                                                RenderOptions.BitmapScalingMode="HighQuality"
+                                                Source="{Binding AbsolutePath, FallbackValue=null}"
+                                                Stretch="Uniform" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
 
-            <UniformGrid
-                Height="40"
-                HorizontalAlignment="Stretch"
+                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Sentence example">
+                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                                <Button
+                                    Click="ResetValue_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
+                                    Style="{StaticResource ResetButton}"
+                                    Tag="SentenceExample" />
+                                <Button
+                                    Click="UpdateAudio_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
+                                    Style="{StaticResource UpdateAudio}"
+                                    Tag="SentenceExample" />
+
+                            </StackPanel>
+
+                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Sentence example translation">
+                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                                <Button
+                                    Click="ResetValue_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
+                                    Style="{StaticResource ResetButton}"
+                                    Tag="SentenceExampleTranslation" />
+                            </StackPanel>
+
+                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Remarks from teacher to student">
+                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Remarks, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                                <Button
+                                    Click="ResetValue_OnClick"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding SelectedFlashcard.IsRemarksFieldOverridden, FallbackValue=false}"
+                                    Style="{StaticResource ResetButton}"
+                                    Tag="Remarks" />
+
+                            </StackPanel>
+
+                            <UniformGrid
+                                Height="40"
+                                HorizontalAlignment="Stretch"
+                                Rows="1">
+                                <Button Background="IndianRed" Click="Reject_OnClick">Reject</Button>
+                                <Button Background="DarkSeaGreen" Click="Approve_OnClick">Approve</Button>
+                            </UniformGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <GroupBox
+                Height="100"
+                VerticalAlignment="Bottom"
                 DockPanel.Dock="Bottom"
-                Rows="1">
-                <Button Background="IndianRed" Click="Reject_OnClick">Reject</Button>
-                <Button Background="DarkSeaGreen" Click="Approve_OnClick">Approve</Button>
-            </UniformGrid>
+                Header="QA remarks from AI agent"
+                Visibility="{Binding SelectedFlashcard.HasQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                <DockPanel LastChildFill="True">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}">Dismiss</Button>
+                    <TextBox
+                        Height="Auto"
+                        Background="BlanchedAlmond"
+                        BorderBrush="DarkOrange"
+                        BorderThickness="1"
+                        DockPanel.Dock="Bottom"
+                        IsReadOnly="True"
+                        Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
+                        TextWrapping="Wrap" />
+                </DockPanel>
+            </GroupBox>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <GroupBox Header="QA remarks from AI agent" Visibility="{Binding SelectedFlashcard.HasQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}">Dismiss</Button>
-                            <TextBox
-                                Height="Auto"
-                                Background="BlanchedAlmond"
-                                BorderBrush="DarkOrange"
-                                BorderThickness="1"
-                                DockPanel.Dock="Bottom"
-                                IsReadOnly="True"
-                                Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
-                                TextWrapping="Wrap" />
-                        </DockPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Term">
-                        <DockPanel LastChildFill="True">
-                            <Button
-                                Click="ResetValue_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
-                                Style="{StaticResource ResetButton}"
-                                Tag="Term" />
-                            <Button
-                                Click="UpdateAudio_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
-                                Style="{StaticResource UpdateAudio}"
-                                Tag="Term" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Term, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
-                        </DockPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Term translation">
-                        <DockPanel LastChildFill="True">
-                            <Button
-                                Click="ResetValue_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
-                                Style="{StaticResource ResetButton}"
-                                Tag="TermTranslation" />
-                            <Button
-                                Click="UpdateAudio_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
-                                Style="{StaticResource UpdateAudio}"
-                                Tag="TermTranslation" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
-                        </DockPanel>
-                    </GroupBox>
-
-
-                    <GroupBox Header="Sentence example">
-                        <DockPanel LastChildFill="True">
-                            <Button
-                                Click="ResetValue_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
-                                Style="{StaticResource ResetButton}"
-                                Tag="SentenceExample" />
-                            <Button
-                                Click="UpdateAudio_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
-                                Style="{StaticResource UpdateAudio}"
-                                Tag="SentenceExample" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
-                        </DockPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Sentence example translation">
-                        <DockPanel LastChildFill="True">
-                            <Button
-                                Click="ResetValue_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
-                                Style="{StaticResource ResetButton}"
-                                Tag="SentenceExampleTranslation" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
-                        </DockPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Remarks from teacher to student">
-                        <DockPanel LastChildFill="True">
-                            <Button
-                                Click="ResetValue_OnClick"
-                                DockPanel.Dock="Right"
-                                IsEnabled="{Binding SelectedFlashcard.IsRemarksFieldOverridden, FallbackValue=false}"
-                                Style="{StaticResource ResetButton}"
-                                Tag="Remarks" />
-                            <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Remarks, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
-                        </DockPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Picture">
-                        <ListBox
-                            ItemsSource="{Binding SelectedFlashcard.ImageCandidates}"
-                            PreviewMouseWheel="ImagesPanel_OnPreviewMouseWheel"
-                            SelectedIndex="{Binding SelectedFlashcard.SelectedImageIndex}">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Background="LightGray">
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            FontSize="40">
-                                            ✖
-                                        </TextBlock>
-                                        <Image
-                                            Width="400"
-                                            Height="400"
-                                            RenderOptions.BitmapScalingMode="HighQuality"
-                                            Source="{Binding AbsolutePath, FallbackValue=null}"
-                                            Stretch="Uniform" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </GroupBox>
-
-                </StackPanel>
-            </ScrollViewer>
         </DockPanel>
-
 
         <wpf:WebView2
             Name="Preview"
