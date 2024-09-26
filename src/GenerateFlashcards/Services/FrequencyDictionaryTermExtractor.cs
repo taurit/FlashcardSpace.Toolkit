@@ -2,9 +2,10 @@
 using CoreLibrary.Services;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models.Spanish;
+using Microsoft.Extensions.Logging;
 
 namespace GenerateFlashcards.Services;
-public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, NormalFormProvider normalFormProvider)
+public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, NormalFormProvider normalFormProvider, ILogger<FrequencyDictionaryTermExtractor> logger)
 {
     public async Task<List<TermInContext>> ExtractTerms(string inputFileName,
         SupportedLanguage sourceLanguage,
@@ -12,6 +13,11 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
         int numItemsToSkip,
         int numItemsToTake)
     {
+        logger.LogInformation("Extracting terms from frequency dictionary file {InputFileName}", inputFileName);
+        logger.LogInformation("Source language: {SourceLanguage}", sourceLanguage);
+        logger.LogInformation("Number of items to skip: {NumItemsToSkip}", numItemsToSkip);
+        logger.LogInformation("Number of items to take: {NumItemsToTake}", numItemsToTake);
+
         List<TermInContext>? extractedTerms;
 
         // Hints for ChatGPT model vary depending on the language.

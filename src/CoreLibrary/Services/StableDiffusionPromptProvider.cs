@@ -9,27 +9,30 @@ public class StableDiffusionPromptProvider(ILogger logger)
     private const string NegativePromptText = "lowres,bad anatomy,bad hands,text," +
                                               "error,missing fingers,extra digit,fewer digits,cropped," +
                                               "worst quality,low quality,jpeg artifacts," +
-                                              "signature,watermark,username,blurry,nsfw,";
+                                              "signature,watermark,username,blurry,nsfw," +
+                                              "painting,drawing,illustration,cartoon,anime,sketch,";
 
     readonly string[] _styles = {
-        "vintage", "modern", "cubist", "industrial", "gothic", "baroque",
-        "renaissance", "avant-garde", "impressionistic", "fantastical",
-        "medieval", "digital", "futuristic", "pop", "expressionistic",
-        "glamour", "studio-quality", "fashion", "cinematic", "vivid"
+        "high-resolution", "4K", "8K", "HDR", "photorealistic", "professional",
+        "DSLR quality", "studio lighting", "golden hour", "blue hour", "natural light",
+        "artificial lighting", "cinematic", "editorial", "fashion photography",
+        "street photography", "landscape photography", "portrait photography",
+        "product photography", "architectural photography", "macro photography",
+        "bokeh", "shallow depth of field", "wide-angle", "telephoto", "drone shot"
     };
 
     readonly string[] _moods = {
-        "tranquil", "moody", "bleak", "dreamy", "playful", "grotesque",
-        "contemplative", "melodic", "chaotic", "bleached", "eroded",
-        "raw", "static", "turbulent", "surreal", "happy", "joyful",
-        "energetic", "whimsical", "uplifting", "bright", "cheerful"
+        "tranquil", "moody", "atmospheric", "dramatic", "vibrant", "serene",
+        "dynamic", "intimate", "bold", "minimalist", "rustic", "urban",
+        "futuristic", "nostalgic", "romantic", "mysterious", "energetic",
+        "calm", "ethereal", "powerful", "subtle", "raw", "polished"
     };
 
     readonly string[] _textures = {
-        "glossy", "matte", "ornate", "delicate", "rigid", "flowing",
-        "distorted", "layered", "sharp", "faded", "colorful", "bleak",
-        "angular", "airy", "woven", "fragmentary", "polished", "etched",
-        "smooth", "velvety", "shiny", "radiant", "luminous", "crisp"
+        "smooth", "sharp", "crisp", "detailed", "glossy", "matte", "silky",
+        "textured", "grainy", "soft focus", "high contrast", "low contrast",
+        "vivid colors", "muted colors", "monochromatic", "saturated", "desaturated",
+        "high clarity", "film grain", "long exposure", "motion blur", "tack sharp"
     };
 
     public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed)
