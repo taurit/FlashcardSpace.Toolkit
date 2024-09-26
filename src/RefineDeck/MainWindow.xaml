@@ -168,7 +168,7 @@
                                 DockPanel.Dock="Right"
                                 IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
                                 Style="{StaticResource UpdateAudio}"
-                                Tag="SentenceExampleAudio" />
+                                Tag="SentenceExample" />
                             <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
                         </DockPanel>
                     </GroupBox>

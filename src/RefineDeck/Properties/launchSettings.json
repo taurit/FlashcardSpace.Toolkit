@@ -2,7 +2,7 @@
   "profiles": {
     "RefineDeck": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\windo\\AppData\\Local\\FlashcardSpaceToolkitCaches\\GenerateFlashcards.Outputs\\Deck-2024-09-26_My_Spanish_lessons"
+      "commandLineArgs": "c:\\Users\\windo\\AppData\\Local\\FlashcardSpaceToolkitCaches\\GenerateFlashcards.Outputs\\Deck-2024-09-26_My_Spanish_lessons\\"
     }
   }
 }

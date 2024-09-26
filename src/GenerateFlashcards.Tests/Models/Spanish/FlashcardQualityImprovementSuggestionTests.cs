@@ -96,4 +96,26 @@ public class FlashcardQualityImprovementSuggestionTests
         output.Suggestions.Should().NotBeEmpty();
         output.Suggestions.Should().Contain("dom");
     }
+
+
+    [TestMethod]
+    public async Task When_TranslationContainsTypoLikeError_Expect_WarningIsPresent()
+    {
+        // Arrange
+        var flashcard = new FlashcardQualityImprovementSuggestion
+        {
+            FrontTextSpanish = "la vela",
+            BackTextPolish = "świeca",
+            SentenceExampleSpanish = "Encendimos la vela durante la cena.",
+            SentenceExamplePolish = "Zapaliśmy świecę podczas kolacji." // contains error (zapaliśmy instead of zapaliliśmy)
+        };
+
+        // Act
+        var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, flashcard);
+
+        // Assert
+        output.Dump();
+        output.Suggestions.Should().NotBeEmpty();
+        output.Suggestions.Should().Contain("zapaliliśmy");
+    }
 }

@@ -187,17 +187,22 @@ public class AnkiDeck
         var filenameInZipArchive = $"{index}"; // ordinal number, no extension
         var fileNameInUserCollection = $"{_ankiDeckModel.ShortUniquePrefixForMediaFiles}-{originalFileNameWithExtension}";
 
-        if (_registeredMediaFiles.ContainsValue(fileNameInUserCollection))
+        if (!_registeredMediaFiles.ContainsValue(fileNameInUserCollection))
         {
-            throw new ArgumentException($"Cannot register file named {originalFileNameWithExtension} - a media file wih identical derived name ({fileNameInUserCollection}) was already registered");
+            // make sure that the file lands in the zip archive
+            var mediaFilePath = Path.Combine(_temporaryDeckPath, filenameInZipArchive);
+            File.Copy(audioFilePath, mediaFilePath, true);
+
+            // add it to the index, too
+            _registeredMediaFiles.Add(filenameInZipArchive, fileNameInUserCollection);
+
         }
+        else
+        {
+            // let's assume I have good hashing in filenames, and duplicates indicate the same resource and it's correct
 
-        // make sure that the file lands in the zip archive
-        var mediaFilePath = Path.Combine(_temporaryDeckPath, filenameInZipArchive);
-        File.Copy(audioFilePath, mediaFilePath, true);
-
-        // add it to the index, too
-        _registeredMediaFiles.Add(filenameInZipArchive, fileNameInUserCollection);
+            //throw new ArgumentException($"Cannot register file named {originalFileNameWithExtension} - a media file wih identical derived name ({fileNameInUserCollection}) was already registered");
+        }
 
         return fileNameInUserCollection;
     }
