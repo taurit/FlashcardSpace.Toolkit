@@ -20,8 +20,10 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         // Call API of AUTOMATIC1111's stable-diffusion-webui
         bool cutCornersForFasterResponseInDevelopment = false;
 
-        var width = 1024;
-        var height = 1024;
+        //var width = 1024;
+        //var height = 1024;
+        var width = 1216;
+        var height = 832;
 
         var samplerName = "DPM++ 2M";
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
