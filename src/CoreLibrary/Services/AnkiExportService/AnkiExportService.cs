@@ -140,15 +140,17 @@ public class AnkiExportService
     {
         string? imageFileNameDeck = null;
 
-        if (flashcard.SelectedImageIndex != null)
+        var selectedImageIndex = flashcard.Overrides?.SelectedImageIndex ?? flashcard.SelectedImageIndex;
+
+        if (selectedImageIndex != null)
         {
-            var imageIsPresent = flashcard.SelectedImageIndex != null &&
-                                  flashcard.SelectedImageIndex >= 0 &&
-                                  flashcard.SelectedImageIndex < flashcard.ImageCandidates.Count;
+            var selectedImageIndexValue = selectedImageIndex.Value;
+            var imageIsPresent = selectedImageIndexValue >= 0 &&
+                                 selectedImageIndexValue < flashcard.ImageCandidates.Count;
 
             if (imageIsPresent)
             {
-                var imageFilePathRelative = flashcard.ImageCandidates[flashcard.SelectedImageIndex!.Value];
+                var imageFilePathRelative = flashcard.ImageCandidates[selectedImageIndexValue];
                 var imageFilePathAbsolute = Path.Combine(manifestFileFolder, imageFilePathRelative);
                 imageFileNameDeck = exportedDeck.RegisterImageFile(imageFilePathAbsolute);
             }
