@@ -19,7 +19,7 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.6.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.6.0" />
 	  
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
   </ItemGroup>
 
   <ItemGroup>

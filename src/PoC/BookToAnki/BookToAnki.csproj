@@ -7,9 +7,9 @@
     <UserSecretsId>FlashcardSpace.Toolkit</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Betalgo.OpenAI" Version="8.6.2" />
+    <PackageReference Include="Betalgo.OpenAI" Version="8.7.1" />
     <PackageReference Include="Fastenshtein" Version="1.0.10" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
     <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="NeoSmart.Caching.Sqlite" Version="[7.0.1]" />
