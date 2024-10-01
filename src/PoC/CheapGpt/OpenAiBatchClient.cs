@@ -72,7 +72,7 @@ public class OpenAiBatchClient(string openAiDeveloperKey, string modelId, int ma
     private async Task<string> UploadFileToOpenAiStorage(string localFileName)
     {
         var apiKeyCredential = new ApiKeyCredential(openAiDeveloperKey);
-        FileClient fileClient = new(apiKeyCredential);
+        OpenAIFileClient fileClient = new(apiKeyCredential);
 
         var response = await fileClient.UploadFileAsync(localFileName, FileUploadPurpose.Batch);
         // todo handle errors
@@ -92,7 +92,7 @@ public class OpenAiBatchClient(string openAiDeveloperKey, string modelId, int ma
         BatchClient batchClient = new(apiKeyCredential);
 
         var batchRequest = new BatchJobCreationRequestModel(fileId);
-        var response = await batchClient.CreateBatchAsync(BinaryContent.Create(BinaryData.FromObjectAsJson(batchRequest)));
+        var response = await batchClient.CreateBatchAsync(BinaryContent.Create(BinaryData.FromObjectAsJson(batchRequest)), true);
         var rawResponse = response.GetRawResponse();
 
         Console.WriteLine(rawResponse.Content);
@@ -100,7 +100,7 @@ public class OpenAiBatchClient(string openAiDeveloperKey, string modelId, int ma
 
     public async Task<string> GetAnswer(string prompt)
     {
-        // todo implement
+        // todo implement ; but is it still needed? perhaps "waitUntilCompleted" introduced in v2.0.0 already builds abstraction over async operation
         return "";
     }
 }

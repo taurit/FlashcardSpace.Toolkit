@@ -43,10 +43,10 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
         switch (mode)
         {
             case GenerativeAiClientResponseMode.PlainText:
-                options.ResponseFormat = ChatResponseFormat.Text;
+                options.ResponseFormat = ChatResponseFormat.CreateTextFormat();
                 break;
             case GenerativeAiClientResponseMode.JsonMode:
-                options.ResponseFormat = ChatResponseFormat.JsonObject;
+                options.ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat();
                 break;
             case GenerativeAiClientResponseMode.StructuredOutput:
                 options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
@@ -67,7 +67,7 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
         var responseToPrompt = completion.Content[0].Text;
 
         await File.WriteAllTextAsync(responseToPromptFileName, responseToPrompt);
-        logger.LogDebug($"Query finished, the usage was {completion.Usage.InputTokens} input tokens and {completion.Usage.OutputTokens} output tokens.");
+        logger.LogDebug($"Query finished, the usage was {completion.Usage.InputTokenCount} input tokens and {completion.Usage.OutputTokenCount} output tokens.");
 
         return responseToPrompt;
     }
