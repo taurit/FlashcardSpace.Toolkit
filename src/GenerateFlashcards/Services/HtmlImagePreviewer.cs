@@ -20,10 +20,7 @@ internal static class HtmlImagePreviewer
         Directory.CreateDirectory(previewerFolder);
         // copy styles to previewer directory unless they already exist there
         var cssStyleDestinationPath = Path.Combine(previewerFolder, stylesFileName);
-        if (!File.Exists(cssStyleDestinationPath))
-        {
-            File.Copy(cssStylePath, cssStyleDestinationPath);
-        }
+        File.Copy(cssStylePath, cssStyleDestinationPath, true);
 
         var outputFilePath = Path.Combine(previewerFolder, "preview.html");
         var htmlFragment = "<html>\n" +
@@ -34,7 +31,7 @@ internal static class HtmlImagePreviewer
                            ;
         foreach (var image in images)
         {
-            htmlFragment += $"<img src=\"data:image/jpeg;base64,{image.Base64EncodedImage}\" title=\"{image.PromptText}, cfg={image.CfgScale}\" />\n";
+            htmlFragment += $"<img src=\"data:image/jpeg;base64,{image.Base64EncodedImage}\" title=\"{image.PromptText}, cfg={image.CfgScale}\" /><br /><br />\n";
         }
         htmlFragment += "</body>\n" +
                         "</html>\n";
@@ -43,14 +40,6 @@ internal static class HtmlImagePreviewer
 
         // Launch html
         var processStartInfo = new ProcessStartInfo(outputFilePath)
-        {
-            UseShellExecute = true
-        };
-        Process.Start(processStartInfo);
-
-        // Launch css file in default editor
-        return;
-        processStartInfo = new ProcessStartInfo(cssStyleDestinationPath)
         {
             UseShellExecute = true
         };

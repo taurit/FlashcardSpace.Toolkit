@@ -1,6 +1,7 @@
 ﻿using CoreLibrary.Utilities;
 using MemoryPack;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -15,73 +16,73 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 {
     /// <param name="cfgScale">Reasonable range seems from 2.0 (creative freedom) to 7.0 (already strictly following the prompt)</param>
     public async Task<List<GeneratedImage>> GenerateImageBatch(
-        StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale, int seed)
+            StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale, int seed,
+            GeneratedImageAspectRatio aspectRatio, ImageGenerationProfile profile)
     {
-        // Call API of AUTOMATIC1111's stable-diffusion-webui
-        bool cutCornersForFasterResponseInDevelopment = false;
+        int width = 1024;
+        int height = 1024;
 
-        //var width = 1024;
-        //var height = 1024;
-        var width = 1216;
-        var height = 832;
+        switch (aspectRatio)
+        {
+            case GeneratedImageAspectRatio.Square:
+                break;
+            case GeneratedImageAspectRatio.Wide:
+                width = 1216;
+                height = 832;
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown aspect ratio: {aspectRatio}");
+        }
 
         var samplerName = "DPM++ 2M";
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
 
         // Cut corners in development to get faster response
-        var numSteps = cutCornersForFasterResponseInDevelopment ? 10 : 24;
-        var refinerCheckpointId = cutCornersForFasterResponseInDevelopment ? null : "sd_xl_refiner_1.0";
-        decimal? refinerSwitchAt = cutCornersForFasterResponseInDevelopment ? null : 0.7m;
+        var numSteps = profile == ImageGenerationProfile.PublicDeck ? 24 : 10;
+        var refinerCheckpointId = profile == ImageGenerationProfile.PublicDeck ? "sd_xl_refiner_1.0" : null;
+        decimal? refinerSwitchAt = profile == ImageGenerationProfile.PublicDeck ? 0.7m : null;
 
         var requestPayloadModel = new TextToImageRequestModel(
             stableDiffusionPrompt.PromptText,
             stableDiffusionPrompt.NegativePromptText,
             width, height, numImagesToGenerate, numSteps, cfgScale, samplerName,
             seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt);
-        var cacheFileName = GenerateCacheFileName(requestPayloadModel);
 
+        var cacheFileName = GenerateCacheFileName(requestPayloadModel);
         if (File.Exists(cacheFileName))
         {
-            // Large Base64 image-strings in JSON are slow to deserialize, so I'll use webpack format to improve performance
-            var cacheFileNameMempack = $"{cacheFileName}.mempack";
-            if (File.Exists(cacheFileNameMempack))
-            {
-                logger.LogDebug("Using Mempack cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
-                var mempackCacheContent = await File.ReadAllBytesAsync(cacheFileNameMempack);
-                var mempackContent = MemoryPackSerializer.Deserialize<GeneratedImagesList>(mempackCacheContent);
-                return mempackContent!.Images;
-            }
-
-            logger.LogDebug("Using JSON cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
-            var cachedResultSerialized = await File.ReadAllTextAsync(cacheFileName);
-            var cachedResult = JsonSerializer.Deserialize<List<GeneratedImage>>(cachedResultSerialized);
-            if (cachedResult == null)
-                throw new InvalidOperationException($"Failed to deserialize images cached in {cacheFileName}");
-
-            // save to mempack for faster deserialization next time
-            var imageList = new GeneratedImagesList(cachedResult);
-            var newMempackCacheContent = MemoryPackSerializer.Serialize<GeneratedImagesList>(imageList);
-            await File.WriteAllBytesAsync(cacheFileNameMempack, newMempackCacheContent);
-
-            return cachedResult;
+            logger.LogDebug("Loading cached images for prompt {Prompt}", stableDiffusionPrompt.PromptText);
+            var mempackCacheContent = await File.ReadAllBytesAsync(cacheFileName);
+            var mempackContent = MemoryPackSerializer.Deserialize<GeneratedImagesList>(mempackCacheContent);
+            return mempackContent!.Images;
         }
 
         // Cache miss -> call Stable Diffusion API
         await EnsureProperSetupOfHttpClient();
         await EnsureStableDiffusionApiIsRunning();
 
+        Stopwatch sw = Stopwatch.StartNew();
         var response = await httpClient.PostAsJsonAsync("http://localhost:7860/sdapi/v1/txt2img", requestPayloadModel);
         var responseModel = await response.Content.ReadFromJsonAsync<TextToImageResponseModel>();
+        sw.Stop();
+
         if (responseModel == null)
         {
             logger.LogError("Failed to generate image. Response was empty.");
             return new List<GeneratedImage>();
         }
+        else
+        {
+            logger.LogInformation("Generated {NumImages} images in {TimeMs} ms", responseModel.Images.Length, sw.ElapsedMilliseconds);
+        }
 
         var arrayOfGenImages = responseModel.Images.Select(i => new GeneratedImage(i, stableDiffusionPrompt.PromptText, cfgScale)).ToList();
 
         // cache the response
-        await File.WriteAllTextAsync(cacheFileName, JsonSerializer.Serialize(arrayOfGenImages));
+        var imageList = new GeneratedImagesList(arrayOfGenImages);
+        var newCacheContent = MemoryPackSerializer.Serialize(imageList);
+        await File.WriteAllBytesAsync(cacheFileName, newCacheContent);
+
         return arrayOfGenImages;
     }
 
@@ -126,7 +127,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         var serializedRequest = JsonSerializer.Serialize(request);
         var fingerprint = serializedRequest.GetHashCodeStable(5);
         return Path.Combine(settings.CacheFolder,
-            $"{request.Prompt.ToFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.json");
+            $"{request.Prompt.ToFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.mempack");
     }
 
 

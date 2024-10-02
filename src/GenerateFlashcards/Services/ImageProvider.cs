@@ -13,7 +13,7 @@ internal class ImageProvider(
     ILogger<ImageProvider> logger
     )
 {
-    public async Task<List<FlashcardNote>> AddImageCandidates(List<FlashcardNote> notes)
+    public async Task<List<FlashcardNote>> AddImageCandidates(List<FlashcardNote> notes, ImageGenerationProfile profile)
     {
         settings.ImageProviderCacheFolder.EnsureDirectoryExists();
 
@@ -26,8 +26,8 @@ internal class ImageProvider(
             // log progress (note number, total number of notes, percentage)
             logger.LogInformation("Processing note {NoteIndex}/{TotalNotes} ({Percentage}%)",
                 noteIndex, notes.Count, noteIndex * 100 / notes.Count);
-            var images = await imageCandidatesGenerator.GenerateImageVariants(
-                    note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, 4, 2);
+
+            var images = await imageCandidatesGenerator.GenerateImageVariants(note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, profile);
 
             var imagesSavedToDisk = new List<string>();
             foreach (var image in images)
@@ -37,6 +37,8 @@ internal class ImageProvider(
                 var imageFilePath = Path.Combine(settings.ImageProviderCacheFolder, $"{imageFingerprint}.jpg");
 
                 await File.WriteAllBytesAsync(imageFilePath, Convert.FromBase64String(image.Base64EncodedImage));
+                logger.LogInformation("Saved image to disk: {ImageFilePath}", imageFilePath);
+
                 imagesSavedToDisk.Add(imageFilePath);
             }
 

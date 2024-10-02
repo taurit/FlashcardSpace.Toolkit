@@ -8,8 +8,6 @@ namespace GenerateFlashcards.Commands;
 internal sealed class GenerateFromTermListCommand(
         GenericSpanishTermExtractor genericSpanishTermExtractor,
         DeckExporter deckExporter,
-        SpanishToEnglishTranslationProvider spanishToEnglishTranslationProvider,
-        SpanishToPolishTranslationProvider spanishToPolishTranslationProvider,
         ImageProvider imageProvider,
         AudioProvider audioProvider,
         QualityControlService qualityControlService
@@ -22,7 +20,7 @@ internal sealed class GenerateFromTermListCommand(
 
         // tech debt - extracts Notes and not just terms
         var notes = await genericSpanishTermExtractor.ExtractTerms(settings.InputFilePath);
-        var notesWithImages = await imageProvider.AddImageCandidates(notes);
+        var notesWithImages = await imageProvider.AddImageCandidates(notes, ImageGenerationProfile.PrivateDeck);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, sourceLanguage, targetLanguage);
 
         var qaChecked = await qualityControlService.AddQualitySuggestions(notesWithImagesAndAudio);

@@ -3,18 +3,24 @@ using Microsoft.Extensions.Logging;
 
 namespace CoreLibrary.Services;
 
+
 public class ImageCandidatesGenerator(
         ImageGenerator imageGenerator,
         StableDiffusionPromptProvider promptProvider,
         ILogger<ImageCandidatesGenerator> logger)
 {
-    public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish,
-        int numExperiments, int numImagesInExperiment)
+    public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish, ImageGenerationProfile profile)
     {
         var results = new List<GeneratedImage>();
 
         const int cfgScaleMin = 3;
         const int cfgScaleMax = 6;
+
+        int numExperiments = profile == ImageGenerationProfile.PublicDeck ? 4 : 2;
+
+        // `numImagesInExperiment` is a number of images in a batch, which all share the same prompt and other parameters but differ in seed.
+        // In private deck I favor variants over independent keywords, because variants are faster to generate (the model stays in VRAM etc.)
+        int numImagesInExperiment = profile == ImageGenerationProfile.PublicDeck ? 2 : 3;
 
         decimal cfgScaleStep = numExperiments == 1 ? 0 : ((decimal)cfgScaleMax - cfgScaleMin) / (numExperiments - 1);
 
@@ -38,7 +44,7 @@ public class ImageCandidatesGenerator(
             logger.LogInformation("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
 
             // for Stable Diffusion I also want a deterministic seed that changes, because using the same one for all images leads to images with similar composition.
-            var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment, seed);
+            var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment, seed, GeneratedImageAspectRatio.Wide, profile);
 
             results.AddRange(images);
         }

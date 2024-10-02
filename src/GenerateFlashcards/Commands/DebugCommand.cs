@@ -24,7 +24,7 @@ internal sealed class DebugCommand(
         //CalculateBestCutOffLine();
 
         var images = await candidatesGenerator.GenerateImageVariants("a house", "A house was old and abandoned.",
-            numExperiments: 4, numImagesInExperiment: 2);
+            ImageGenerationProfile.PublicDeck);
         await HtmlImagePreviewer.PreviewImages(images);
 
         return 0;
