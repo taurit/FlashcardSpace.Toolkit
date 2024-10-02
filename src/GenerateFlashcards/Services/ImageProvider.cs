@@ -37,7 +37,7 @@ internal class ImageProvider(
                 var imageFilePath = Path.Combine(settings.ImageProviderCacheFolder, $"{imageFingerprint}.jpg");
 
                 await File.WriteAllBytesAsync(imageFilePath, Convert.FromBase64String(image.Base64EncodedImage));
-                logger.LogInformation("Saved image to disk: {ImageFilePath}", imageFilePath);
+                logger.LogDebug("Saved image to disk: {ImageFilePath}", imageFilePath);
 
                 imagesSavedToDisk.Add(imageFilePath);
             }

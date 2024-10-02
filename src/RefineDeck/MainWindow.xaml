@@ -19,40 +19,53 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
 
-        <Style TargetType="TextBox">
-            <Setter Property="FontSize" Value="21" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="MinWidth" Value="70" />
+        <Style x:Key="WysiwygDockPanel" TargetType="DockPanel">
+            <Setter Property="Margin" Value="0,2,0,0" />
+            <Setter Property="LastChildFill" Value="True" />
 
-            <Setter Property="Background" Value="#f1f1f1" />
+        </Style>
+
+        <Style TargetType="ScrollViewer">
+            <Setter Property="UseLayoutRounding" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+
+        </Style>
+        <Style x:Key="EditableText" TargetType="TextBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#ddd" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="MaxLines" Value="8" />
+
 
         </Style>
         <Style x:Key="ResetButton" TargetType="Button">
+            <Setter Property="DockPanel.Dock" Value="Right" />
             <Setter Property="MinWidth" Value="25" />
             <Setter Property="Margin" Value="3,0,0,0" />
             <Setter Property="Content" Value="↻" />
             <Setter Property="ToolTip" Value="Reset value" />
-            <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style x:Key="WysiwygStackPanel" TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,10,0,0" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Background" Value="White" />
         </Style>
 
-        <Style x:Key="UpdateAudio" TargetType="Button">
-            <Setter Property="MinWidth" Value="25" />
-            <Setter Property="Margin" Value="3,0,0,0" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Content" Value="🔄" />
+        <Style x:Key="PlayButton" TargetType="Button">
+            <Setter Property="DockPanel.Dock" Value="Right" />
+            <Setter Property="Margin" Value="0,1,0,0" />
+            <Setter Property="Padding" Value="5,0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Content" Value="▶" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
+
 
     </Window.Resources>
     <Grid>
@@ -106,7 +119,6 @@
         <DockPanel Grid.Row="0" Grid.Column="2">
             <Border
                 Width="320"
-                Height="650"
                 Margin="20"
                 Padding="0,0,0,13"
                 Background="#eeeeee"
@@ -152,122 +164,129 @@
 
                     <ScrollViewer
                         Grid.Row="1"
+                        Padding="10"
+                        HorizontalAlignment="Stretch"
                         Background="White"
                         HorizontalScrollBarVisibility="Disabled"
                         VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Term">
-                                <TextBox Text="{Binding SelectedFlashcard.Term, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
                                 <Button
                                     Click="ResetValue_OnClick"
-                                    DockPanel.Dock="Right"
                                     IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
                                     Style="{StaticResource ResetButton}"
                                     Tag="Term" />
+
                                 <Button
-                                    Click="UpdateAudio_OnClick"
-                                    DockPanel.Dock="Right"
-                                    IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
-                                    Style="{StaticResource UpdateAudio}"
+                                    Click="UpdateAndPlayAudio_OnClick"
+                                    Style="{StaticResource PlayButton}"
                                     Tag="Term" />
-                            </StackPanel>
+
+                                <TextBox
+                                    Style="{StaticResource EditableText}"
+                                    Text="{Binding SelectedFlashcard.Term, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    ToolTip="Term" />
+                            </DockPanel>
 
                             <Border
                                 Height="1"
-                                Margin="15,15,15,0"
-                                Background="#e0e0e0" />
+                                Margin="0,18"
+                                Background="#bbb"
+                                SnapsToDevicePixels="True" />
 
-                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Term translation">
-                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.TermTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
                                 <Button
                                     Click="ResetValue_OnClick"
-                                    DockPanel.Dock="Right"
                                     IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
                                     Style="{StaticResource ResetButton}"
                                     Tag="TermTranslation" />
+
                                 <Button
-                                    Click="UpdateAudio_OnClick"
-                                    DockPanel.Dock="Right"
-                                    IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
-                                    Style="{StaticResource UpdateAudio}"
+                                    Click="UpdateAndPlayAudio_OnClick"
+                                    Style="{StaticResource PlayButton}"
                                     Tag="TermTranslation" />
-                            </StackPanel>
 
-                            <ListBox
-                                ItemsSource="{Binding SelectedFlashcard.ImageCandidates}"
-                                PreviewMouseWheel="ImagesPanel_OnPreviewMouseWheel"
-                                SelectedIndex="{Binding SelectedFlashcard.SelectedImageIndex}">
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
+                                <TextBox
+                                    Style="{StaticResource EditableText}"
+                                    Text="{Binding SelectedFlashcard.TermTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    ToolTip="Term translation" />
 
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Background="LightGray">
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                FontSize="40">
-                                                ✖
-                                            </TextBlock>
-                                            <Image
-                                                Width="250"
-                                                Height="250"
-                                                RenderOptions.BitmapScalingMode="HighQuality"
-                                                Source="{Binding AbsolutePath, FallbackValue=null}"
-                                                Stretch="Uniform" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            </DockPanel>
 
+                            <Image
+                                Margin="0,15"
+                                MouseWheel="ChangeImageOnScroll"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="{Binding SelectedFlashcard.SelectedImage}" />
 
-                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Sentence example">
-                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
+
                                 <Button
                                     Click="ResetValue_OnClick"
-                                    DockPanel.Dock="Right"
                                     IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
                                     Style="{StaticResource ResetButton}"
                                     Tag="SentenceExample" />
+
                                 <Button
-                                    Click="UpdateAudio_OnClick"
-                                    DockPanel.Dock="Right"
-                                    IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
-                                    Style="{StaticResource UpdateAudio}"
+                                    Click="UpdateAndPlayAudio_OnClick"
+                                    Style="{StaticResource PlayButton}"
                                     Tag="SentenceExample" />
 
-                            </StackPanel>
+                                <TextBox
+                                    FontStyle="Italic"
+                                    Foreground="DimGray"
+                                    Style="{StaticResource EditableText}"
+                                    Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    ToolTip="Sentence Example" />
+                            </DockPanel>
 
-                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Sentence example translation">
-                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+
+
+                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
+
+
                                 <Button
                                     Click="ResetValue_OnClick"
                                     DockPanel.Dock="Right"
                                     IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
                                     Style="{StaticResource ResetButton}"
                                     Tag="SentenceExampleTranslation" />
-                            </StackPanel>
+                                <TextBox
+                                    FontStyle="Italic"
+                                    Foreground="Gray"
+                                    Style="{StaticResource EditableText}"
+                                    Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    ToolTip="Sentence example translation" />
+                            </DockPanel>
 
-                            <StackPanel Style="{StaticResource WysiwygStackPanel}" ToolTip="Remarks from teacher to student">
-                                <TextBox MaxLines="2" Text="{Binding SelectedFlashcard.Remarks, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}" />
+                            <TextBlock Margin="0,15,0,0">Optional remarks for a student:</TextBlock>
+                            <DockPanel Style="{StaticResource WysiwygDockPanel}" ToolTip="Remarks from teacher to student">
+
                                 <Button
                                     Click="ResetValue_OnClick"
-                                    DockPanel.Dock="Right"
                                     IsEnabled="{Binding SelectedFlashcard.IsRemarksFieldOverridden, FallbackValue=false}"
                                     Style="{StaticResource ResetButton}"
                                     Tag="Remarks" />
 
-                            </StackPanel>
+                                <TextBox
+                                    Style="{StaticResource EditableText}"
+                                    Text="{Binding SelectedFlashcard.Remarks, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    TextAlignment="Left" />
+
+                            </DockPanel>
 
                             <UniformGrid
                                 Height="40"
+                                Margin="0,20,0,0"
                                 HorizontalAlignment="Stretch"
                                 Rows="1">
-                                <Button Background="IndianRed" Click="Reject_OnClick">Reject</Button>
-                                <Button Background="DarkSeaGreen" Click="Approve_OnClick">Approve</Button>
+                                <Button
+                                    Margin="0,0,2,0"
+                                    Click="Reject_OnClick"
+                                    Foreground="DarkRed">
+                                    Reject
+                                </Button>
+                                <Button Click="Approve_OnClick" Foreground="DarkGreen">Approve</Button>
                             </UniformGrid>
                         </StackPanel>
                     </ScrollViewer>

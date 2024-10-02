@@ -97,19 +97,6 @@ public partial class MainWindow : Window
         await Preview.CoreWebView2.ExecuteScriptAsync($"window.setDataFromWpf({cardPreviewSerialized});");
     }
 
-
-    private void ImagesPanel_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
-    {
-        // Horizontal scrolling using mouse wheel
-        var wrapPanel = (sender as ListBox);
-        var scrollViewer = VisualTreeHelpers.FindVisualChild<ScrollViewer>(wrapPanel);
-        if (scrollViewer.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
-        {
-            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.Delta);
-            e.Handled = true; // Prevent vertical scrolling
-        }
-    }
-
     private void ResetValue_OnClick(object sender, RoutedEventArgs e)
     {
         var f = ViewModel.SelectedFlashcard;
@@ -219,11 +206,13 @@ public partial class MainWindow : Window
     }
 
     // Updates audio files 
-    private async void UpdateAudio_OnClick(object sender, RoutedEventArgs e)
+    private async void UpdateAndPlayAudio_OnClick(object sender, RoutedEventArgs e)
     {
         var audioProvider = AudioPatcher.GetAudioProviderInstance(ViewModel.Deck.DeckPath);
 
         var card = ViewModel.SelectedFlashcard;
+        if (card is null) return;
+
         var tag = ((Button)sender).Tag.ToString();
 
         switch (tag)
@@ -231,14 +220,17 @@ public partial class MainWindow : Window
             case "Term":
                 var newAudioFilePathTerm = await audioProvider.GenerateAudioOrUseCached(card.Term, ViewModel.Deck.SourceLanguage);
                 card.TermAudio = AudioPatcher.ToRelativePath(newAudioFilePathTerm, ViewModel.Deck.DeckPath);
+                AudioPlayer.PlayAudio(newAudioFilePathTerm);
                 break;
             case "TermTranslation":
                 var newAudioFilePathTermTranslation = await audioProvider.GenerateAudioOrUseCached(card.TermTranslation, ViewModel.Deck.TargetLanguage);
                 card.TermTranslationAudio = AudioPatcher.ToRelativePath(newAudioFilePathTermTranslation, ViewModel.Deck.DeckPath);
+                AudioPlayer.PlayAudio(newAudioFilePathTermTranslation);
                 break;
             case "SentenceExample":
                 var newAudioFilePathSentenceExample = await audioProvider.GenerateAudioOrUseCached(card.SentenceExample, ViewModel.Deck.SourceLanguage);
                 card.SentenceExampleAudio = AudioPatcher.ToRelativePath(newAudioFilePathSentenceExample, ViewModel.Deck.DeckPath);
+                AudioPlayer.PlayAudio(newAudioFilePathSentenceExample);
                 break;
 
             default:
@@ -248,4 +240,33 @@ public partial class MainWindow : Window
 
     }
 
+    private enum ScrollDirection { Next, Previous };
+    private void ChangeImageOnScroll(object sender, MouseWheelEventArgs e)
+    {
+        ScrollDirection direction = e.Delta > 0 ? ScrollDirection.Previous : ScrollDirection.Next;
+
+        var card = ViewModel.SelectedFlashcard;
+        if (card is null) return;
+
+        // prevent event from being handled by parent control
+        e.Handled = true;
+
+        if (card.ImageCandidates.Count == 0) return;
+
+        if (card.SelectedImageIndex is null)
+        {
+            card.SelectedImageIndex = 0;
+            return;
+        }
+        if (direction == ScrollDirection.Next)
+        {
+            card.SelectedImageIndex = (card.SelectedImageIndex + 1) % card.ImageCandidates.Count;
+        }
+        else
+        {
+            card.SelectedImageIndex = (card.SelectedImageIndex - 1 + card.ImageCandidates.Count) % card.ImageCandidates.Count;
+        }
+
+
+    }
 }

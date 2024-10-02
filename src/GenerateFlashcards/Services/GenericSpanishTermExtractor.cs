@@ -1,9 +1,10 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using GenerateFlashcards.Models.Spanish;
+using Microsoft.Extensions.Logging;
 
 namespace GenerateFlashcards.Services;
-internal class GenericSpanishTermExtractor(GenerativeFill generativeFill)
+internal class GenericSpanishTermExtractor(GenerativeFill generativeFill, ILogger<GenericSpanishTermExtractor> logger)
 {
     public async Task<List<FlashcardNote>> ExtractTerms(string inputFileName)
     {
@@ -15,6 +16,7 @@ internal class GenericSpanishTermExtractor(GenerativeFill generativeFill)
             .Select(line => new SpanishTermGenericDetector { TermToCreateFlashcardFor = line })
             .ToList();
 
+        logger.LogInformation("Filling gaps in {Count} models, this might take a while...", modelsWithGaps.Count);
         var modelsWithGapsFilled = await generativeFill
             .FillMissingProperties(Parameters.OpenAiModelId, Parameters.OpenAiModelClassId, modelsWithGaps);
 
