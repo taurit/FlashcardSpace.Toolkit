@@ -43,6 +43,7 @@ internal static class DeckLoader
                 SentenceExampleAudio = flashcard.Overrides?.ContextAudio ?? flashcard.ContextAudio,
                 SentenceExampleTranslation = flashcard.Overrides?.ContextTranslation ?? flashcard.ContextTranslation,
                 SelectedImageIndex = flashcard.Overrides?.SelectedImageIndex ?? flashcard.SelectedImageIndex,
+                QaSuggestions = flashcard.Overrides?.QaSuggestions ?? flashcard.QaSuggestions,
 
                 ApprovalStatus = flashcard.ApprovalStatus,
                 ImageCandidates = imageCandidates,
@@ -103,6 +104,8 @@ internal static class DeckLoader
                     TermAudio = vm.IsTermAudioOverridden ? vm.TermAudio : null!,
                     TermTranslationAudio = vm.IsTermTranslationAudioOverridden ? vm.TermTranslationAudio : null!,
                     ContextAudio = vm.IsSentenceExampleAudioOverridden ? vm.SentenceExampleAudio : null!,
+
+                    QaSuggestions = vm.IsQaSuggestionsOverridden ? vm.QaSuggestions : null!
 
                 } : null
             };

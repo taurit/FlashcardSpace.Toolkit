@@ -40,7 +40,7 @@ public partial class MainWindow : Window
 
     private void PropertyOfSelectedFlashcardChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == "TermAudio" || e.PropertyName == "TermTranslationAudio" || e.PropertyName == "SentenceExampleAudio")
+        if (e.PropertyName == "Term" || e.PropertyName == "TermTranslation" || e.PropertyName == "SentenceExample")
         {
             UpdateAndPlayAudio(e.PropertyName);
         }
@@ -174,17 +174,17 @@ public partial class MainWindow : Window
 
         switch (tag)
         {
-            case "TermAudio":
+            case "Term":
                 var newAudioFilePathTerm = await audioProvider.GenerateAudioOrUseCached(card.Term, ViewModel.Deck.SourceLanguage);
                 card.TermAudio = AudioPatcher.ToRelativePath(newAudioFilePathTerm, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathTerm);
                 break;
-            case "TermTranslationAudio":
+            case "TermTranslation":
                 var newAudioFilePathTermTranslation = await audioProvider.GenerateAudioOrUseCached(card.TermTranslation, ViewModel.Deck.TargetLanguage);
                 card.TermTranslationAudio = AudioPatcher.ToRelativePath(newAudioFilePathTermTranslation, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathTermTranslation);
                 break;
-            case "SentenceExampleAudio":
+            case "SentenceExample":
                 var newAudioFilePathSentenceExample = await audioProvider.GenerateAudioOrUseCached(card.SentenceExample, ViewModel.Deck.SourceLanguage);
                 card.SentenceExampleAudio = AudioPatcher.ToRelativePath(newAudioFilePathSentenceExample, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathSentenceExample);
@@ -225,5 +225,13 @@ public partial class MainWindow : Window
         }
 
 
+    }
+
+    private void DismissWarning_OnClick(object sender, RoutedEventArgs e)
+    {
+        var selectedCard = ViewModel.SelectedFlashcard;
+        if (selectedCard is null) return;
+
+        selectedCard.QaSuggestions = "";
     }
 }

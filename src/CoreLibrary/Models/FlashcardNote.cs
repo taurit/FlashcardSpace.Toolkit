@@ -42,6 +42,9 @@ public record FlashcardNoteEditablePart
     // Additional remarks left from deck author to the student
     [JsonPropertyName("remarks")]
     public string Remarks { get; set; }
+
+    [JsonPropertyName("qaSuggestions")]
+    public string QaSuggestions { get; set; }
 }
 
 public record FlashcardNote : FlashcardNoteEditablePart
@@ -76,6 +79,4 @@ public record FlashcardNote : FlashcardNoteEditablePart
     [JsonPropertyName("approvalStatus")]
     public ApprovalStatus ApprovalStatus { get; set; }
 
-    [JsonPropertyName("qaSuggestions")]
-    public string QaSuggestions { get; set; }
 }

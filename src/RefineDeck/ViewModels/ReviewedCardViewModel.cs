@@ -15,7 +15,9 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
 
     public bool IsAnythingOverridden => IsTermOverridden || IsTermTranslationOverridden || IsSentenceExampleOverridden
                                         || IsSentenceExampleTranslationOverridden || IsRemarksFieldOverridden
-                                        || IsSelectedImageIndexOverridden || IsApprovalStatusOverridden;
+                                        || IsSelectedImageIndexOverridden || IsApprovalStatusOverridden
+                                        || IsQaSuggestionsOverridden
+                                        ;
 
     public string Term { get; set; }
     public bool IsTermOverridden => Term != OriginalFlashcard.Term;
@@ -41,7 +43,9 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
     public string Remarks { get; set; }
     public bool IsRemarksFieldOverridden => Remarks != OriginalFlashcard.Remarks;
 
-    public bool HasQaSuggestions => !String.IsNullOrWhiteSpace(OriginalFlashcard.QaSuggestions);
+    public string QaSuggestions { get; set; }
+    public bool IsQaSuggestionsOverridden => QaSuggestions != OriginalFlashcard.QaSuggestions;
+    public bool HasPendingQaSuggestions => !String.IsNullOrWhiteSpace(QaSuggestions);
 
     public ObservableCollection<ImageCandidate> ImageCandidates { get; set; }
 

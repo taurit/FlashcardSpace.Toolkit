@@ -4,10 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:RefineDeck.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:RefineDeck"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:RefineDeck.ViewModels"
-    xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="Refine deck"
     Width="1000"
     Height="1000"
@@ -104,7 +102,7 @@
                             DockPanel.Dock="Right"
                             Foreground="DarkOrange"
                             Text="⚠️"
-                            Visibility="{Binding HasQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            Visibility="{Binding HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                         <TextBlock
                             DockPanel.Dock="Left"
@@ -189,11 +187,11 @@
                                 <Button
                                     Click="UpdateAndPlayAudio_OnClick"
                                     Style="{StaticResource PlayButton}"
-                                    Tag="TermAudio" />
+                                    Tag="Term" />
 
                                 <TextBox
                                     Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.Term, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}"
                                     ToolTip="Term" />
                             </DockPanel>
 
@@ -213,11 +211,11 @@
                                 <Button
                                     Click="UpdateAndPlayAudio_OnClick"
                                     Style="{StaticResource PlayButton}"
-                                    Tag="TermTranslationAudio" />
+                                    Tag="TermTranslation" />
 
                                 <TextBox
                                     Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.TermTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    Text="{Binding SelectedFlashcard.TermTranslation, FallbackValue='[Card not selected]'}"
                                     ToolTip="Term translation" />
 
                             </DockPanel>
@@ -239,7 +237,7 @@
                                 <Button
                                     Click="UpdateAndPlayAudio_OnClick"
                                     Style="{StaticResource PlayButton}"
-                                    Tag="SentenceExampleAudio" />
+                                    Tag="SentenceExample" />
 
                                 <TextBox
                                     FontStyle="Italic"
@@ -249,14 +247,9 @@
                                     ToolTip="Sentence Example" />
                             </DockPanel>
 
-
-
                             <DockPanel Style="{StaticResource WysiwygDockPanel}">
-
-
                                 <Button
                                     Click="ResetValue_OnClick"
-                                    DockPanel.Dock="Right"
                                     IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
                                     Style="{StaticResource ResetButton}"
                                     Tag="SentenceExampleTranslation" />
@@ -264,7 +257,7 @@
                                     FontStyle="Italic"
                                     Foreground="Gray"
                                     Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.SentenceExampleTranslation, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    Text="{Binding SelectedFlashcard.SentenceExampleTranslation, FallbackValue='[Card not selected]'}"
                                     ToolTip="Sentence example translation" />
                             </DockPanel>
 
@@ -279,7 +272,7 @@
 
                                 <TextBox
                                     Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.Remarks, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                    Text="{Binding SelectedFlashcard.Remarks, FallbackValue='[Card not selected]'}"
                                     TextAlignment="Left" />
 
                             </DockPanel>
@@ -303,19 +296,28 @@
             </Border>
 
             <GroupBox
-                Height="100"
+                Padding="5"
                 VerticalAlignment="Bottom"
                 DockPanel.Dock="Bottom"
                 Header="QA remarks from AI agent"
-                Visibility="{Binding SelectedFlashcard.HasQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel LastChildFill="True">
-                    <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}">Dismiss</Button>
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="8"
+                        DockPanel.Dock="Right"
+                        Click="DismissWarning_OnClick"
+                        Foreground="DarkRed">
+                        Dismiss
+                    </Button>
                     <TextBox
                         Height="Auto"
+                        Padding="8"
                         Background="BlanchedAlmond"
                         BorderBrush="DarkOrange"
                         BorderThickness="1"
                         DockPanel.Dock="Bottom"
+                        FontSize="15"
                         IsReadOnly="True"
                         Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
                         TextWrapping="Wrap" />
