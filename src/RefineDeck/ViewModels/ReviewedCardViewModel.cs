@@ -13,7 +13,9 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
 
     public FlashcardNote OriginalFlashcard { get; set; }
 
-    public bool IsAnythingOverridden => IsTermOverridden || IsTermTranslationOverridden || IsSentenceExampleOverridden || IsSentenceExampleTranslationOverridden || IsRemarksFieldOverridden | IsSelectedImageIndexOverridden;
+    public bool IsAnythingOverridden => IsTermOverridden || IsTermTranslationOverridden || IsSentenceExampleOverridden
+                                        || IsSentenceExampleTranslationOverridden || IsRemarksFieldOverridden
+                                        || IsSelectedImageIndexOverridden || IsApprovalStatusOverridden;
 
     public string Term { get; set; }
     public bool IsTermOverridden => Term != OriginalFlashcard.Term;
@@ -60,5 +62,6 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
 
 
     public ApprovalStatus ApprovalStatus { get; set; }
+    public bool IsApprovalStatusOverridden => ApprovalStatus != OriginalFlashcard.ApprovalStatus;
 
 }

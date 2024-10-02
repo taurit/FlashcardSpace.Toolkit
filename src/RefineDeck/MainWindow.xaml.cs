@@ -4,7 +4,6 @@ using RefineDeck.Utils;
 using RefineDeck.ViewModels;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,9 +25,6 @@ public partial class MainWindow : Window
         ViewModel.Deck = DeckLoader.LoadDeck();
 
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-        // load preview component in WebView
-        UpdateFlashcardPreview();
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -44,58 +40,13 @@ public partial class MainWindow : Window
 
     private void PropertyOfSelectedFlashcardChanged(object? sender, PropertyChangedEventArgs e)
     {
-        UpdateFlashcardPreview();
+        if (e.PropertyName == "TermAudio" || e.PropertyName == "TermTranslationAudio" || e.PropertyName == "SentenceExampleAudio")
+        {
+            UpdateAndPlayAudio(e.PropertyName);
+        }
     }
 
-    private async void FlashcardSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
-    {
-        UpdateFlashcardPreview();
-    }
 
-    private async void UpdateFlashcardPreview()
-    {
-
-        // update WebView preview
-        await WebViewHelper.EnsureWebViewIsInitialized(this.Preview);
-
-        // todo: un-hardcode path to previewer
-        var recentBuildOfPreviewer = "d:\\Projekty\\FlashcardSpace.Toolkit\\src\\DeckBrowser\\dist\\index.html";
-        var targetFilePath = ViewModel.Deck.DeckPath.PreviewIndexHtmlPath;
-        File.Copy(recentBuildOfPreviewer, targetFilePath, true);
-        Preview.Source = new Uri(targetFilePath);
-
-        var selectedFlashcard = ViewModel.SelectedFlashcard;
-        if (selectedFlashcard is null) return;
-
-        // Call a JavaScript function with arguments
-        var flashcards = new List<FlashcardNote> {
-                new FlashcardNote {
-                    Term = selectedFlashcard.Term,
-                    TermAudio = selectedFlashcard.TermAudio,
-                    TermStandardizedForm = selectedFlashcard.OriginalFlashcard.TermStandardizedForm,
-
-                    TermTranslation = selectedFlashcard.TermTranslation,
-                    TermTranslationAudio = selectedFlashcard.TermTranslationAudio,
-                    TermStandardizedFormEnglishTranslation = selectedFlashcard.OriginalFlashcard.TermStandardizedFormEnglishTranslation,
-
-                    Remarks = selectedFlashcard.OriginalFlashcard.Remarks,
-
-                    Context = selectedFlashcard.SentenceExample,
-                    ContextAudio = selectedFlashcard.SentenceExampleAudio,
-                    ContextTranslation = selectedFlashcard.SentenceExampleTranslation,
-                    ContextTranslationAudio = selectedFlashcard.OriginalFlashcard.ContextTranslationAudio,
-                    ContextEnglishTranslation = selectedFlashcard.OriginalFlashcard.ContextEnglishTranslation,
-
-                    Type = selectedFlashcard.OriginalFlashcard.Type,
-                    ImageCandidates = selectedFlashcard.OriginalFlashcard.ImageCandidates,
-                    SelectedImageIndex = selectedFlashcard.SelectedImageIndex >= selectedFlashcard.OriginalFlashcard.ImageCandidates.Count ? null : selectedFlashcard.SelectedImageIndex
-                }
-        };
-
-        var deck = new Deck("Preview deck", flashcards, ViewModel.Deck.MediaFileNamePrefix, ViewModel.Deck.SourceLanguage, ViewModel.Deck.TargetLanguage);
-        var cardPreviewSerialized = deck.Serialize();
-        await Preview.CoreWebView2.ExecuteScriptAsync($"window.setDataFromWpf({cardPreviewSerialized});");
-    }
 
     private void ResetValue_OnClick(object sender, RoutedEventArgs e)
     {
@@ -205,29 +156,35 @@ public partial class MainWindow : Window
         Process.Start("explorer.exe", ViewModel.Deck.DeckPath.AnkiExportPath);
     }
 
+
+
     // Updates audio files 
-    private async void UpdateAndPlayAudio_OnClick(object sender, RoutedEventArgs e)
+    private void UpdateAndPlayAudio_OnClick(object sender, RoutedEventArgs e)
+    {
+        var tag = ((Button)sender).Tag.ToString();
+        UpdateAndPlayAudio(tag);
+    }
+
+    private async void UpdateAndPlayAudio(string? tag)
     {
         var audioProvider = AudioPatcher.GetAudioProviderInstance(ViewModel.Deck.DeckPath);
 
         var card = ViewModel.SelectedFlashcard;
         if (card is null) return;
 
-        var tag = ((Button)sender).Tag.ToString();
-
         switch (tag)
         {
-            case "Term":
+            case "TermAudio":
                 var newAudioFilePathTerm = await audioProvider.GenerateAudioOrUseCached(card.Term, ViewModel.Deck.SourceLanguage);
                 card.TermAudio = AudioPatcher.ToRelativePath(newAudioFilePathTerm, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathTerm);
                 break;
-            case "TermTranslation":
+            case "TermTranslationAudio":
                 var newAudioFilePathTermTranslation = await audioProvider.GenerateAudioOrUseCached(card.TermTranslation, ViewModel.Deck.TargetLanguage);
                 card.TermTranslationAudio = AudioPatcher.ToRelativePath(newAudioFilePathTermTranslation, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathTermTranslation);
                 break;
-            case "SentenceExample":
+            case "SentenceExampleAudio":
                 var newAudioFilePathSentenceExample = await audioProvider.GenerateAudioOrUseCached(card.SentenceExample, ViewModel.Deck.SourceLanguage);
                 card.SentenceExampleAudio = AudioPatcher.ToRelativePath(newAudioFilePathSentenceExample, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathSentenceExample);

@@ -9,9 +9,11 @@
     xmlns:viewModels="clr-namespace:RefineDeck.ViewModels"
     xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="Refine deck"
-    Width="1500"
-    Height="950"
+    Width="1000"
+    Height="1000"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
+    SnapsToDevicePixels="True"
+    UseLayoutRounding="True"
     mc:Ignorable="d">
     <Window.Resources>
         <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
@@ -74,36 +76,43 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition
+                Width="Auto"
+                MinWidth="200"
+                MaxWidth="500" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="400" />
         </Grid.ColumnDefinitions>
 
-        <!--  Panel on the left  -->
+        <!--  Panel with the words  -->
         <ListBox
             Grid.Row="0"
             Grid.Column="0"
             HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding Deck.Flashcards}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            SelectedItem="{Binding SelectedFlashcard}"
-            SelectionChanged="FlashcardSelectionChanged">
+            SelectedItem="{Binding SelectedFlashcard}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border Padding="2">
-                        <DockPanel>
-                            <WrapPanel Margin="0,0,6,0" DockPanel.Dock="left">
-                                <TextBlock Foreground="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToColorConverter}}" Text="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToSymbolConverter}}" />
-                            </WrapPanel>
+                    <DockPanel LastChildFill="True">
+                        <TextBlock
+                            DockPanel.Dock="Right"
+                            Foreground="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToColorConverter}}"
+                            Text="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToSymbolConverter}}" />
 
-                            <TextBlock
-                                DockPanel.Dock="Left"
-                                FontWeight="{Binding IsAnythingOverridden, Converter={StaticResource BoolToFontWeightConverter}}"
-                                Text="{Binding Term}" />
-                        </DockPanel>
-                    </Border>
+                        <TextBlock
+                            DockPanel.Dock="Right"
+                            Foreground="DarkOrange"
+                            Text="⚠️"
+                            Visibility="{Binding HasQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                        <TextBlock
+                            DockPanel.Dock="Left"
+                            FontSize="14"
+                            FontWeight="{Binding IsAnythingOverridden, Converter={StaticResource BoolToFontWeightConverter}}"
+                            Text="{Binding Term}" />
+
+                    </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ItemContainerStyle>
@@ -115,7 +124,7 @@
 
         </ListBox>
 
-        <!--  Middle  -->
+        <!--  Wysiwyg editor  -->
         <DockPanel Grid.Row="0" Grid.Column="2">
             <Border
                 Width="320"
@@ -180,7 +189,7 @@
                                 <Button
                                     Click="UpdateAndPlayAudio_OnClick"
                                     Style="{StaticResource PlayButton}"
-                                    Tag="Term" />
+                                    Tag="TermAudio" />
 
                                 <TextBox
                                     Style="{StaticResource EditableText}"
@@ -204,7 +213,7 @@
                                 <Button
                                     Click="UpdateAndPlayAudio_OnClick"
                                     Style="{StaticResource PlayButton}"
-                                    Tag="TermTranslation" />
+                                    Tag="TermTranslationAudio" />
 
                                 <TextBox
                                     Style="{StaticResource EditableText}"
@@ -230,7 +239,7 @@
                                 <Button
                                     Click="UpdateAndPlayAudio_OnClick"
                                     Style="{StaticResource PlayButton}"
-                                    Tag="SentenceExample" />
+                                    Tag="SentenceExampleAudio" />
 
                                 <TextBox
                                     FontStyle="Italic"
@@ -315,24 +324,9 @@
 
         </DockPanel>
 
-        <wpf:WebView2
-            Name="Preview"
-            Grid.Row="0"
-            Grid.Column="4"
-            DockPanel.Dock="Top" />
-
-
         <GridSplitter
             Grid.Row="0"
             Grid.Column="1"
-            Width="5"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
-            ResizeBehavior="PreviousAndNext"
-            ResizeDirection="Columns" />
-        <GridSplitter
-            Grid.Row="0"
-            Grid.Column="3"
             Width="5"
             HorizontalAlignment="Center"
             VerticalAlignment="Stretch"
@@ -342,7 +336,7 @@
         <StatusBar
             Grid.Row="1"
             Grid.Column="0"
-            Grid.ColumnSpan="5">
+            Grid.ColumnSpan="3">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
