@@ -11,7 +11,7 @@ internal static class Parameters
 {
     // Flagship models are listed at: https://platform.openai.com/docs/models
     // Use cheap model in development but the best one to generate the final output
-    public const string OpenAiModelId = "gpt-4o-2024-08-06";
+    public const string OpenAiModelId = "gpt-4o";
 
     /// Arbitrary identifier of model's class, used as a key when caching responses. For example, if we want cache outputs
     /// generated with `gpt-4o-preview` to remain utilized after upgrade to `gpt-4o`, just use the same value here.

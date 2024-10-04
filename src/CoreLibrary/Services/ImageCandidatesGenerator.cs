@@ -11,7 +11,7 @@ public class ImageCandidatesGenerator(
 {
     public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish)
     {
-        var basePrompt = promptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish, null, false);
+        //var basePrompt = promptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish, null, false);
 
         const int cfgScaleMin = 3;
         const int cfgScaleMax = 6;
@@ -21,7 +21,8 @@ public class ImageCandidatesGenerator(
 
         const int totalNumImages = numExperiments * numImagesInExperiment;
 
-        var results = await FindExistingImagesThatFit(basePrompt, imageSize, totalNumImages);
+        //var results = await FindExistingImagesThatFit(basePrompt, imageSize, totalNumImages);
+        var results = new List<GeneratedImage>();
 
         if (results.Count >= totalNumImages)
         {
