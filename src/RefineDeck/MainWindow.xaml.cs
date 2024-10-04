@@ -15,13 +15,15 @@ namespace RefineDeck;
 public partial class MainWindow : Window
 {
     MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
-
+    GeminiQualityAssuranceAgent? QualityAssuranceAgent = null;
 
     public MainWindow()
     {
         InitializeComponent();
 
-        DataContext = new MainWindowViewModel();
+        var viewModel = new MainWindowViewModel();
+        DataContext = viewModel;
+        QualityAssuranceAgent = new GeminiQualityAssuranceAgent(viewModel);
         ViewModel.Deck = DeckLoader.LoadDeck();
 
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -233,5 +235,20 @@ public partial class MainWindow : Window
         if (selectedCard is null) return;
 
         selectedCard.QaSuggestions = "";
+    }
+
+    private void DismissSecondOpinionWarning_OnClick(object sender, RoutedEventArgs e)
+    {
+        var selectedCard = ViewModel.SelectedFlashcard;
+        if (selectedCard is null) return;
+
+        selectedCard.QaSuggestionsSecondOpinion = "";
+    }
+
+    private async void RunSecondaryQualityAssurance_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (QualityAssuranceAgent is null) return;
+
+        await QualityAssuranceAgent.ValidateSelectedCard();
     }
 }

@@ -100,9 +100,16 @@
 
                         <TextBlock
                             DockPanel.Dock="Right"
-                            Foreground="DarkOrange"
+                            Foreground="Salmon"
+                            Text="⚠️"
+                            Visibility="{Binding HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                        <TextBlock
+                            DockPanel.Dock="Right"
+                            Foreground="Orange"
                             Text="⚠️"
                             Visibility="{Binding HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}" />
+
 
                         <TextBlock
                             DockPanel.Dock="Left"
@@ -299,29 +306,57 @@
                 Padding="5"
                 VerticalAlignment="Bottom"
                 DockPanel.Dock="Bottom"
-                Header="QA remarks from AI agent"
-                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
-                <DockPanel LastChildFill="True">
-                    <Button
-                        Margin="5,0,0,0"
-                        Padding="8"
-                        Click="DismissWarning_OnClick"
-                        DockPanel.Dock="Right"
-                        Foreground="DarkRed">
-                        Dismiss
-                    </Button>
-                    <TextBox
-                        Height="Auto"
-                        Padding="8"
-                        Background="BlanchedAlmond"
-                        BorderBrush="DarkOrange"
-                        BorderThickness="1"
-                        DockPanel.Dock="Bottom"
-                        FontSize="15"
-                        IsReadOnly="True"
-                        Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
-                        TextWrapping="Wrap" />
-                </DockPanel>
+                Header="QA remarks from AI agents">
+                <StackPanel Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <!--  Remarks from generator  -->
+                    <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Button
+                            Margin="5,0,0,0"
+                            Padding="8"
+                            Click="DismissWarning_OnClick"
+                            DockPanel.Dock="Right"
+                            Foreground="DarkRed">
+                            Dismiss
+                        </Button>
+                        <TextBox
+                            Height="Auto"
+                            Padding="8"
+                            Background="BlanchedAlmond"
+                            BorderBrush="DarkOrange"
+                            BorderThickness="1"
+                            DockPanel.Dock="Bottom"
+                            FontSize="15"
+                            IsReadOnly="True"
+                            Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </DockPanel>
+
+                    <!--  Second opinion: remarks obtained by Refine deck from different model  -->
+                    <DockPanel
+                        Margin="0,1,0,0"
+                        LastChildFill="True"
+                        Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Button
+                            Margin="5,0,0,0"
+                            Padding="8"
+                            Click="DismissSecondOpinionWarning_OnClick"
+                            DockPanel.Dock="Right"
+                            Foreground="DarkRed">
+                            Dismiss
+                        </Button>
+                        <TextBox
+                            Height="Auto"
+                            Padding="8"
+                            Background="MistyRose"
+                            BorderBrush="Salmon"
+                            BorderThickness="1"
+                            DockPanel.Dock="Bottom"
+                            FontSize="15"
+                            IsReadOnly="True"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </DockPanel>
+                </StackPanel>
             </GroupBox>
 
         </DockPanel>
@@ -378,6 +413,13 @@
 
             <StatusBarItem Grid.Column="4" HorizontalContentAlignment="Right">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Click="RunSecondaryQualityAssurance_OnClick">
+                        Refresh QA remarks
+                    </Button>
+
                     <Button
                         Margin="5,0,0,0"
                         Padding="4,2"

@@ -20,6 +20,8 @@ public class SecretParameters
 
     public OpenAiCredentials OpenAiCredentials => new(AZURE_OPENAI_ENDPOINT!, AZURE_OPENAI_KEY!, OPENAI_ORGANIZATION_ID!, OPENAI_DEVELOPER_KEY!);
 
+    public string GeminiApiKey { get; set; }
+
     public bool WarnIfGenerativeAIKeysAreNotPresent(ILogger logger)
     {
         var genAiKeysPresent = true;
