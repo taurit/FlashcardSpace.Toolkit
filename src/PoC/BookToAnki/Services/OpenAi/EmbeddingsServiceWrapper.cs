@@ -74,7 +74,7 @@ public class EmbeddingsServiceWrapper
         var embeddingResult = await _openAiService.Embeddings.CreateEmbedding(new EmbeddingCreateRequest
         {
             InputAsList = inputTexts,
-            Model = OpenAI.ObjectModels.Models.TextEmbeddingAdaV2,
+            Model = OpenAI.ObjectModels.Models.TextEmbeddingV3Small,
         });
 
         if (embeddingResult.Successful)

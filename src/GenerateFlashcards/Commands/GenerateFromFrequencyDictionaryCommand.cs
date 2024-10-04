@@ -32,7 +32,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
 
         var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(concreteAdjectives);
         var notesWithEnglishAndPolishTranslations = await spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
-        var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations, ImageGenerationProfile.PublicDeck);
+        var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
 
         var qaChecked = await qualityControlService.AddQualitySuggestions(notesWithImagesAndAudio);

@@ -1,6 +1,7 @@
 using Azure.AI.OpenAI;
 using CoreLibrary.Models;
 using MathNet.Numerics.LinearAlgebra;
+using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Embeddings;
 using System.ClientModel;
@@ -10,11 +11,13 @@ namespace CoreLibrary.Services.Embeddings;
 
 public class EmbeddingsService
 {
+    private readonly ILogger<EmbeddingsService> _logger;
     private readonly EmbeddingsCacheManager _embeddingsCacheManager;
 
-    public EmbeddingsService(EmbeddingsServiceSettings settings)
+    public EmbeddingsService(ILogger<EmbeddingsService> logger, EmbeddingsServiceSettings settings)
     {
-        _embeddingsCacheManager = new(settings.EmbeddingCacheFilePath);
+        _logger = logger;
+        _embeddingsCacheManager = new(settings.EmbeddingCacheFolder);
 
         const string model = "text-embedding-3-small";
 
@@ -51,11 +54,15 @@ public class EmbeddingsService
 
     public async Task PrimeEmbeddingsCache(IReadOnlyList<string> inputTexts)
     {
-        var missingEmbeddings = inputTexts.Where(x => !_embeddingsCacheManager.Cache.Cache.ContainsKey(x));
+        var missingEmbeddings = inputTexts.Where(x => !_embeddingsCacheManager.Cache.Cache.ContainsKey(x)).Distinct();
+
+        _logger.LogInformation($"{missingEmbeddings.Count()} embeddings missing, using OpenAI service to calculate them...");
 
         var chunks = missingEmbeddings.Chunk(30).ToList();
         foreach (var chunk in chunks)
         {
+            _logger.LogInformation($"Calculating embeddings for chunk with {chunk.Count()} strings...");
+
             var texts = chunk.ToList();
             var embeddingFromService = await CreateEmbeddingInternal(texts);
 
@@ -70,7 +77,6 @@ public class EmbeddingsService
                 var embedding = embeddingFromService[index];
                 _embeddingsCacheManager.Cache.Cache.Add(text, embedding);
             }
-
 
             _embeddingsCacheManager.FlushCache();
         }
@@ -119,4 +125,4 @@ public class EmbeddingsService
 
 public record EmbeddingsServiceSettings(
     OpenAiCredentials OpenAiCredentials,
-    string EmbeddingCacheFilePath);
+    string EmbeddingCacheFolder);

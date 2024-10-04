@@ -35,9 +35,10 @@ public class StableDiffusionPromptProvider(ILogger logger)
         "high clarity", "film grain", "long exposure", "motion blur", "tack sharp"
     };
 
-    public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed)
+    public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed, bool addStyleKeywords = true)
     {
-        var random = new Random(seed.Value);
+        if (addStyleKeywords && seed == null)
+            throw new ArgumentException("Seed must be provided when adding style keywords");
 
         var keywords = new List<string>();
 
@@ -47,14 +48,19 @@ public class StableDiffusionPromptProvider(ILogger logger)
         // add the main keyword
         keywords.Add(termEnglish);
 
-        // add one from each category for diversity and coherence
-        keywords.Add(_styles[random.Next(_styles.Length)]);
-        keywords.Add(_moods[random.Next(_moods.Length)]);
-        keywords.Add(_textures[random.Next(_textures.Length)]);
+        if (addStyleKeywords)
+        {
+            var random = new Random(seed.Value);
 
-        // ensuring uniqueness
-        var promptText = string.Join(",", keywords.Distinct());
+            // add one from each category for diversity and coherence
+            keywords.Add(_styles[random.Next(_styles.Length)]);
+            keywords.Add(_moods[random.Next(_moods.Length)]);
+            keywords.Add(_textures[random.Next(_textures.Length)]);
+        }
+
+        var promptText = string.Join(",", keywords);
         var prompt = new StableDiffusionPrompt(promptText, NegativePromptText);
         return prompt;
     }
+
 }

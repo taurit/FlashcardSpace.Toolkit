@@ -1,3 +1,4 @@
+using CoreLibrary.Utilities;
 using MemoryPack;
 
 namespace CoreLibrary.Services.Embeddings;
@@ -11,16 +12,17 @@ public class EmbeddingsCacheManager
 
     public EmbeddingsCache Cache { get; }
 
-    public EmbeddingsCacheManager(string cacheFilePath)
+    public EmbeddingsCacheManager(string cacheFolder)
     {
-        _cacheFilePath = cacheFilePath;
+        cacheFolder.EnsureDirectoryExists();
+        _cacheFilePath = Path.Combine(cacheFolder, "embeddings-cache.mempack");
 
         if (File.Exists(_cacheFilePath))
         {
-            var cacheContent = File.ReadAllBytes(cacheFilePath);
+            var cacheContent = File.ReadAllBytes(_cacheFilePath);
             var cached = MemoryPackSerializer.Deserialize<EmbeddingsCache>(cacheContent);
 
-            Cache = cached ?? throw new FileLoadException($"Cache file `{cacheFilePath}` seems broken, remove it or restore from a backup.");
+            Cache = cached ?? throw new FileLoadException($"Cache file `{_cacheFilePath}` seems broken, remove it or restore from a backup.");
         }
         else
         {

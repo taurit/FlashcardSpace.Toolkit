@@ -17,35 +17,20 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
     /// <param name="cfgScale">Reasonable range seems from 2.0 (creative freedom) to 7.0 (already strictly following the prompt)</param>
     public async Task<List<GeneratedImage>> GenerateImageBatch(
             StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale, int seed,
-            GeneratedImageAspectRatio aspectRatio, ImageGenerationProfile profile)
+            SupportedSDXLImageSize size)
     {
-        int width = 1024;
-        int height = 1024;
-
-        switch (aspectRatio)
-        {
-            case GeneratedImageAspectRatio.Square:
-                break;
-            case GeneratedImageAspectRatio.Wide:
-                width = 1216;
-                height = 832;
-                break;
-            default:
-                throw new InvalidOperationException($"Unknown aspect ratio: {aspectRatio}");
-        }
-
         var samplerName = "DPM++ 2M";
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
 
         // Cut corners in development to get faster response
-        var numSteps = profile == ImageGenerationProfile.PublicDeck ? 24 : 10;
-        var refinerCheckpointId = profile == ImageGenerationProfile.PublicDeck ? "sd_xl_refiner_1.0" : null;
-        decimal? refinerSwitchAt = profile == ImageGenerationProfile.PublicDeck ? 0.7m : null;
+        var numSteps = 24;
+        var refinerCheckpointId = "sd_xl_refiner_1.0";
+        decimal? refinerSwitchAt = 0.7m;
 
         var requestPayloadModel = new TextToImageRequestModel(
             stableDiffusionPrompt.PromptText,
             stableDiffusionPrompt.NegativePromptText,
-            width, height, numImagesToGenerate, numSteps, cfgScale, samplerName,
+            size.Width, size.Height, numImagesToGenerate, numSteps, cfgScale, samplerName,
             seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt);
 
         var cacheFileName = GenerateCacheFileName(requestPayloadModel);

@@ -10,10 +10,11 @@ internal record ImageCandidatesProviderSettings(string ImageProviderCacheFolder)
 internal class ImageProvider(
     ImageCandidatesProviderSettings settings,
     ImageCandidatesGenerator imageCandidatesGenerator,
+
     ILogger<ImageProvider> logger
     )
 {
-    public async Task<List<FlashcardNote>> AddImageCandidates(List<FlashcardNote> notes, ImageGenerationProfile profile)
+    public async Task<List<FlashcardNote>> AddImageCandidates(List<FlashcardNote> notes)
     {
         settings.ImageProviderCacheFolder.EnsureDirectoryExists();
 
@@ -24,10 +25,10 @@ internal class ImageProvider(
         {
             noteIndex++;
             // log progress (note number, total number of notes, percentage)
-            logger.LogInformation("Processing note {NoteIndex}/{TotalNotes} ({Percentage}%)",
-                noteIndex, notes.Count, noteIndex * 100 / notes.Count);
+            logger.LogInformation("Generating flashcard {NoteIndex}/{TotalNotes} ({Percentage}%): {Term}",
+                noteIndex, notes.Count, noteIndex * 100 / notes.Count, note.Term);
 
-            var images = await imageCandidatesGenerator.GenerateImageVariants(note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation, profile);
+            var images = await imageCandidatesGenerator.GenerateImageVariants(note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation);
 
             var imagesSavedToDisk = new List<string>();
             foreach (var image in images)
@@ -50,5 +51,6 @@ internal class ImageProvider(
         }
         return notesWithImages;
     }
+
 }
 

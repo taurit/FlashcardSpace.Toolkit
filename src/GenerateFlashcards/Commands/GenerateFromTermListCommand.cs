@@ -24,7 +24,7 @@ internal sealed class GenerateFromTermListCommand(
         var notes = await genericSpanishTermExtractor.ExtractTerms(settings.InputFilePath); // tech debt - extracts Notes and not just terms
 
         logger.LogInformation("Adding image candidates to notes...");
-        var notesWithImages = await imageProvider.AddImageCandidates(notes, ImageGenerationProfile.PrivateDeck);
+        var notesWithImages = await imageProvider.AddImageCandidates(notes);
 
         logger.LogInformation("Adding audio to notes...");
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, sourceLanguage, targetLanguage);

@@ -26,7 +26,7 @@ public class StableDiffusionHelperTests
         sdParams.Steps.Should().Be(24);
         sdParams.Sampler.Should().Be("DPM++ 2M");
         sdParams.ScheduleType.Should().Be("Karras");
-        sdParams.CfgScale.Should().Be("4.0");
+        sdParams.CfgScale.Should().Be(4);
         sdParams.Seed.Should().Be("-353763303");
         sdParams.FaceRestoration.Should().Be("CodeFormer");
         sdParams.Width.Should().Be(1216);

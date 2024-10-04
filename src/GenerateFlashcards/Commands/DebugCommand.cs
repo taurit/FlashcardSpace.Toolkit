@@ -23,8 +23,7 @@ internal sealed class DebugCommand(
         //await GenerateAudioFile();
         //CalculateBestCutOffLine();
 
-        var images = await candidatesGenerator.GenerateImageVariants("a house", "A house was old and abandoned.",
-            ImageGenerationProfile.PublicDeck);
+        var images = await candidatesGenerator.GenerateImageVariants("a house", "A house was old and abandoned.");
         await HtmlImagePreviewer.PreviewImages(images);
 
         return 0;

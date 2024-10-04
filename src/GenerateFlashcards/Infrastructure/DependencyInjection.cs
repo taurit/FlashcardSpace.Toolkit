@@ -1,4 +1,5 @@
 using CoreLibrary.Services;
+using CoreLibrary.Services.Embeddings;
 using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Services.ObjectGenerativeFill;
@@ -117,6 +118,11 @@ internal static class DependencyInjection
         var imageRepositorySettings = new ImageRepositorySettings(Parameters.ImageProviderCacheFolder);
         services.AddSingleton(imageRepositorySettings);
         services.AddSingleton<ImageRepository>();
+
+
+        var embeddingsServiceSettings = new EmbeddingsServiceSettings(secretParameters.OpenAiCredentials, Parameters.EmbeddingsCacheFolder);
+        services.AddSingleton(embeddingsServiceSettings);
+        services.AddSingleton<EmbeddingsService>();
 
         return new ServiceCollectionRegistrar(services);
     }

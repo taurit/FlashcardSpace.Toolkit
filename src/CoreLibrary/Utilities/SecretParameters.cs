@@ -9,11 +9,11 @@ public class SecretParameters
 {
     const string DocumentationUrlAboutUserSecrets = "https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md";
 
-    private string? AZURE_OPENAI_ENDPOINT { get; set; }
-    private string? AZURE_OPENAI_KEY { get; set; }
+    public string? AZURE_OPENAI_ENDPOINT { get; set; }
+    public string? AZURE_OPENAI_KEY { get; set; }
 
-    private string? OPENAI_ORGANIZATION_ID { get; set; }
-    private string? OPENAI_DEVELOPER_KEY { get; set; }
+    public string? OPENAI_ORGANIZATION_ID { get; set; }
+    public string? OPENAI_DEVELOPER_KEY { get; set; }
 
     public string? AZURE_TEXT_TO_SPEECH_KEY { get; set; }
     public string? AZURE_TEXT_TO_SPEECH_REGION { get; set; }

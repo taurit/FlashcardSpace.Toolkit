@@ -59,7 +59,7 @@ public class ManualTests
     public async Task CompareEmbeddings()
     {
         var userSecrets = UserSecretsRetriever.GetUserSecrets();
-        var embeddingsCacheManager = new EmbeddingsCacheManager("d:\\Flashcards\\Words\\ukrainian_sentences_embeddings.bin");
+        var embeddingsCacheManager = new EmbeddingsCacheManager("d:\\Flashcards\\Words\\ukrainian_sentences_embeddings_3s.bin");
         var sut = new EmbeddingsServiceWrapper(userSecrets.OpenAiDeveloperKey, userSecrets.OpenAiOrganizationId, embeddingsCacheManager);
 
         // Act
@@ -75,7 +75,8 @@ public class ManualTests
     "Mrs Potter was Mrs Dursley’s sister, but they hadn’t met for several years; in fact, Mrs Dursley pretended she didn’t have a sister, because her sister and her good-for-nothing husband were as unDursleyish as it was possible to be.",
     "The Dursleys shuddered to think what the neighbours would say if the Potters arrived in the street.",
     "The Dursleys knew that the Potters had a small son, too, but they had never even seen him.",
-    "This boy was another good reason for keeping the Potters away; they didn’t want Dudley mixing with a child like that."
+    "This boy was another good reason for keeping the Potters away; they didn’t want Dudley mixing with a child like that.",
+    "dog"
         };
 
         var examplesPl = new[] {
@@ -91,7 +92,8 @@ public class ManualTests
     "Dursleyowie wzdrygali się na samą myśl, co by powiedzieli sąsiedzi, gdyby Potterowie pojawili się na ich ulicy.",
     "Oczywiście wiedzieli, że Potterowie też mają synka, ale nigdy nie widzieli go na oczy i z całą pewnością nie chcieli go nigdy oglądać.",
     "Ten chłopiec był jeszcze jednym powodem, by Dursleyowie trzymali się jak najdalej od Potterów; nie życzyli sobie, by Dudley przebywał w towarzystwie takiego dziecka.",
-    "Losowe zdanie, żebo zobacyzć która os jest dla przykładów po polsku."
+    "Losowe zdanie, żebo zobacyzć która os jest dla przykładów po polsku.",
+    "puppy"
 
     };
 
