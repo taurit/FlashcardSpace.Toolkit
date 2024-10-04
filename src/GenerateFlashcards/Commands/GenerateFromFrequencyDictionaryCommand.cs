@@ -25,7 +25,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
             settings.SourceLanguage,
             settings.PartOfSpeechFilter,
             0,
-            3000);
+            10000);
 
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);

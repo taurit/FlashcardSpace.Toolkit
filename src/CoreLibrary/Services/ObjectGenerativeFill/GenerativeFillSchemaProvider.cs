@@ -32,6 +32,11 @@ public class GenerativeFillSchemaProvider
     /// </summary>
     public string GenerateJsonSchemaForArrayOfItems<TSingleItem>() where TSingleItem : ObjectWithId
     {
+        // Todo: starting with .NET 9 it will probably be possible to replace it with the native System.Text.Json schema generator
+        // https://github.com/openai/openai-dotnet/issues/160#issuecomment-2391863242
+        // and remove all the hackish code for caching JSON schema to avoid hitting throttling limits of Newtonsoft library
+        // Alternatively, here's one more library created later just for this purpose: https://github.com/r-Larch/OpenAi.JsonSchema
+
         JSchemaGenerator generator = new JSchemaGenerator();
         generator.ContractResolver = new FilterOutInputProperties<TSingleItem>();
         generator.DefaultRequired = Required.Always; // required by OpenAI

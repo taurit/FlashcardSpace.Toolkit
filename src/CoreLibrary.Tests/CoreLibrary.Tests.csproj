@@ -40,6 +40,9 @@
     <None Update="Resources\NightOfTheLivingDead.srt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\stable-diffusion-image-with-metadata.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
