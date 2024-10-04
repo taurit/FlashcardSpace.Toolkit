@@ -21,7 +21,7 @@ public class ImageCandidatesGenerator(
 
         const int totalNumImages = numExperiments * numImagesInExperiment;
 
-        var results = await FindExistingImagesThatFit(basePrompt, imageSize);
+        var results = await FindExistingImagesThatFit(basePrompt, imageSize, totalNumImages);
 
         if (results.Count >= totalNumImages)
         {
@@ -52,9 +52,9 @@ public class ImageCandidatesGenerator(
 
 
     private async Task<List<GeneratedImage>> FindExistingImagesThatFit(StableDiffusionPrompt basePrompt,
-        SupportedSDXLImageSize imageSize)
+        SupportedSDXLImageSize imageSize, int numImagesTarget)
     {
-        var existingImagesThatFit = await imageRepository.FindMatchingImageCandidates(basePrompt.PromptText, imageSize.Width, imageSize.Height);
+        var existingImagesThatFit = await imageRepository.FindMatchingImageCandidates(basePrompt.PromptText, imageSize.Width, imageSize.Height, numImagesTarget);
 
         var existing = new List<GeneratedImage>();
 

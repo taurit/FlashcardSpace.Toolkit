@@ -29,7 +29,7 @@ public class ImageRepository(ImageRepositorySettings settings, EmbeddingsService
         return _images;
     }
 
-    internal async Task<List<StableDiffusionImageSimilarity>> FindMatchingImageCandidates(string prompt, int width, int height)
+    internal async Task<List<StableDiffusionImageSimilarity>> FindMatchingImageCandidates(string prompt, int width, int height, int numImagesTarget)
     {
         // filter by width and height first
         var images = LoadExistingImagesMetadata();
@@ -37,6 +37,14 @@ public class ImageRepository(ImageRepositorySettings settings, EmbeddingsService
 
         // temporary: filter by quality because I have some dev images with ~10 steps in my repository
         images = images.Where(x => x.Parameters.Steps > 20).ToList();
+
+        // performance optimization: if there is a perfect match, between the prompts, skip the CPU-intensive embedding comparison
+        var perfectMatches = images.Where(x => x.Parameters.PromptWithoutStyleKeywords == prompt).ToList();
+        if (perfectMatches.Count >= numImagesTarget)
+        {
+            return perfectMatches.Select(x => new StableDiffusionImageSimilarity(x, 1.0)).ToList();
+        }
+
 
         // filter by prompt - use Embeddings to match the prompt with some threshold
         var promptWithoutStyleKeywords = StableDiffusionKeywordRemover.RemoveStyleKeywordsFromPrompt(prompt);
