@@ -8,6 +8,9 @@ public class SecretParameters
 {
     const string DocumentationUrlAboutUserSecrets = "https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md";
 
+    public string? AZURE_OPENAI_ENDPOINT { get; set; }
+    public string? AZURE_OPENAI_KEY { get; set; }
+
     public string? OPENAI_ORGANIZATION_ID { get; set; }
     public string? OPENAI_DEVELOPER_KEY { get; set; }
 
@@ -18,6 +21,7 @@ public class SecretParameters
     {
         // write out values
         var genAiKeysPresent = true;
+
         if (string.IsNullOrWhiteSpace(OPENAI_ORGANIZATION_ID))
         {
             logger.LogWarning($"The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {DocumentationUrlAboutUserSecrets}\n");

@@ -23,7 +23,7 @@ public class StableDiffusionHelperTests
         sdParams.Should().NotBeNull();
         sdParams!.Prompt.Should().Be("She is dressed in blue.,dressed,drone shot,minimalist,desaturated");
         sdParams.NegativePrompt.Should().Be("lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch,");
-        sdParams.Steps.Should().Be("24");
+        sdParams.Steps.Should().Be(24);
         sdParams.Sampler.Should().Be("DPM++ 2M");
         sdParams.ScheduleType.Should().Be("Karras");
         sdParams.CfgScale.Should().Be("4.0");
