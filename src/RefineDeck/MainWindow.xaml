@@ -305,8 +305,8 @@
                     <Button
                         Margin="5,0,0,0"
                         Padding="8"
-                        DockPanel.Dock="Right"
                         Click="DismissWarning_OnClick"
+                        DockPanel.Dock="Right"
                         Foreground="DarkRed">
                         Dismiss
                     </Button>

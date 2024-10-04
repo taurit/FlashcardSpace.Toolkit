@@ -25,7 +25,9 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         if (openAiCredentials.BackendType == OpenAiBackend.Azure)
         {
             var azureOpenAiEndpointUrl = new Uri(openAiCredentials.AzureOpenAiEndpoint!);
-            var azureOpenAiClient = new AzureOpenAIClient(azureOpenAiEndpointUrl, new ApiKeyCredential(openAiCredentials.AzureOpenAiKey!));
+            var azureOpenAiClient = new AzureOpenAIClient(
+                azureOpenAiEndpointUrl,
+                new ApiKeyCredential(openAiCredentials.AzureOpenAiKey!));
             client = azureOpenAiClient.GetChatClient(modelId);
         }
         else
