@@ -1,3 +1,3 @@
 ﻿namespace CoreLibrary.Models;
 
-public enum OpenAiBackend { Azure, OpenAi }
+public enum OpenAiBackend { None, Azure, OpenAi }

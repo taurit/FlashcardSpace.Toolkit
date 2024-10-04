@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CoreLibrary.Models;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 
 namespace CoreLibrary.Utilities;
@@ -8,41 +9,39 @@ public class SecretParameters
 {
     const string DocumentationUrlAboutUserSecrets = "https://github.com/taurit/FlashcardSpace.Toolkit/blob/main/docs/Secrets.md";
 
-    public string? AZURE_OPENAI_ENDPOINT { get; set; }
-    public string? AZURE_OPENAI_KEY { get; set; }
+    private string? AZURE_OPENAI_ENDPOINT { get; set; }
+    private string? AZURE_OPENAI_KEY { get; set; }
 
-    public string? OPENAI_ORGANIZATION_ID { get; set; }
-    public string? OPENAI_DEVELOPER_KEY { get; set; }
+    private string? OPENAI_ORGANIZATION_ID { get; set; }
+    private string? OPENAI_DEVELOPER_KEY { get; set; }
 
     public string? AZURE_TEXT_TO_SPEECH_KEY { get; set; }
     public string? AZURE_TEXT_TO_SPEECH_REGION { get; set; }
 
+    public OpenAiCredentials OpenAiCredentials => new(AZURE_OPENAI_ENDPOINT!, AZURE_OPENAI_KEY!, OPENAI_ORGANIZATION_ID!, OPENAI_DEVELOPER_KEY!);
+
     public bool WarnIfGenerativeAIKeysAreNotPresent(ILogger logger)
     {
-        // write out values
         var genAiKeysPresent = true;
 
-        if (string.IsNullOrWhiteSpace(OPENAI_ORGANIZATION_ID))
+        if (OpenAiCredentials.BackendType == OpenAiBackend.None)
         {
-            logger.LogWarning($"The `OPENAI_ORGANIZATION_ID` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {DocumentationUrlAboutUserSecrets}\n");
-            genAiKeysPresent = false;
-        }
+            logger.LogWarning($"The Open AI credentials are not found in the configuration. Read how to configure: {DocumentationUrlAboutUserSecrets}");
 
-        if (string.IsNullOrWhiteSpace(OPENAI_DEVELOPER_KEY))
-        {
-            logger.LogWarning($"The `OPENAI_DEVELOPER_KEY` secret is missing in configuration. Application will use mocked Generative AI responses. Read how to configure: {DocumentationUrlAboutUserSecrets}");
             genAiKeysPresent = false;
         }
 
         if (string.IsNullOrWhiteSpace(AZURE_TEXT_TO_SPEECH_KEY))
         {
-            logger.LogWarning($"The `AZURE_TEXT_TO_SPEECH_KEY` secret is missing in configuration. Application will not generate audio files. Read how to configure: {DocumentationUrlAboutUserSecrets}");
+            logger.LogWarning($"The `AZURE_TEXT_TO_SPEECH_KEY` secret is missing in configuration. Read how to configure: {DocumentationUrlAboutUserSecrets}");
+
             genAiKeysPresent = false;
         }
 
         if (string.IsNullOrWhiteSpace(AZURE_TEXT_TO_SPEECH_REGION))
         {
-            logger.LogWarning($"The `AZURE_TEXT_TO_SPEECH_REGION` secret is missing in configuration. Application will not generate audio files. Read how to configure: {DocumentationUrlAboutUserSecrets}");
+            logger.LogWarning($"The `AZURE_TEXT_TO_SPEECH_REGION` secret is missing in configuration. Read how to configure: {DocumentationUrlAboutUserSecrets}");
+
             genAiKeysPresent = false;
         }
 

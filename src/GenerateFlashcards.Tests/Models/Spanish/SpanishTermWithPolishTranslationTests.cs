@@ -2,7 +2,7 @@
 using CoreLibrary.Services.ObjectGenerativeFill;
 using FluentAssertions;
 using GenerateFlashcards.Models.Spanish;
-using GenerateFlashcards.Tests.Infrastructure;
+using GenerateFlashcards.Tests.TestInfrastructure;
 
 namespace GenerateFlashcards.Tests.Models.Spanish;
 

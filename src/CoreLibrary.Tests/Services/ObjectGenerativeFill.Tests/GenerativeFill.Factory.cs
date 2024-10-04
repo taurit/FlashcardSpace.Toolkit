@@ -1,4 +1,5 @@
-﻿using CoreLibrary.Services.GenerativeAiClients;
+﻿using CoreLibrary.Models;
+using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,12 +17,15 @@ internal static class GenerativeFillTestFactory
         var config = new ConfigurationBuilder().AddUserSecrets<GenerativeFillTests>().Build();
         var openAiDeveloperKey = config["OPENAI_DEVELOPER_KEY"];
         var openAiOrganizationId = config["OPENAI_ORGANIZATION_ID"];
+        var azureOpenAiEndpoint = config["AZURE_OPENAI_ENDPOINT"];
+        var azureOpenAiKey = config["AZURE_OPENAI_KEY"];
+        var openAiCredentials = new OpenAiCredentials(azureOpenAiEndpoint, azureOpenAiKey, openAiOrganizationId, openAiDeveloperKey);
 
         // create ChatGPT client instance
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
 
         Directory.CreateDirectory(ChatGptClientCacheFolder);
-        var chatGptClient = new ChatGptClient(logger, openAiOrganizationId!, openAiDeveloperKey!, ChatGptClientCacheFolder);
+        var chatGptClient = new ChatGptClient(logger, openAiCredentials, ChatGptClientCacheFolder);
 
         // create instance of system under test
         var generativeFill = new GenerativeFill(chatGptClient, GenerativeFillCacheFolder);

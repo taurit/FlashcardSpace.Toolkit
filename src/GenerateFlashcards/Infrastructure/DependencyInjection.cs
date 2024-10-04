@@ -89,8 +89,7 @@ internal static class DependencyInjection
         IGenerativeAiClient generativeAiClient = openAiApiKeysPresent
             ? new ChatGptClient(
                 logger,
-                secretParameters.OPENAI_ORGANIZATION_ID!,
-                secretParameters.OPENAI_DEVELOPER_KEY!,
+                secretParameters.OpenAiCredentials,
                 Parameters.ChatGptClientCacheFolder
             )
             : new MockGenerativeAiClient();

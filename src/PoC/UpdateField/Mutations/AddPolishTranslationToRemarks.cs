@@ -1,6 +1,7 @@
 ﻿using AnkiCardValidator;
 using AnkiCardValidator.Utilities;
 using AnkiCardValidator.ViewModels;
+using CoreLibrary.Models;
 using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Services.ObjectGenerativeFill;
 using Microsoft.Extensions.Configuration;
@@ -54,12 +55,17 @@ internal static class AddPolishTranslationToRemarks
         var config = new ConfigurationBuilder().AddUserSecrets<FlashcardToFill>().Build();
         var openAiDeveloperKey = config["OPENAI_DEVELOPER_KEY"];
         var openAiOrganizationId = config["OPENAI_ORGANIZATION_ID"];
+        var azureOpenAiEndpoint = config["AZURE_OPENAI_ENDPOINT"];
+        var azureOpenAiKey = config["AZURE_OPENAI_KEY"];
+        var openAiCredentials = new OpenAiCredentials(azureOpenAiEndpoint, azureOpenAiKey, openAiOrganizationId, openAiDeveloperKey);
+
+
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
         var chatGptClientCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "UpdateField.ChatGptClient");
         var gfCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "UpdateField.GenerativeFill");
 
         Directory.CreateDirectory(chatGptClientCacheFolder);
-        var chatGptClient = new ChatGptClient(logger, openAiOrganizationId, openAiDeveloperKey, chatGptClientCacheFolder);
+        var chatGptClient = new ChatGptClient(logger, openAiCredentials, chatGptClientCacheFolder);
         var generativeFill = new GenerativeFill(chatGptClient, gfCacheFolder);
         var filledNotes = await generativeFill.FillMissingProperties("gpt-4o-2024-08-06", "gpt-4o", fillModel);
 

@@ -2,7 +2,7 @@
 using FluentAssertions;
 using GenerateFlashcards.Models.English;
 using GenerateFlashcards.Models.Spanish;
-using GenerateFlashcards.Tests.Infrastructure;
+using GenerateFlashcards.Tests.TestInfrastructure;
 
 namespace GenerateFlashcards.Tests.Models.English;
 

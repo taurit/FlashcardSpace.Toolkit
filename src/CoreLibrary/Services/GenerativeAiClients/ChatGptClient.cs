@@ -1,4 +1,6 @@
-﻿using CoreLibrary.Utilities;
+﻿using Azure.AI.OpenAI;
+using CoreLibrary.Models;
+using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
@@ -6,7 +8,7 @@ using System.ClientModel;
 
 namespace CoreLibrary.Services.GenerativeAiClients;
 
-public class ChatGptClient(ILogger logger, string openAiOrganization, string openAiDeveloperKey, string persistentCacheRootFolder)
+public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, string persistentCacheRootFolder)
     : IGenerativeAiClient
 {
     public async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt,
@@ -19,8 +21,19 @@ public class ChatGptClient(ILogger logger, string openAiOrganization, string ope
 
         persistentCacheRootFolder.EnsureDirectoryExists();
 
-        var openAiClientOptions = new OpenAIClientOptions { OrganizationId = openAiOrganization };
-        ChatClient client = new(model: modelId, new ApiKeyCredential(openAiDeveloperKey), openAiClientOptions);
+        ChatClient? client = null;
+        if (openAiCredentials.BackendType == OpenAiBackend.Azure)
+        {
+            var azureOpenAiEndpointUrl = new Uri(openAiCredentials.AzureOpenAiEndpoint!);
+            var azureOpenAiClient = new AzureOpenAIClient(azureOpenAiEndpointUrl, new ApiKeyCredential(openAiCredentials.AzureOpenAiKey!));
+            client = azureOpenAiClient.GetChatClient(modelId);
+        }
+        else
+        {
+            var openAiClientOptions = new OpenAIClientOptions { OrganizationId = openAiCredentials.OpenAiOrganizationId };
+            var openAiApiKeyCredential = new ApiKeyCredential(openAiCredentials.OpenAiDeveloperKey!);
+            client = new(model: modelId, openAiApiKeyCredential, openAiClientOptions);
+        }
 
         var stableHash = (prompt + outputSchema).GetHashCodeStable();
         // proper extensions helps debugging (e.g. VS Code highlights JSON files if they have proper extension only)
