@@ -10,13 +10,11 @@ namespace CoreLibrary.Services;
 /// </summary>
 public class ImageRepository(ImageRepositorySettings settings, EmbeddingsService embeddingsService)
 {
-    private readonly List<StableDiffusionImage>? _images = null;
+    private readonly List<StableDiffusionImage> _images = [];
     private List<StableDiffusionImage> LoadExistingImagesMetadata()
     {
-        if (_images is not null)
+        if (_images.Count > 0)
             return _images;
-
-        var images = new List<StableDiffusionImage>();
 
         var files = Directory.GetFiles(settings.ImageRepositoryFolder, "*.jpg");
         foreach (var file in files)
@@ -26,9 +24,9 @@ public class ImageRepository(ImageRepositorySettings settings, EmbeddingsService
             {
                 continue;
             }
-            images.Add(new StableDiffusionImage(file, parameters));
+            _images.Add(new StableDiffusionImage(file, parameters));
         }
-        return images;
+        return _images;
     }
 
     internal async Task<List<StableDiffusionImageSimilarity>> FindMatchingImageCandidates(string prompt, int width, int height)
