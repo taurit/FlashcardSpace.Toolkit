@@ -10,13 +10,6 @@ const FlashcardLoader: React.FC = () => {
     const [loadingError, setLoadingError] = useState<string | null>(null);
 
     useEffect(() => {
-        (window as any).setDataFromWpf = setData;
-        return () => {
-            delete (window as any).setDataFromWpf;
-        };
-    }, []);
-
-    useEffect(() => {
         fetch(`./${deckName}/flashcards.json`)
             .then((response) => response.json())
             .then((data) => setData(data))

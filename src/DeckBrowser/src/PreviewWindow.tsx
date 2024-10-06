@@ -16,7 +16,7 @@ const DeckPreviewWindow: React.FC<DeckPreviewWindowProps> = ({ deck }) => {
 
     // display the flashcard data
     if (!deck) return null;
-    var numFlashcards = deck.flashcards?.length ?? 0;
+    const numFlashcards = deck.flashcards?.length ?? 0;
 
     const goToPreviousExample = () => setFlashcardIndex((index) => (((index - 1) % numFlashcards) + numFlashcards) % numFlashcards);
     const goToNextExample = () => setFlashcardIndex((index) => (index + 1) % numFlashcards);

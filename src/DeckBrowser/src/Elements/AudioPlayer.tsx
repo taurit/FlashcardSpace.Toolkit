@@ -8,7 +8,7 @@ interface AudioPlayerProps {
 }
 
 function playAudio(audioElementId: string): void {
-    var audio = document.getElementById(audioElementId) as HTMLAudioElement;
+    const audio = document.getElementById(audioElementId) as HTMLAudioElement;
     audio.play();
 }
 
