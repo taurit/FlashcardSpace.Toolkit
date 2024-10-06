@@ -55,7 +55,7 @@ public record StableDiffusionParameters(string Prompt, string NegativePrompt, in
         return null;
     }
 
-
+    [Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
     public string PromptWithoutStyleKeywords =>
         StableDiffusionKeywordRemover.RemoveStyleKeywordsFromPrompt(Prompt);
 }

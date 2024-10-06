@@ -1,4 +1,6 @@
 ﻿namespace CoreLibrary.Utilities;
+
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 public static class StableDiffusionKeywordRemover
 {
     /// <summary>

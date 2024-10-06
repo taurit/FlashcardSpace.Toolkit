@@ -3,9 +3,11 @@ using MemoryPack;
 
 namespace CoreLibrary.Services.Embeddings;
 
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 [MemoryPackable]
 public partial record EmbeddingsCache(Dictionary<string, List<float>> Cache);
 
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 public class EmbeddingsCacheManager
 {
     private readonly string _cacheFilePath;

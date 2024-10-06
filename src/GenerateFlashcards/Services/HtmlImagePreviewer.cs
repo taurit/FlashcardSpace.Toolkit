@@ -1,5 +1,4 @@
-﻿using CoreLibrary.Services;
-using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
+﻿using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -9,6 +8,7 @@ namespace GenerateFlashcards.Services;
 /// A quick, temporary tool to generate HTML preview of image matrix to help developers
 /// fine-tune the parameters for best quality.
 /// </summary>
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 internal static class HtmlImagePreviewer
 {
     public static async Task PreviewImages(IEnumerable<GeneratedImage> images)

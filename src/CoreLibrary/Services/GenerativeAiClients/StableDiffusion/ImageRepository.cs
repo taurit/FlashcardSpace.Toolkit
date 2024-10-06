@@ -29,6 +29,7 @@ public class ImageRepository(ImageRepositorySettings settings, EmbeddingsService
         return _images;
     }
 
+    [Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
     internal async Task<List<StableDiffusionImageSimilarity>> FindMatchingImageCandidates(string prompt, int width, int height, int numImagesTarget)
     {
         // filter by width and height first
@@ -78,6 +79,9 @@ public class ImageRepository(ImageRepositorySettings settings, EmbeddingsService
     }
 }
 
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 public record ImageRepositorySettings(string ImageRepositoryFolder);
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 internal record StableDiffusionImage(string FilePath, StableDiffusionParameters Parameters);
+[Obsolete("Unused, to be removed after November 1, 2024 unless I need it until that time")]
 internal record StableDiffusionImageSimilarity(StableDiffusionImage Image, double SimilarityScore);

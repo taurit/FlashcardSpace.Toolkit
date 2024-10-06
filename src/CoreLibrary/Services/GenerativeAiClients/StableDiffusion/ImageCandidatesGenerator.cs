@@ -52,6 +52,7 @@ public class ImageCandidatesGenerator(
     }
 
 
+    [Obsolete]
     private async Task<List<GeneratedImage>> FindExistingImagesThatFit(StableDiffusionPrompt basePrompt,
         SupportedSDXLImageSize imageSize, int numImagesTarget)
     {
