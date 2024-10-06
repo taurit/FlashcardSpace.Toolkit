@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services;
+using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;

@@ -1,7 +1,7 @@
 ﻿using MemoryPack;
 using System.Diagnostics.CodeAnalysis;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 [MemoryPackable]
 [SuppressMessage("ReSharper", "PartialTypeWithSinglePart", Justification = "Required by Mempack serializer")]

@@ -1,9 +1,8 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services.Embeddings;
-using CoreLibrary.Services.StableDiffusion;
 using CoreLibrary.Utilities;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 /// <summary>
 /// Allows search for image candidates matching the prompt in the repository of previously generated images.

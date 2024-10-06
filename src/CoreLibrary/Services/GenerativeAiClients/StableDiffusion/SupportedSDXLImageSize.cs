@@ -1,4 +1,4 @@
-﻿namespace CoreLibrary.Services.StableDiffusion;
+﻿namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 public record SupportedSDXLImageSize(int Width, int Height)
 {

@@ -3,7 +3,7 @@ using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using System.Text.Json;
 
-namespace CoreLibrary.Services.StableDiffusion;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 // A small util (stateless service) to interact with the local Stable Diffusion API's functions  
 // other than txt2img image generation (which has a dedicated service).  

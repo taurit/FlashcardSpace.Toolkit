@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 /// <summary>
 /// A model of txt2img request body (or precisely, a subset of parameters I find useful) passed to stable-diffusion-webui API.

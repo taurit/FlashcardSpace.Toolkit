@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Services;
+using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using GenerateFlashcards.Services;
 using Spectre.Console;

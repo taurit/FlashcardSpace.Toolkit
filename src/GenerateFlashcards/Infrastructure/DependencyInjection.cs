@@ -1,9 +1,9 @@
 using CoreLibrary.Services;
 using CoreLibrary.Services.Embeddings;
 using CoreLibrary.Services.GenerativeAiClients;
+using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Services.ObjectGenerativeFill;
-using CoreLibrary.Services.StableDiffusion;
 using CoreLibrary.Utilities;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Configuration;

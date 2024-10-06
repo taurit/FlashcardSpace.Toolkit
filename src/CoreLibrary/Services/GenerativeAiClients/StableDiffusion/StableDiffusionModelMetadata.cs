@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace CoreLibrary.Services.StableDiffusion;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 /// <summary>
 /// An element of the array in the response from `GET /sdapi/v1/sd-models`

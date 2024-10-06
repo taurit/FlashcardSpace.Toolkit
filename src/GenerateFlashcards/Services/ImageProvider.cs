@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services;
+using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
 

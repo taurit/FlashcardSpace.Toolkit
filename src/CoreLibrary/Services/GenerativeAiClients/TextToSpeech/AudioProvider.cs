@@ -1,10 +1,9 @@
 ﻿using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
-using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 
 public record AudioProviderSettings(string AudioCacheFolder);
 

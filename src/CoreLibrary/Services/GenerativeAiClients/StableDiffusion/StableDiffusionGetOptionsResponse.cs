@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CoreLibrary.Services.StableDiffusion;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 /// <summary>
 /// A partial model of a response from /sdapi/v1/options.

@@ -1,12 +1,11 @@
-﻿using CoreLibrary.Services.StableDiffusion;
-using CoreLibrary.Utilities;
+﻿using CoreLibrary.Utilities;
 using MemoryPack;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 public record ImageGeneratorSettings(string CacheFolder);
 

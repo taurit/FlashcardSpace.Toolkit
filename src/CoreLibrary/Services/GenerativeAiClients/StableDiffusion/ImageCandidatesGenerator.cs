@@ -1,8 +1,7 @@
-﻿using CoreLibrary.Services.StableDiffusion;
-using CoreLibrary.Utilities;
+﻿using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 public class ImageCandidatesGenerator(
         ImageGenerator imageGenerator,

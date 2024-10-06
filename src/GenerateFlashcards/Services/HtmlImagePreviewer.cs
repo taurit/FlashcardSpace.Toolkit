@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Services;
+using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using System.Diagnostics;
 using System.Reflection;
 
