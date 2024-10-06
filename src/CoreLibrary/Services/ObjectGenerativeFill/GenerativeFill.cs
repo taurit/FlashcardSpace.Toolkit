@@ -52,7 +52,7 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
         {
             var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
 
-            var chunks = itemsThatRequireApiCall.Chunk(20);
+            var chunks = itemsThatRequireApiCall.Chunk(19);
 
             foreach (var chunk in chunks)
             {
