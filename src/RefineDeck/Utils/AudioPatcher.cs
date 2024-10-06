@@ -1,8 +1,5 @@
 ﻿using CoreLibrary.Models;
-using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
-using CoreLibrary.Utilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.IO;
 
@@ -14,14 +11,7 @@ internal static class AudioPatcher
         var audioCacheFolder = deckPath.AudioProviderCacheFolder;
         var audioProviderSettings = new AudioProviderSettings(audioCacheFolder);
 
-        var configuration = new ConfigurationBuilder()
-            .AddUserSecrets<MainWindow>()
-            .AddJsonFile("secrets.json", optional: true)
-            .Build();
-
-        // Bind the configuration values to the strongly typed class
-        var secrets = new SecretParameters();
-        configuration.Bind(secrets);
+        var secrets = Parameters.LoadSecrets();
 
         var textToSpeechClient = new TextToSpeechClient(
             secrets.AZURE_TEXT_TO_SPEECH_KEY,

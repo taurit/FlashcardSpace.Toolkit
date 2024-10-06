@@ -13,6 +13,4 @@ internal static class AudioPlayer
         _waveOut.Init(_audioFileReader);
         _waveOut.Play();
     }
-
-
 }

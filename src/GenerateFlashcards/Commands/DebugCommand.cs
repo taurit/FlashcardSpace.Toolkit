@@ -1,7 +1,4 @@
-﻿using CoreLibrary.Services;
-using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
-using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
-using GenerateFlashcards.Services;
+﻿using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
@@ -14,19 +11,12 @@ namespace GenerateFlashcards.Commands;
 /// </summary>
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 internal sealed class DebugCommand(
-        ImageCandidatesGenerator candidatesGenerator,
         TextToSpeechClient ttsClient
 
     ) : AsyncCommand<DebugCommandSettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
-        //await GenerateAudioFile();
-        //CalculateBestCutOffLine();
-
-        var images = await candidatesGenerator.GenerateImageVariants("a house", "A house was old and abandoned.");
-        await HtmlImagePreviewer.PreviewImages(images);
-
         return 0;
     }
 

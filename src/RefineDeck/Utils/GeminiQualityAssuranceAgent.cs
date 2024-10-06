@@ -1,6 +1,4 @@
 ﻿using CoreLibrary.Services.GenerativeAiClients;
-using CoreLibrary.Utilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RefineDeck.ViewModels;
 using System.Text.Encodings.Web;
@@ -37,6 +35,7 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
         string[] rules = new[]
         {
             "Ensure all text is free of spelling and grammatical errors.",
+            "The term on the front side must be used in real-world language and be understood by native speakers",
             "The answer on the back side must be the correct and most appropriate answer to the question on the front side.",
             "Remarks to the student should only be included if the term requires additional clarification, such as being a grammatical exception or having multiple meanings that might be confusing.",
             "If the flashcard is correct and needs no changes, respond only with \"OK\" to avoid unnecessary suggestions."
@@ -57,7 +56,7 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
                      $"{jsonPayload}\n" +
                      $"```";
 
-        var response = await _client.GetAnswerToPrompt("gemini-1.5-flash", "gemini-flash",
+        var response = await _client.GetAnswerToPrompt(Parameters.GeminiModelId, Parameters.GeminiModelId,
             $"You help prepare the flashcards to teach {viewModel.Deck.SourceLanguage} vocabulary to students natively speaking {viewModel.Deck.TargetLanguage}",
             prompt,
             GenerativeAiClientResponseMode.PlainText);
@@ -68,23 +67,13 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
     private GoogleGeminiClient GetGeminiClientInstance()
     {
         var geminiCacheFolder = viewModel.Deck.DeckPath.GeminiCacheFolder;
-
-        var configuration = new ConfigurationBuilder()
-            .AddUserSecrets<MainWindow>()
-            .AddJsonFile("secrets.json", optional: true)
-            .Build();
-
-        // Bind the configuration values to the strongly typed class
-        var secrets = new SecretParameters();
-        configuration.Bind(secrets);
-
         var logger = LoggerFactory
             .Create(builder => builder.AddConsole())
             .CreateLogger<GoogleGeminiClient>();
 
+        var secrets = Parameters.LoadSecrets();
         var audioProvider = new GoogleGeminiClient(logger, secrets.GeminiApiKey, geminiCacheFolder);
         return audioProvider;
     }
-
 
 }
