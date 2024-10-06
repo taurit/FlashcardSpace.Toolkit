@@ -115,10 +115,6 @@ internal static class DependencyInjection
         services.AddSingleton(deckExporterSettings);
         services.AddTransient<DeckExporter>();
 
-        var imageRepositorySettings = new ImageRepositorySettings(Parameters.ImageProviderCacheFolder);
-        services.AddSingleton(imageRepositorySettings);
-        services.AddSingleton<ImageRepository>();
-
         return new ServiceCollectionRegistrar(services);
     }
 }

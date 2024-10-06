@@ -5,7 +5,6 @@ namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 public class ImageCandidatesGenerator(
         ImageGenerator imageGenerator,
-        ImageRepository imageRepository,
         StableDiffusionPromptProvider promptProvider,
         ILogger<ImageCandidatesGenerator> logger)
 {
@@ -49,32 +48,5 @@ public class ImageCandidatesGenerator(
         }
 
         return results;
-    }
-
-
-    [Obsolete]
-    private async Task<List<GeneratedImage>> FindExistingImagesThatFit(StableDiffusionPrompt basePrompt,
-        SupportedSDXLImageSize imageSize, int numImagesTarget)
-    {
-        var existingImagesThatFit = await imageRepository.FindMatchingImageCandidates(basePrompt.PromptText, imageSize.Width, imageSize.Height, numImagesTarget);
-
-        var existing = new List<GeneratedImage>();
-
-        foreach (var imageCandidate in existingImagesThatFit)
-        {
-            logger.LogInformation("Found existing image that might be useful: {Prompt} (similarity: {Similarity})", imageCandidate.Image.Parameters.PromptWithoutStyleKeywords, imageCandidate.SimilarityScore);
-
-            var imagePath = imageCandidate.Image.FilePath;
-            var fileContent = await File.ReadAllBytesAsync(imagePath);
-            var base64EncodedImage = Convert.ToBase64String(fileContent);
-
-            var existingImage = new GeneratedImage(
-                base64EncodedImage,
-                imageCandidate.Image.Parameters.Prompt,
-                imageCandidate.Image.Parameters.CfgScale);
-            existing.Add(existingImage);
-        }
-
-        return existing;
     }
 }
