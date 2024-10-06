@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace CoreLibrary.Services;
+namespace CoreLibrary.Services.StableDiffusion;
 
 public record StableDiffusionPrompt(string PromptText, string NegativePromptText);
 

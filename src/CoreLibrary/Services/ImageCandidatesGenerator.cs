@@ -1,4 +1,5 @@
-﻿using CoreLibrary.Utilities;
+﻿using CoreLibrary.Services.StableDiffusion;
+using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace CoreLibrary.Services;

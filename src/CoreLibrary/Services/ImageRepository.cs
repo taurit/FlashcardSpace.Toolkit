@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services.Embeddings;
+using CoreLibrary.Services.StableDiffusion;
 using CoreLibrary.Utilities;
 
 namespace CoreLibrary.Services;

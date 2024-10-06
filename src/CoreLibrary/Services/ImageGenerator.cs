@@ -1,4 +1,5 @@
-﻿using CoreLibrary.Utilities;
+﻿using CoreLibrary.Services.StableDiffusion;
+using CoreLibrary.Utilities;
 using MemoryPack;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -31,7 +32,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             stableDiffusionPrompt.PromptText,
             stableDiffusionPrompt.NegativePromptText,
             size.Width, size.Height, numImagesToGenerate, numSteps, cfgScale, samplerName,
-            seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt);
+            seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt, RestoreFaces: true);
 
         var cacheFileName = GenerateCacheFileName(requestPayloadModel);
         if (File.Exists(cacheFileName))
@@ -96,11 +97,18 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             if (!isAlive)
             {
                 logger.LogWarning("Stable Diffusion API is not running. Retrying in {RetryTimeSeconds} seconds...", retryTimeSeconds);
+                await Task.Delay(TimeSpan.FromSeconds(retryTimeSeconds));
             }
-
-            await Task.Delay(TimeSpan.FromSeconds(retryTimeSeconds));
         }
 
+        var configurationErrors = await StableDiffusionHelper.ValidateStableDiffusionApiGlobalOptions();
+        if (!String.IsNullOrEmpty(configurationErrors))
+        {
+            logger.LogError("Stable Diffusion API is not correctly configured. Errors: {Errors}", configurationErrors);
+            throw new InvalidOperationException($"Stable Diffusion API is not correctly configured: {configurationErrors}.");
+        }
+
+        logger.LogInformation("Stable Diffusion API is correctly configured.");
         _ensuredStableDiffusionApiIsAlive = true;
     }
 

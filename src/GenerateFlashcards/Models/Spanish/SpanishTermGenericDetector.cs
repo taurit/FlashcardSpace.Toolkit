@@ -40,6 +40,7 @@ internal class SpanishTermGenericDetector : ObjectWithId
     [FillWithAI]
     [FillWithAIRule($"An example of a sentence using the term taught in {nameof(FlashcardQuestionInSpanish)}.")]
     [FillWithAIRule("This value should be completely in Spanish.")]
+    [FillWithAIRule("The sentence should have at most 5 words, if possible, for easier cognition.")]
     [FillWithAIRule($"If {nameof(TermToCreateFlashcardFor)} contains a sentence already, use it, but first check for errors and refine if needed.")]
     public string FlashcardExampleSentenceInSpanish { get; init; }
 

@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Services;
+using CoreLibrary.Services.StableDiffusion;
 using FluentAssertions;
 
 namespace CoreLibrary.Tests.Services;
