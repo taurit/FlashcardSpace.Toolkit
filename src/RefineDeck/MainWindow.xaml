@@ -309,59 +309,62 @@
                 Padding="5"
                 VerticalAlignment="Bottom"
                 DockPanel.Dock="Bottom"
-                Header="QA remarks from AI agents">
-                <StackPanel Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <!--  Remarks from generator  -->
-                    <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Button
-                            Margin="5,0,0,0"
-                            Padding="8"
-                            Click="DismissWarning_OnClick"
-                            DockPanel.Dock="Right"
-                            Foreground="DarkRed"
-                            IsTabStop="False">
-                            Dismiss
-                        </Button>
-                        <TextBox
-                            Height="Auto"
-                            Padding="8"
-                            Background="BlanchedAlmond"
-                            BorderBrush="DarkOrange"
-                            BorderThickness="1"
-                            DockPanel.Dock="Bottom"
-                            FontSize="15"
-                            IsReadOnly="True"
-                            Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
-                            TextWrapping="Wrap" />
-                    </DockPanel>
+                Header="QA remarks from AI agents"
+                Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <!--  Remarks from generator  -->
+                        <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Button
+                                Margin="5,0,0,0"
+                                Padding="8"
+                                Click="DismissWarning_OnClick"
+                                DockPanel.Dock="Right"
+                                Foreground="DarkRed"
+                                IsTabStop="False">
+                                Dismiss
+                            </Button>
+                            <TextBox
+                                Height="Auto"
+                                Padding="8"
+                                Background="BlanchedAlmond"
+                                BorderBrush="DarkOrange"
+                                BorderThickness="1"
+                                DockPanel.Dock="Bottom"
+                                FontSize="15"
+                                IsReadOnly="True"
+                                Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
+                                TextWrapping="Wrap" />
+                        </DockPanel>
 
-                    <!--  Second opinion: remarks obtained by Refine deck from different model  -->
-                    <DockPanel
-                        Margin="0,1,0,0"
-                        LastChildFill="True"
-                        Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Button
-                            Margin="5,0,0,0"
-                            Padding="8"
-                            Click="DismissSecondOpinionWarning_OnClick"
-                            DockPanel.Dock="Right"
-                            Foreground="DarkRed"
-                            IsTabStop="False">
-                            Dismiss
-                        </Button>
-                        <TextBox
-                            Height="Auto"
-                            Padding="8"
-                            Background="MistyRose"
-                            BorderBrush="Salmon"
-                            BorderThickness="1"
-                            DockPanel.Dock="Bottom"
-                            FontSize="15"
-                            IsReadOnly="True"
-                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion, Mode=OneWay}"
-                            TextWrapping="Wrap" />
-                    </DockPanel>
-                </StackPanel>
+                        <!--  Second opinion: remarks obtained by Refine deck from different model  -->
+                        <DockPanel
+                            Margin="0,1,0,0"
+                            LastChildFill="True"
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Button
+                                Margin="5,0,0,0"
+                                Padding="8"
+                                Click="DismissSecondOpinionWarning_OnClick"
+                                DockPanel.Dock="Right"
+                                Foreground="DarkRed"
+                                IsTabStop="False">
+                                Dismiss
+                            </Button>
+                            <TextBox
+                                Height="Auto"
+                                Padding="8"
+                                Background="MistyRose"
+                                BorderBrush="Salmon"
+                                BorderThickness="1"
+                                DockPanel.Dock="Bottom"
+                                FontSize="15"
+                                IsReadOnly="True"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion, Mode=OneWay}"
+                                TextWrapping="Wrap" />
+                        </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </GroupBox>
 
         </DockPanel>

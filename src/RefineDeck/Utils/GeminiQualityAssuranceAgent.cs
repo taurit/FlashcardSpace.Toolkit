@@ -3,6 +3,8 @@ using CoreLibrary.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RefineDeck.ViewModels;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace RefineDeck.Utils;
 
@@ -17,20 +19,46 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
         var card = viewModel.SelectedFlashcard;
         if (card is null) return;
 
-        var prompt = "Validate the correctness and quality of the flashcard provided below. If anything needs change for correctness or clarification, list brief and concrete suggestions for the flashcard author.\n" +
+        var dataToValidate = new
+        {
+            FrontSide_QuestionInSpanish = card.Term,
+            BackSide_AnswerInPolish = card.TermTranslation,
+            BackSide_SentenceExampleInSpanish = card.SentenceExample,
+            BackSide_SentenceExampleTranslationToPolish = card.SentenceExampleTranslation,
+            BackSide_RemarksFromTeacherToStudent = card.Remarks
+        };
+
+        var jsonSerializerOptions = new JsonSerializerOptions()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        };
+        string jsonPayload = JsonSerializer.Serialize(dataToValidate, jsonSerializerOptions);
+
+        string[] rules = new[]
+        {
+            "Ensure all text is free of spelling and grammatical errors.",
+            "The answer on the back side must be the correct and most appropriate answer to the question on the front side.",
+            "Remarks to the student should only be included if the term requires additional clarification, such as being a grammatical exception or having multiple meanings that might be confusing.",
+            "If the flashcard is correct and needs no changes, respond only with \"OK\" to avoid unnecessary suggestions."
+        };
+        var rulesString = String.Join("\n", rules.Select(x => $"- {x}"));
+
+        var prompt = "Validate the correctness and quality of the flashcard provided below using the following rules:\n" +
+                     rulesString +
                      "\n" +
-                     $"# Front side\n" +
-                     $"Question in Spanish: {card.Term}\n" +
-                     $"\n" +
-                     $"# Back side\n" +
-                     $"Answer in Polish: {card.TermTranslation}\n" +
-                     $"Sentence example in Spanish: {card.SentenceExample}" +
-                     $"Sentence example translation in Polish: {card.SentenceExampleTranslation}" +
-                     $"Remarks from teacher to student: {card.Remarks}"
-                     ;
+                     "\n" +
+                     "If any part of the flashcard requires modification for correctness or clarity, provide:\n" +
+                     "\n" +
+                     "- Brief and concrete suggestions for the flashcard author in natural language.,\n" +
+                     "- An example of the corrected flashcard data in JSON format.\n" +
+                     "\n" +
+                     $"Flashcard data:\n" +
+                     $"```json\n" +
+                     $"{jsonPayload}\n" +
+                     $"```";
 
         var response = await _client.GetAnswerToPrompt("gemini-1.5-flash", "gemini-flash",
-            $"You help prepare the flashcards teaching {viewModel.Deck.SourceLanguage} to students",
+            $"You help prepare the flashcards to teach {viewModel.Deck.SourceLanguage} vocabulary to students natively speaking {viewModel.Deck.TargetLanguage}",
             prompt,
             GenerativeAiClientResponseMode.PlainText);
 
