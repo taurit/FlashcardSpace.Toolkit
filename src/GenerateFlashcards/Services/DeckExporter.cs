@@ -137,7 +137,7 @@ internal class DeckExporter(DeckExporterSettings settings, ILogger<DeckExporter>
         var currentAssemblyFolderPath = Path.GetDirectoryName(currentAssemblyPath);
         // back to e.g., d:\Projekty\FlashcardSpace.Toolkit\src\
         var solutionFolderPath = Path.GetFullPath(Path.Combine(currentAssemblyFolderPath, "..", "..", "..", "..", ".."));
-        var refinementToolRelativePath = Path.Combine(solutionFolderPath, "RefineDeck", "bin", "Debug", "net8.0-windows", "win-x64", "RefineDeck.exe");
+        var refinementToolRelativePath = Path.Combine(solutionFolderPath, "RefineDeck", "bin", "Debug", "net9.0-windows", "win-x64", "RefineDeck.exe");
 
         var processStartInfo = new ProcessStartInfo(refinementToolRelativePath)
         {

@@ -31,7 +31,7 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             stableDiffusionPrompt.PromptText,
             stableDiffusionPrompt.NegativePromptText,
             size.Width, size.Height, numImagesToGenerate, numSteps, cfgScale, samplerName,
-            seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt, RestoreFaces: true);
+            seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt);
 
         var cacheFileName = GenerateCacheFileName(requestPayloadModel);
         if (File.Exists(cacheFileName))

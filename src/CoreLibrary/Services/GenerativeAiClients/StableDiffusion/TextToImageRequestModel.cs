@@ -35,9 +35,7 @@ record TextToImageRequestModel(
     [property: JsonPropertyName("refiner_checkpoint")] string? RefinerCheckpointId,
 
     // Refiner switcher at certain percentage of the process. Range is 0-1. Good typical values are 0.7-0.8.
-    [property: JsonPropertyName("refiner_switch_at")] decimal? RefinerSwitchAt,
-
-    [property: JsonPropertyName("restore_faces")] bool RestoreFaces
+    [property: JsonPropertyName("refiner_switch_at")] decimal? RefinerSwitchAt
 
 );
 
