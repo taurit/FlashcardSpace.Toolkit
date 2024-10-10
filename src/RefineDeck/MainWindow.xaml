@@ -391,6 +391,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                     </Grid>
@@ -419,8 +421,21 @@
                 </TextBlock>
             </StatusBarItem>
 
+            <StatusBarItem Grid.Column="5" ToolTip="Warnings (from generator)">
+                <TextBlock DockPanel.Dock="Left" Foreground="Orange">
+                    <Run>⚠️</Run>
+                    <Run Text="{Binding NumWarnings, Mode=OneWay}" />
+                </TextBlock>
+            </StatusBarItem>
 
-            <StatusBarItem Grid.Column="4" HorizontalContentAlignment="Right">
+            <StatusBarItem Grid.Column="6" ToolTip="Warnings (second opinion)">
+                <TextBlock DockPanel.Dock="Left" Foreground="Salmon">
+                    <Run>⚠️</Run>
+                    <Run Text="{Binding NumWarningsSecondOpinion, Mode=OneWay}" />
+                </TextBlock>
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="7" HorizontalContentAlignment="Right">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <Button
                         Margin="5,0,0,0"

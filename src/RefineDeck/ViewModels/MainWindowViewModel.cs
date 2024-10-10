@@ -22,4 +22,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
     public int NumRejected => Deck.Flashcards.Count(flashcard => flashcard.ApprovalStatus == ApprovalStatus.Rejected);
+
+    [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
+    public int NumWarnings => Deck.Flashcards.Count(flashcard => flashcard.HasPendingQaSuggestions);
+
+    [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
+    public int NumWarningsSecondOpinion => Deck.Flashcards.Count(flashcard => flashcard.HasPendingQaSuggestionsSecondOpinion);
 }
