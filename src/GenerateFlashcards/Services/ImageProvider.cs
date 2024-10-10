@@ -1,5 +1,4 @@
 ﻿using CoreLibrary.Models;
-using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using CoreLibrary.Utilities;
 using Microsoft.Extensions.Logging;
@@ -17,6 +16,12 @@ internal class ImageProvider(
 {
     public async Task<List<FlashcardNote>> AddImageCandidates(List<FlashcardNote> notes)
     {
+        if (Parameters.SkipImageGeneration)
+        {
+            logger.LogInformation("Skipping image generation as requested in `Parameters.cs`.");
+            return notes;
+        }
+
         settings.ImageProviderCacheFolder.EnsureDirectoryExists();
 
         var notesWithImages = new List<FlashcardNote>();

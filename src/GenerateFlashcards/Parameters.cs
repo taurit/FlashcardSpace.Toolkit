@@ -17,6 +17,12 @@ internal static class Parameters
     /// generated with `gpt-4o-preview` to remain utilized after upgrade to `gpt-4o`, just use the same value here.
     public const string OpenAiModelClassId = "gpt-4o";
 
+    /// <summary>
+    /// Skip image generation, which is the most time-consuming part of the process.
+    /// Useful while developing and testing other parts of the application.
+    /// </summary>
+    public const bool SkipImageGeneration = true;
+
     private static readonly string RootAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches");
     internal static readonly string ChatGptClientCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.ChatGptClient");
     internal static readonly string GenerativeFillCacheFolder = Path.Combine(RootAppDataFolder, "GenerateFlashcards.GenerativeFill");
