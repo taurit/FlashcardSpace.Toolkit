@@ -1,5 +1,4 @@
 ﻿using CoreLibrary.Models;
-using CoreLibrary.Services;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
@@ -26,7 +25,9 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
             settings.SourceLanguage,
             settings.PartOfSpeechFilter,
             0,
-            10000);
+            600
+            //10000
+            );
 
         // shortcut: I assume terms are adjectives, todo: generalize
         var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);

@@ -16,7 +16,7 @@ internal class SpanishToEnglishTranslationProvider(GenerativeFill generativeFill
     {
         var toTranslate = terms.Select(t => new SpanishTermWithEnglishTranslation()
         {
-            SpanishWord = t.TermBaseForm, // TODO: BŁĄD? Czy to nie powinno być t.TermOriginal?
+            SpanishWord = t.TermOriginal,
             SpanishWordPartOfSpeech = t.PartOfSpeech,
             SpanishSentence = t.Sentence
         }).ToList();
@@ -33,7 +33,7 @@ internal class SpanishToEnglishTranslationProvider(GenerativeFill generativeFill
             var term = terms[index];
             var termTranslation = translated[index];
 
-            if (term.TermBaseForm != termTranslation.SpanishWord)
+            if (term.TermOriginal != termTranslation.SpanishWord)
                 throw new InvalidOperationException($"Term ({term.TermBaseForm}) and repeated term in translation " +
                                                     $"({termTranslation.SpanishWord}) differ! Something went wrong.");
 
