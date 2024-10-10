@@ -1,22 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    
     <UserSecretsId>FlashcardSpace.Toolkit</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Services\SentenceExtractors\**" />
     <EmbeddedResource Remove="Services\SentenceExtractors\**" />
     <None Remove="Services\SentenceExtractors\**" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
@@ -26,19 +21,15 @@
     </PackageReference>
     <PackageReference Include="MSTest.TestAdapter" Version="3.6.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.6.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0-rc.2.24473.5" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\GenerateFlashcards\GenerateFlashcards.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Services\" />
   </ItemGroup>
-
 </Project>

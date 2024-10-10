@@ -1,33 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-
+    <TargetFramework>net9.0</TargetFramework>
     <!--<Nullable>enable</Nullable>-->
     <ImplicitUsings>enable</ImplicitUsings>
-
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-
   <ItemGroup>
-
     <EmbeddedResource Include="AnkiData\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-
     <EmbeddedResource Include="SqLiteCommands\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-
   </ItemGroup>
-
   <ItemGroup>
     <!-- x64 version of ImageMagick is selected to avoid generating large outputs for other CPU platforms, but it can be switched to AnyCPU if needed -->
     <!--<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />-->
-
     <PackageReference Include="Magick.NET-Q16-x64" Version="14.0.0" />
     <PackageReference Include="Scriban" Version="5.10.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0-rc.2.24474.1" />
   </ItemGroup>
-
-
 </Project>

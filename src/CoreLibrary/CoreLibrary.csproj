@@ -1,48 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>OPENAI001</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Services\AnkiExportService\CardScript.js" />
     <None Remove="Services\AnkiExportService\CardStyle.css" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0-beta.1" />
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="MemoryPack" Version="1.21.3" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.40.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0-rc.2.24473.5" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="DotnetGeminiSDK" Version="1.0.14" />
   </ItemGroup>
-
   <!-- My local fork of dotnet-gemini-sdk if I decide I need to implement support for Structured Outputs (currently paused)-->
   <!--<ItemGroup>
     <ProjectReference Include="..\..\..\dotnet-gemini-sdk\src\DotnetGeminiSDK\DotnetGeminiSDK.csproj" />
   </ItemGroup>-->
-  
-  
   <ItemGroup>
     <InternalsVisibleTo Include="CoreLibrary.Tests" />
   </ItemGroup>
-  
-  
   <ItemGroup>
     <ProjectReference Include="..\PoC\Anki.NET-fork\Anki.NET.csproj" />
   </ItemGroup>
-  
-  
   <ItemGroup>
     <EmbeddedResource Include="Services\AnkiExportService\CardScript.js">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\AnkiExportService\CardStyle.css" />
   </ItemGroup>
-
 </Project>
