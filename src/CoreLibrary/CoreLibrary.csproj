@@ -17,7 +17,7 @@
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="MemoryPack" Version="1.21.3" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.40.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="DotnetGeminiSDK" Version="1.0.14" />
   </ItemGroup>

@@ -17,6 +17,12 @@ internal sealed class DebugCommand(
 {
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
+        var schemaPath = @"d:\Projekty\FlashcardSpace.Toolkit\src\DeckBrowser\deck.schema.auto.json";
+
+        // generate JSON schema for the `Deck` type:
+        AnsiConsole.MarkupLine("[bold yellow]Generating JSON schema for the `Deck` type...[/]");
+
+
         return 0;
     }
 
