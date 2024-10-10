@@ -5,6 +5,7 @@ public record DeckPath
     public string DeckOuterPath { get; init; }
     public DeckPath(string deckOuterPath)
     {
+        // make sure that it's an absolute path with relative fragments like `/../` resolved
         DeckOuterPath = Path.GetFullPath(deckOuterPath);
     }
 

@@ -26,6 +26,7 @@ public class Deck(string deckName, List<FlashcardNote> flashcards, string mediaF
     public SupportedLanguage TargetLanguage { get; set; } = targetLanguage;
 
     public string Serialize() => JsonSerializer.Serialize(this, DeckSerializationOptions.SerializationOptions);
+
     public static Deck DeserializeFromFile(string deckFileName)
     {
         var deckSerialized = File.ReadAllText(deckFileName);
