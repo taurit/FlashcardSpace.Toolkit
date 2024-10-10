@@ -16,7 +16,7 @@ internal class SpanishToEnglishTranslationProvider(GenerativeFill generativeFill
     {
         var toTranslate = terms.Select(t => new SpanishTermWithEnglishTranslation()
         {
-            SpanishWord = t.TermBaseForm,
+            SpanishWord = t.TermBaseForm, // TODO: BŁĄD? Czy to nie powinno być t.TermOriginal?
             SpanishWordPartOfSpeech = t.PartOfSpeech,
             SpanishSentence = t.Sentence
         }).ToList();
@@ -40,7 +40,7 @@ internal class SpanishToEnglishTranslationProvider(GenerativeFill generativeFill
             var flashcardNote = new FlashcardNote()
             {
                 Term = term.TermOriginal,
-                TermStandardizedForm = term.TermBaseForm,
+                TermBaseForm = term.TermBaseForm,
                 Context = term.Sentence,
                 Type = term.PartOfSpeech,
 

@@ -2,28 +2,32 @@
 
 namespace CoreLibrary.Services;
 
-public class NormalFormProvider
+/// <summary>
+/// Helps normalize Anki field value, which usually contains some HTML styling markup, to a plain text form, more
+/// suitable for duplicate detection or frequency dictionary lookups.
+/// </summary>
+public class StringSanitizer
 {
-    private readonly Dictionary<string, string> _normalizedStringsCache = new();
+    private readonly Dictionary<string, string> _sanitizedStringsCache = new();
     private static readonly Regex ParenthesesRegex = new(@"\([^)]*\)", RegexOptions.Compiled);
     private static readonly Regex BrRegex = new(@"<br\s*/?>.*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex HtmlTagsRegex = new("<.*?>", RegexOptions.Compiled);
     private static readonly Regex NbspRegex = new("&nbsp;", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public NormalFormProvider()
+    public StringSanitizer()
     {
-        _normalizedStringsCache.EnsureCapacity(60000);
+        _sanitizedStringsCache.EnsureCapacity(60000);
     }
 
     public string GetNormalizedFormOfLearnedTermWithCache(string input)
     {
-        if (_normalizedStringsCache.TryGetValue(input, out var trimmed))
+        if (_sanitizedStringsCache.TryGetValue(input, out var trimmed))
         {
             return trimmed;
         }
 
-        trimmed = GetNormalizedFormOfLearnedTerm(input);
-        _normalizedStringsCache[input] = trimmed;
+        trimmed = GetSanitizedFormOfLearnedTerm(input);
+        _sanitizedStringsCache[input] = trimmed;
         return trimmed;
     }
 
@@ -38,7 +42,7 @@ public class NormalFormProvider
     /// - "¡Hola!" -> "hola"
     /// - "¿Cómo?" -> "cómo"
     /// </summary>
-    private static string GetNormalizedFormOfLearnedTerm(string input)
+    private static string GetSanitizedFormOfLearnedTerm(string input)
     {
         var sanitized = input;
 

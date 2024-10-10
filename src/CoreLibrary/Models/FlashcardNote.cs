@@ -4,7 +4,8 @@ namespace CoreLibrary.Models;
 
 public record FlashcardNoteEditablePart
 {
-    // A studied word in the source language (like 'la manzana', 'verde') or idiom (like 'tener miedo')
+    // A studied word in the source language (like 'la manzana', 'verde', "hojas") or idiom (like 'tener miedo')
+    // With no guarantees about the form of the word (e.g., it can be singular or plural, with or without an article)
     [JsonPropertyName("term")]
     public string Term { get; set; }
 
@@ -49,9 +50,9 @@ public record FlashcardNoteEditablePart
 
 public record FlashcardNote : FlashcardNoteEditablePart
 {
-    // A standardized form of the term (e.g. for 'manzanas' it would be 'la manzana', for 'verdes' it would be 'verde')
+    // A base (standardized) form of the term (e.g. for 'manzanas' it would be 'la manzana', for 'verdes' it would be 'verde')
     [JsonPropertyName("termBaseForm")]
-    public string TermStandardizedForm { get; set; }
+    public string TermBaseForm { get; set; }
 
     // Term's standardized form translation to English.
     // Always present, regardless of the target language - it's useful for generating images with AI models.

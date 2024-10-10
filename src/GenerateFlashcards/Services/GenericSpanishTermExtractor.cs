@@ -24,7 +24,7 @@ internal class GenericSpanishTermExtractor(GenerativeFill generativeFill, ILogge
             .Select(x => new FlashcardNote()
             {
                 Term = x.FlashcardQuestionInSpanish,
-                TermStandardizedForm = x.FlashcardQuestionInSpanish,
+                TermBaseForm = x.FlashcardQuestionInSpanish,
                 TermStandardizedFormEnglishTranslation = x.FlashcardQuestionInEnglish,
                 TermTranslation = x.FlashcardAnswerInPolish,
                 Remarks = x.Remarks ?? "",

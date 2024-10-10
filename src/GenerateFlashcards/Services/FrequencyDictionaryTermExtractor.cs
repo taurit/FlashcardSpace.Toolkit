@@ -5,7 +5,11 @@ using GenerateFlashcards.Models.Spanish;
 using Microsoft.Extensions.Logging;
 
 namespace GenerateFlashcards.Services;
-public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, NormalFormProvider normalFormProvider, ILogger<FrequencyDictionaryTermExtractor> logger)
+public class FrequencyDictionaryTermExtractor(
+    GenerativeFill generativeFill,
+    StringSanitizer stringSanitizer,
+    ILogger<FrequencyDictionaryTermExtractor> logger
+    )
 {
     public async Task<List<TermInContext>> ExtractTerms(string inputFileName,
         SupportedLanguage sourceLanguage,
@@ -33,7 +37,7 @@ public class FrequencyDictionaryTermExtractor(GenerativeFill generativeFill, Nor
     private async Task<List<TermInContext>> ExtractTermsFromSpanishFrequencyDictionary(string inputFileName,
         PartOfSpeech? partOfSpeechFilter, int numItemsToSkip, int numItemsToTake)
     {
-        var frequencyDictionary = new FrequencyDataProvider(normalFormProvider, inputFileName);
+        var frequencyDictionary = new FrequencyDataProvider(stringSanitizer, inputFileName);
 
         List<TermInContext> terms = new List<TermInContext>();
 

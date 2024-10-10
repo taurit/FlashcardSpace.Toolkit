@@ -73,7 +73,7 @@ internal static class DependencyInjection
         var audioProviderSettings = new AudioProviderSettings(Parameters.AudioCacheFolder);
         services.AddSingleton(audioProviderSettings);
 
-        services.AddSingleton<NormalFormProvider>();
+        services.AddSingleton<StringSanitizer>();
 
         // Add other services
         services.AddTransient<FrequencyDictionaryTermExtractor>();

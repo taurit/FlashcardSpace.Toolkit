@@ -2,7 +2,7 @@
 
 namespace AnkiCardValidator.Utilities;
 
-public class DuplicateDetectionEqualityComparer(NormalFormProvider normalFormProvider) : IEqualityComparer<string>
+public class DuplicateDetectionEqualityComparer(StringSanitizer stringSanitizer) : IEqualityComparer<string>
 {
     public bool Equals(string? x, string? y)
     {
@@ -11,8 +11,8 @@ public class DuplicateDetectionEqualityComparer(NormalFormProvider normalFormPro
             return false;
         }
 
-        var xNormalized = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(x);
-        var yNormalized = normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(y);
+        var xNormalized = stringSanitizer.GetNormalizedFormOfLearnedTermWithCache(x);
+        var yNormalized = stringSanitizer.GetNormalizedFormOfLearnedTermWithCache(y);
 
         // normalization goes a bit too far and considers "el artista" and "la artista" duplicates, which it's not
         var seemsLikeADuplicate = (xNormalized == yNormalized);
@@ -34,6 +34,6 @@ public class DuplicateDetectionEqualityComparer(NormalFormProvider normalFormPro
 
     public int GetHashCode(string obj)
     {
-        return normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(obj).GetHashCode();
+        return stringSanitizer.GetNormalizedFormOfLearnedTermWithCache(obj).GetHashCode();
     }
 }

@@ -23,7 +23,7 @@ public class DuplicateDetectorTests
         var card3 = new CardViewModel(note3, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
 
         var ankiCards = new ObservableCollection<CardViewModel> { card1, card2, card3, };
-        var sut = new DuplicateDetector(new NormalFormProvider());
+        var sut = new DuplicateDetector(new StringSanitizer());
 
         // Act
         sut.DetectDuplicatesInQuestion(ankiCards);
@@ -66,7 +66,7 @@ public class DuplicateDetectorTests
 
         var cards = new ObservableCollection<CardViewModel> { card1, card2, };
 
-        var sut = new DuplicateDetector(new NormalFormProvider());
+        var sut = new DuplicateDetector(new StringSanitizer());
 
         // Act
         sut.DetectDuplicatesInQuestion(cards);
@@ -95,7 +95,7 @@ public class DuplicateDetectorTests
 
         var cards = new ObservableCollection<CardViewModel> { card1, card2A, card2B };
 
-        var sut = new DuplicateDetector(new NormalFormProvider());
+        var sut = new DuplicateDetector(new StringSanitizer());
 
         // Act
         sut.DetectDuplicatesInQuestion(cards);
@@ -126,7 +126,7 @@ public class DuplicateDetectorTests
         var card2 = new CardViewModel(note2, false, FlashcardDirection.FrontTextInPolish, 0, 0, 0, 0, CefrClassification.A1, null, null);
 
         var ankiCards = new ObservableCollection<CardViewModel> { card1, card2 };
-        var sut = new DuplicateDetector(new NormalFormProvider());
+        var sut = new DuplicateDetector(new StringSanitizer());
 
         // Act
         sut.DetectDuplicatesInQuestion(ankiCards);

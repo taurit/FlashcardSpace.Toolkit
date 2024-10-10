@@ -4,7 +4,7 @@ using CoreLibrary.Services;
 using CoreLibrary.Utilities;
 
 namespace AnkiCardValidator.Utilities;
-public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, FrequencyDataProvider polishFrequencyDataProvider, FrequencyDataProvider spanishFrequencyDataProvider)
+public class FlashcardDirectionDetector(StringSanitizer stringSanitizer, FrequencyDataProvider polishFrequencyDataProvider, FrequencyDataProvider spanishFrequencyDataProvider)
 {
     public FlashcardDirection DetectDirectionOfACard(AnkiNote note)
     {
@@ -60,10 +60,10 @@ public class FlashcardDirectionDetector(NormalFormProvider normalFormProvider, F
 
     private FlashcardDirection? TryDetermineDirectionBasedOnFrequencyDictionaryPresenceOfWords(AnkiNote note)
     {
-        var wordsInQuestion = normalFormProvider
+        var wordsInQuestion = stringSanitizer
             .GetNormalizedFormOfLearnedTermWithCache(note.FrontText)
             .Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var wordsInAnswer = normalFormProvider
+        var wordsInAnswer = stringSanitizer
             .GetNormalizedFormOfLearnedTermWithCache(note.BackText)
             .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 

@@ -15,7 +15,7 @@ public partial class MainWindow : Window
 {
     MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
 
-    readonly NormalFormProvider _normalFormProvider = new();
+    readonly StringSanitizer _stringSanitizer = new();
 
     readonly FrequencyDataProvider _spanishFrequencyDataProvider;
     readonly FrequencyDataProvider _polishFrequencyDataProvider;
@@ -30,11 +30,11 @@ public partial class MainWindow : Window
         DataContext = new MainWindowViewModel();
 
         // tech debt: DI container should make it simpler
-        _duplicateDetector = new(_normalFormProvider);
+        _duplicateDetector = new(_stringSanitizer);
         _definitionCounter = new();
-        _spanishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionarySpanish);
-        _polishFrequencyDataProvider = new(_normalFormProvider, Settings.FrequencyDictionaryPolish);
-        _directionDetector = new(_normalFormProvider, _polishFrequencyDataProvider, _spanishFrequencyDataProvider);
+        _spanishFrequencyDataProvider = new(_stringSanitizer, Settings.FrequencyDictionarySpanish);
+        _polishFrequencyDataProvider = new(_stringSanitizer, Settings.FrequencyDictionaryPolish);
+        _directionDetector = new(_stringSanitizer, _polishFrequencyDataProvider, _spanishFrequencyDataProvider);
         _qualityIssuesIgnoreList = new QualityIssuesIgnoreList(Settings.QualityIssuesIgnoreListFilePath);
     }
 

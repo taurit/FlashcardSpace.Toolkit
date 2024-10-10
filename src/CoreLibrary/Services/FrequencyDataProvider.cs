@@ -10,15 +10,15 @@ public record FrequencyRecord(string Term, int Position, long NumOccurrences);
 public class FrequencyDataProvider
 {
     private readonly Dictionary<string, FrequencyRecord> _frequencyData = new(StringComparer.OrdinalIgnoreCase);
-    private readonly NormalFormProvider _normalFormProvider;
+    private readonly StringSanitizer _stringSanitizer;
     private readonly string _frequencyDictionaryFilePath;
 
     /// <summary>
     /// Provides information about the frequency of words' occurrence in a language.
     /// </summary>
-    public FrequencyDataProvider(NormalFormProvider normalFormProvider, string frequencyDictionaryFilePath)
+    public FrequencyDataProvider(StringSanitizer stringSanitizer, string frequencyDictionaryFilePath)
     {
-        _normalFormProvider = normalFormProvider;
+        _stringSanitizer = stringSanitizer;
         _frequencyDictionaryFilePath = frequencyDictionaryFilePath;
 
         if (!File.Exists(_frequencyDictionaryFilePath))
@@ -122,7 +122,7 @@ public class FrequencyDataProvider
 
     public string SanitizeWordForFrequencyCheck(string input)
     {
-        return _normalFormProvider.GetNormalizedFormOfLearnedTermWithCache(input);
+        return _stringSanitizer.GetNormalizedFormOfLearnedTermWithCache(input);
     }
 
     public List<FrequencyRecord> Take(int numItemsToSkip, int numItemsToTake)

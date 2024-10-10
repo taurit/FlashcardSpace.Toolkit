@@ -58,7 +58,7 @@ public class FlashcardDirectionDetectorTests
 
     private static FlashcardDirectionDetector GetSut()
     {
-        var normalFormProvider = new NormalFormProvider();
+        var normalFormProvider = new StringSanitizer();
         var polishFrequencyDataProvider = new FrequencyDataProvider(normalFormProvider, Settings.FrequencyDictionaryPolish);
         var spanishFrequencyDataProvider = new FrequencyDataProvider(normalFormProvider, Settings.FrequencyDictionarySpanish);
         var flashcardDirectionDetector = new FlashcardDirectionDetector(normalFormProvider, polishFrequencyDataProvider, spanishFrequencyDataProvider);

@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace AnkiCardValidator.Utilities;
 
-public class DuplicateDetector(NormalFormProvider normalFormProvider)
+public class DuplicateDetector(StringSanitizer stringSanitizer)
 {
-    private readonly DuplicateDetectionEqualityComparer _duplicateDetectionEqualityComparer = new(normalFormProvider);
+    private readonly DuplicateDetectionEqualityComparer _duplicateDetectionEqualityComparer = new(stringSanitizer);
 
     /// <summary>
     /// Heuristically detects possible duplicates in a list of notes.
