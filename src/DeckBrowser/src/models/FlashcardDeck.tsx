@@ -1,5 +1,9 @@
-import { Flashcard } from "./Flashcard";
+import { FlashcardNote } from "./FlashcardNote";
 
 export class FlashcardDeck {
-    public flashcards: Flashcard[] | undefined;
+    public flashcards: FlashcardNote[] | undefined;
+    public deckName: string | undefined;
+    public mediaFilesPrefix: string | undefined;
+    public sourceLanguage: string | undefined;
+    public targetLanguage: string | undefined;
 }

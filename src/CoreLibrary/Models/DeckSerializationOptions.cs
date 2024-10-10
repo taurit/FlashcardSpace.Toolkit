@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace CoreLibrary.Models;
 
-internal static class DeckSerializationOptions
+public static class DeckSerializationOptions
 {
-    internal static readonly JsonSerializerOptions SerializationOptions = new JsonSerializerOptions
+    public static readonly JsonSerializerOptions SerializationOptions = new JsonSerializerOptions
     {
         // For readability
         WriteIndented = true,
@@ -14,7 +15,12 @@ internal static class DeckSerializationOptions
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 
         // Add JsonStringEnumConverter to serialize enums as strings
-        Converters = { new JsonStringEnumConverter() }
+        Converters = { new JsonStringEnumConverter(allowIntegerValues: false) },
+
+        // Required to generate schema
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver() // enums dont work
+
+
     };
 
 }

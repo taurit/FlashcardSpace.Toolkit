@@ -1,112 +1,163 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "title": "Flashcard deck",
-    "additionalProperties": false,
-
-    "properties": {
-        "$schema": {
+  "type": [
+    "object",
+    "null"
+  ],
+  "properties": {
+    "deckName": {
+      "type": "string"
+    },
+    "mediaFilesPrefix": {
+      "type": "string"
+    },
+    "flashcards": {
+      "type": "array",
+      "items": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "termBaseForm": {
             "type": "string"
-        },
-        "deckName": {
+          },
+          "termEnglishTranslation": {
             "type": "string"
-        },
-        "sourceLanguage": {
+          },
+          "contextEnglishTranslation": {
             "type": "string"
-        },
-        "targetLanguage": {
-            "type": "string"
-        },
-        "mediaFilesPrefix": {
-            "type": "string",
-            "description": "Short, but ideally unique prefix for all media file names in the deck."
-        },
-        "flashcards": {
+          },
+          "type": {
+            "enum": [
+              "Unknown",
+              "Noun",
+              "Verb",
+              "Adjective",
+              "Idiom",
+              "Other"
+            ]
+          },
+          "imageCandidates": {
             "type": "array",
             "items": {
-                "type": "object",
-                "additionalProperties": false,
-
-                "properties": {
-                    "term": {
-                        "type": "string",
-                        "description": "The main word or term being learned."
-                    },
-                    "termBaseForm": {
-                        "type": "string",
-                        "description": "The standardized form of the term being learned."
-                    },
-                    "context": {
-                        "type": "string",
-                        "description": "A sentence or phrase providing context for the term."
-                    },
-                    "contextAudio": {
-                        "type": "string",
-                        "description": "Relative URL to the audio file for the context sentence."
-                    },
-                    "type": {
-                        "type": "string",
-                        "description": "The grammatical category of the term, such as noun, verb, etc."
-                    },
-                    "termTranslation": {
-                        "type": "string",
-                        "description": "The translation of the term in another language."
-                    },
-                    "termEnglishTranslation": {
-                        "type": "string"
-                    },
-                    "remarks": {
-                        "type": "string",
-                        "description": "Remarks left by teacher for student."
-                    },
-                    "contextTranslation": {
-                        "type": "string",
-                        "description": "The translation of the context sentence."
-                    },
-                    "contextTranslationAudio": {
-                        "type": "string",
-                        "description": "Relative URL to the audio file for the context sentence translation."
-                    },
-                    "contextEnglishTranslation": {
-                        "type": "string"
-                    },
-                    "termAudio": {
-                        "type": "string",
-                        "description": "Relative URL to the audio file for the term."
-                    },
-                    "termTranslationAudio": {
-                        "type": "string",
-                        "description": "Relative URL to the audio file for the term translation."
-                    },
-                    "imageCandidates": {
-                        "type": "array",
-                        "description": "Array of potential image files related to the term (paths relative to flashcards.json).",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "selectedImageIndex": {
-                        "type": "integer",
-                        "description": "Index of the selected image from the imageCandidates array."
-                    },
-                    "qaSuggestions": {
-                        "type": "string",
-                        "description": "Quality Assurance suggestion"
-                    }
-                },
-                "required": [
-                    "term",
-                    "context",
-                    "type",
-                    "termTranslation",
-                    "contextTranslation",
-                    "termAudio",
-                    "termTranslationAudio",
-                    "imageCandidates",
-                    "selectedImageIndex"
-                ]
+              "type": [
+                "string",
+                "null"
+              ]
             }
+          },
+          "overrides": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "term": {
+                "type": "string"
+              },
+              "termAudio": {
+                "type": "string"
+              },
+              "termTranslation": {
+                "type": "string"
+              },
+              "termTranslationAudio": {
+                "type": "string"
+              },
+              "context": {
+                "type": "string"
+              },
+              "contextAudio": {
+                "type": "string"
+              },
+              "contextTranslation": {
+                "type": "string"
+              },
+              "contextTranslationAudio": {
+                "type": "string"
+              },
+              "selectedImageIndex": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "remarks": {
+                "type": "string"
+              },
+              "qaSuggestions": {
+                "type": "string"
+              }
+            }
+          },
+          "approvalStatus": {
+            "enum": [
+              "NotReviewedYet",
+              "Approved",
+              "Rejected"
+            ]
+          },
+          "term": {
+            "type": "string"
+          },
+          "termAudio": {
+            "type": "string"
+          },
+          "termTranslation": {
+            "type": "string"
+          },
+          "termTranslationAudio": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string"
+          },
+          "contextAudio": {
+            "type": "string"
+          },
+          "contextTranslation": {
+            "type": "string"
+          },
+          "contextTranslationAudio": {
+            "type": "string"
+          },
+          "selectedImageIndex": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "remarks": {
+            "type": "string"
+          },
+          "qaSuggestions": {
+            "type": "string"
+          }
         }
+      }
     },
-    "required": ["flashcards", "deckName", "mediaFilesPrefix", "sourceLanguage", "targetLanguage"]
+    "sourceLanguage": {
+      "enum": [
+        "Unspecified",
+        "English",
+        "Spanish",
+        "Polish"
+      ]
+    },
+    "targetLanguage": {
+      "enum": [
+        "Unspecified",
+        "English",
+        "Spanish",
+        "Polish"
+      ]
+    }
+  },
+  "required": [
+    "deckName",
+    "mediaFilesPrefix",
+    "flashcards",
+    "sourceLanguage",
+    "targetLanguage"
+  ]
 }
