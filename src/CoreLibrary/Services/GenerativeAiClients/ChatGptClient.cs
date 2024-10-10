@@ -8,8 +8,7 @@ using System.ClientModel;
 
 namespace CoreLibrary.Services.GenerativeAiClients;
 
-public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, string persistentCacheRootFolder)
-    : IGenerativeAiClient
+public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, string persistentCacheRootFolder) : IGenerativeAiClient
 {
     public async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt,
         GenerativeAiClientResponseMode mode, long seed, string? outputSchema = null)
@@ -18,6 +17,8 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
             throw new ArgumentException("Schema is required for StructuredOutput mode.");
         if (mode is not GenerativeAiClientResponseMode.StructuredOutput && outputSchema is not null)
             throw new ArgumentException("Schema is only allowed for StructuredOutput mode.");
+
+        float? temperature = 0.1f; // default is 1; 0.1 is more deterministic and might be better for reliable language analysis with less creativity and randomness
 
         persistentCacheRootFolder.EnsureDirectoryExists();
 
@@ -40,7 +41,12 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         var stableHash = (prompt + outputSchema).GetHashCodeStable();
         // proper extensions helps debugging (e.g. VS Code highlights JSON files if they have proper extension only)
         var cacheFileExtension = mode == GenerativeAiClientResponseMode.PlainText ? "txt" : "json";
-        var responseCacheFileName = $"{modelClassId}_{stableHash}_r{seed}.{cacheFileExtension}";
+
+        var temperaturePart = ""; // todo hack to not invalidate cache on my pc. Remove at some point.
+        if (temperature.HasValue)
+            temperaturePart = $"_t{temperature.Value.ToString("0.0").Replace(",", ".")}";
+
+        var responseCacheFileName = $"{modelClassId}_{stableHash}_r{seed}{temperaturePart}.{cacheFileExtension}";
         var responseToPromptFileName = Path.Combine(persistentCacheRootFolder, responseCacheFileName);
 
         if (File.Exists(responseToPromptFileName))
@@ -54,6 +60,8 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         var options = new ChatCompletionOptions();
         options.Seed = seed; // let's try to have some determinism in the responses to reduce test flakiness (beta feature)
         // comment: adds some determinism, but every few attempts I get different response with different system_fingerprint. So it's not reliable yet.
+        if (temperature.HasValue)
+            options.Temperature = temperature.Value;
 
         switch (mode)
         {

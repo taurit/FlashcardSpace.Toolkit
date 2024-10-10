@@ -13,6 +13,8 @@ internal class GenerativeFillCache(string rootFolder)
         Converters = { new JsonStringEnumConverter() }
     };
 
+    private readonly string _rootFolder = rootFolder;
+
     public void SaveToCache<T>(
             string modelClassId,
             string systemChatMessage,
@@ -80,8 +82,8 @@ internal class GenerativeFillCache(string rootFolder)
                             $".json" // Generative fill uses Structured Outputs and response is always JSON
             ;
 
-        var cacheFilePath = Path.Combine(rootFolder, cacheFileName);
-        rootFolder.EnsureDirectoryExists();
+        var cacheFilePath = Path.Combine(_rootFolder, cacheFileName);
+        _rootFolder.EnsureDirectoryExists();
 
         return cacheFilePath;
     }

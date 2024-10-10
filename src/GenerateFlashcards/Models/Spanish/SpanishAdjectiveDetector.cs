@@ -7,7 +7,7 @@ namespace GenerateFlashcards.Models.Spanish;
 internal class SpanishAdjectiveDetector : PartOfSpeechDetector
 {
     [FillWithAI]
-    [FillWithAIRule($"True if the {nameof(IsolatedWord)} can be used as an adjective (adjetivo) in a grammatically correct Spanish sentence.")]
+    [FillWithAIRule($"True if the {nameof(IsolatedWord)} can be used as an adjective in a grammatically correct Spanish sentence (including casual speech and slang).")]
     [FillWithAIRule("Don't assume typos or errors. If the word doesn't fit the rule, return false.")]
     public bool IsAdjective { get; init; }
 
