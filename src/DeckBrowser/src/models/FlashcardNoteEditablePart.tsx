@@ -6,7 +6,7 @@ export class FlashcardNoteEditablePart {
     public selectedImageIndex: number | undefined;
     public term: string | undefined;
     public termAudio: string | undefined;
-    public termBaseForm: string | undefined;
+
     public termTranslation: string | undefined;
     public termTranslationAudio: string | undefined;
     public remarks: string | undefined;
