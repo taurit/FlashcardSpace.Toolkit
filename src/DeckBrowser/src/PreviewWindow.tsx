@@ -29,26 +29,50 @@ const DeckPreviewWindow: React.FC<DeckPreviewWindowProps> = ({ deck }) => {
                 windowClassName="anki-window-frame"
                 mainContent={
                     <div className="flashcard">
-                        <div className="question">{flashcard.term}</div>
+                        <div className="question">{(flashcard.overrides ? flashcard.overrides.term : null) ?? flashcard.term}</div>
 
-                        <AudioPlayer uniqueId="questionAudio" pathToAudioFile={`./${deckName}/${flashcard.termAudio}`} />
+                        <AudioPlayer
+                            uniqueId="questionAudio"
+                            pathToAudioFile={`./${deckName}/${(flashcard.overrides ? flashcard.overrides.termAudio : null) ?? flashcard.termAudio}`}
+                        />
 
                         <hr />
-                        <div className="answer">{flashcard.termTranslation}</div>
+                        <div className="answer">{(flashcard.overrides ? flashcard.overrides.termTranslation : null) ?? flashcard.termTranslation}</div>
 
-                        <AudioPlayer uniqueId="answerAudio" pathToAudioFile={`./${deckName}/${flashcard.termTranslationAudio}`} />
+                        <AudioPlayer
+                            uniqueId="answerAudio"
+                            pathToAudioFile={`./${deckName}/${
+                                (flashcard.overrides ? flashcard.overrides.termTranslationAudio : null) ?? flashcard.termTranslationAudio
+                            }`}
+                        />
 
-                        <Image deckName={deckName} imageCandidates={flashcard.imageCandidates!} selectedImageIndex={flashcard.selectedImageIndex} />
+                        <Image
+                            deckName={deckName}
+                            imageCandidates={flashcard.imageCandidates!}
+                            selectedImageIndex={(flashcard.overrides ? flashcard.overrides.selectedImageIndex : null) ?? flashcard.selectedImageIndex}
+                        />
 
                         {/* <div className="definition">{flashcard.termDefinition}</div> */}
                         <div className="usageExample">
                             <AudioPlayer
                                 uniqueId="exampleAudio"
-                                pathToAudioFile={`./${deckName}/${flashcard.contextAudio}`}
-                                replaceDefaultIconWith={<div className="sentenceExample">{flashcard.context}</div>}
+                                pathToAudioFile={`./${deckName}/${(flashcard.overrides ? flashcard.overrides.contextAudio : null) ?? flashcard.contextAudio}`}
+                                replaceDefaultIconWith={
+                                    <div className="sentenceExample">{(flashcard.overrides ? flashcard.overrides.context : null) ?? flashcard.context}</div>
+                                }
                             />
 
-                            <div className="sentenceExampleTranslated">{flashcard.contextTranslation}</div>
+                            <AudioPlayer
+                                uniqueId="exampleAudioTranslation"
+                                pathToAudioFile={`./${deckName}/${
+                                    (flashcard.overrides ? flashcard.overrides.contextTranslationAudio : null) ?? flashcard.contextTranslationAudio
+                                }`}
+                                replaceDefaultIconWith={
+                                    <div className="sentenceExampleTranslated">
+                                        {(flashcard.overrides ? flashcard.overrides.contextTranslation : null) ?? flashcard.contextTranslation}
+                                    </div>
+                                }
+                            />
                         </div>
                     </div>
                 }

@@ -8,23 +8,32 @@
         {
             "term": "la casa",
             "termAudio": "audio/la-casa.mp3",
-            "termBaseForm": "la casa",
+            "termBaseForm": "la casa /Override test: hypothetical MISTAKE/",
 
-            "termTranslation": "dom",
-            "termTranslationAudio": "audio/dom.mp3",
+            "termTranslation": "dom /Override test: hypothetical MISTAKE/",
+            "termTranslationAudio": "audio/dom.mp3 /Override test: hypothetical MISTAKE/",
             "termEnglishTranslation": "a house",
 
             "remarks": null,
 
-            "context": "La casa es grande y bonita.",
+            "context": "La casa es grande y bonita. WITH MISTAKE",
             "contextAudio": "audio/la-casa-es-grande-y-bonita.mp3",
-            "contextTranslation": "Dom jest duży i piękny.",
-            "contextTranslationAudio": "audio/dom-jest-duzy-i-piekny.mp3",
+            "contextTranslation": "Dom jest duży i piękny. /Override test: hypothetical MISTAKE/",
+            "contextTranslationAudio": "audio/dom-jest-duzy-i-piekny.mp3 /Override test: hypothetical MISTAKE/",
             "contextEnglishTranslation": "The house is big and pretty.",
 
             "type": "Noun",
             "imageCandidates": ["images/la-casa-01.webp", "images/la-casa-02.webp"],
-            "selectedImageIndex": 0
+            "selectedImageIndex": 0,
+
+            "overrides": {
+                "termBaseForm": "la casa",
+                "termTranslation": "dom",
+                "termTranslationAudio": "audio/dom.mp3",
+                "context": "La casa es grande y bonita.",
+                "contextTranslation": "Dom jest duży i piękny.",
+                "contextTranslationAudio": "audio/dom-jest-duzy-i-piekny.mp3"
+            }
         },
         {
             "term": "el gato",
