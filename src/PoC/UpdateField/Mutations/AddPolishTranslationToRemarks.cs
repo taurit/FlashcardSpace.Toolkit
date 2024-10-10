@@ -61,12 +61,14 @@ internal static class AddPolishTranslationToRemarks
 
 
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
+        var gfLogger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<GenerativeFill>();
         var chatGptClientCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "UpdateField.ChatGptClient");
         var gfCacheFolder = Path.Combine(Path.GetTempPath(), "FlashcardSpaceToolkitCaches", "UpdateField.GenerativeFill");
 
         Directory.CreateDirectory(chatGptClientCacheFolder);
         var chatGptClient = new ChatGptClient(logger, openAiCredentials, chatGptClientCacheFolder);
-        var generativeFill = new GenerativeFill(chatGptClient, gfCacheFolder);
+        var settings = new GenerativeFillSettings(gfCacheFolder);
+        var generativeFill = new GenerativeFill(gfLogger, chatGptClient, settings);
         var filledNotes = await generativeFill.FillMissingProperties("gpt-4o-2024-08-06", "gpt-4o", fillModel);
 
         foreach (var filledNote in filledNotes)

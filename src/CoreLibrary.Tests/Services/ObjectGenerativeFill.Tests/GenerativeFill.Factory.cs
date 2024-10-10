@@ -23,12 +23,14 @@ internal static class GenerativeFillTestFactory
 
         // create ChatGPT client instance
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ChatGptClient>();
+        var gfLogger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<GenerativeFill>();
 
         Directory.CreateDirectory(ChatGptClientCacheFolder);
         var chatGptClient = new ChatGptClient(logger, openAiCredentials, ChatGptClientCacheFolder);
 
         // create instance of system under test
-        var generativeFill = new GenerativeFill(chatGptClient, GenerativeFillCacheFolder);
+        var generativeFillSettings = new GenerativeFillSettings(GenerativeFillCacheFolder);
+        var generativeFill = new GenerativeFill(gfLogger, chatGptClient, generativeFillSettings);
         return generativeFill;
     }
 }

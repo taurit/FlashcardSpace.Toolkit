@@ -29,13 +29,12 @@ internal static class DependencyInjection
                             profile.ConfigureOptions<DestructuringOptions>(ds => ds.WriteIndented = true);
                             //profile.OutputTemplate = "{Message}{NewLine}{Exception}";
                         })
-                        // by default Trace and Debug are not logged; enable them
+                        // by default Trace and Debug are not logged; enable them here if needed
                         .SetMinimumLevel(LogLevel.Information)
                 )
                 // also needed at this level to enable Trace and Debug
                 .SetMinimumLevel(LogLevel.Information)
                 .AddFilter("System.Net.Http.HttpClient", LogLevel.Warning)  // or LogLevel.None if you want to suppress all
-
         );
 
         // Get instance of ILogger which we need already at this point
@@ -97,8 +96,9 @@ internal static class DependencyInjection
 
         services.AddSingleton(generativeAiClient);
 
-        GenerativeFill generativeFill = new(generativeAiClient, Parameters.GenerativeFillCacheFolder);
-        services.AddSingleton(generativeFill);
+        var generativeFillSettings = new GenerativeFillSettings(Parameters.GenerativeFillCacheFolder);
+        services.AddSingleton(generativeFillSettings);
+        services.AddSingleton<GenerativeFill>();
 
         TextToSpeechClient ttsClient = new TextToSpeechClient(
             secretParameters.AZURE_TEXT_TO_SPEECH_KEY!,

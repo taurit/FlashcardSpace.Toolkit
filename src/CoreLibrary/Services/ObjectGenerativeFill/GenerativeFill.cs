@@ -1,26 +1,29 @@
 ﻿using CoreLibrary.Services.GenerativeAiClients;
 using CoreLibrary.Utilities;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace CoreLibrary.Services.ObjectGenerativeFill;
 
+public record GenerativeFillSettings(string GenerativeFillCacheFolder);
+
 /// <summary>
 /// Helps process arrays of items instead of single item, to save on input tokens
 /// </summary>
-public class GenerativeFill(IGenerativeAiClient generativeAiClient, string generativeFillCacheFolder)
+public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient generativeAiClient, GenerativeFillSettings settings)
 {
     // exposed for testing
-    internal string GenerativeFillCacheFolder { get; } = generativeFillCacheFolder;
+    internal string GenerativeFillCacheFolder { get; } = settings.GenerativeFillCacheFolder;
 
     const string SystemChatMessage = "Your job is to transform array of input objects into array of output objects. Adhere to the JSON schema and use property descriptions for guidelines.";
 
     /// <summary>
     ///  Excluded from DI so library client doesn't have to be aware of that internal class.
     /// </summary>
-    private readonly GenerativeFillSchemaProvider _schemaProvider = new(generativeFillCacheFolder);
-    private readonly GenerativeFillCache _cache = new(generativeFillCacheFolder);
+    private readonly GenerativeFillSchemaProvider _schemaProvider = new(settings.GenerativeFillCacheFolder);
+    private readonly GenerativeFillCache _cache = new(settings.GenerativeFillCacheFolder);
 
 
     public async Task<T> FillMissingProperties<T>(string modelId, string modelClassId, T inputElement, int seed = 1) where T : ObjectWithId, new()
@@ -32,6 +35,8 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
 
     public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, List<T> inputItems, int seed = 1) where T : ObjectWithId, new()
     {
+        logger.LogInformation("Filling missing properties for {NumItems} items", inputItems.Count);
+
         // build prompt
         var promptTemplate = "Input contains array of items to process (in the `Items` property):\n" +
                                "\n" +
@@ -51,11 +56,12 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
         if (itemsThatRequireApiCall.Count > 0)
         {
             var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
-
             var chunks = itemsThatRequireApiCall.Chunk(19);
 
             foreach (var chunk in chunks)
             {
+                logger.LogInformation("Processing chunk of {NumItems} items...", chunk.Length);
+
                 var itemsThatRequireApiCallChunk = chunk.ToList();
                 var inputSerialized = SerializeInput(itemsThatRequireApiCallChunk);
                 var prompt = String.Format(promptTemplate, inputSerialized);
@@ -71,6 +77,8 @@ public class GenerativeFill(IGenerativeAiClient generativeAiClient, string gener
             }
 
         }
+
+        logger.LogInformation("Filled missing properties for {NumItems} items", inputItems.Count);
 
         // return output
         return outputItems;
