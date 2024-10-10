@@ -30,6 +30,11 @@ public class AnkiExportService
         new("SentenceExampleAudioFileName"),
 
         new("SentenceExampleTranslation"),
+
+        // hack needed -> as above
+        new("SentenceExampleTranslationAudio"),
+        new("SentenceExampleTranslationAudioFileName"),
+
         new("Remarks"),
     };
 
@@ -59,7 +64,9 @@ public class AnkiExportService
             "{{#SentenceExample}}" +
             "<div id=\"sentenceSourceLanguage\">{{SentenceExample}}</div>\n" +
             "<audio id=\"sentenceSourceLanguageAudio\" preload=\"auto\" src=\"{{SentenceExampleAudioFileName}}\"></audio>\n" +
+
             "<div id=\"sentenceTargetLanguage\">{{SentenceExampleTranslation}}</div>\n" +
+            "<audio id=\"sentenceTargetLanguageAudio\" preload=\"auto\" src=\"{{SentenceExampleTranslationAudioFileName}}\"></audio>\n" +
             "{{/SentenceExample}}" +
 
             // remarks
@@ -107,20 +114,29 @@ public class AnkiExportService
             var contextAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
                 flashcard.Overrides?.ContextAudio, flashcard.ContextAudio);
 
+            var contextTranslationAudioTag = RegisterAudioAndGetSoundTag(exportedDeck, manifestFolder,
+                flashcard.Overrides?.ContextTranslationAudio, flashcard.ContextTranslationAudio);
+
             // add card to the deck
             string[] noteFields =
             [
                 flashcard.Overrides?.Term ?? flashcard.Term, // FrontText
-                termAudioTag.FileNameInTag, // FrontAudio
+                termAudioTag.FileNameAsAnkiSoundTag, // FrontAudio
+
                 flashcard.Overrides?.TermTranslation ?? flashcard.TermTranslation, // BackText
-                termTranslationAudioTag.FileNameInTag, // BackAudio
+                termTranslationAudioTag.FileNameAsAnkiSoundTag, // BackAudio
+
                 imageTag, // Image
                 flashcard.Overrides?.Context ?? flashcard.Context, // SentenceExample
                 
-                contextAudioTag.FileNameInTag, // SentenceExampleAudio
+                contextAudioTag.FileNameAsAnkiSoundTag, // SentenceExampleAudio
                 contextAudioTag.FileName, // SentenceExampleAudioFileName
 
                 flashcard.Overrides?.ContextTranslation ?? flashcard.ContextTranslation, // SentenceExampleTranslation
+                
+                contextTranslationAudioTag.FileNameAsAnkiSoundTag, // SentenceExampleAudio
+                contextTranslationAudioTag.FileName, // SentenceExampleTranslationAudioFileName
+
                 flashcard.Overrides?.Remarks ?? flashcard.Remarks // Remarks
             ];
 
@@ -161,7 +177,7 @@ public class AnkiExportService
 
     public record SoundMediaReference(string FileName)
     {
-        public string FileNameInTag => $"[sound:{FileName}]";
+        public string FileNameAsAnkiSoundTag => $"[sound:{FileName}]";
     }
 
     private SoundMediaReference? RegisterAudioAndGetSoundTag(AnkiDeck exportedDeck, string manifestFileFolder, string? termAudioOverride, string termAudioBase)
