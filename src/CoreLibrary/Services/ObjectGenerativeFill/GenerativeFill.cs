@@ -35,7 +35,6 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
 
     public async Task<List<T>> FillMissingProperties<T>(string modelId, string modelClassId, List<T> inputItems, int seed = 1) where T : ObjectWithId, new()
     {
-        logger.LogInformation("Filling missing properties for {NumItems} items", inputItems.Count);
 
         // build prompt
         var promptTemplate = "Input contains array of items to process (in the `Items` property):\n" +
@@ -49,6 +48,8 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
         var outputItems = _cache.FillFromCacheWherePossible(modelClassId, SystemChatMessage, promptTemplate, seed, inputItems);
         var itemsThatRequireApiCall = outputItems.Where(x => x.Id is null).ToList();
 
+        logger.LogInformation("Filling missing properties for {NumItems} items", itemsThatRequireApiCall.Count);
+
         // assign consecutive IDs to input elements
         for (var i = 0; i < outputItems.Count; i++)
             outputItems[i].Id = i + 1; // start from 1, just in case AI is trained to treat "0" differently
@@ -56,11 +57,13 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
         if (itemsThatRequireApiCall.Count > 0)
         {
             var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
-            var chunks = itemsThatRequireApiCall.Chunk(19);
+            var chunks = itemsThatRequireApiCall.Chunk(19).ToList();
+            var chunkNo = 0;
 
             foreach (var chunk in chunks)
             {
-                logger.LogInformation("Processing chunk of {NumItems} items...", chunk.Length);
+                var progressPercent = (chunkNo) * 100 / chunks.Count;
+                logger.LogInformation("Processing chunk {ChunkNo} of {NumItems}. {ProgressPercent}% done.", chunkNo, chunk.Length, progressPercent);
 
                 var itemsThatRequireApiCallChunk = chunk.ToList();
                 var inputSerialized = SerializeInput(itemsThatRequireApiCallChunk);
@@ -74,11 +77,12 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
                 _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, seed, newItemsToStoreInCache);
 
                 outputItems = newOutputItems;
+                chunkNo++;
             }
 
         }
 
-        logger.LogInformation("Filled missing properties for {NumItems} items", inputItems.Count);
+        logger.LogInformation("Filled missing properties for all items.");
 
         // return output
         return outputItems;
