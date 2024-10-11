@@ -1,4 +1,5 @@
-﻿using DotnetGeminiSDK.Client;
+﻿using CoreLibrary.Utilities;
+using DotnetGeminiSDK.Client;
 using DotnetGeminiSDK.Config;
 using DotnetGeminiSDK.Model.Request;
 using Microsoft.Extensions.Logging;
@@ -22,24 +23,39 @@ public class GoogleGeminiClient(ILogger logger, string geminiApiKey, string pers
         {
             ApiKey = geminiApiKey,
             TextBaseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest",
-
         };
-        var geminiClient = new GeminiClient(config);
-
-        // model list:
-        var response = await geminiClient.TextPrompt(prompt, new GenerationConfig()
+        var generationConfig = new GenerationConfig()
         {
             // Seed = seed, // already possible in API but not in SDK, I created an issue here: https://github.com/gsilvamartin/dotnet-gemini-sdk/issues/28
             MaxOutputTokens = 300,
             //ResponseMimeType = null //"application/json" // support for Structured Outputs not yet available in this version of library
-        });
+        };
 
+        // do we have response cached already?
+        var cacheFileName = GenerateCacheFileName(config.TextBaseUrl, generationConfig.MaxOutputTokens, prompt, seed);
+        if (File.Exists(cacheFileName))
+        {
+            responseContent = await File.ReadAllTextAsync(cacheFileName);
+            return responseContent;
+        }
 
+        var geminiClient = new GeminiClient(config);
+        var response = await geminiClient.TextPrompt(prompt, generationConfig);
         var answer = response.Candidates.First();
         responseContent = answer.Content.Parts.First().Text;
 
-        Console.WriteLine(responseContent);
+        // save back to cache
+        await File.WriteAllTextAsync(cacheFileName, responseContent);
 
         return responseContent;
+    }
+
+    private string GenerateCacheFileName(string configTextBaseUrl, int generationConfigMaxOutputTokens, string prompt, long seed)
+    {
+        var fingerprintPlainText = $"{configTextBaseUrl}_{generationConfigMaxOutputTokens}_{prompt}_{seed}";
+        var fingerprint = fingerprintPlainText.GetHashCodeStable(10);
+        var fileName = $"{fingerprint}.md";
+        persistentCacheRootFolder.EnsureDirectoryExists();
+        return Path.Combine(persistentCacheRootFolder, fileName);
     }
 }

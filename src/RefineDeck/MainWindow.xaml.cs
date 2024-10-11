@@ -242,13 +242,16 @@ public partial class MainWindow : Window
         var selectedCard = ViewModel.SelectedFlashcard;
         if (selectedCard is null) return;
 
-        selectedCard.QaSuggestionsSecondOpinion = "";
+        selectedCard.QaSuggestionsSecondOpinion = null;
     }
 
     private async void RunSecondaryQualityAssurance_OnClick(object sender, RoutedEventArgs e)
     {
         if (QualityAssuranceAgent is null) return;
 
-        await QualityAssuranceAgent.ValidateSelectedCard();
+        ViewModel.PerformingQualityAnalysis = true;
+        await QualityAssuranceAgent.ValidateAllCards();
+
+        ViewModel.PerformingQualityAnalysis = false;
     }
 }

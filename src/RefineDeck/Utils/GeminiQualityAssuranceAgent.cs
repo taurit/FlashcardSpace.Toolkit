@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RefineDeck.ViewModels;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace RefineDeck.Utils;
 
@@ -10,14 +11,24 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
 {
     GoogleGeminiClient? _client = null;
 
-    public async Task ValidateSelectedCard()
+    public async Task ValidateAllCards()
+    {
+        // in development, validate just current card
+        var card = viewModel.SelectedFlashcard;
+        if (card == null) return;
+
+        List<ReviewedCardViewModel> cards = [card];
+        foreach (var toValidate in cards)
+        {
+            await ValidateSelectedCard(toValidate);
+        }
+    }
+
+    private async Task ValidateSelectedCard(ReviewedCardViewModel card)
     {
         _client ??= GetGeminiClientInstance();
 
-        var card = viewModel.SelectedFlashcard;
-        if (card is null) return;
-
-        var dataToValidate = new
+        var dataToValidate = new DataToValidate
         {
             FrontSide_QuestionInSpanish = card.Term,
             BackSide_AnswerInPolish = card.TermTranslation,
@@ -48,8 +59,8 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
                      "\n" +
                      "If any part of the flashcard requires modification for correctness or clarity, provide:\n" +
                      "\n" +
-                     "- Brief and concrete suggestions for the flashcard author in natural language.,\n" +
-                     "- An example of the corrected flashcard data in JSON format.\n" +
+                     "- Brief and concrete suggestions for the flashcard author in natural language (don't skip it, even if you provide JSON).,\n" +
+                     "- Then, an example of the corrected flashcard data in JSON format (same structure as in input, wrapped in ```json and ``` backtick block).\n" +
                      "\n" +
                      $"Flashcard data:\n" +
                      $"```json\n" +
@@ -61,7 +72,7 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
             prompt,
             GenerativeAiClientResponseMode.PlainText);
 
-        card.QaSuggestionsSecondOpinion = response;
+        card.QaSuggestionsSecondOpinion = SplitIntoPlainTextAndJson(response);
     }
 
     private GoogleGeminiClient GetGeminiClientInstance()
@@ -76,4 +87,48 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
         return audioProvider;
     }
 
+    /// <summary>
+    /// Transforms the input string into two parts:
+    /// 1) Unstructured text (plain text) before the first code block (```json)
+    /// 2) JSON part inside the first code block (```json)
+    /// 
+    /// </summary>
+    private PlainTextAndJsonPart SplitIntoPlainTextAndJson(string input)
+    {
+        var plainText = "";
+        var json = "";
+
+        // use Regex to find content between ```json and ```
+        var match = Regex.Match(input, @"```json(.*?)```", RegexOptions.Singleline);
+        if (match.Success)
+        {
+            json = match.Groups[1].Value;
+            plainText = input.Substring(0, match.Index);
+        }
+        else
+        {
+            plainText = input;
+        }
+
+        plainText = plainText.Trim();
+
+        // deserialize JSON to the object
+        if (!String.IsNullOrWhiteSpace(json))
+        {
+            try
+            {
+                DataToValidate suggestion = JsonSerializer.Deserialize<DataToValidate>(json);
+                return new PlainTextAndJsonPart(plainText, suggestion);
+            }
+            catch (JsonException e)
+            {
+                // log the exception and continue
+                plainText += $"\n\nFailed to deserialize JSON suggestion: {e.Message}\n\n" +
+                             $"```\n" +
+                             $"{json}\n" +
+                             $"```";
+            }
+        }
+        return new PlainTextAndJsonPart(plainText, null);
+    }
 }

@@ -5,7 +5,7 @@ using System.Windows.Media;
 namespace RefineDeck.Converters;
 public class ApprovalStatusToColorConverter : OneWayConverter
 {
-    public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public override object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is ApprovalStatus status)
         {

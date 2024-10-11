@@ -209,17 +209,30 @@ public class SpanishPartsOfSpeechTests
 
         for (int i = 1; i <= numIterations; i++)
         {
-            var input = new SpanishAdjectiveDetector() { IsolatedWord = "medio" };
-            var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, input, seed: i);
+
+            var input1 = new SpanishAdjectiveDetector() { IsolatedWord = "medio" };
+            var input2 = new SpanishAdjectiveDetector() { IsolatedWord = "medio" };
+            var input3 = new SpanishAdjectiveDetector() { IsolatedWord = "medio" };
+            var input4 = new SpanishAdjectiveDetector() { IsolatedWord = "medio" };
+            var input5 = new SpanishAdjectiveDetector() { IsolatedWord = "medio" };
+
+            var inputs = new List<SpanishAdjectiveDetector>() { input1, input2, input3, input4, input5 };
+
+            var output = await _generativeFill.FillMissingProperties(TestParameters.OpenAiModelId, TestParameters.OpenAiModelId, inputs, seed: 100 * i);
 
             // Assert
             Console.WriteLine($"Iteration {i}/{numIterations}");
             output.Dump();
 
-            if (output.IsAdjective == false)
+            if (output[0].IsAdjective == false || output[1].IsAdjective == false || output[2].IsAdjective == false || output[3].IsAdjective == false || output[4].IsAdjective == false)
                 numWrongClassifications++;
 
-            output.SentenceExample.Should().NotContain("medio ambiente"); // frequent error made by the model
+            // frequent error made by the model that I want to eliminate as a possibility - using adjective as a noun
+            output[0].SentenceExample.Should().NotContain("medio ambiente");
+            output[1].SentenceExample.Should().NotContain("medio ambiente");
+            output[2].SentenceExample.Should().NotContain("medio ambiente");
+            output[3].SentenceExample.Should().NotContain("medio ambiente");
+            output[4].SentenceExample.Should().NotContain("medio ambiente");
         }
 
         numWrongClassifications.Should().Be(0);

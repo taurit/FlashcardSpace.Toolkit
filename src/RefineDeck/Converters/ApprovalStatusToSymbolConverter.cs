@@ -5,7 +5,7 @@ namespace RefineDeck.Converters;
 
 public class ApprovalStatusToSymbolConverter : OneWayConverter
 {
-    public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public override object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is ApprovalStatus status)
         {

@@ -46,10 +46,12 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
     public string QaSuggestions { get; set; }
     public bool IsQaSuggestionsOverridden => QaSuggestions != OriginalFlashcard.QaSuggestions;
 
-    public string? QaSuggestionsSecondOpinion { get; set; }
+    public PlainTextAndJsonPart? QaSuggestionsSecondOpinion { get; set; }
 
     public bool HasPendingQaSuggestions => !String.IsNullOrWhiteSpace(QaSuggestions);
-    public bool HasPendingQaSuggestionsSecondOpinion => !String.IsNullOrWhiteSpace(QaSuggestionsSecondOpinion);
+    public bool HasPendingQaSuggestionsSecondOpinion => QaSuggestionsSecondOpinion is not null && !QaSuggestionsSecondOpinion.PlainText.StartsWith("OK");
+    public bool HasPendingQaSuggestionsSecondOpinionJson => QaSuggestionsSecondOpinion is not null && QaSuggestionsSecondOpinion.Suggestion is not null;
+    public bool SecondOpinionConfirmedOk => QaSuggestionsSecondOpinion is not null && QaSuggestionsSecondOpinion.PlainText.StartsWith("OK");
     public bool HasAnyPendingQaSuggestions => HasPendingQaSuggestions || HasPendingQaSuggestionsSecondOpinion;
 
     public ObservableCollection<ImageCandidate> ImageCandidates { get; set; }

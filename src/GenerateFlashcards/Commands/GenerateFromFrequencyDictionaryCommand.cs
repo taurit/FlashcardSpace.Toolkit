@@ -30,9 +30,9 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
             );
 
         // shortcut: I assume terms are adjectives, todo: generalize
-        var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
+        //var concreteAdjectives = await adjectivesSelector.SelectConcreteAdjectives(terms);
 
-        var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(concreteAdjectives);
+        var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(terms);
         var notesWithEnglishAndPolishTranslations = await spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);

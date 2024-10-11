@@ -2,9 +2,9 @@
 using System.Windows;
 
 namespace RefineDeck.Converters;
-internal class BoolToVisibilityConverter : OneWayConverter
+internal class TrueToVisibleConverter : OneWayConverter
 {
-    public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public override object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is bool hasQaRemarks)
         {

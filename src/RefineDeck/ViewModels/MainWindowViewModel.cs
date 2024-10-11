@@ -28,4 +28,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     [DependsOn(nameof(Deck), nameof(SelectedFlashcard))]
     public int NumWarningsSecondOpinion => Deck.Flashcards.Count(flashcard => flashcard.HasPendingQaSuggestionsSecondOpinion);
+
+    public bool PerformingQualityAnalysis { get; set; }
 }

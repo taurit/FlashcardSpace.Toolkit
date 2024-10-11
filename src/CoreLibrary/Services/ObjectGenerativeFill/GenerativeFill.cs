@@ -17,7 +17,7 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
     // exposed for testing
     internal string GenerativeFillCacheFolder { get; } = settings.GenerativeFillCacheFolder;
 
-    const string SystemChatMessage = "Your job is to transform array of input objects into array of output objects. Adhere to the JSON schema and use property descriptions for guidelines.";
+    const string SystemChatMessage = "Your job is to transform array of input objects into array of output objects. Adhere to the JSON schema and use property descriptions for guidelines. Tha data will be used to teach language to students, so focus on the correctness of the generated translations and sentence examples.";
 
     /// <summary>
     ///  Excluded from DI so library client doesn't have to be aware of that internal class.
@@ -60,7 +60,11 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
             logger.LogInformation("Filling missing properties for {NumItems} items", itemsThatRequireApiCall.Count);
 
             var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
-            var chunks = itemsThatRequireApiCall.Chunk(19).ToList();
+
+            // my unconfirmed hypothesis: the larger the batch, the more mistakes in the response.
+            // e.g. in unit tests when I test 1-10 items in a batch, I observe no errors
+            // but with batch of ~19 items, I see 40-50% items with validation errors. Maybe reducing the batch size will help?
+            var chunks = itemsThatRequireApiCall.Chunk(10).ToList();
             var chunkNo = 0;
 
             foreach (var chunk in chunks)

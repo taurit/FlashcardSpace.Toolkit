@@ -16,20 +16,19 @@
     <Window.Resources>
         <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
         <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:TrueToVisibleConverter x:Key="TrueToVisibleConverter" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
 
         <Style x:Key="WysiwygDockPanel" TargetType="DockPanel">
             <Setter Property="Margin" Value="0,2,0,0" />
             <Setter Property="LastChildFill" Value="True" />
-
         </Style>
 
         <Style TargetType="ScrollViewer">
             <Setter Property="UseLayoutRounding" Value="True" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
-
         </Style>
+
         <Style x:Key="EditableText" TargetType="TextBox">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="TextWrapping" Value="Wrap" />
@@ -41,9 +40,19 @@
             <Setter Property="AcceptsReturn" Value="True" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="MaxLines" Value="8" />
+        </Style>
 
+        <Style x:Key="SecondOpinionSuggestion" TargetType="TextBox">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Left" />
+            <Setter Property="Foreground" Value="OrangeRed" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0,1" />
 
         </Style>
+
         <Style x:Key="ResetButton" TargetType="Button">
             <Setter Property="DockPanel.Dock" Value="Right" />
             <Setter Property="MinWidth" Value="25" />
@@ -103,15 +112,21 @@
 
                         <TextBlock
                             DockPanel.Dock="Right"
+                            Foreground="LimeGreen"
+                            Text="👍"
+                            Visibility="{Binding SecondOpinionConfirmedOk, Converter={StaticResource TrueToVisibleConverter}}" />
+
+                        <TextBlock
+                            DockPanel.Dock="Right"
                             Foreground="Salmon"
                             Text="⚠️"
-                            Visibility="{Binding HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            Visibility="{Binding HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource TrueToVisibleConverter}}" />
 
                         <TextBlock
                             DockPanel.Dock="Right"
                             Foreground="Orange"
                             Text="⚠️"
-                            Visibility="{Binding HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            Visibility="{Binding HasPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}" />
 
 
                         <TextBlock
@@ -204,7 +219,10 @@
                                     Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}"
                                     ToolTip="Term" />
                             </DockPanel>
-
+                            <TextBox
+                                Style="{StaticResource SecondOpinionSuggestion}"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.FrontSide_QuestionInSpanish}"
+                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
                             <Border
                                 Height="1"
                                 Margin="0,18"
@@ -227,8 +245,11 @@
                                     Style="{StaticResource EditableText}"
                                     Text="{Binding SelectedFlashcard.TermTranslation, FallbackValue='[Card not selected]'}"
                                     ToolTip="Term translation" />
-
                             </DockPanel>
+                            <TextBox
+                                Style="{StaticResource SecondOpinionSuggestion}"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_AnswerInPolish}"
+                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
 
                             <Image
                                 Margin="0,15"
@@ -256,6 +277,10 @@
                                     Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
                                     ToolTip="Sentence Example" />
                             </DockPanel>
+                            <TextBox
+                                Style="{StaticResource SecondOpinionSuggestion}"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_SentenceExampleInSpanish}"
+                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
 
                             <DockPanel Style="{StaticResource WysiwygDockPanel}">
                                 <Button
@@ -270,6 +295,10 @@
                                     Text="{Binding SelectedFlashcard.SentenceExampleTranslation, FallbackValue='[Card not selected]'}"
                                     ToolTip="Sentence example translation" />
                             </DockPanel>
+                            <TextBox
+                                Style="{StaticResource SecondOpinionSuggestion}"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_SentenceExampleTranslationToPolish}"
+                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
 
                             <TextBlock Margin="0,15,0,0">Optional remarks for a student:</TextBlock>
                             <DockPanel Style="{StaticResource WysiwygDockPanel}" ToolTip="Remarks from teacher to student">
@@ -286,6 +315,10 @@
                                     TextAlignment="Left" />
 
                             </DockPanel>
+                            <TextBox
+                                Style="{StaticResource SecondOpinionSuggestion}"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_RemarksFromTeacherToStudent}"
+                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
 
                             <UniformGrid
                                 Height="40"
@@ -310,11 +343,11 @@
                 VerticalAlignment="Bottom"
                 DockPanel.Dock="Bottom"
                 Header="QA remarks from AI agents"
-                Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}">
                 <ScrollViewer>
                     <StackPanel>
                         <!--  Remarks from generator  -->
-                        <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}">
                             <Button
                                 Margin="5,0,0,0"
                                 Padding="8"
@@ -341,7 +374,7 @@
                         <DockPanel
                             Margin="0,1,0,0"
                             LastChildFill="True"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource BoolToVisibilityConverter}}">
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource TrueToVisibleConverter}}">
                             <Button
                                 Margin="5,0,0,0"
                                 Padding="8"
@@ -360,7 +393,7 @@
                                 DockPanel.Dock="Bottom"
                                 FontSize="15"
                                 IsReadOnly="True"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion, Mode=OneWay}"
+                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.PlainText, Mode=OneWay}"
                                 TextWrapping="Wrap" />
                         </DockPanel>
                     </StackPanel>
@@ -437,6 +470,14 @@
 
             <StatusBarItem Grid.Column="7" HorizontalContentAlignment="Right">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <!--  Loading icon, visible only when PerformingQualityAnalysis is true  -->
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Visibility="{Binding PerformingQualityAnalysis, Converter={StaticResource TrueToVisibleConverter}}">
+                        ⏳
+                    </TextBlock>
+
                     <Button
                         Margin="5,0,0,0"
                         Padding="4,2"
