@@ -66,7 +66,7 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
             foreach (var chunk in chunks)
             {
                 var progressPercent = (chunkNo) * 100 / chunks.Count;
-                logger.LogInformation("Processing chunk {ChunkNo} of {NumItems}. {ProgressPercent}% done.", chunkNo, chunk.Length, progressPercent);
+                logger.LogInformation("Processing chunk {ChunkNo} of {NumChunks}. {ProgressPercent}% done.", chunkNo, chunks.Count, progressPercent);
 
                 var itemsThatRequireApiCallChunk = chunk.ToList();
                 var inputSerialized = SerializeInput(itemsThatRequireApiCallChunk);
