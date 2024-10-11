@@ -13,6 +13,12 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
     public async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt,
         GenerativeAiClientResponseMode mode, long seed, string? outputSchema = null)
     {
+        return await GetAnswerToPrompt(modelId, modelClassId, systemChatMessage, prompt, mode, seed, outputSchema, useOpenAiBackendEvenIfAzureIsAvailable: false);
+    }
+
+    private async Task<string> GetAnswerToPrompt(string modelId, string modelClassId, string systemChatMessage, string prompt,
+        GenerativeAiClientResponseMode mode, long seed, string? outputSchema, bool useOpenAiBackendEvenIfAzureIsAvailable)
+    {
         if (mode is GenerativeAiClientResponseMode.StructuredOutput && outputSchema is null)
             throw new ArgumentException("Schema is required for StructuredOutput mode.");
         if (mode is not GenerativeAiClientResponseMode.StructuredOutput && outputSchema is not null)
@@ -23,7 +29,7 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         persistentCacheRootFolder.EnsureDirectoryExists();
 
         ChatClient? client = null;
-        if (openAiCredentials.BackendType == OpenAiBackend.Azure)
+        if (openAiCredentials.BackendType == OpenAiBackend.Azure && !useOpenAiBackendEvenIfAzureIsAvailable)
         {
             var azureOpenAiEndpointUrl = new Uri(openAiCredentials.AzureOpenAiEndpoint!);
             var azureOpenAiClient = new AzureOpenAIClient(
@@ -33,6 +39,9 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         }
         else
         {
+            if (openAiCredentials.OpenAiDeveloperKey is null)
+                throw new InvalidOperationException("OpenAI developer key is required to contact OpenAI backend.");
+
             var openAiClientOptions = new OpenAIClientOptions { OrganizationId = openAiCredentials.OpenAiOrganizationId };
             var openAiApiKeyCredential = new ApiKeyCredential(openAiCredentials.OpenAiDeveloperKey!);
             client = new(model: modelId, openAiApiKeyCredential, openAiClientOptions);
@@ -87,7 +96,14 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         ];
 
         ChatCompletion completion = await client.CompleteChatAsync(messages, options);
-        // todo if finish reason is Azure content filter, fall back to OpenAI API
+        if (completion.FinishReason == ChatFinishReason.ContentFilter)
+        {
+            logger.LogWarning("Azure OpenAI Content filter triggered, falling back to OpenAI API which doesn't have it and might work.");
+            return await GetAnswerToPrompt(modelId, modelClassId, systemChatMessage, prompt, mode, seed, outputSchema, useOpenAiBackendEvenIfAzureIsAvailable: true);
+        }
+        if (completion.FinishReason != ChatFinishReason.Stop)
+            throw new InvalidOperationException($"Chat completion finished with unexpected reason: {completion.FinishReason}");
+
         var responseToPrompt = completion.Content[0].Text;
 
         await File.WriteAllTextAsync(responseToPromptFileName, responseToPrompt);
