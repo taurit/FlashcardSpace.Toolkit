@@ -16,8 +16,9 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
         // in development, validate just current card
         var card = viewModel.SelectedFlashcard;
         if (card == null) return;
-
         List<ReviewedCardViewModel> cards = [card];
+
+        //var cards = viewModel.Deck.Flashcards;
         foreach (var toValidate in cards)
         {
             await ValidateSelectedCard(toValidate);
@@ -26,15 +27,20 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
 
     private async Task ValidateSelectedCard(ReviewedCardViewModel card)
     {
+        var sourceLanguage = viewModel.Deck.SourceLanguage;
+        var targetLanguage = viewModel.Deck.TargetLanguage;
+
         _client ??= GetGeminiClientInstance();
 
         var dataToValidate = new DataToValidate
         {
-            FrontSide_QuestionInSpanish = card.Term,
-            BackSide_AnswerInPolish = card.TermTranslation,
-            BackSide_SentenceExampleInSpanish = card.SentenceExample,
-            BackSide_SentenceExampleTranslationToPolish = card.SentenceExampleTranslation,
-            BackSide_RemarksFromTeacherToStudent = card.Remarks
+            FrontSide_Question = card.Term,
+            BackSide_Answer = card.TermTranslation,
+
+            SentenceExample = card.SentenceExample,
+            SentenceExampleTranslation = card.SentenceExampleTranslation,
+
+            RemarksFromTeacherToStudent = card.Remarks
         };
 
         var jsonSerializerOptions = new JsonSerializerOptions()
@@ -46,10 +52,13 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
         string[] rules = new[]
         {
             "Ensure all text is free of spelling and grammatical errors.",
-            "The term on the front side must be used in real-world language and be understood by native speakers",
-            "The answer on the back side must be the correct and most appropriate answer to the question on the front side.",
-            "Remarks to the student should only be included if the term requires additional clarification, such as being a grammatical exception or having multiple meanings that might be confusing.",
-            "If the flashcard is correct and needs no changes, respond only with \"OK\" to avoid unnecessary suggestions."
+
+            $"The question in {nameof(DataToValidate.FrontSide_Question)} should be in {sourceLanguage}, represent a term used in real-world conversations, and be easily understood by native speakers.",
+            $"The answer in {nameof(DataToValidate.BackSide_Answer)} must be in {targetLanguage} and accurately reflect the most appropriate meaning of the term from {nameof(DataToValidate.FrontSide_Question)}.",
+            $"{nameof(DataToValidate.SentenceExample)} should be in {sourceLanguage} and, should include the term from {nameof(DataToValidate.FrontSide_Question)}.",
+            $"{nameof(DataToValidate.SentenceExampleTranslation)} should be a translation of {nameof(DataToValidate.SentenceExample)} to {targetLanguage}. It should be accurate and ideally, follow same order of words as {nameof(DataToValidate.SentenceExample)}, if rules of grammar allow it.",
+            $"{nameof(DataToValidate.RemarksFromTeacherToStudent)} should only be included if the term requires additional clarification, such as being a grammatical exception or having multiple meanings that might be confusing. If present, the value should be in {targetLanguage}.",
+            "If the flashcard is fully correct, respond only with \"OK\"."
         };
         var rulesString = String.Join("\n", rules.Select(x => $"- {x}"));
 
@@ -59,8 +68,8 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
                      "\n" +
                      "If any part of the flashcard requires modification for correctness or clarity, provide:\n" +
                      "\n" +
-                     "- Brief and concrete suggestions for the flashcard author in natural language (don't skip it, even if you provide JSON).,\n" +
-                     "- Then, an example of the corrected flashcard data in JSON format (same structure as in input, wrapped in ```json and ``` backtick block).\n" +
+                     "- Provide a brief explanation in English of why a change is needed (skip this if everything is correct).\n" +
+                     "- Show a corrected version of the flashcard in JSON format, wrapped in a ```json block. Modify only the incorrect parts, without regenerating the entire content.\n" +
                      "\n" +
                      $"Flashcard data:\n" +
                      $"```json\n" +

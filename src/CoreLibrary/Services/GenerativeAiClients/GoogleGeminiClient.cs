@@ -22,13 +22,19 @@ public class GoogleGeminiClient(ILogger logger, string geminiApiKey, string pers
         var config = new GoogleGeminiConfig
         {
             ApiKey = geminiApiKey,
-            TextBaseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest",
+            TextBaseUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{modelId}",
         };
         var generationConfig = new GenerationConfig()
         {
             // Seed = seed, // already possible in API but not in SDK, I created an issue here: https://github.com/gsilvamartin/dotnet-gemini-sdk/issues/28
             MaxOutputTokens = 300,
             //ResponseMimeType = null //"application/json" // support for Structured Outputs not yet available in this version of library
+
+            // Each model might have different range of temperature
+            // https://cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/adjust-parameter-values#temperature
+            Temperature = 0.1f,
+            TopK = 2,
+
         };
 
         // do we have response cached already?

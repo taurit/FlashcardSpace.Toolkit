@@ -17,6 +17,7 @@
         <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
         <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
         <converters:TrueToVisibleConverter x:Key="TrueToVisibleConverter" />
+        <converters:IsBusyToIsEnabledConverter x:Key="IsBusyToIsEnabledConverter" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
 
         <Style x:Key="WysiwygDockPanel" TargetType="DockPanel">
@@ -91,6 +92,8 @@
                 MaxWidth="500" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!--  Panel with the words  -->
@@ -148,259 +151,196 @@
         </ListBox>
 
         <!--  Wysiwyg editor  -->
-        <DockPanel Grid.Row="0" Grid.Column="2">
-            <Border
-                Width="320"
-                Margin="20"
-                Padding="0,0,0,13"
-                Background="#eeeeee"
-                BorderBrush="#e0e0e0"
-                BorderThickness="1"
-                CornerRadius="13"
-                DockPanel.Dock="Top">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="25" Color="#eee" />
-                </Border.Effect>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <!--  Title bar with macOS style buttons  -->
-                    <Grid Grid.Row="0" HorizontalAlignment="Stretch">
-                        <!--  Buttons container  -->
-                        <StackPanel
-                            Margin="13,2,2,2"
-                            HorizontalAlignment="Left"
-                            Orientation="Horizontal">
-                            <!--  Close Button  -->
-                            <Ellipse
-                                Width="12"
-                                Height="12"
-                                Margin="0,5,5,5"
-                                Fill="#FF5F57" />
-                            <!--  Minimize Button  -->
-                            <Ellipse
-                                Width="12"
-                                Height="12"
-                                Margin="0,5,5,5"
-                                Fill="#FFBD2E" />
-                            <!--  Maximize Button  -->
-                            <Ellipse
-                                Width="12"
-                                Height="12"
-                                Margin="0,5,5,5"
-                                Fill="#28C840" />
-                        </StackPanel>
-                    </Grid>
-
-                    <ScrollViewer
-                        Grid.Row="1"
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        Background="White"
-                        HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
-                                <Button
-                                    Click="ResetValue_OnClick"
-                                    IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
-                                    Style="{StaticResource ResetButton}"
-                                    Tag="Term" />
-
-                                <Button
-                                    Click="UpdateAndPlayAudio_OnClick"
-                                    Style="{StaticResource PlayButton}"
-                                    Tag="Term" />
-
-                                <TextBox
-                                    Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}"
-                                    ToolTip="Term" />
-                            </DockPanel>
-                            <TextBox
-                                Style="{StaticResource SecondOpinionSuggestion}"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.FrontSide_QuestionInSpanish}"
-                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
-                            <Border
-                                Height="1"
-                                Margin="0,18"
-                                Background="#bbb"
-                                SnapsToDevicePixels="True" />
-
-                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
-                                <Button
-                                    Click="ResetValue_OnClick"
-                                    IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
-                                    Style="{StaticResource ResetButton}"
-                                    Tag="TermTranslation" />
-
-                                <Button
-                                    Click="UpdateAndPlayAudio_OnClick"
-                                    Style="{StaticResource PlayButton}"
-                                    Tag="TermTranslation" />
-
-                                <TextBox
-                                    Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.TermTranslation, FallbackValue='[Card not selected]'}"
-                                    ToolTip="Term translation" />
-                            </DockPanel>
-                            <TextBox
-                                Style="{StaticResource SecondOpinionSuggestion}"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_AnswerInPolish}"
-                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
-
-                            <Image
-                                Margin="0,15"
-                                MouseWheel="ChangeImageOnScroll"
-                                RenderOptions.BitmapScalingMode="HighQuality"
-                                Source="{Binding SelectedFlashcard.SelectedImage}" />
-
-                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
-
-                                <Button
-                                    Click="ResetValue_OnClick"
-                                    IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
-                                    Style="{StaticResource ResetButton}"
-                                    Tag="SentenceExample" />
-
-                                <Button
-                                    Click="UpdateAndPlayAudio_OnClick"
-                                    Style="{StaticResource PlayButton}"
-                                    Tag="SentenceExample" />
-
-                                <TextBox
-                                    FontStyle="Italic"
-                                    Foreground="DimGray"
-                                    Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
-                                    ToolTip="Sentence Example" />
-                            </DockPanel>
-                            <TextBox
-                                Style="{StaticResource SecondOpinionSuggestion}"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_SentenceExampleInSpanish}"
-                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
-
-                            <DockPanel Style="{StaticResource WysiwygDockPanel}">
-                                <Button
-                                    Click="ResetValue_OnClick"
-                                    IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
-                                    Style="{StaticResource ResetButton}"
-                                    Tag="SentenceExampleTranslation" />
-                                <TextBox
-                                    FontStyle="Italic"
-                                    Foreground="Gray"
-                                    Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.SentenceExampleTranslation, FallbackValue='[Card not selected]'}"
-                                    ToolTip="Sentence example translation" />
-                            </DockPanel>
-                            <TextBox
-                                Style="{StaticResource SecondOpinionSuggestion}"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_SentenceExampleTranslationToPolish}"
-                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
-
-                            <TextBlock Margin="0,15,0,0">Optional remarks for a student:</TextBlock>
-                            <DockPanel Style="{StaticResource WysiwygDockPanel}" ToolTip="Remarks from teacher to student">
-
-                                <Button
-                                    Click="ResetValue_OnClick"
-                                    IsEnabled="{Binding SelectedFlashcard.IsRemarksFieldOverridden, FallbackValue=false}"
-                                    Style="{StaticResource ResetButton}"
-                                    Tag="Remarks" />
-
-                                <TextBox
-                                    Style="{StaticResource EditableText}"
-                                    Text="{Binding SelectedFlashcard.Remarks, FallbackValue='[Card not selected]'}"
-                                    TextAlignment="Left" />
-
-                            </DockPanel>
-                            <TextBox
-                                Style="{StaticResource SecondOpinionSuggestion}"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_RemarksFromTeacherToStudent}"
-                                Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
-
-                            <UniformGrid
-                                Height="40"
-                                Margin="0,20,0,0"
-                                HorizontalAlignment="Stretch"
-                                Rows="1">
-                                <Button
-                                    Margin="0,0,2,0"
-                                    Click="Reject_OnClick"
-                                    Foreground="DarkRed">
-                                    Reject
-                                </Button>
-                                <Button Click="Approve_OnClick" Foreground="DarkGreen">Approve</Button>
-                            </UniformGrid>
-                        </StackPanel>
-                    </ScrollViewer>
+        <Border
+            Grid.Row="0"
+            Grid.Column="2"
+            Width="320"
+            Margin="20"
+            Padding="0,0,0,13"
+            VerticalAlignment="Top"
+            Background="#eeeeee"
+            BorderBrush="#e0e0e0"
+            BorderThickness="1"
+            CornerRadius="13">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="25" Color="#eee" />
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <!--  Title bar with macOS style buttons  -->
+                <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                    <!--  Buttons container  -->
+                    <StackPanel
+                        Margin="13,2,2,2"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                        <!--  Close Button  -->
+                        <Ellipse
+                            Width="12"
+                            Height="12"
+                            Margin="0,5,5,5"
+                            Fill="#FF5F57" />
+                        <!--  Minimize Button  -->
+                        <Ellipse
+                            Width="12"
+                            Height="12"
+                            Margin="0,5,5,5"
+                            Fill="#FFBD2E" />
+                        <!--  Maximize Button  -->
+                        <Ellipse
+                            Width="12"
+                            Height="12"
+                            Margin="0,5,5,5"
+                            Fill="#28C840" />
+                    </StackPanel>
                 </Grid>
-            </Border>
 
-            <GroupBox
-                Padding="5"
-                VerticalAlignment="Bottom"
-                DockPanel.Dock="Bottom"
-                Header="QA remarks from AI agents"
-                Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}">
-                <ScrollViewer>
+                <ScrollViewer
+                    Grid.Row="1"
+                    Padding="10"
+                    HorizontalAlignment="Stretch"
+                    Background="White"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <!--  Remarks from generator  -->
-                        <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}">
+                        <DockPanel Style="{StaticResource WysiwygDockPanel}">
                             <Button
-                                Margin="5,0,0,0"
-                                Padding="8"
-                                Click="DismissWarning_OnClick"
-                                DockPanel.Dock="Right"
-                                Foreground="DarkRed"
-                                IsTabStop="False">
-                                Dismiss
-                            </Button>
-                            <TextBox
-                                Height="Auto"
-                                Padding="8"
-                                Background="BlanchedAlmond"
-                                BorderBrush="DarkOrange"
-                                BorderThickness="1"
-                                DockPanel.Dock="Bottom"
-                                FontSize="15"
-                                IsReadOnly="True"
-                                Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
-                                TextWrapping="Wrap" />
-                        </DockPanel>
+                                Click="ResetValue_OnClick"
+                                IsEnabled="{Binding SelectedFlashcard.IsTermOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="Term" />
 
-                        <!--  Second opinion: remarks obtained by Refine deck from different model  -->
-                        <DockPanel
-                            Margin="0,1,0,0"
-                            LastChildFill="True"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource TrueToVisibleConverter}}">
                             <Button
-                                Margin="5,0,0,0"
-                                Padding="8"
-                                Click="DismissSecondOpinionWarning_OnClick"
-                                DockPanel.Dock="Right"
-                                Foreground="DarkRed"
-                                IsTabStop="False">
-                                Dismiss
-                            </Button>
+                                Click="UpdateAndPlayAudio_OnClick"
+                                Style="{StaticResource PlayButton}"
+                                Tag="Term" />
+
                             <TextBox
-                                Height="Auto"
-                                Padding="8"
-                                Background="MistyRose"
-                                BorderBrush="Salmon"
-                                BorderThickness="1"
-                                DockPanel.Dock="Bottom"
-                                FontSize="15"
-                                IsReadOnly="True"
-                                Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.PlainText, Mode=OneWay}"
-                                TextWrapping="Wrap" />
+                                Style="{StaticResource EditableText}"
+                                Text="{Binding SelectedFlashcard.Term, FallbackValue='[Card not selected]'}"
+                                ToolTip="Term" />
                         </DockPanel>
+                        <TextBox
+                            Style="{StaticResource SecondOpinionSuggestion}"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.FrontSide_Question}"
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+                        <Border
+                            Height="1"
+                            Margin="0,18"
+                            Background="#bbb"
+                            SnapsToDevicePixels="True" />
+
+                        <DockPanel Style="{StaticResource WysiwygDockPanel}">
+                            <Button
+                                Click="ResetValue_OnClick"
+                                IsEnabled="{Binding SelectedFlashcard.IsTermTranslationOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="TermTranslation" />
+
+                            <Button
+                                Click="UpdateAndPlayAudio_OnClick"
+                                Style="{StaticResource PlayButton}"
+                                Tag="TermTranslation" />
+
+                            <TextBox
+                                Style="{StaticResource EditableText}"
+                                Text="{Binding SelectedFlashcard.TermTranslation, FallbackValue='[Card not selected]'}"
+                                ToolTip="Term translation" />
+                        </DockPanel>
+                        <TextBox
+                            Style="{StaticResource SecondOpinionSuggestion}"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_Answer}"
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+
+                        <Image
+                            Margin="0,15"
+                            MouseWheel="ChangeImageOnScroll"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="{Binding SelectedFlashcard.SelectedImage}" />
+
+                        <DockPanel Style="{StaticResource WysiwygDockPanel}">
+
+                            <Button
+                                Click="ResetValue_OnClick"
+                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="SentenceExample" />
+
+                            <Button
+                                Click="UpdateAndPlayAudio_OnClick"
+                                Style="{StaticResource PlayButton}"
+                                Tag="SentenceExample" />
+
+                            <TextBox
+                                FontStyle="Italic"
+                                Foreground="DimGray"
+                                Style="{StaticResource EditableText}"
+                                Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                ToolTip="Sentence Example" />
+                        </DockPanel>
+                        <TextBox
+                            Style="{StaticResource SecondOpinionSuggestion}"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.SentenceExample}"
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+
+                        <DockPanel Style="{StaticResource WysiwygDockPanel}">
+                            <Button
+                                Click="ResetValue_OnClick"
+                                IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="SentenceExampleTranslation" />
+                            <TextBox
+                                FontStyle="Italic"
+                                Foreground="Gray"
+                                Style="{StaticResource EditableText}"
+                                Text="{Binding SelectedFlashcard.SentenceExampleTranslation, FallbackValue='[Card not selected]'}"
+                                ToolTip="Sentence example translation" />
+                        </DockPanel>
+                        <TextBox
+                            Style="{StaticResource SecondOpinionSuggestion}"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.SentenceExampleTranslation}"
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+
+                        <TextBlock Margin="0,15,0,0">Optional remarks for a student:</TextBlock>
+                        <DockPanel Style="{StaticResource WysiwygDockPanel}" ToolTip="Remarks from teacher to student">
+
+                            <Button
+                                Click="ResetValue_OnClick"
+                                IsEnabled="{Binding SelectedFlashcard.IsRemarksFieldOverridden, FallbackValue=false}"
+                                Style="{StaticResource ResetButton}"
+                                Tag="Remarks" />
+
+                            <TextBox
+                                Style="{StaticResource EditableText}"
+                                Text="{Binding SelectedFlashcard.Remarks, FallbackValue='[Card not selected]'}"
+                                TextAlignment="Left" />
+
+                        </DockPanel>
+                        <TextBox
+                            Style="{StaticResource SecondOpinionSuggestion}"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.RemarksFromTeacherToStudent}"
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+
+                        <UniformGrid
+                            Height="40"
+                            Margin="0,20,0,0"
+                            HorizontalAlignment="Stretch"
+                            Rows="1">
+                            <Button
+                                Margin="0,0,2,0"
+                                Click="Reject_OnClick"
+                                Foreground="DarkRed">
+                                Reject
+                            </Button>
+                            <Button Click="Approve_OnClick" Foreground="DarkGreen">Approve</Button>
+                        </UniformGrid>
                     </StackPanel>
                 </ScrollViewer>
-            </GroupBox>
-
-        </DockPanel>
+            </Grid>
+        </Border>
 
         <GridSplitter
             Grid.Row="0"
@@ -412,10 +352,84 @@
             ResizeBehavior="PreviousAndNext"
             ResizeDirection="Columns" />
 
+
+        <GridSplitter
+            Grid.Row="0"
+            Grid.Column="3"
+            Width="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            IsTabStop="False"
+            ResizeBehavior="PreviousAndNext"
+            ResizeDirection="Columns" />
+
+        <GroupBox
+            Grid.Row="0"
+            Grid.Column="4"
+            Padding="5"
+            Header="QA remarks from AI agents"
+            Visibility="{Binding SelectedFlashcard.HasAnyPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}">
+            <ScrollViewer>
+                <StackPanel>
+                    <!--  Remarks from generator  -->
+                    <DockPanel LastChildFill="True" Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}">
+                        <Button
+                            Margin="5,0,0,0"
+                            Padding="8"
+                            Click="DismissWarning_OnClick"
+                            DockPanel.Dock="Right"
+                            Foreground="DarkRed"
+                            IsTabStop="False">
+                            Dismiss
+                        </Button>
+                        <TextBox
+                            Height="Auto"
+                            Padding="8"
+                            Background="BlanchedAlmond"
+                            BorderBrush="DarkOrange"
+                            BorderThickness="1"
+                            DockPanel.Dock="Bottom"
+                            FontSize="15"
+                            IsReadOnly="True"
+                            Text="{Binding SelectedFlashcard.OriginalFlashcard.QaSuggestions, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </DockPanel>
+
+                    <!--  Second opinion: remarks obtained by Refine deck from different model  -->
+                    <DockPanel
+                        Margin="0,1,0,0"
+                        LastChildFill="True"
+                        Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource TrueToVisibleConverter}}">
+                        <Button
+                            Margin="5,0,0,0"
+                            Padding="8"
+                            Click="DismissSecondOpinionWarning_OnClick"
+                            DockPanel.Dock="Right"
+                            Foreground="DarkRed"
+                            IsTabStop="False">
+                            Dismiss
+                        </Button>
+                        <TextBox
+                            Height="Auto"
+                            Padding="8"
+                            Background="MistyRose"
+                            BorderBrush="Salmon"
+                            BorderThickness="1"
+                            DockPanel.Dock="Bottom"
+                            FontSize="15"
+                            IsReadOnly="True"
+                            Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.PlainText, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </DockPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+
+
         <StatusBar
             Grid.Row="1"
             Grid.Column="0"
-            Grid.ColumnSpan="3">
+            Grid.ColumnSpan="5">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
@@ -481,7 +495,8 @@
                     <Button
                         Margin="5,0,0,0"
                         Padding="4,2"
-                        Click="RunSecondaryQualityAssurance_OnClick">
+                        Click="RunSecondaryQualityAssurance_OnClick"
+                        IsEnabled="{Binding PerformingQualityAnalysis, Converter={StaticResource IsBusyToIsEnabledConverter}}">
                         Refresh QA remarks
                     </Button>
 

@@ -5,9 +5,9 @@ namespace RefineDeck.ViewModels;
 [AddINotifyPropertyChangedInterface]
 public record DataToValidate
 {
-    public string FrontSide_QuestionInSpanish { get; init; }
-    public string BackSide_AnswerInPolish { get; init; }
-    public string BackSide_SentenceExampleInSpanish { get; init; }
-    public string BackSide_SentenceExampleTranslationToPolish { get; init; }
-    public string BackSide_RemarksFromTeacherToStudent { get; init; }
+    public string FrontSide_Question { get; init; }
+    public string BackSide_Answer { get; init; }
+    public string SentenceExample { get; init; }
+    public string SentenceExampleTranslation { get; init; }
+    public string RemarksFromTeacherToStudent { get; init; }
 }

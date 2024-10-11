@@ -11,7 +11,7 @@ internal static class Parameters
     // Less intelligent, but cheap and great for dev and testing
     private const string MostRecentGeminiFlashModelId = "gemini-1.5-flash-8b";
 
-    public const string GeminiModelId = MostRecentGeminiFlashModelId;
+    public const string GeminiModelId = MostRecentGeminiProModelId;
 
     /// <summary>
     /// Load the secrets from:
