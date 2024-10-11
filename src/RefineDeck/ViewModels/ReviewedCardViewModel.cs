@@ -50,7 +50,26 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
 
     public bool HasPendingQaSuggestions => !String.IsNullOrWhiteSpace(QaSuggestions);
     public bool HasPendingQaSuggestionsSecondOpinion => QaSuggestionsSecondOpinion is not null && !QaSuggestionsSecondOpinion.PlainText.StartsWith("OK");
+
     public bool HasPendingQaSuggestionsSecondOpinionJson => QaSuggestionsSecondOpinion is not null && QaSuggestionsSecondOpinion.Suggestion is not null;
+    public bool HasPendingQaSuggestionsSecondOpinionJsonTerm => QaSuggestionsSecondOpinion is not null &&
+                                                                QaSuggestionsSecondOpinion.Suggestion is not null &&
+                                                                QaSuggestionsSecondOpinion.Suggestion.FrontSide_Question != Term;
+    public bool HasPendingQaSuggestionsSecondOpinionJsonTermTranslation => QaSuggestionsSecondOpinion is not null &&
+                                                                            QaSuggestionsSecondOpinion.Suggestion is not null &&
+                                                                            QaSuggestionsSecondOpinion.Suggestion.BackSide_Answer != TermTranslation;
+    public bool HasPendingQaSuggestionsSecondOpinionJsonSentenceExample => QaSuggestionsSecondOpinion is not null &&
+                                                                           QaSuggestionsSecondOpinion.Suggestion is not null &&
+                                                                           QaSuggestionsSecondOpinion.Suggestion.SentenceExample != SentenceExample;
+    public bool HasPendingQaSuggestionsSecondOpinionJsonSentenceExampleTranslation => QaSuggestionsSecondOpinion is not null &&
+                                                           QaSuggestionsSecondOpinion.Suggestion is not null &&
+                                                           QaSuggestionsSecondOpinion.Suggestion.SentenceExampleTranslation != SentenceExampleTranslation;
+    public bool HasPendingQaSuggestionsSecondOpinionJsonRemarks => QaSuggestionsSecondOpinion is not null &&
+                                                                    QaSuggestionsSecondOpinion.Suggestion is not null &&
+                                                                    QaSuggestionsSecondOpinion.Suggestion.RemarksFromTeacherToStudent != Remarks;
+
+
+
     public bool SecondOpinionConfirmedOk => QaSuggestionsSecondOpinion is not null && QaSuggestionsSecondOpinion.PlainText.StartsWith("OK");
     public bool HasAnyPendingQaSuggestions => HasPendingQaSuggestions || HasPendingQaSuggestionsSecondOpinion;
 

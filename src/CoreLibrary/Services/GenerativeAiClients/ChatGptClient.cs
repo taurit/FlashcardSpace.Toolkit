@@ -87,6 +87,7 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
         ];
 
         ChatCompletion completion = await client.CompleteChatAsync(messages, options);
+        // todo if finish reason is Azure content filter, fall back to OpenAI API
         var responseToPrompt = completion.Content[0].Text;
 
         await File.WriteAllTextAsync(responseToPromptFileName, responseToPrompt);

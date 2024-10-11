@@ -64,7 +64,7 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
             // my unconfirmed hypothesis: the larger the batch, the more mistakes in the response.
             // e.g. in unit tests when I test 1-10 items in a batch, I observe no errors
             // but with batch of ~19 items, I see 40-50% items with validation errors. Maybe reducing the batch size will help?
-            var chunks = itemsThatRequireApiCall.Chunk(10).ToList();
+            var chunks = itemsThatRequireApiCall.Chunk(14).ToList();
             var chunkNo = 0;
 
             foreach (var chunk in chunks)

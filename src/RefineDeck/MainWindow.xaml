@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:RefineDeck.ViewModels"
     Title="Refine deck"
-    Width="1000"
-    Height="1000"
+    Width="1200"
+    Height="900"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
     SnapsToDevicePixels="True"
     UseLayoutRounding="True"
@@ -226,7 +226,7 @@
                         <TextBox
                             Style="{StaticResource SecondOpinionSuggestion}"
                             Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.FrontSide_Question}"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJsonTerm, Converter={StaticResource TrueToVisibleConverter}}" />
                         <Border
                             Height="1"
                             Margin="0,18"
@@ -253,7 +253,7 @@
                         <TextBox
                             Style="{StaticResource SecondOpinionSuggestion}"
                             Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.BackSide_Answer}"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJsonTermTranslation, Converter={StaticResource TrueToVisibleConverter}}" />
 
                         <Image
                             Margin="0,15"
@@ -284,7 +284,7 @@
                         <TextBox
                             Style="{StaticResource SecondOpinionSuggestion}"
                             Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.SentenceExample}"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJsonSentenceExample, Converter={StaticResource TrueToVisibleConverter}}" />
 
                         <DockPanel Style="{StaticResource WysiwygDockPanel}">
                             <Button
@@ -302,7 +302,7 @@
                         <TextBox
                             Style="{StaticResource SecondOpinionSuggestion}"
                             Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.SentenceExampleTranslation}"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJsonSentenceExampleTranslation, Converter={StaticResource TrueToVisibleConverter}}" />
 
                         <TextBlock Margin="0,15,0,0">Optional remarks for a student:</TextBlock>
                         <DockPanel Style="{StaticResource WysiwygDockPanel}" ToolTip="Remarks from teacher to student">
@@ -322,7 +322,7 @@
                         <TextBox
                             Style="{StaticResource SecondOpinionSuggestion}"
                             Text="{Binding SelectedFlashcard.QaSuggestionsSecondOpinion.Suggestion.RemarksFromTeacherToStudent}"
-                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJson, Converter={StaticResource TrueToVisibleConverter}}" />
+                            Visibility="{Binding SelectedFlashcard.HasPendingQaSuggestionsSecondOpinionJsonRemarks, Converter={StaticResource TrueToVisibleConverter}}" />
 
                         <UniformGrid
                             Height="40"

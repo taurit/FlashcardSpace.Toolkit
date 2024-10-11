@@ -25,8 +25,7 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
             settings.SourceLanguage,
             settings.PartOfSpeechFilter,
             0,
-            600
-            //10000
+            10000
             );
 
         // shortcut: I assume terms are adjectives, todo: generalize

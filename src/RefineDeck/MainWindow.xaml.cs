@@ -16,6 +16,7 @@ public partial class MainWindow : Window
 {
     MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
     GeminiQualityAssuranceAgent? QualityAssuranceAgent = null;
+    DismissedSuggestionsMemory? DismissedSuggestionsMemory = null;
 
     public MainWindow()
     {
@@ -25,8 +26,9 @@ public partial class MainWindow : Window
         DataContext = viewModel;
         QualityAssuranceAgent = new GeminiQualityAssuranceAgent(viewModel);
         ViewModel.Deck = DeckLoader.LoadDeck();
-
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+        DismissedSuggestionsMemory = new DismissedSuggestionsMemory(ViewModel.Deck.DeckPath.DismissedSuggestionsPath);
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -241,16 +243,24 @@ public partial class MainWindow : Window
     {
         var selectedCard = ViewModel.SelectedFlashcard;
         if (selectedCard is null) return;
+        if (DismissedSuggestionsMemory is null) return;
 
+        DismissedSuggestionsMemory.Dismiss(selectedCard.QaSuggestionsSecondOpinion);
         selectedCard.QaSuggestionsSecondOpinion = null;
     }
 
     private async void RunSecondaryQualityAssurance_OnClick(object sender, RoutedEventArgs e)
     {
         if (QualityAssuranceAgent is null) return;
+        if (DismissedSuggestionsMemory is null) return;
 
         ViewModel.PerformingQualityAnalysis = true;
         await QualityAssuranceAgent.ValidateAllCards();
+
+        foreach (var card in ViewModel.Deck.Flashcards.Where(x => DismissedSuggestionsMemory.IsDismissed(x.QaSuggestionsSecondOpinion)))
+        {
+            card.QaSuggestionsSecondOpinion = new PlainTextAndJsonPart("OK", "OK", null);
+        }
 
         ViewModel.PerformingQualityAnalysis = false;
     }

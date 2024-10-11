@@ -14,11 +14,11 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
     public async Task ValidateAllCards()
     {
         // in development, validate just current card
-        var card = viewModel.SelectedFlashcard;
-        if (card == null) return;
-        List<ReviewedCardViewModel> cards = [card];
+        //var card = viewModel.SelectedFlashcard;
+        //if (card == null) return;
+        //List<ReviewedCardViewModel> cards = [card];
 
-        //var cards = viewModel.Deck.Flashcards;
+        var cards = viewModel.Deck.Flashcards;
         foreach (var toValidate in cards)
         {
             await ValidateSelectedCard(toValidate);
@@ -127,7 +127,7 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
             try
             {
                 DataToValidate suggestion = JsonSerializer.Deserialize<DataToValidate>(json);
-                return new PlainTextAndJsonPart(plainText, suggestion);
+                return new PlainTextAndJsonPart(input, plainText, suggestion);
             }
             catch (JsonException e)
             {
@@ -138,6 +138,6 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
                              $"```";
             }
         }
-        return new PlainTextAndJsonPart(plainText, null);
+        return new PlainTextAndJsonPart(input, plainText, null);
     }
 }
