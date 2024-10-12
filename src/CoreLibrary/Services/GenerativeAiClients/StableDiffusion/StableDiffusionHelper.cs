@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using CoreLibrary.Models;
+using MetadataExtractor;
+using MetadataExtractor.Formats.Exif;
+using System.Text.Json;
 
 namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
@@ -75,5 +78,22 @@ public static class StableDiffusionHelper
         return null;
     }
 
+    public static StableDiffusionParameters? GetStableDiffusionParametersFromImage(string filePath)
+    {
+        // Read all metadata from the image
+        var directories = ImageMetadataReader.ReadMetadata(filePath);
+
+        // Find the ExifSubIFDDirectory which contains the UserComment tag
+        var exifDirectory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+
+        if (exifDirectory != null)
+        {
+            var userComment = exifDirectory.Tags.FirstOrDefault(x => x.Name == "User Comment")?.Description;
+            var result = (userComment is not null) ? StableDiffusionParameters.FromString(userComment) : null;
+            return result;
+        }
+
+        return null;
+    }
 }
 
