@@ -56,6 +56,9 @@ public static class StableDiffusionHelper
         if (options.SamplesFormat != "jpg")
             return $"Output format is set to {options.SamplesFormat}, but `jpg` is expected by this tool.";
 
+        if (options.FaceRestorationModel != "CodeFormer")
+            return $"Face restoration model is set to {options.FaceRestorationModel}, but `CodeFormer` is expected by this tool.";
+
         // I don't remember changing any other defaults, but it might be extended if needed...
 
         // validate models availability
@@ -96,4 +99,5 @@ public static class StableDiffusionHelper
         return null;
     }
 }
+
 

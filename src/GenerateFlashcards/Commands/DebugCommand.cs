@@ -1,4 +1,6 @@
-﻿using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
+﻿using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
+using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
+using CoreLibrary.Utilities;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
@@ -11,13 +13,59 @@ namespace GenerateFlashcards.Commands;
 /// </summary>
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 internal sealed class DebugCommand(
-        TextToSpeechClient ttsClient
-
+        TextToSpeechClient ttsClient,
+        ImageGenerator imageGenerator
     ) : AsyncCommand<DebugCommandSettings>
 {
     public override async Task<int> ExecuteAsync(CommandContext context, DebugCommandSettings settings)
     {
+        var prompt = "woman surgeon performing heart operation, (extremely detailed 8k wallpaper), Intricate, High Detail, Sharp focus, smiling";
+        var negativePrompt = "lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch";
 
+        // test - measure time of all operations
+        var rootOutputFolder = "d:/test5-10vs24steps";
+        rootOutputFolder.EnsureDirectoryExists();
+        var draftsPaths = new List<string>();
+
+        // 1) Generate 10 drafts of images
+        Stopwatch s = Stopwatch.StartNew();
+        for (int i = 0; i < 10; i++)
+        {
+            var generatedImage = await imageGenerator.GenerateImageBatch(
+                new StableDiffusionPrompt(prompt, negativePrompt),
+                1, 4.0m, i * 100, SupportedSDXLImageSize.Wide, ImageQualityProfile.DraftProfile);
+            var imageBytes = Convert.FromBase64String(generatedImage[0].Base64EncodedImage);
+            // save to root folder
+            var draftPath = $"{rootOutputFolder}/draft{i}.jpg";
+            draftsPaths.Add(draftPath);
+            await File.WriteAllBytesAsync(draftPath, imageBytes);
+        }
+        s.Stop();
+        AnsiConsole.MarkupLine($"[bold green]Generated 10 drafts in {s.ElapsedMilliseconds} ms[/]");
+
+        // 2) Generate 10 high quality images with same params
+        s.Restart();
+        for (int i = 0; i < 10; i++)
+        {
+            var generatedImage = await imageGenerator.GenerateImageBatch(
+                new StableDiffusionPrompt(prompt, negativePrompt),
+                1, 4.0m, i * 100, SupportedSDXLImageSize.Wide, ImageQualityProfile.HighQualityProfile);
+            var imageBytes = Convert.FromBase64String(generatedImage[0].Base64EncodedImage);
+            // save to root folder
+            await File.WriteAllBytesAsync($"{rootOutputFolder}/highQuality{i}.jpg", imageBytes);
+        }
+        s.Stop();
+        AnsiConsole.MarkupLine($"[bold green]Generated 10 high quality images in {s.ElapsedMilliseconds} ms[/]");
+
+        // 3) Upgrade quality of all drafts with await imageGenerator.ImproveImageQualityIfNeeded("d:\\draft.jpg");
+        s.Restart();
+        foreach (var draftPath in draftsPaths)
+        {
+            await imageGenerator.ImproveImageQualityIfNeeded(draftPath);
+        }
+        s.Stop();
+
+        AnsiConsole.MarkupLine($"[bold green]Improved quality of 10 drafts in {s.ElapsedMilliseconds} ms[/]");
 
         return 0;
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
@@ -14,24 +15,44 @@ public record ImageGeneratorSettings(string CacheFolder);
 /// </summary>
 public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logger, ImageGeneratorSettings settings)
 {
+    static readonly JsonSerializerOptions StableDiffusionRequestSerializerOptions = new()
+    {
+        // serialize enum to string, otherwise the API will ignore enum parameters or throw an error
+        Converters = { new JsonStringEnumConverter(allowIntegerValues: false) },
+        IgnoreReadOnlyProperties = false
+    };
+
+    static readonly JsonSerializerOptions StableDiffusionRequestSerializerOptionsForCacheFingerprint = new()
+    {
+        // This is just because I don't want to invalidate my database of generated images; can be removed in the future and left with defaults
+        // if I want to break the compatibility
+        IgnoreReadOnlyProperties = true
+    };
+
     /// <param name="cfgScale">Reasonable range seems from 2.0 (creative freedom) to 7.0 (already strictly following the prompt)</param>
     public async Task<List<GeneratedImage>> GenerateImageBatch(
-            StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, int cfgScale, int seed,
-            SupportedSDXLImageSize size)
+            StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, decimal cfgScale, Int64 seed,
+            SupportedSDXLImageSize size, ImageQualityProfile qualityProfile)
     {
         var samplerName = "DPM++ 2M";
-        var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0");
-
-        // Cut corners in development to get faster response
-        var numSteps = 24;
-        var refinerCheckpointId = "sd_xl_refiner_1.0";
+        var tensorRtOption = qualityProfile.IsRefinerEnabled ? TensorRtSetting.None : TensorRtSetting.Automatic;
+        var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0", tensorRtOption);
+        var refinerCheckpointId = qualityProfile.IsRefinerEnabled ? "sd_xl_refiner_1.0" : null;
         decimal? refinerSwitchAt = 0.7m;
 
         var requestPayloadModel = new TextToImageRequestModel(
             stableDiffusionPrompt.PromptText,
             stableDiffusionPrompt.NegativePromptText,
-            size.Width, size.Height, numImagesToGenerate, numSteps, cfgScale, samplerName,
-            seed, modelCheckpointId, refinerCheckpointId, refinerSwitchAt);
+            size.Width, size.Height,
+            numImagesToGenerate,
+            qualityProfile.Steps,
+            cfgScale,
+            samplerName,
+            seed,
+            modelCheckpointId,
+            refinerCheckpointId,
+            refinerSwitchAt,
+            qualityProfile.IsFaceRestorationEnabled);
 
         var cacheFileName = GenerateCacheFileName(requestPayloadModel);
         if (File.Exists(cacheFileName))
@@ -47,7 +68,8 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         await EnsureStableDiffusionApiIsRunning();
 
         Stopwatch sw = Stopwatch.StartNew();
-        var response = await httpClient.PostAsJsonAsync("http://localhost:7860/sdapi/v1/txt2img", requestPayloadModel);
+
+        var response = await httpClient.PostAsJsonAsync("http://localhost:7860/sdapi/v1/txt2img", requestPayloadModel, StableDiffusionRequestSerializerOptions);
         var responseModel = await response.Content.ReadFromJsonAsync<TextToImageResponseModel>();
         sw.Stop();
 
@@ -71,6 +93,47 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
         return arrayOfGenImages;
     }
 
+
+    /// <summary>
+    /// This method:
+    /// 1) Reads the Stable Diffusion prompt and parameters from the JPEG file metadata
+    /// 2) If the parameters fall into the "quick draft" category, it generates a new image with the same prompt and seed
+    ///    (for identical composition) but with more steps and time-consuming settings like refiner and face restoration enabled.
+    /// </summary>
+    public async Task<bool> ImproveImageQualityIfNeeded(string filePath)
+    {
+        var fileParams = StableDiffusionHelper.GetStableDiffusionParametersFromImage(filePath);
+        if (fileParams is null)
+        {
+            logger.LogWarning($"Failed to read Stable Diffusion parameters from image {filePath}");
+            throw new InvalidOperationException($"Failed to read Stable Diffusion parameters from image {filePath}");
+        }
+
+        var restoreFaces = !String.IsNullOrWhiteSpace(fileParams.FaceRestoration);
+        var isBelowHighQualityBar = ImageQualityProfile.IsBelowHighQualityBar(fileParams.Steps, fileParams.Refiner, restoreFaces);
+
+        if (isBelowHighQualityBar)
+        {
+            logger.LogInformation("Improving image quality for {FilePath}", filePath);
+
+            var newPrompt = new StableDiffusionPrompt(fileParams.Prompt, fileParams.NegativePrompt);
+            var newSize = SupportedSDXLImageSize.FromWidthAndHeight(fileParams.Width, fileParams.Height);
+
+            var newImage = await GenerateImageBatch(newPrompt, 1, fileParams.CfgScale, fileParams.Seed, newSize, ImageQualityProfile.HighQualityProfile);
+
+            if (newImage is null)
+                return false;
+
+            var newImageBase64 = newImage.First().Base64EncodedImage;
+            var newImageBinary = Convert.FromBase64String(newImageBase64);
+            var newFilePath = filePath.Replace(".jpg", "_improved.jpg");
+
+            await File.WriteAllBytesAsync(newFilePath, newImageBinary);
+
+            return true;
+        }
+        return false;
+    }
 
     private bool _timeoutAlreadySet = false;
     private async Task EnsureProperSetupOfHttpClient()
@@ -116,11 +179,9 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
     {
         settings.CacheFolder.EnsureDirectoryExists();
 
-        var serializedRequest = JsonSerializer.Serialize(request);
+        var serializedRequest = JsonSerializer.Serialize(request, StableDiffusionRequestSerializerOptionsForCacheFingerprint);
         var fingerprint = serializedRequest.GetHashCodeStable(5);
         return Path.Combine(settings.CacheFolder,
             $"{request.Prompt.ToFilenameFriendlyString(20)}_{request.Width}x{request.Height}_{request.NumImages}_{fingerprint}.mempack");
     }
-
-
 }

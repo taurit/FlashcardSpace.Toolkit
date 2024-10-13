@@ -21,12 +21,12 @@ record TextToImageRequestModel(
     [property: JsonPropertyName("steps")] int NumSteps,
 
     // CFG Scale: range is 1-30. The higher, the more model focuses on the prompt (at the cost of less creativity).
-    [property: JsonPropertyName("cfg_scale")] int CfgScale,
+    [property: JsonPropertyName("cfg_scale")] decimal CfgScale,
 
     [property: JsonPropertyName("sampler_name")] string SamplerName,
 
     // Seed is a string that can be used to generate the same image again. -1 means random seed.
-    [property: JsonPropertyName("seed")] int Seed,
+    [property: JsonPropertyName("seed")] Int64 Seed,
 
     // API is stateful and has some global settings, notably: the model loaded to GPU!
     // This property allows to override it per-request.
@@ -35,10 +35,33 @@ record TextToImageRequestModel(
     [property: JsonPropertyName("refiner_checkpoint")] string? RefinerCheckpointId,
 
     // Refiner switcher at certain percentage of the process. Range is 0-1. Good typical values are 0.7-0.8.
-    [property: JsonPropertyName("refiner_switch_at")] decimal? RefinerSwitchAt
+    [property: JsonPropertyName("refiner_switch_at")] decimal? RefinerSwitchAt,
 
-);
+    [property: JsonPropertyName("restore_faces")] bool RestoreFaces
+
+)
+{
+    // helps avoid warning `WARNING:root:Sampler Scheduler autocorrection: "DPM++ 2M" -> "DPM++ 2M", "None" -> "Automatic"`
+    [JsonPropertyName("scheduler")] public string Scheduler => "Automatic";
+}
 
 record OverrideSettingsModel(
-    [property: JsonPropertyName("sd_model_checkpoint")] string StableDiffusionModelCheckpointId
-    );
+    [property: JsonPropertyName("sd_model_checkpoint")] string StableDiffusionModelCheckpointId,
+
+    // TensorRT setting deciding whether to use TensorRT for inference.
+    // It's faster (that's the primary goal), but can't be used with refiner, so I only use it for drafts.
+    [property: JsonPropertyName("sd_unet")] TensorRtSetting TensorRtSetting
+);
+
+enum TensorRtSetting
+{
+    /// <summary>
+    /// Optimization is disabled; model is run in PyTorch. Slower, but can be used with refiner.
+    /// </summary>
+    None,
+
+    /// <summary>
+    /// Optimization is enabled; model is run in TensorRT. Faster, but can't be used with refiner so the quality is worse.
+    /// </summary>
+    Automatic
+}

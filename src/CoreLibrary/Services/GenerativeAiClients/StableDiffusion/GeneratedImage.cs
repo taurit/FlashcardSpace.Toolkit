@@ -8,9 +8,9 @@ namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 public partial record GeneratedImagesList(List<GeneratedImage> Images);
 
 [MemoryPackable]
-public partial class GeneratedImage(string base64EncodedImage, string promptText, int cfgScale)
+public partial class GeneratedImage(string base64EncodedImage, string promptText, decimal cfgScale)
 {
     public string Base64EncodedImage { get; } = base64EncodedImage;
     public string PromptText { get; } = promptText;
-    public int CfgScale { get; } = cfgScale;
+    public decimal CfgScale { get; } = cfgScale;
 }

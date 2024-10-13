@@ -9,4 +9,7 @@ class StableDiffusionGetOptionsResponse
 {
     [JsonPropertyName("samples_format")]
     public string SamplesFormat { get; set; }
+
+    [JsonPropertyName("face_restoration_model")]
+    public string FaceRestorationModel { get; set; }
 }

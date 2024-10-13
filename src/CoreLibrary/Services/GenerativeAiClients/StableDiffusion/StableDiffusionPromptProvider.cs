@@ -6,11 +6,7 @@ public record StableDiffusionPrompt(string PromptText, string NegativePromptText
 
 public class StableDiffusionPromptProvider(ILogger logger)
 {
-    private const string NegativePromptText = "lowres,bad anatomy,bad hands,text," +
-                                              "error,missing fingers,extra digit,fewer digits,cropped," +
-                                              "worst quality,low quality,jpeg artifacts," +
-                                              "signature,watermark,username,blurry,nsfw," +
-                                              "painting,drawing,illustration,cartoon,anime,sketch,";
+    private const string NegativePromptText = "lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch,";
 
     readonly string[] _styles = {
         "high-resolution", "4K", "8K", "HDR", "photorealistic", "professional",

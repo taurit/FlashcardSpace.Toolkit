@@ -42,7 +42,7 @@ public class ImageCandidatesGenerator(
             logger.LogInformation("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
 
 
-            var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment, seed, imageSize);
+            var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment, seed, imageSize, ImageQualityProfile.DraftProfile);
 
             results.AddRange(images);
         }
