@@ -34,7 +34,12 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
             StableDiffusionPrompt stableDiffusionPrompt, int numImagesToGenerate, decimal cfgScale, Int64 seed,
             SupportedSDXLImageSize size, ImageQualityProfile qualityProfile)
     {
-        var samplerName = "DPM++ 2M";
+        var samplerName = "DPM++ 2M"; // todo check if it's the best one; "UniPC and Euler Ancestral are renowned for delivering the most distinct and rapid outcomes compared to their counterparts." https://blog.segmind.com/sdxl-1-0-settings-guide/
+        // Some knowledge collected (https://www.youtube.com/watch?v=JAMkYVV-n18):
+        // DPM++ 2M: fast, converges quickly (composition relatively stable after 10 steps), requires 15-20 steps
+        // UniPC: fast, converges quickly
+        // Euler Ancestral: fast, converges slower, requires 13-17 steps
+
         var tensorRtOption = qualityProfile.IsRefinerEnabled ? TensorRtSetting.None : TensorRtSetting.Automatic;
         var modelCheckpointId = new OverrideSettingsModel("sd_xl_base_1.0", tensorRtOption);
         var refinerCheckpointId = qualityProfile.IsRefinerEnabled ? "sd_xl_refiner_1.0" : null;

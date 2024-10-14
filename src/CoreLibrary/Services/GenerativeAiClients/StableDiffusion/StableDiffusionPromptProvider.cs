@@ -6,7 +6,7 @@ public record StableDiffusionPrompt(string PromptText, string NegativePromptText
 
 public class StableDiffusionPromptProvider(ILogger logger)
 {
-    private const string NegativePromptText = "lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch,";
+    private const string NegativePromptText = "lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch,monochrome,black and white,grayscale,sepia,desaturated,gloomy";
 
     readonly string[] _styles = {
         "high-resolution", "4K", "8K", "HDR", "photorealistic", "professional",
@@ -18,17 +18,16 @@ public class StableDiffusionPromptProvider(ILogger logger)
     };
 
     readonly string[] _moods = {
-        "tranquil", "moody", "atmospheric", "dramatic", "vibrant", "serene",
+        "tranquil", "atmospheric", "dramatic", "vibrant", "serene",
         "dynamic", "intimate", "bold", "minimalist", "rustic", "urban",
-        "futuristic", "nostalgic", "romantic", "mysterious", "energetic",
-        "calm", "ethereal", "powerful", "subtle", "raw", "polished"
+        "futuristic", "romantic", "mysterious", "energetic",
+        "calm", "ethereal", "powerful", "subtle", "raw", "polished",
+        "cheerful", "uplifting", "joyful", "lively", "optimistic"
     };
 
     readonly string[] _textures = {
         "smooth", "sharp", "crisp", "detailed", "glossy", "matte", "silky",
-        "textured", "grainy", "soft focus", "high contrast", "low contrast",
-        "vivid colors", "muted colors", "monochromatic", "saturated", "desaturated",
-        "high clarity", "film grain", "long exposure", "motion blur", "tack sharp"
+        "textured", "soft focus", "vivid colors", "saturated", "high clarity"
     };
 
     public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed, bool addStyleKeywords = true)
