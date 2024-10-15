@@ -131,8 +131,10 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 
             var newImageBase64 = newImage.First().Base64EncodedImage;
             var newImageBinary = Convert.FromBase64String(newImageBase64);
-            var newFilePath = filePath.Replace(".jpg", "_improved.jpg");
 
+            var newFilePath = filePath.Replace(".jpg", ".improved.jpg");
+
+            // save high-quality image
             await File.WriteAllBytesAsync(newFilePath, newImageBinary);
 
             return true;

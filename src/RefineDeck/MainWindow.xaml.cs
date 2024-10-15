@@ -1,9 +1,13 @@
 ﻿using CoreLibrary.Models;
 using CoreLibrary.Services.AnkiExportService;
+using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
+using Microsoft.Extensions.Logging;
 using RefineDeck.Utils;
 using RefineDeck.ViewModels;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +21,7 @@ public partial class MainWindow : Window
     MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
     GeminiQualityAssuranceAgent? QualityAssuranceAgent = null;
     DismissedSuggestionsMemory? DismissedSuggestionsMemory = null;
+    ImageGenerator? ImageGenerator = null;
 
     public MainWindow()
     {
@@ -29,6 +34,21 @@ public partial class MainWindow : Window
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
         DismissedSuggestionsMemory = new DismissedSuggestionsMemory(ViewModel.Deck.DeckPath.DismissedSuggestionsPath);
+        InitializeImageGeneratorInstance();
+    }
+
+    private void InitializeImageGeneratorInstance()
+    {
+        // Image generator is needed for the "Improve selected images quality" feature to work
+        var httpClient = new HttpClient();
+        var imageGeneratorLogger = LoggerFactory
+            .Create(builder => builder.AddConsole())
+            .CreateLogger<ImageGenerator>();
+
+        // reuse global image cache folder for now; for portability it should be stored in the deck folder, however
+        var imageGeneratorCacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches", "GenerateFlashcards.ImageGenerator");
+        var imageGeneratorSettings = new ImageGeneratorSettings(imageGeneratorCacheFolder);
+        ImageGenerator = new ImageGenerator(httpClient, imageGeneratorLogger, imageGeneratorSettings);
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -204,7 +224,7 @@ public partial class MainWindow : Window
     private enum ScrollDirection { Next, Previous };
     private void ChangeImageOnScroll(object sender, MouseWheelEventArgs e)
     {
-        ScrollDirection direction = e.Delta > 0 ? ScrollDirection.Previous : ScrollDirection.Next;
+        ScrollDirection direction = e.Delta > 0 ? ScrollDirection.Next : ScrollDirection.Previous;
 
         var card = ViewModel.SelectedFlashcard;
         if (card is null) return;
@@ -219,16 +239,22 @@ public partial class MainWindow : Window
             card.SelectedImageIndex = 0;
             return;
         }
+
+        int newIndex;
         if (direction == ScrollDirection.Next)
         {
-            card.SelectedImageIndex = (card.SelectedImageIndex + 1) % card.ImageCandidates.Count;
+            newIndex = card.SelectedImageIndex.Value + 1;
+            if (newIndex >= card.ImageCandidates.Count)
+                newIndex = card.ImageCandidates.Count - 1;
         }
         else
         {
-            card.SelectedImageIndex = (card.SelectedImageIndex - 1 + card.ImageCandidates.Count) % card.ImageCandidates.Count;
+            newIndex = card.SelectedImageIndex.Value - 1;
+            if (newIndex < 0)
+                newIndex = 0;
         }
 
-
+        card.SelectedImageIndex = newIndex;
     }
 
     private void DismissWarning_OnClick(object sender, RoutedEventArgs e)
@@ -263,5 +289,34 @@ public partial class MainWindow : Window
         }
 
         ViewModel.PerformingQualityAnalysis = false;
+    }
+
+    private async void UpgradeQualityOfSelectedImages_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (ImageGenerator is null)
+        {
+            MessageBox.Show("ImageGenerator is not initialized.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        var needQualityUpgrade = ViewModel.Deck.Flashcards.Take(3).ToList();
+        ViewModel.ImageQualityTotal = needQualityUpgrade.Count;
+        ViewModel.ImageQualityProcessed = 0;
+        ViewModel.PerformingImageQualityUpgrade = true;
+
+        foreach (var card in needQualityUpgrade)
+        {
+
+            if (!card.IsPlaceholderImageSelected)
+            {
+                var selectedImage = card.SelectedImage!;
+                await ImageGenerator.ImproveImageQualityIfNeeded(selectedImage);
+            }
+
+            ViewModel.ImageQualityProcessed++;
+
+        }
+
+        ViewModel.PerformingImageQualityUpgrade = false;
     }
 }

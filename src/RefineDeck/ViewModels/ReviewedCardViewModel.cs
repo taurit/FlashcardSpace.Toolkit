@@ -3,6 +3,7 @@ using PropertyChanged;
 using RefineDeck.Utils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 
 namespace RefineDeck.ViewModels;
 
@@ -86,10 +87,18 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
             if (!SelectedImageIndex.HasValue) return null;
 
             var absolutePath = ImageCandidates[SelectedImageIndex.Value].AbsolutePath;
+
+            // convention: see if there is an improved image variant available
+            var improvedVariantPath = absolutePath.Replace(".jpg", ".improved.jpg");
+            if (File.Exists(improvedVariantPath))
+            {
+                return improvedVariantPath;
+            }
+
             return absolutePath;
         }
     }
-
+    public bool IsPlaceholderImageSelected => (!SelectedImageIndex.HasValue) || ImageCandidates[SelectedImageIndex.Value].RelativePath is null;
 
     public ApprovalStatus ApprovalStatus { get; set; }
     public bool IsApprovalStatusOverridden => ApprovalStatus != OriginalFlashcard.ApprovalStatus;

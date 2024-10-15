@@ -168,7 +168,13 @@ public class AnkiExportService
             {
                 var imageFilePathRelative = flashcard.ImageCandidates[selectedImageIndexValue];
                 var imageFilePathAbsolute = Path.Combine(manifestFileFolder, imageFilePathRelative);
-                imageFileNameDeck = exportedDeck.RegisterImageFile(imageFilePathAbsolute);
+
+                // by convention, there might be a quality-improved image variant (preferred)
+                var imageFilePathImprovedAbsolute = imageFilePathAbsolute.Replace(".jpg", ".improved.jpg");
+                var imageSourcePathAbsolute = File.Exists(imageFilePathImprovedAbsolute)
+                    ? imageFilePathImprovedAbsolute
+                    : imageFilePathAbsolute;
+                imageFileNameDeck = exportedDeck.RegisterImageFile(imageSourcePathAbsolute);
             }
         }
         var imageTag = string.IsNullOrWhiteSpace(imageFileNameDeck) ? "" : $"<img src=\"{imageFileNameDeck}\" />";

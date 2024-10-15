@@ -43,21 +43,7 @@ internal sealed class DebugCommand(
         s.Stop();
         AnsiConsole.MarkupLine($"[bold green]Generated 10 drafts in {s.ElapsedMilliseconds} ms[/]");
 
-        // 2) Generate 10 high quality images with same params
-        s.Restart();
-        for (int i = 0; i < 10; i++)
-        {
-            var generatedImage = await imageGenerator.GenerateImageBatch(
-                new StableDiffusionPrompt(prompt, negativePrompt),
-                1, 4.0m, i * 100, SupportedSDXLImageSize.Wide, ImageQualityProfile.HighQualityProfile);
-            var imageBytes = Convert.FromBase64String(generatedImage[0].Base64EncodedImage);
-            // save to root folder
-            await File.WriteAllBytesAsync($"{rootOutputFolder}/highQuality{i}.jpg", imageBytes);
-        }
-        s.Stop();
-        AnsiConsole.MarkupLine($"[bold green]Generated 10 high quality images in {s.ElapsedMilliseconds} ms[/]");
-
-        // 3) Upgrade quality of all drafts with await imageGenerator.ImproveImageQualityIfNeeded("d:\\draft.jpg");
+        // 2) Upgrade quality of all drafts with await imageGenerator.ImproveImageQualityIfNeeded("d:\\draft.jpg");
         s.Restart();
         foreach (var draftPath in draftsPaths)
         {

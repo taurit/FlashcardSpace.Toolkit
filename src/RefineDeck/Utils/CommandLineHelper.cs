@@ -11,8 +11,9 @@ internal static class CommandLineHelper
     {
         string[] args = Environment.GetCommandLineArgs();
 
-        // by default, look for deck in the same folder as the executable
+        // by default, look for deck in the same folder as the executable, in case I delivered *.exe and a deck for review to another person
         string pathCandidate = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
         // but if there is a command line argument, use it as the path
         if (args.Length == 2)
             pathCandidate = args[1];
@@ -24,11 +25,25 @@ internal static class CommandLineHelper
         // - d:\DeckWorkspace\FlashcardDeck
         // - d:\DeckWorkspace\FlashcardDeck\flashcards.json
         // - d:\DeckWorkspace\FlashcardDeck\flashcards.edited.json
+
+
+
         var hypotheticalOuterPaths = new List<DeckPath>()
             {
                 new(Path.GetFullPath(pathCandidate)!),
                 new(Path.GetDirectoryName(pathCandidate)!),
             };
+
+        // Useful fallback:
+        // - d:\{MostRecentlyCreatedDeckInASpecifiedFolder}
+        var mostRecentlyModifiedSubfolder = Directory
+            .GetDirectories(pathCandidate)
+            .Where(x => Directory.Exists(Path.Combine(x, "FlashcardDeck")))
+            .OrderByDescending(Directory.GetLastWriteTimeUtc)
+            .FirstOrDefault();
+
+        if (mostRecentlyModifiedSubfolder is not null)
+            hypotheticalOuterPaths.Add(new DeckPath(mostRecentlyModifiedSubfolder));
 
         foreach (var hypotheticalOuterPath in hypotheticalOuterPaths)
         {

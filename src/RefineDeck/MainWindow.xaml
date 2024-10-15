@@ -484,6 +484,21 @@
 
             <StatusBarItem Grid.Column="7" HorizontalContentAlignment="Right">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <ProgressBar
+                        Width="200"
+                        Maximum="{Binding ImageQualityTotal}"
+                        Visibility="{Binding PerformingImageQualityUpgrade, Converter={StaticResource TrueToVisibleConverter}}"
+                        Value="{Binding ImageQualityProcessed}" />
+
+
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Click="UpgradeQualityOfSelectedImages_OnClick"
+                        IsEnabled="{Binding PerformingQualityAnalysis, Converter={StaticResource IsBusyToIsEnabledConverter}}">
+                        Upgrade selected images quality
+                    </Button>
+
                     <!--  Loading icon, visible only when PerformingQualityAnalysis is true  -->
                     <TextBlock
                         Margin="5,0,0,0"
@@ -499,6 +514,7 @@
                         IsEnabled="{Binding PerformingQualityAnalysis, Converter={StaticResource IsBusyToIsEnabledConverter}}">
                         Refresh QA remarks
                     </Button>
+
 
                     <Button
                         Margin="5,0,0,0"
