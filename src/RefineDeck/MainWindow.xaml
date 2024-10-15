@@ -278,7 +278,7 @@
                                 FontStyle="Italic"
                                 Foreground="DimGray"
                                 Style="{StaticResource EditableText}"
-                                Text="{Binding SelectedFlashcard.SentenceExample, UpdateSourceTrigger=PropertyChanged, FallbackValue='[Card not selected]'}"
+                                Text="{Binding SelectedFlashcard.SentenceExample, FallbackValue='[Card not selected]'}"
                                 ToolTip="Sentence Example" />
                         </DockPanel>
                         <TextBox

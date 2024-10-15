@@ -64,7 +64,7 @@ public partial class MainWindow : Window
 
     private void PropertyOfSelectedFlashcardChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == "Term" || e.PropertyName == "TermTranslation" || e.PropertyName == "SentenceExample")
+        if (e.PropertyName == "Term" || e.PropertyName == "TermTranslation" || e.PropertyName == "SentenceExample" || e.PropertyName == "SentenceExampleTranslation")
         {
             UpdateAndPlayAudio(e.PropertyName);
         }
@@ -305,7 +305,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var needQualityUpgrade = ViewModel.Deck.Flashcards.Take(3).ToList();
+        var needQualityUpgrade = ViewModel.Deck.Flashcards.ToList();
         ViewModel.ImageQualityTotal = needQualityUpgrade.Count;
         ViewModel.ImageQualityProcessed = 0;
         ViewModel.PerformingImageQualityUpgrade = true;
