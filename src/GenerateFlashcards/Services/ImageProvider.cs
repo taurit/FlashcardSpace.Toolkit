@@ -39,14 +39,17 @@ internal class ImageProvider(
             var imagesSavedToDisk = new List<string>();
             foreach (var image in images)
             {
-                var imageFingerprint = image.Base64EncodedImage.GetHashCodeStable(15);
-                // JPG format requires one-time setup: SD WebUI Settings -> File format for images -> change from default `png` to `jpeg`
+                var imageBytes = Convert.FromBase64String(image.Base64EncodedImage);
+                var imageFingerprint = imageBytes.GetHashCodeStable(15);
+
+                // By default API responds with PNG images.
+                // To get JPG format, one-time setup is required:
+                // SD WebUI Settings -> File format for images -> change from default `png` to `jpeg`
                 var imageFilePath = Path.Combine(settings.ImageProviderCacheFolder, $"{imageFingerprint}.jpg");
                 if (!File.Exists(imageFilePath))
                 {
-                    await File.WriteAllBytesAsync(imageFilePath, Convert.FromBase64String(image.Base64EncodedImage));
+                    await File.WriteAllBytesAsync(imageFilePath, imageBytes);
                     logger.LogDebug("Saved image to disk: {ImageFilePath}", imageFilePath);
-
                 }
                 else
                 {

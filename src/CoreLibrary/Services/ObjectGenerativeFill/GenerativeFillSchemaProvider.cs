@@ -30,7 +30,7 @@ public class GenerativeFillSchemaProvider
     /// </example>
     /// <typeparam name="TSingleItem">Type of item in the response</typeparam>
     /// </summary>
-    public string GenerateJsonSchemaForArrayOfItems<TSingleItem>() where TSingleItem : ObjectWithId
+    public async Task<string> GenerateJsonSchemaForArrayOfItems<TSingleItem>() where TSingleItem : ObjectWithId
     {
         // Todo: starting with .NET 9 it will be possible to replace it with the native System.Text.Json schema generator
         // https://github.com/dotnet/core/blob/main/release-notes/9.0/preview/preview6/libraries.md#jsonschemaexporter
@@ -70,10 +70,10 @@ public class GenerativeFillSchemaProvider
             var jsonObject = JsonConvert.DeserializeObject(schemaAsString);
             string nonIndentedJson = JsonConvert.SerializeObject(jsonObject, Formatting.None);
 
-            File.WriteAllText(schemaCacheFilePath, nonIndentedJson);
+            await File.WriteAllTextAsync(schemaCacheFilePath, nonIndentedJson);
         }
 
-        var schemaString = File.ReadAllText(schemaCacheFilePath);
+        var schemaString = await File.ReadAllTextAsync(schemaCacheFilePath);
 
         return schemaString;
     }

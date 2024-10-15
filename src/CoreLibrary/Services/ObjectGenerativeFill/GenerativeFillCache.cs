@@ -15,7 +15,7 @@ internal class GenerativeFillCache(string rootFolder)
 
     private readonly string _rootFolder = rootFolder;
 
-    public void SaveToCache<T>(
+    public async Task SaveToCache<T>(
             string modelClassId,
             string systemChatMessage,
             string promptTemplate,
@@ -33,11 +33,11 @@ internal class GenerativeFillCache(string rootFolder)
                 continue;
 
             var serializedItem = JsonSerializer.Serialize(item, _serializationOptions);
-            File.WriteAllText(cacheFilePath, serializedItem);
+            await File.WriteAllTextAsync(cacheFilePath, serializedItem);
         }
     }
 
-    private T? ReadFromCache<T>(
+    private async Task<T?> ReadFromCache<T>(
         string modelClassId,
         string systemChatMessage,
         string promptTemplate,
@@ -51,8 +51,8 @@ internal class GenerativeFillCache(string rootFolder)
         if (!File.Exists(cacheFilePath))
             return null;
 
-        var serializedItem = File.ReadAllText(cacheFilePath);
-        var deserializedItem = JsonSerializer.Deserialize<T>(serializedItem, _serializationOptions);
+        await using var stream = File.OpenRead(cacheFilePath);
+        var deserializedItem = JsonSerializer.Deserialize<T>(stream, _serializationOptions);
         if (deserializedItem == null)
             throw new InvalidOperationException($"Failed to deserialize item from cache file {cacheFilePath}. It's unexpected, debug!");
 
@@ -107,14 +107,14 @@ internal class GenerativeFillCache(string rootFolder)
         return fingerprint;
     }
 
-    public List<T> FillFromCacheWherePossible<T>(string modelClassId, string systemChatMessage, string promptTemplate, int seed, List<T> inputItems)
+    public async Task<List<T>> FillFromCacheWherePossible<T>(string modelClassId, string systemChatMessage, string promptTemplate, int seed, List<T> inputItems)
         where T : ObjectWithId, new()
     {
         var outputItems = new List<T>();
         foreach (var objectToFill in inputItems)
         {
             var compoundKeyFingerprint = GetCompoundKeyFingerprint(objectToFill);
-            var cachedObject = ReadFromCache<T>(modelClassId, systemChatMessage, promptTemplate, seed, compoundKeyFingerprint);
+            var cachedObject = await ReadFromCache<T>(modelClassId, systemChatMessage, promptTemplate, seed, compoundKeyFingerprint);
 
             outputItems.Add(cachedObject ?? objectToFill);
         }

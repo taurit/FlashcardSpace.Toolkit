@@ -48,7 +48,7 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
                                "\n" +
                                "The output should be in JSON and contain array of output items (with one output item for each input item, linked by Id).";
 
-        var outputItems = _cache.FillFromCacheWherePossible(modelClassId, SystemChatMessage, promptTemplate, seed, inputItems);
+        var outputItems = await _cache.FillFromCacheWherePossible(modelClassId, SystemChatMessage, promptTemplate, seed, inputItems);
         var itemsThatRequireApiCall = outputItems.Where(x => x.Id is null).ToList();
 
         // assign consecutive IDs to input elements
@@ -59,7 +59,7 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
         {
             logger.LogInformation("Filling missing properties for {NumItems} items", itemsThatRequireApiCall.Count);
 
-            var schema = _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
+            var schema = await _schemaProvider.GenerateJsonSchemaForArrayOfItems<T>();
 
             // my unconfirmed hypothesis: the larger the batch, the more mistakes in the response.
             // e.g. in unit tests when I test 1-10 items in a batch, I observe no errors
@@ -102,7 +102,7 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
 
                 var newItemsToStoreInCacheIds = apiResultItems.Select(x => x.Id).ToHashSet();
                 var newItemsToStoreInCache = newOutputItems.Where(x => newItemsToStoreInCacheIds.Contains(x.Id)).ToList();
-                _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, seed, newItemsToStoreInCache);
+                await _cache.SaveToCache(modelClassId, SystemChatMessage, promptTemplate, seed, newItemsToStoreInCache);
 
                 outputItems = newOutputItems;
                 chunkNo++;

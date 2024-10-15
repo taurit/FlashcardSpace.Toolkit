@@ -10,6 +10,12 @@ public static class StringExtensionMethodsHashing
     /// </summary>
     public static string GetHashCodeStable(this string input, int reduceLengthToCharacters = 8)
     {
+        var bytes = Encoding.UTF8.GetBytes(input);
+        return bytes.GetHashCodeStable(reduceLengthToCharacters);
+    }
+
+    public static string GetHashCodeStable(this byte[] input, int reduceLengthToCharacters = 8)
+    {
         // Probabilities of collision of 1000000 hashes assuming alphabet of 64 characters, for different hash lengths:
         // source: https://hash-collisions.progs.dev/
         // 5 characters: 0.36539143049797307
@@ -20,13 +26,20 @@ public static class StringExtensionMethodsHashing
 
         // 8 is a reasonable default giving as short hash as possible but still very low probability of collision
 
-        var stableHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
-        var stableHash = Convert.ToBase64String(stableHashBytes)
-            .Replace("+", "") // allowed in filenames but less readable than other characters
-            .Replace("=", "") // base64 padding character; allowed in filenames but less readable than other characters
-            .Replace("/", "") // not allowed in filenames, but happens in Base64 strings
-            .Substring(0, reduceLengthToCharacters);
+        var sha256Bytes = SHA256.HashData(input);
+        var sha256Base64 = Convert.ToBase64String(sha256Bytes);
+        var stringBuilder = new StringBuilder(reduceLengthToCharacters);
 
+        for (int i = 0; i < sha256Base64.Length && stringBuilder.Length < reduceLengthToCharacters; i++)
+        {
+            char c = sha256Base64[i];
+            if (c != '+' && c != '=' && c != '/')
+            {
+                stringBuilder.Append(c);
+            }
+        }
+
+        var stableHash = stringBuilder.ToString();
         return stableHash;
     }
 

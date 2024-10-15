@@ -24,13 +24,13 @@ public class GenerativeFillSchemaTests
     }
 
     [TestMethod]
-    public void WhenObjectIsGiven_GeneratesOutputSchemaAcceptableByOpenAiAPI()
+    public async Task WhenObjectIsGiven_GeneratesOutputSchemaAcceptableByOpenAiAPI()
     {
         // Arrange
         var sut = new GenerativeFillSchemaProvider(GenerativeFillTestFactory.GenerativeFillCacheFolder);
 
         // Act
-        var schemaString = sut.GenerateJsonSchemaForArrayOfItems<AmericanState>();
+        var schemaString = await sut.GenerateJsonSchemaForArrayOfItems<AmericanState>();
         Console.WriteLine(schemaString);
 
         // Assert
@@ -62,13 +62,13 @@ public class GenerativeFillSchemaTests
     }
 
     [TestMethod]
-    public void WhenMultipleRulesArePresentForProperty_ConcatenateThemAsSentences()
+    public async Task WhenMultipleRulesArePresentForProperty_ConcatenateThemAsSentences()
     {
         // Arrange
         var sut = new GenerativeFillSchemaProvider(GenerativeFillTestFactory.GenerativeFillCacheFolder);
 
         // Act
-        var schemaString = sut.GenerateJsonSchemaForArrayOfItems<EnglishWord>();
+        var schemaString = await sut.GenerateJsonSchemaForArrayOfItems<EnglishWord>();
         Console.WriteLine(schemaString);
 
         // Assert

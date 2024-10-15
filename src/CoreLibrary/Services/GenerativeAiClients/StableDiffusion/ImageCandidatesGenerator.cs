@@ -10,8 +10,6 @@ public class ImageCandidatesGenerator(
 {
     public async Task<List<GeneratedImage>> GenerateImageVariants(string termEnglish, string sentenceEnglish)
     {
-        //var basePrompt = promptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish, null, false);
-
         const int cfgScaleMin = 3;
         const int cfgScaleMax = 6;
         const int numExperiments = 4;

@@ -5,6 +5,9 @@ namespace CoreLibrary.Services.ObjectGenerativeFill;
 
 public static class ClassFingerprintProvider
 {
+    // in-memory cache of Type Fingerprints
+    private static readonly Dictionary<Type, string> _typeFingerprints = new();
+
     /// <summary>
     /// This method generates unique string fingerprint for the type of single item.
     /// The fingerprint should change whenever:
@@ -19,9 +22,13 @@ public static class ClassFingerprintProvider
     /// <returns>An arbitrary string that wil remain the same if type didn't change, but differs if it changed.</returns>
     internal static string GenerateTypeFingerprint(Type typeOfSingleItem, int recursionDepth = 0)
     {
+        if (recursionDepth == 0 && _typeFingerprints.TryGetValue(typeOfSingleItem, out var cachedFingerprint))
+            return cachedFingerprint;
+
         if (recursionDepth > 4)
             throw new ArgumentOutOfRangeException(nameof(recursionDepth),
                 "Recursion depth is suspiciously high. Most likely the recursion went into some 3rd party type it shouldn't. I suggest debugging.");
+
 
         var properties = typeOfSingleItem.GetRuntimeProperties().ToList();
         var fingerprint = new StringBuilder();
@@ -57,6 +64,10 @@ public static class ClassFingerprintProvider
         }
 
         var generateTypeFingerprint = fingerprint.ToString();
+
+        if (recursionDepth == 0)
+            _typeFingerprints[typeOfSingleItem] = generateTypeFingerprint;
+
         return generateTypeFingerprint;
     }
 
