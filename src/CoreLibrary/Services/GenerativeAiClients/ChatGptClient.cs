@@ -34,7 +34,13 @@ public class ChatGptClient(ILogger logger, OpenAiCredentials openAiCredentials, 
             var azureOpenAiEndpointUrl = new Uri(openAiCredentials.AzureOpenAiEndpoint!);
             var azureOpenAiClient = new AzureOpenAIClient(
                 azureOpenAiEndpointUrl,
-                new ApiKeyCredential(openAiCredentials.AzureOpenAiKey!));
+                new ApiKeyCredential(openAiCredentials.AzureOpenAiKey!),
+                new AzureOpenAIClientOptions()
+                {
+                    // I sometimes got timeouts after 1m 40 seconds, so here's an attempt to slightly increase it
+                    NetworkTimeout = TimeSpan.FromMinutes(3)
+                }
+                );
             client = azureOpenAiClient.GetChatClient(modelId);
         }
         else

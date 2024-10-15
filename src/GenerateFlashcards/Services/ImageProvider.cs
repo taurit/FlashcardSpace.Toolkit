@@ -31,8 +31,8 @@ internal class ImageProvider(
         {
             noteIndex++;
             // log progress (note number, total number of notes, percentage)
-            logger.LogInformation("Generating flashcard {NoteIndex}/{TotalNotes} ({Percentage}%): {Term}",
-                noteIndex, notes.Count, noteIndex * 100 / notes.Count, note.Term);
+            logger.LogInformation("Generating images for note {NoteIndex}/{TotalNotes} ({Percentage}%): {Term} ({Sentence})",
+                noteIndex, notes.Count, noteIndex * 100 / notes.Count, note.Term, note.ContextEnglishTranslation);
 
             var images = await imageCandidatesGenerator.GenerateImageVariants(note.TermStandardizedFormEnglishTranslation, note.ContextEnglishTranslation);
 
@@ -42,9 +42,16 @@ internal class ImageProvider(
                 var imageFingerprint = image.Base64EncodedImage.GetHashCodeStable(15);
                 // JPG format requires one-time setup: SD WebUI Settings -> File format for images -> change from default `png` to `jpeg`
                 var imageFilePath = Path.Combine(settings.ImageProviderCacheFolder, $"{imageFingerprint}.jpg");
+                if (!File.Exists(imageFilePath))
+                {
+                    await File.WriteAllBytesAsync(imageFilePath, Convert.FromBase64String(image.Base64EncodedImage));
+                    logger.LogDebug("Saved image to disk: {ImageFilePath}", imageFilePath);
 
-                await File.WriteAllBytesAsync(imageFilePath, Convert.FromBase64String(image.Base64EncodedImage));
-                logger.LogDebug("Saved image to disk: {ImageFilePath}", imageFilePath);
+                }
+                else
+                {
+                    logger.LogDebug("Image already exists on disk: {ImageFilePath}", imageFilePath);
+                }
 
                 imagesSavedToDisk.Add(imageFilePath);
             }

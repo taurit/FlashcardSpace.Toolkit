@@ -20,7 +20,6 @@ public class ImageCandidatesGenerator(
 
         const int totalNumImages = numExperiments * numImagesInExperiment;
 
-        //var results = await FindExistingImagesThatFit(basePrompt, imageSize, totalNumImages);
         var results = new List<GeneratedImage>();
 
         if (results.Count >= totalNumImages)
@@ -31,17 +30,16 @@ public class ImageCandidatesGenerator(
 
         decimal cfgScaleStep = ((decimal)cfgScaleMax - cfgScaleMin) / (numExperiments - 1);
 
+        logger.LogDebug($"Generating {totalNumImages} images for term '{termEnglish}' and sentence '{sentenceEnglish}'");
+
         for (int i = 0; i < numExperiments; i++)
         {
             var seed = i + sentenceEnglish.GetHashCodeStableInt(); // add deterministic variety to the seed
             // ... to avoid generating 1000 images with the 'horror,gothic' theme etc.
-
             var prompt = promptProvider.CreateGoodPrompt(termEnglish, sentenceEnglish, seed);
             int cfgScaleForExperiment = cfgScaleMin + (int)(cfgScaleStep * i);
 
-            logger.LogInformation("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
-
-
+            logger.LogDebug("CFG={CfgScale}, Prompt: {Prompt}", cfgScaleForExperiment, prompt.PromptText);
             var images = await imageGenerator.GenerateImageBatch(prompt, numImagesInExperiment, cfgScaleForExperiment, seed, imageSize, ImageQualityProfile.DraftProfile);
 
             results.AddRange(images);
