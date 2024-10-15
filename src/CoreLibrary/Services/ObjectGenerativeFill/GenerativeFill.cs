@@ -75,8 +75,29 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
                 var itemsThatRequireApiCallChunk = chunk.ToList();
                 var inputSerialized = SerializeInput(itemsThatRequireApiCallChunk);
                 var prompt = String.Format(promptTemplate, inputSerialized);
-                var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, seed, schema);
-                var apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCallChunk.Count);
+
+                List<T>? apiResultItems = null;
+                try
+                {
+                    var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, seed, schema);
+                    apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCallChunk.Count);
+                }
+                catch (ResponseMismatchException e)
+                {
+                    // From time to time, the response is unexpected and contains more/less items than expected
+                    // Since this is caused by the randomness of the AI, some strategies to work around this are:
+                    // - retry the request with a different seed value
+                    // - retry the request with a different batch size
+
+                    var differentSeed = seed + 1;
+                    logger.LogWarning($"Response mismatch exception for chunk {chunkNo}: {e.Message}.");
+                    logger.LogWarning($"Changing seed from {seed} to {differentSeed} and retrying...");
+
+                    var response = await generativeAiClient.GetAnswerToPrompt(modelId, modelClassId, SystemChatMessage, prompt, GenerativeAiClientResponseMode.StructuredOutput, differentSeed, schema);
+                    apiResultItems = DeserializeResponse<T>(response, itemsThatRequireApiCallChunk.Count);
+                    // if the exception happens twice, it's good to take a look at the prompt.
+                }
+
                 var newOutputItems = ReplacePlaceholdersWithFullObjects(outputItems, apiResultItems);
 
                 var newItemsToStoreInCacheIds = apiResultItems.Select(x => x.Id).ToHashSet();
@@ -118,8 +139,14 @@ public class GenerativeFill(ILogger<GenerativeFill> logger, IGenerativeAiClient 
 
         if (resultItems.Count != numInputElements)
         {
-            throw new InvalidOperationException($"Number of items in response ({resultItems.Count}) doesn't match number of items in input ({numInputElements}).");
+            throw new ResponseMismatchException($"Number of items in response ({resultItems.Count}) doesn't match number of items in input ({numInputElements}).");
         }
+
+        if (resultItems.Any(x => x.Id is null))
+        {
+            throw new ResponseMismatchException("Some items in response are missing Id.");
+        }
+
 
         return resultItems;
     }
