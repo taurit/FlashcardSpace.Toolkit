@@ -104,6 +104,7 @@ internal static class DeckLoader
                     TermAudio = vm.IsTermAudioOverridden ? vm.TermAudio : null!,
                     TermTranslationAudio = vm.IsTermTranslationAudioOverridden ? vm.TermTranslationAudio : null!,
                     ContextAudio = vm.IsSentenceExampleAudioOverridden ? vm.SentenceExampleAudio : null!,
+                    ContextTranslationAudio = vm.IsSentenceExampleTranslationAudioOverridden ? vm.SentenceExampleTranslationAudio : null!,
 
                     QaSuggestions = vm.IsQaSuggestionsOverridden ? vm.QaSuggestions : null!
 

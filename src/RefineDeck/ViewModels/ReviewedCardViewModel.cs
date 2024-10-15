@@ -41,6 +41,9 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
     public string SentenceExampleTranslation { get; set; }
     public bool IsSentenceExampleTranslationOverridden => SentenceExampleTranslation != OriginalFlashcard.ContextTranslation;
 
+    public string SentenceExampleTranslationAudio { get; set; }
+    public bool IsSentenceExampleTranslationAudioOverridden => SentenceExampleTranslationAudio != OriginalFlashcard.ContextTranslationAudio;
+
     public string Remarks { get; set; }
     public bool IsRemarksFieldOverridden => Remarks != OriginalFlashcard.Remarks;
 

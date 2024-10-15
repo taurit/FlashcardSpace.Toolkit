@@ -15,17 +15,17 @@
 }
 
 /* To save space, this audio is optionally triggered when user clicks on a sentence text */
-#sentenceSourceLanguage {
-    cursor: pointer;
+#sentenceSourceLanguage, #sentenceTargetLanguage {
     font-style: italic;
+    cursor: pointer;
+ 
 }
 
-#sentenceSourceLanguageAudio {
+#sentenceSourceLanguageAudio, #sentenceTargetLanguageAudio {
     display: none;
 }
 
 #sentenceTargetLanguage {
-    font-style: italic;
     color: #888;
     margin-top: 4px;
 }

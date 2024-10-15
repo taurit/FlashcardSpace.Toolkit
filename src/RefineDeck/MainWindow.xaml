@@ -292,6 +292,12 @@
                                 IsEnabled="{Binding SelectedFlashcard.IsSentenceExampleTranslationOverridden, FallbackValue=false}"
                                 Style="{StaticResource ResetButton}"
                                 Tag="SentenceExampleTranslation" />
+
+                            <Button
+                                Click="UpdateAndPlayAudio_OnClick"
+                                Style="{StaticResource PlayButton}"
+                                Tag="SentenceExampleTranslation" />
+
                             <TextBox
                                 FontStyle="Italic"
                                 Foreground="Gray"

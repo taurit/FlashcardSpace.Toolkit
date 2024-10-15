@@ -213,6 +213,12 @@ public partial class MainWindow : Window
                 card.SentenceExampleAudio = AudioPatcher.ToRelativePath(newAudioFilePathSentenceExample, ViewModel.Deck.DeckPath);
                 AudioPlayer.PlayAudio(newAudioFilePathSentenceExample);
                 break;
+            case "SentenceExampleTranslation":
+                var newAudioFilePathSentenceExampleTranslation = await audioProvider.GenerateAudioOrUseCached(card.SentenceExampleTranslation, ViewModel.Deck.TargetLanguage);
+                card.SentenceExampleTranslationAudio = AudioPatcher.ToRelativePath(newAudioFilePathSentenceExampleTranslation, ViewModel.Deck.DeckPath);
+                AudioPlayer.PlayAudio(newAudioFilePathSentenceExampleTranslation);
+
+                break;
 
             default:
                 throw new NotImplementedException($"Not implemented: updating the {tag} audio.");

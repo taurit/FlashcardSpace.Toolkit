@@ -2,7 +2,8 @@
 
 public record ImageQualityProfile(int Steps, bool IsRefinerEnabled, bool IsFaceRestorationEnabled)
 {
-    private const int DraftSteps = 10;
+    // 10 is a bit risky; image might significantly change between 10 and 25 steps (people disappear, composition significantly changes). I'll try 15.
+    private const int DraftSteps = 15;
     private const int HighQualitySteps = 25;
 
     public static ImageQualityProfile DraftProfile => new ImageQualityProfile(DraftSteps, IsRefinerEnabled: false, IsFaceRestorationEnabled: false);
