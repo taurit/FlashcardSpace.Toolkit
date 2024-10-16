@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Utilities;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace RefineDeck;
 internal static class Parameters
@@ -12,6 +13,11 @@ internal static class Parameters
     private const string MostRecentGeminiFlashModelId = "gemini-1.5-flash-8b";
 
     public const string GeminiModelId = MostRecentGeminiProModelId;
+
+
+    public static string ImageGeneratorCacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches", "GenerateFlashcards.ImageGenerator");
+    public static string GeminiCacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches", "GenerateFlashcards.GeminiClient");
+
 
     /// <summary>
     /// Load the secrets from:

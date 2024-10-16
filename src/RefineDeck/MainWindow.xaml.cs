@@ -6,7 +6,6 @@ using RefineDeck.Utils;
 using RefineDeck.ViewModels;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,8 +45,7 @@ public partial class MainWindow : Window
             .CreateLogger<ImageGenerator>();
 
         // reuse global image cache folder for now; for portability it should be stored in the deck folder, however
-        var imageGeneratorCacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlashcardSpaceToolkitCaches", "GenerateFlashcards.ImageGenerator");
-        var imageGeneratorSettings = new ImageGeneratorSettings(imageGeneratorCacheFolder);
+        var imageGeneratorSettings = new ImageGeneratorSettings(Parameters.ImageGeneratorCacheFolder);
         ImageGenerator = new ImageGenerator(httpClient, imageGeneratorLogger, imageGeneratorSettings);
     }
 
@@ -306,8 +304,8 @@ public partial class MainWindow : Window
         }
 
         var needQualityUpgrade = ViewModel.Deck.Flashcards.ToList();
-        ViewModel.ImageQualityTotal = needQualityUpgrade.Count;
-        ViewModel.ImageQualityProcessed = 0;
+        ViewModel.ProgressBarTotal = needQualityUpgrade.Count;
+        ViewModel.ProgressBarProcessed = 0;
         ViewModel.PerformingImageQualityUpgrade = true;
 
         foreach (var card in needQualityUpgrade)
@@ -319,7 +317,7 @@ public partial class MainWindow : Window
                 await ImageGenerator.ImproveImageQualityIfNeeded(selectedImage);
             }
 
-            ViewModel.ImageQualityProcessed++;
+            ViewModel.ProgressBarProcessed++;
 
         }
 

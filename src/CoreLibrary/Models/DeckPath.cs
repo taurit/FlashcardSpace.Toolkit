@@ -20,5 +20,5 @@ public record DeckPath
     public string AnkiExportPath => Path.Combine(DeckDataPath, "Output");
     public string AudioProviderCacheFolder => Path.Combine(DeckDataPath, "audio");
     public string TtsCacheFolder => Path.Combine(DeckDataPath, "TTSCache");
-    public string GeminiCacheFolder => Path.Combine(DeckDataPath, "GeminiCache");
+    public string GeminiLocalCacheFolder => Path.Combine(DeckDataPath, "GeminiCache");
 }

@@ -89,6 +89,15 @@ $ankiWindowMaxHeight: 11cm;
         margin-top: 4px;
         color: #888;
     }
+
+    .remarks {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .remarks-content {
+        font-style: italic;
+    }
 }
 
 @media (prefers-color-scheme: dark) {

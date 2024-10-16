@@ -46,12 +46,44 @@ public class GoogleGeminiClient(ILogger logger, string geminiApiKey, string pers
         }
 
         var geminiClient = new GeminiClient(config);
-        var response = await geminiClient.TextPrompt(prompt, generationConfig);
-        var answer = response.Candidates.First();
-        responseContent = answer.Content.Parts.First().Text;
+        try
+        {
+            var response = await geminiClient.TextPrompt(prompt, generationConfig);
+            var answer = response.Candidates.First();
 
-        // save back to cache
-        await File.WriteAllTextAsync(cacheFileName, responseContent);
+            // Content filters are sometimes triggered with benign prompts like "Translate Spanish word `negro`".
+            // Setting options like `HARM_CATEGORY_HATE_SPEECH=BLOCK_NONE` doesn't change the response in gemini-1.5-pro-002 (tested).
+            // This code handles such cases by just mocking the response for now (another alternative is to fall back to OpenAI API, but it complicates the code,
+            // and it's not clear if it's worth it)
+            if (answer.FinishReason == "BLOCKLIST")
+            {
+                responseContent = "Response blocked by Gemini's content filter. Banned word in content? Review the flashcard manually.";
+            }
+            else
+            {
+                responseContent = answer.Content.Parts.First().Text;
+            }
+            // save back to cache
+            await File.WriteAllTextAsync(cacheFileName, responseContent);
+
+        }
+        catch (Exception e) when (e.InnerException is not null && e.InnerException.Message.Contains("Please try again later."))
+        {
+            // Sometimes we receive:
+            //{
+            //    "error": {
+            //        "code": 503,
+            //        "message": "The model is overloaded. Please try again later.",
+            //        "status": "UNAVAILABLE"
+            //    }
+            //}
+
+            logger.LogWarning("Received error from Gemini API: {Error}", e.InnerException.Message);
+            var timeout = TimeSpan.FromMinutes(1);
+            logger.LogInformation($"Waiting for {timeout} before retrying...");
+            await Task.Delay(timeout);
+            return await GetAnswerToPrompt(modelId, modelClassId, systemChatMessage, prompt, mode, seed, outputSchema);
+        }
 
         return responseContent;
     }

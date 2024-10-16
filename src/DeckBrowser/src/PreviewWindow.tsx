@@ -23,6 +23,8 @@ const DeckPreviewWindow: React.FC<DeckPreviewWindowProps> = ({ deck }) => {
 
     const flashcard = deck.flashcards![flashcardIndex];
     const hasMoreThanOneFlashcard = numFlashcards > 1;
+
+    const remarks = (flashcard.overrides ? flashcard.overrides.remarks : null) ?? flashcard.remarks;
     return (
         <section className="flashcards-demo-container">
             <DesktopWindow
@@ -74,6 +76,13 @@ const DeckPreviewWindow: React.FC<DeckPreviewWindowProps> = ({ deck }) => {
                                 }
                             />
                         </div>
+
+                        {remarks && (
+                            <div className="remarks">
+                                Remarks: <br />
+                                <div className="remarks-content">{remarks}</div>
+                            </div>
+                        )}
                     </div>
                 }
                 bottomContent={

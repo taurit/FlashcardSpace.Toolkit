@@ -30,10 +30,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public int NumWarningsSecondOpinion => Deck.Flashcards.Count(flashcard => flashcard.HasPendingQaSuggestionsSecondOpinion);
 
     public bool PerformingQualityAnalysis { get; set; }
-
     public bool PerformingImageQualityUpgrade { get; set; }
-    public int ImageQualityTotal { get; set; }
-    public int ImageQualityProcessed { get; set; }
+
+    public bool PerformingLongOperation => PerformingQualityAnalysis || PerformingImageQualityUpgrade;
+
+    public int ProgressBarTotal { get; set; }
+    public int ProgressBarProcessed { get; set; }
 
 
 }

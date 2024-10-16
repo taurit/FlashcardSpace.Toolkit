@@ -55,6 +55,27 @@
             "type": "Noun",
             "imageCandidates": ["images/el-gato-01.webp", "images/el-gato-02.webp"],
             "selectedImageIndex": 999
+        },
+        {
+            "term": "el microondas",
+            "termAudio": "audio/el-gato.mp3",
+            "termBaseForm": "el microondas",
+
+            "termTranslation": "microwave",
+            "termTranslationAudio": "audio/kot.mp3",
+            "termEnglishTranslation": "microwave",
+
+            "remarks": "la onda = wave",
+
+            "context": "El microondas está sucio.",
+            "contextAudio": "audio/el-gato-esta-durmiendo-en-el-sofa.mp3",
+            "contextTranslation": "The microwave is dirty.",
+            "contextTranslationAudio": "audio/kot-spi-na-kanapie.mp3",
+            "contextEnglishTranslation": "The microwave is dirty.",
+
+            "type": "Noun",
+            "imageCandidates": ["images/microondas.webp"],
+            "selectedImageIndex": 0
         }
     ]
 }

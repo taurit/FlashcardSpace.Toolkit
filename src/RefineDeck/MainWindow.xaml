@@ -492,9 +492,9 @@
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <ProgressBar
                         Width="200"
-                        Maximum="{Binding ImageQualityTotal}"
-                        Visibility="{Binding PerformingImageQualityUpgrade, Converter={StaticResource TrueToVisibleConverter}}"
-                        Value="{Binding ImageQualityProcessed}" />
+                        Maximum="{Binding ProgressBarTotal}"
+                        Visibility="{Binding PerformingLongOperation, Converter={StaticResource TrueToVisibleConverter}}"
+                        Value="{Binding ProgressBarProcessed}" />
 
 
                     <Button

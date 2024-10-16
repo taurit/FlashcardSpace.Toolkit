@@ -3,6 +3,11 @@
     "RefineDeck": {
       "commandName": "Project",
       "commandLineArgs": "c:\\Users\\windo\\AppData\\Local\\FlashcardSpaceToolkitCaches\\GenerateFlashcards.Outputs\\"
+    },
+    "RefineDeckAdjectives": {
+      "commandName": "Project",
+      "commandLineArgs": "c:\\Users\\windo\\AppData\\Local\\FlashcardSpaceToolkitCaches\\GenerateFlashcards.Outputs\\Deck-2024-10-15_Spanish_adjectives"
     }
+
   }
 }

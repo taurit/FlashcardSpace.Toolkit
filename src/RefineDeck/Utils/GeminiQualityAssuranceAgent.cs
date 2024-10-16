@@ -19,9 +19,14 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
         //List<ReviewedCardViewModel> cards = [card];
 
         var cards = viewModel.Deck.Flashcards;
+
+        viewModel.ProgressBarTotal = cards.Count;
+        viewModel.ProgressBarProcessed = 0;
+
         foreach (var toValidate in cards)
         {
             await ValidateSelectedCard(toValidate);
+            viewModel.ProgressBarProcessed++;
         }
     }
 
@@ -86,7 +91,8 @@ internal class GeminiQualityAssuranceAgent(MainWindowViewModel viewModel)
 
     private GoogleGeminiClient GetGeminiClientInstance()
     {
-        var geminiCacheFolder = viewModel.Deck.DeckPath.GeminiCacheFolder;
+        //var geminiCacheFolder = viewModel.Deck.DeckPath.GeminiLocalCacheFolder;
+        var geminiCacheFolder = Parameters.GeminiCacheFolder;
         var logger = LoggerFactory
             .Create(builder => builder.AddConsole())
             .CreateLogger<GoogleGeminiClient>();
