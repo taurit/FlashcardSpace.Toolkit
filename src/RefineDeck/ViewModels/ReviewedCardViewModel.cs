@@ -74,7 +74,7 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
 
 
 
-    public bool SecondOpinionConfirmedOk => QaSuggestionsSecondOpinion is not null && QaSuggestionsSecondOpinion.PlainText.StartsWith("OK");
+    //public bool SecondOpinionConfirmedOk => QaSuggestionsSecondOpinion is not null && QaSuggestionsSecondOpinion.PlainText.StartsWith("OK");
     public bool HasAnyPendingQaSuggestions => HasPendingQaSuggestions || HasPendingQaSuggestionsSecondOpinion;
 
     public ObservableCollection<ImageCandidate> ImageCandidates { get; set; }
@@ -104,7 +104,9 @@ public class ReviewedCardViewModel : INotifyPropertyChanged
     public bool IsPlaceholderImageSelected => (!SelectedImageIndex.HasValue) || ImageCandidates[SelectedImageIndex.Value].RelativePath is null;
 
     public ApprovalStatus ApprovalStatus { get; set; }
-    public bool IsApprovalStatusOverridden => ApprovalStatus != OriginalFlashcard.ApprovalStatus;
+    private bool IsApprovalStatusOverridden => ApprovalStatus != OriginalFlashcard.ApprovalStatus;
+    public bool IsApproved => ApprovalStatus == ApprovalStatus.Approved;
+    public bool IsRejected => ApprovalStatus == ApprovalStatus.Rejected;
 
 
 }

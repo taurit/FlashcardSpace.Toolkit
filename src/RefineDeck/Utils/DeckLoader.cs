@@ -27,7 +27,7 @@ internal static class DeckLoader
             }
 
             // add "no image" option
-            var noImagePlaceholderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "no_image_placeholder.png");
+            var noImagePlaceholderPath = String.Intern(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "no_image_placeholder.png"));
             imageCandidates.Add(new ImageCandidate(null, null, noImagePlaceholderPath));
 
             var flashcardViewModel = new ReviewedCardViewModel()

@@ -10,25 +10,23 @@
     Width="1200"
     Height="900"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
-    SnapsToDevicePixels="True"
-    UseLayoutRounding="True"
     mc:Ignorable="d">
     <Window.Resources>
-        <converters:ApprovalStatusToColorConverter x:Key="ApprovalStatusToColorConverter" />
-        <converters:ApprovalStatusToSymbolConverter x:Key="ApprovalStatusToSymbolConverter" />
+        <converters:QaStatusToSymbolConverter x:Key="QaStatusToSymbolConverter" />
+        <converters:IsApprovedToSymbolConverter x:Key="IsApprovedToSymbolConverter" />
+        <converters:IsRejectedToSymbolConverter x:Key="IsRejectedToSymbolConverter" />
         <converters:TrueToVisibleConverter x:Key="TrueToVisibleConverter" />
         <converters:IsBusyToIsEnabledConverter x:Key="IsBusyToIsEnabledConverter" />
-        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
 
         <Style x:Key="WysiwygDockPanel" TargetType="DockPanel">
             <Setter Property="Margin" Value="0,2,0,0" />
             <Setter Property="LastChildFill" Value="True" />
         </Style>
 
-        <Style TargetType="ScrollViewer">
+        <!--<Style TargetType="ScrollViewer">
             <Setter Property="UseLayoutRounding" Value="True" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
-        </Style>
+        </Style>-->
 
         <Style x:Key="EditableText" TargetType="TextBox">
             <Setter Property="FontSize" Value="16" />
@@ -97,58 +95,60 @@
         </Grid.ColumnDefinitions>
 
         <!--  Panel with the words  -->
-        <ListBox
+
+        <DataGrid
             Grid.Row="0"
             Grid.Column="0"
-            HorizontalContentAlignment="Stretch"
+            AutoGenerateColumns="False"
+            BorderThickness="0"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            CanUserResizeRows="False"
+            CanUserSortColumns="False"
+            GridLinesVisibility="Horizontal"
+            HorizontalGridLinesBrush="LightGray"
             IsTabStop="False"
             ItemsSource="{Binding Deck.Flashcards}"
+            ScrollViewer.CanContentScroll="True"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            SelectedItem="{Binding SelectedFlashcard}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel LastChildFill="True">
-                        <TextBlock
-                            DockPanel.Dock="Right"
-                            Foreground="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToColorConverter}}"
-                            Text="{Binding ApprovalStatus, Converter={StaticResource ApprovalStatusToSymbolConverter}}" />
+            SelectedItem="{Binding SelectedFlashcard}"
+            SelectionMode="Single"
+            VerticalGridLinesBrush="Transparent">
 
-                        <TextBlock
-                            DockPanel.Dock="Right"
-                            Foreground="LimeGreen"
-                            Text="👍"
-                            Visibility="{Binding SecondOpinionConfirmedOk, Converter={StaticResource TrueToVisibleConverter}}" />
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="100"
+                    Binding="{Binding Term, Mode=OneWay}"
+                    Header="Term"
+                    IsReadOnly="True" />
 
-                        <TextBlock
-                            DockPanel.Dock="Right"
-                            Foreground="Salmon"
-                            Text="⚠️"
-                            Visibility="{Binding HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource TrueToVisibleConverter}}" />
+                <DataGridTextColumn
+                    Width="30"
+                    Binding="{Binding HasPendingQaSuggestions, Converter={StaticResource QaStatusToSymbolConverter}, Mode=OneWay}"
+                    Foreground="Orange"
+                    Header="QA1" />
 
-                        <TextBlock
-                            DockPanel.Dock="Right"
-                            Foreground="Orange"
-                            Text="⚠️"
-                            Visibility="{Binding HasPendingQaSuggestions, Converter={StaticResource TrueToVisibleConverter}}" />
+                <DataGridTextColumn
+                    Width="30"
+                    Binding="{Binding HasPendingQaSuggestionsSecondOpinion, Converter={StaticResource QaStatusToSymbolConverter}, Mode=OneWay}"
+                    Foreground="Salmon"
+                    Header="QA2" />
 
+                <DataGridTextColumn
+                    Width="30"
+                    Binding="{Binding IsRejected, Converter={StaticResource IsRejectedToSymbolConverter}, Mode=OneWay}"
+                    Foreground="IndianRed"
+                    Header="Rejected" />
 
-                        <TextBlock
-                            DockPanel.Dock="Left"
-                            FontSize="14"
-                            FontWeight="{Binding IsAnythingOverridden, Converter={StaticResource BoolToFontWeightConverter}}"
-                            Text="{Binding Term}" />
-
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Padding" Value="0" />
-                    <Setter Property="BorderThickness" Value="0" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-
-        </ListBox>
+                <DataGridTextColumn
+                    Width="30"
+                    Binding="{Binding IsApproved, Converter={StaticResource IsApprovedToSymbolConverter}, Mode=OneWay}"
+                    Foreground="LimeGreen"
+                    Header="Approved" />
+            </DataGrid.Columns>
+        </DataGrid>
 
         <!--  Wysiwyg editor  -->
         <Border
