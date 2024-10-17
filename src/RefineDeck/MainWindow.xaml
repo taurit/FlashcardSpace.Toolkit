@@ -95,7 +95,12 @@
         </Grid.ColumnDefinitions>
 
         <!--  Panel with the words  -->
-
+        <!--
+            Be careful to not accidentally disable DataGrid virtualization, because
+            then it becomes very slow even with 2000 rows.
+            
+            ScrollViewer.CanContentScroll="False" fixed it for now
+        -->
         <DataGrid
             Grid.Row="0"
             Grid.Column="0"
@@ -107,12 +112,13 @@
             CanUserResizeColumns="False"
             CanUserResizeRows="False"
             CanUserSortColumns="False"
+            EnableColumnVirtualization="True"
+            EnableRowVirtualization="True"
             GridLinesVisibility="Horizontal"
             HorizontalGridLinesBrush="LightGray"
             IsTabStop="False"
             ItemsSource="{Binding Deck.Flashcards}"
-            ScrollViewer.CanContentScroll="True"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.CanContentScroll="False"
             SelectedItem="{Binding SelectedFlashcard}"
             SelectionMode="Single"
             VerticalGridLinesBrush="Transparent">
@@ -504,6 +510,16 @@
                         IsEnabled="{Binding PerformingQualityAnalysis, Converter={StaticResource IsBusyToIsEnabledConverter}}">
                         Upgrade selected images quality
                     </Button>
+
+
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="4,2"
+                        Click="UpgradeQualityOfAllImages_OnClick"
+                        IsEnabled="{Binding PerformingQualityAnalysis, Converter={StaticResource IsBusyToIsEnabledConverter}}">
+                        Upgrade all images quality
+                    </Button>
+
 
                     <!--  Loading icon, visible only when PerformingQualityAnalysis is true  -->
                     <TextBlock

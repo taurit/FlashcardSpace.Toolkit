@@ -1,12 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
+﻿namespace CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 
 public record StableDiffusionPrompt(string PromptText, string NegativePromptText);
 
-public class StableDiffusionPromptProvider(ILogger logger)
+public class StableDiffusionPromptProvider
 {
-    private const string NegativePromptText = "lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch,monochrome,black and white,grayscale,sepia,desaturated,gloomy";
+    /// <summary>
+    /// Hack: to create good pictures for the "Spanish colors" deck, I don't want to change the color palette of images
+    /// </summary>
+    private static bool _avoidInterferingWithColors;
+    public static bool AvoidInterferingWithColors
+    {
+        get => _avoidInterferingWithColors;
+        set
+        {
+            _avoidInterferingWithColors = value;
+            UpdateTexturesList();
+        }
+    }
+
+    private string NegativePromptText => $"lowres,bad anatomy,bad hands,text,error,missing fingers,extra digit,fewer digits,cropped,worst quality,low quality,jpeg artifacts,signature,watermark,username,blurry,nsfw,painting,drawing,illustration,cartoon,anime,sketch,{(AvoidInterferingWithColors ? "" : "monochrome,black and white,grayscale,sepia,desaturated,")}gloomy";
 
     readonly string[] _styles = {
         "high-resolution", "4K", "8K", "HDR", "photorealistic", "professional",
@@ -25,10 +37,23 @@ public class StableDiffusionPromptProvider(ILogger logger)
         "cheerful", "uplifting", "joyful", "lively", "optimistic"
     };
 
-    readonly string[] _textures = {
-        "smooth", "sharp", "crisp", "detailed", "glossy", "matte", "silky",
-        "textured", "soft focus", "vivid colors", "saturated", "high clarity"
-    };
+    private static string[]? _textures;
+
+    private static void UpdateTexturesList()
+    {
+        var texturesList = new List<string>
+        {
+            "smooth", "sharp", "crisp", "detailed", "glossy", "matte", "silky",
+            "textured", "soft focus"
+        };
+
+        if (!AvoidInterferingWithColors)
+        {
+            texturesList.AddRange(new[] { "vivid colors", "saturated", "high clarity" });
+        }
+
+        _textures = texturesList.ToArray();
+    }
 
     public StableDiffusionPrompt CreateGoodPrompt(string termEnglish, string sentenceEnglish, int? seed, bool addStyleKeywords = true)
     {

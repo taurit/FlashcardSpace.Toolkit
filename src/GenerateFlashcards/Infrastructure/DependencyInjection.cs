@@ -56,11 +56,9 @@ internal static class DependencyInjection
         services.AddSingleton(secretParameters);
 
         // Add HttpClient (what Nuget package is needed?)
-        // Add HttpClient (what Nuget package is needed?)
         services.AddHttpClient();
 
-        var stableDiffusionPromptProvider = new StableDiffusionPromptProvider(logger);
-        services.AddSingleton<StableDiffusionPromptProvider>(stableDiffusionPromptProvider);
+        services.AddSingleton<StableDiffusionPromptProvider>();
 
         var imageGenerationSettings = new ImageGeneratorSettings(Parameters.ImageGeneratorCacheFolder);
         services.AddSingleton(imageGenerationSettings);

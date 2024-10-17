@@ -1,17 +1,25 @@
 {
   "profiles": {
-    "EasyWords: 1000 common adjectives (ES->PL)": {
+    "Hiszpański: przymiotniki (ES->PL)": {
       "commandName": "Project",
-      "commandLineArgs": "generate-from-frequency-dictionary --inputLanguage Spanish --outputLanguage Polish --partOfSpeech Adjective Resources/FrequencyDictionaries/Spanish.Words.RAE.txt"
+      "commandLineArgs": "generate-from-frequency-dictionary --inputLanguage Spanish --outputLanguage Polish --partOfSpeech Adjective --deckName \"Spanish Adjectives\" --mediaFilesPrefix fs-es-pl-adj Resources/FrequencyDictionaries/Spanish.Words.RAE.txt"
     },
+
+    "Hiszpański: kolory (ES->PL)": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-from-frequency-dictionary --inputLanguage Spanish --outputLanguage Polish --partOfSpeech Adjective --deckName \"Spanish Colors\" --mediaFilesPrefix fs-es-pl-colors Resources/SpanishColors.txt"
+    },
+
     "(Natural language) Spanish -> Polish": {
       "commandName": "Project",
       "commandLineArgs": "generate-from-natural-language --inputLanguage SpAniSH --outputLanguage Polish Resources/InputExample.Spanish.PlainText.txt"
     },
+
     "(Word list) Spanish -> Polish": {
       "commandName": "Project",
       "commandLineArgs": "generate-from-term-list d:\\Inbox\\words.txt"
     },
+
     "Debug command": {
       "commandName": "Project",
       "commandLineArgs": "debug"

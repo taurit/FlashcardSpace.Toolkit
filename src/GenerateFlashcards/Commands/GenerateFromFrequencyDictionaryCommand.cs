@@ -1,4 +1,5 @@
 ﻿using CoreLibrary.Models;
+using CoreLibrary.Services.GenerativeAiClients.StableDiffusion;
 using CoreLibrary.Services.GenerativeAiClients.TextToSpeech;
 using GenerateFlashcards.Services;
 using Microsoft.Extensions.Logging;
@@ -33,12 +34,17 @@ internal sealed class GenerateFromFrequencyDictionaryCommand(
 
         var notesWithEnglishTranslations = await spanishToEnglishTranslationProvider.AnnotateWithEnglishTranslation(terms);
         var notesWithEnglishAndPolishTranslations = await spanishToPolishTranslationProvider.AnnotateWithPolishTranslation(notesWithEnglishTranslations);
+
+        // quick hack to generate "Spanish Colors" deck without invalidating cache of previously generated images
+        // todo this shouldn't be controlled via static property, requires a refactor
+        StableDiffusionPromptProvider.AvoidInterferingWithColors = settings.InputFilePath.Contains("color", StringComparison.InvariantCultureIgnoreCase);
+
         var notesWithImages = await imageProvider.AddImageCandidates(notesWithEnglishAndPolishTranslations);
         var notesWithImagesAndAudio = await audioProvider.AddAudio(notesWithImages, settings.SourceLanguage, settings.OutputLanguage);
 
         var qaChecked = await qualityControlService.AddQualitySuggestions(notesWithImagesAndAudio);
 
-        var deck = new Deck("Spanish adjectives", qaChecked, "fs-es-adj", settings.SourceLanguage, settings.OutputLanguage);
+        var deck = new Deck(settings.DeckName, qaChecked, settings.MediaFilesPrefix, settings.SourceLanguage, settings.OutputLanguage);
         await deckExporter.ExportToFolderAndOpenPreview(deck);
 
         return 0;

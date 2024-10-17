@@ -302,6 +302,7 @@ public partial class MainWindow : Window
             MessageBox.Show("ImageGenerator is not initialized.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             return;
         }
+        bool upgradeAllImages = Equals(e.Source, this);
 
         var needQualityUpgrade = ViewModel.Deck.Flashcards.ToList();
         ViewModel.ProgressBarTotal = needQualityUpgrade.Count;
@@ -313,8 +314,20 @@ public partial class MainWindow : Window
 
             if (!card.IsPlaceholderImageSelected)
             {
-                var selectedImage = card.SelectedImage!;
-                await ImageGenerator.ImproveImageQualityIfNeeded(selectedImage);
+                if (upgradeAllImages)
+                {
+                    // upgrade all images
+                    foreach (var image in card.ImageCandidates.Where(x => !x.IsPlaceholderImage))
+                    {
+                        await ImageGenerator.ImproveImageQualityIfNeeded(image.AbsolutePath!);
+                    }
+                }
+                else
+                {
+                    // upgrade only the selected one
+                    var selectedImage = card.SelectedImage!;
+                    await ImageGenerator.ImproveImageQualityIfNeeded(selectedImage);
+                }
             }
 
             ViewModel.ProgressBarProcessed++;
@@ -322,5 +335,12 @@ public partial class MainWindow : Window
         }
 
         ViewModel.PerformingImageQualityUpgrade = false;
+    }
+
+    private async void UpgradeQualityOfAllImages_OnClick(object sender, RoutedEventArgs e)
+    {
+        e.Source = this; // hack to pass info that I want to upgrade all images
+        UpgradeQualityOfSelectedImages_OnClick(sender, e);
+
     }
 }

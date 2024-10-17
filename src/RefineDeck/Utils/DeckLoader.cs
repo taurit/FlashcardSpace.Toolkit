@@ -5,7 +5,10 @@ using System.IO;
 
 namespace RefineDeck.Utils;
 
-public record ImageCandidate(int? Index, string? RelativePath, string? AbsolutePath);
+public record ImageCandidate(int? Index, string? RelativePath, string? AbsolutePath)
+{
+    public bool IsPlaceholderImage => RelativePath is null;
+}
 
 internal static class DeckLoader
 {

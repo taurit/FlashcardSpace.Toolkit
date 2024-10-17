@@ -1,0 +1,242 @@
+# Basic Colors
+rojo # red
+azul # blue
+amarillo # yellow
+verde # green
+naranja # orange
+morado # purple
+negro # black
+blanco # white
+gris # gray
+marrón # brown
+rosa # pink
+
+# Common Color Variations
+claro # light
+oscuro # dark
+brillante # bright
+opaco # dull
+pálido # pale
+vivo # vivid
+pastel # pastel
+
+# Less Common Colors
+turquesa # turquoise
+beige # beige
+índigo # indigo
+violeta # violet
+cian # cyan
+magenta # magenta
+carmesí # crimson
+escarlata # scarlet
+borgoña # burgundy
+lavanda # lavender
+oliva # olive
+caqui # khaki
+coral # coral
+salmón # salmon
+burdeos # burgundy
+esmeralda # emerald
+aguamarina # aquamarine
+cereza # cherry
+castaño # chestnut
+ocre # ocher
+bronce # bronze
+plateado # silver
+dorado # golden
+celeste # sky blue
+lila # lilac
+fucsia # fuchsia
+añil # indigo blue
+caqui # khaki
+verde lima # lime green
+ámbar # amber
+malva # mauve
+albaricoque # apricot
+granate # garnet
+topacio # topaz
+púrpura # purple
+rubí # ruby
+jade # jade
+marfil # ivory
+pardo # tawny
+
+# Color Description Terms
+tono # hue
+matiz # shade
+saturado # saturated
+desaturado # unsaturated
+intenso # intense
+apagado # muted
+luminoso # luminous
+oscurecido # darkened
+aclarado # lightened
+iridiscente # iridescent
+metálico # metallic
+fluorescente # fluorescent
+fosforescente # phosphorescent
+tornasol # iridescent
+nacarado # pearly
+mate # matte
+brilloso # glossy
+reluciente # shiny
+transparente # transparent
+opaco # opaque
+
+# More Specific Color Terms
+carmín # carmine
+bermellón # vermilion
+crema # cream
+ébano # ebony
+caoba # mahogany
+sepia # sepia
+terracota # terracotta
+mostaza # mustard
+ciruela # plum
+melocotón # peach
+cerúleo # cerulean
+cobalto # cobalt
+siena # sienna
+chartreuse # chartreuse
+aguacate # avocado
+zafiro # sapphire
+caramelo # caramel
+chocolate # chocolate
+menta # mint
+limón # lemon
+frambuesa # raspberry
+
+# Color Mixing Terms
+mezcla # mixture
+combinación # combination
+fusión # fusion
+gradiente # gradient
+degradado # gradient (fading)
+transición # transition
+armonía # harmony
+contraste # contrast
+complementario # complementary
+análogo # analogous
+monocromático # monochromatic
+
+# Color Theory Terms
+primario # primary
+secundario # secondary
+terciario # tertiary
+cálido # warm
+frío # cool
+neutro # neutral
+acromático # achromatic
+cromático # chromatic
+espectro # spectrum
+
+# Light and Shade
+sombra # shadow
+luz # light
+reflejo # reflection
+brillo # shine
+resplandor # glow
+penumbra # penumbra
+claroscuro # chiaroscuro
+
+# Color Perception
+valor # value
+croma # chroma
+tinte # tint
+tonalidad # tonality
+saturación # saturation
+luminosidad # luminosity
+
+# Color in Nature
+arcoíris # rainbow
+aurora # aurora
+crepúsculo # twilight
+amanecer # dawn
+atardecer # sunset
+otoñal # autumnal
+primaveral # spring-like
+invernal # wintry
+estival # summery
+
+# Color in Art and Design
+pigmento # pigment
+pintura # paint
+acuarela # watercolor
+óleo # oil paint
+acrílico # acrylic
+tinte # dye
+colorante # coloring agent
+paleta # palette
+pincelada # brushstroke
+guache # gouache
+
+# Describing Color Changes
+desteñir # to fade
+teñir # to dye
+colorear # to color
+pintar # to paint
+blanquear # to bleach
+ennegrecer # to blacken
+enrojecer # to redden
+amarillear # to yellow
+reverdecer # to turn green
+empalidecer # to pale
+
+# Cultural Color Terms
+rojo carmesí # crimson red
+azul marino # navy blue
+verde oliva # olive green
+amarillo canario # canary yellow
+rojo sangre # blood red
+blanco hueso # bone white
+negro azabache # jet black
+gris perla # pearl gray
+azul cielo # sky blue
+verde botella # bottle green
+rojo ladrillo # brick red
+azul eléctrico # electric blue
+verde esmeralda # emerald green
+rosa chicle # bubblegum pink
+amarillo limón # lemon yellow
+marrón chocolate # chocolate brown
+verde manzana # apple green
+rojo fuego # fire red
+azul turquesa # turquoise blue
+naranja mandarina # tangerine orange
+
+# Additional Descriptive Terms
+vibrante # vibrant
+radiante # radiant
+sombrío # somber
+alegre # cheerful
+suave # soft
+fuerte # strong
+delicado # delicate
+llamativo # striking
+sutil # subtle
+chillón # garish
+estridente # strident
+discreto # discreet
+tenue # faint
+profundo # deep
+ligero # light
+vívido # vivid
+descolorido # faded
+nítido # sharp
+
+# Color Psychology Terms
+relajante # relaxing
+estimulante # stimulating
+tranquilizador # soothing
+energizante # energizing
+calmante # calming
+excitante # exciting
+melancólico # melancholic
+optimista # optimistic
+romántico # romantic
+dramático # dramatic
+
+# Color Properties
+cromaticidad # chromaticity
+pureza # purity
+temperatura del color # color temperature

@@ -119,6 +119,13 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 
         if (isBelowHighQualityBar)
         {
+            var newFilePath = filePath.Replace(".jpg", ".improved.jpg");
+            if (File.Exists(newFilePath))
+            {
+                logger.LogInformation("High-quality image already exists for {FilePath}", filePath);
+                return true;
+            }
+
             logger.LogInformation("Improving image quality for {FilePath}", filePath);
 
             var newPrompt = new StableDiffusionPrompt(fileParams.Prompt, fileParams.NegativePrompt);
@@ -131,8 +138,6 @@ public class ImageGenerator(HttpClient httpClient, ILogger<ImageGenerator> logge
 
             var newImageBase64 = newImage.First().Base64EncodedImage;
             var newImageBinary = Convert.FromBase64String(newImageBase64);
-
-            var newFilePath = filePath.Replace(".jpg", ".improved.jpg");
 
             // save high-quality image
             await File.WriteAllBytesAsync(newFilePath, newImageBinary);

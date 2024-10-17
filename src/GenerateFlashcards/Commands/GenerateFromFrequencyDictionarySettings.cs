@@ -31,6 +31,12 @@ internal sealed class GenerateFromFrequencyDictionarySettings : CommandSettings
     [DefaultValue(SupportedLanguage.Unspecified)]
     public required PartOfSpeech? PartOfSpeechFilter { get; init; }
 
+    [CommandOption("--deckName")]
+    public required string DeckName { get; init; }
+
+    [CommandOption("--mediaFilesPrefix")]
+    public required string MediaFilesPrefix { get; init; }
+
     public override ValidationResult Validate()
     {
         // ensure the `outputLanguage` option is set

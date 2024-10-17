@@ -53,14 +53,17 @@ public class FrequencyDataProvider
 
         // Autodetect format of frequency dictionary and load data accordingly
         var isContentInReaFormat = lines[0].Contains("Frec.normalizada");
-        if (isContentInReaFormat)
-            LoadFrequencyData_RealAcademiaEspañolaFormat(lines);
-        else
-            LoadFrequencyData_DefaultFormat(lines);
+        var wordAndNumOccurrencesFormat = Regex.IsMatch(lines[0], @"^\s*\w+\s+\d+\s*$");
 
+        if (isContentInReaFormat) // assume line format of `{order}. {word} {absoluteFrequency} {normalizedFrequency}`
+            LoadFrequencyData_RealAcademiaEspañolaFormat(lines);
+        else if (wordAndNumOccurrencesFormat) // assume line format of `{word} {numOccurrences}`
+            LoadFrequencyData_WordAndFrequency(lines);
+        else // assume line format of just `{word}`
+            LoadFrequencyData_WordOnly(lines);
     }
 
-    private void LoadFrequencyData_DefaultFormat(string[] lines)
+    private void LoadFrequencyData_WordAndFrequency(string[] lines)
     {
         for (var i = 0; i < lines.Length; i++)
         {
@@ -70,6 +73,39 @@ public class FrequencyDataProvider
             var numOccurrences = Int64.Parse(parts[1]);
 
             // in the dataset, duplicates are only found at the long tail (weird "words" with 1 usage like "µe"), so it's not worth to handle them
+            var frequencyRecord = new FrequencyRecord(word, i, numOccurrences);
+            _frequencyData.TryAdd(word, frequencyRecord);
+        }
+    }
+
+    private void LoadFrequencyData_WordOnly(string[] lines)
+    {
+        // sanitize input text: remove all comments, empty lines, and leading/trailing whitespace
+        // comments start with `#` and might come at any position in the line, not only the first character
+        lines = lines
+            .Where(x => !string.IsNullOrWhiteSpace(x) && !x.StartsWith("#"))
+            .Select(x => x.Trim())
+            .ToArray();
+
+        for (var i = 0; i < lines.Length; i++)
+        {
+            var word = lines[i];
+
+            // remove comment if present
+            var indexOfComment = word.IndexOf('#');
+            if (indexOfComment != -1)
+            {
+                word = word.Substring(0, indexOfComment).Trim();
+            }
+
+            const int numOccurrences = 100; // no data, so we just use a placeholder value unlikely to be filtered out
+
+            if (_frequencyData.ContainsKey(word))
+            {
+                // duplicate
+                continue;
+            }
+
             var frequencyRecord = new FrequencyRecord(word, i, numOccurrences);
             _frequencyData.TryAdd(word, frequencyRecord);
         }
